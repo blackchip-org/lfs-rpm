@@ -1,12 +1,10 @@
-Name:           gcc-libstdc++-lfs
+Name:           lfs-gcc-libstdc++
 Version:        13.2.0
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        gcc-%{version}.tar.xz
-
-Prefix:         %lfs
+Source0:        https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

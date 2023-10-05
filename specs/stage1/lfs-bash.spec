@@ -1,12 +1,10 @@
-Name:           bash-lfs
+Name:           lfs-bash
 Version:        5.2.15
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        bash-%{version}.tar.gz
-
-Prefix:         %lfs
+Source0:        https://ftp.gnu.org/gnu/bash/bash-%{version}.tar.gz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

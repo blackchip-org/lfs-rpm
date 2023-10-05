@@ -1,11 +1,11 @@
-Name:           glibc-lfs
+Name:           lfs-glibc
 Version:        2.38
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        glibc-%{version}.tar.xz
-Patch0:         glibc-%{version}-fhs-1.patch
+Source0:        https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-memalign_fix-1.patch
 
 Prefix:         %lfs
 
@@ -68,7 +68,6 @@ sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/%{lfs}/usr/bin/ldd
 %{lfs}/usr/share/i18n/charmaps/*
 %{lfs}/usr/share/i18n/locales/*
 %{lfs}/usr/share/locale/locale.alias
-%{lfs}/var/lib/nss_db/Makefile
 
 
 %changelog

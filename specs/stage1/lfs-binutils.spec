@@ -1,12 +1,10 @@
-Name:           binutils-lfs
+Name:           lfs-binutils
 Version:        2.41
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        binutils-%{version}.tar.xz
-
-Prefix:         %lfs
+Source0:        https://sourceware.org/pub/binutils/releases/binutils-%{version}.tar.xz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

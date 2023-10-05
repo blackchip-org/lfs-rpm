@@ -1,4 +1,4 @@
-Name:           gcc-lfs
+Name:           lfs-gcc
 Version:        13.2.0
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
@@ -8,13 +8,10 @@ License:        GPL
 %define         gmp_version     6.3.0
 %define         mpc_version     1.3.1
 
-Source0:        gcc-%{version}.tar.xz
-Source1:        mpfr-%{mpfr_version}.tar.xz
-Source2:        gmp-%{gmp_version}.tar.xz
-Source3:        mpc-%{mpc_version}.tar.gz
-
-Prefix:         %lfs
-Obsoletes:      gcc-libstdc++-lfs = %{version}
+Source0:        https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
+Source1:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
+Source2:        https://ftp.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
+Source3:        https://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

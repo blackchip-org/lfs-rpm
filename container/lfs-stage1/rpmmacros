@@ -1,4 +1,5 @@
-%dist .lfs12
+%dist           .lfs12
+%lfs_version    12.0
 
 %_build_id_links none
 

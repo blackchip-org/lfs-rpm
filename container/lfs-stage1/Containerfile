@@ -12,6 +12,7 @@ RUN dnf install -y \
     perl \
     python \
     rpm-build \
+    rpmdevtools \
     texinfo \
     xz
 

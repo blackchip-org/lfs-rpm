@@ -1,12 +1,10 @@
-Name:           xz-lfs
+Name:           lfs-xz
 Version:        5.4.4
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        Public Domain, GPL, LGPL
 
-Source0:        xz-%{version}.tar.xz
-
-Prefix:         %lfs
+Source0:        https://tukaani.org/xz/xz-%{version}.tar.xz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

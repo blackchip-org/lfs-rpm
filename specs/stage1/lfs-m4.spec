@@ -1,10 +1,10 @@
-Name:           m4-lfs
+Name:           lfs-m4
 Version:        1.4.19
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        m4-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/m4/m4-%{version}.tar.xz
 
 Prefix:         %lfs
 

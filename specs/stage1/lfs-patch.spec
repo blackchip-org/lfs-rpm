@@ -1,12 +1,10 @@
-Name:           gzip-lfs
-Version:        1.12
+Name:           lfs-patch
+Version:        2.7.6
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        gzip-%{version}.tar.xz
-
-Prefix:         %lfs
+Source0:        https://ftp.gnu.org/gnu/patch/patch-%{version}.tar.xz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
@@ -17,12 +15,14 @@ Toolchain for building LFS
 
 
 %prep
-%setup -q -n gzip-%{version}
+%setup -q -n patch-%{version}
 
 
 %build
 %lfs_path
-./configure --prefix=/usr --host=%{lfs_tgt}
+./configure --prefix=/usr     \
+            --host=%{lfs_tgt} \
+            --build=$(build-aux/config.guess)
 make
 
 
@@ -37,7 +37,7 @@ make DESTDIR=%{buildroot}/%{lfs} install
 
 
 %changelog
-* Wed Oct 4 2023 Mike McGann <mike.mcgann@blackchip.org> - 1.12-1
+* Wed Oct 4 2023 Mike McGann <mike.mcgann@blackchip.org> - 2.7.6-1
 - Initial package
 
 

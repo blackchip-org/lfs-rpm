@@ -2,13 +2,15 @@
 
 case $1 in
     init)
-        podman rm lfs-stage1
+        podman stop -t 0 lfs-stage1
+        podman rm -f lfs-stage1
         podman build -t lfs-stage1 container/lfs-stage1
+        mkdir -p "$HOME/.local/cache/lfs/rpmbuild"
         podman create \
             --name lfs-stage1 \
             --hostname lfs-stage1 \
             --userns keep-id \
-            --volume $HOME/.local/cache/lfs/rpmbuild:/home/lfs/rpmbuild:z \
+            --volume "$HOME/.local/cache/lfs/rpmbuild:/home/lfs/rpmbuild:z" \
             --volume .:/home/lfs/lfs-rpm:z \
             lfs-stage1
         ;;
