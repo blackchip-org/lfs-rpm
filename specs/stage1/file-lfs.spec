@@ -1,10 +1,12 @@
-Name:           file-lfs-tools
+Name:           file-lfs
 Version:        5.45
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        BSD
 
 Source0:        file-%{version}.tar.gz
+
+Prefix:         %lfs
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

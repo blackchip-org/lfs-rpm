@@ -1,4 +1,4 @@
-Name:           linux-headers-lfs-bootstrap
+Name:           linux-headers-lfs
 Version:        6.4.12
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
@@ -6,7 +6,7 @@ License:        GPL2
 
 Source0:        linux-%{version}.tar.xz
 
-BuildArch:      noarch
+Prefix:         %{lfs}
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

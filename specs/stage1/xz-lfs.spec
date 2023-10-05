@@ -1,10 +1,12 @@
-Name:           xz-lfs-tools
+Name:           xz-lfs
 Version:        5.4.4
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        Public Domain, GPL, LGPL
 
 Source0:        xz-%{version}.tar.xz
+
+Prefix:         %lfs
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

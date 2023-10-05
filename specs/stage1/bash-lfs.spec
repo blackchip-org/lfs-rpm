@@ -1,10 +1,12 @@
-Name:           bash-lfs-tools
+Name:           bash-lfs
 Version:        5.2.15
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
 Source0:        bash-%{version}.tar.gz
+
+Prefix:         %lfs
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
@@ -19,7 +21,7 @@ Toolchain for building LFS
 
 
 %build
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
 ./configure --prefix=/usr                      \
             --build=$(sh support/config.guess) \
             --host=%{lfs_tgt}                  \
@@ -28,15 +30,11 @@ make
 
 
 %install
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
 make DESTDIR=%{buildroot}/%{lfs} install
-
-rm -rf %{buildroot}/%{lfs}/usr/share/info
-rm -rf %{buildroot}/%{lfs}/usr/share/man
-rm -rf %{buildroot}/%{lfs}/usr/share/doc
-
 mkdir -p %{buildroot}/%{lfs}/bin
 ln -s bash %{buildroot}/%{lfs}/bin/sh
+%lfs_remove_docs
 
 
 %files

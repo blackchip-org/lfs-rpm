@@ -1,10 +1,12 @@
-Name:           make-lfs-tools
-Version:        4.4.1
+Name:           grep-lfs
+Version:        3.11
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        make-%{version}.tar.gz
+Source0:        grep-%{version}.tar.xz
+
+Prefix:         %lfs
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
@@ -15,15 +17,14 @@ Toolchain for building LFS
 
 
 %prep
-%setup -q -n make-%{version}
+%setup -q -n grep-%{version}
 
 
 %build
 %lfs_path
-./configure --prefix=/usr   \
-            --without-guile \
+./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
-            --build=$(build-aux/config.guess)
+            --build=$(./build-aux/config.guess)
 make
 
 
@@ -35,12 +36,11 @@ make DESTDIR=%{buildroot}/%{lfs} install
 
 %files
 %{lfs}/usr/bin/*
-%{lfs}/usr/include/*
-%{lfs}/usr/share/locale/*/LC_MESSAGES/make.mo
+%{lfs}/usr/share/locale/*/LC_MESSAGES/grep.mo
 
 
 %changelog
-* Wed Oct 4 2023 Mike McGann <mike.mcgann@blackchip.org> - 4.4.1-1
+* Wed Oct 4 2023 Mike McGann <mike.mcgann@blackchip.org> - 3.11-1
 - Initial package
 
 

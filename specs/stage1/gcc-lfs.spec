@@ -1,4 +1,4 @@
-Name:           gcc-lfs-tools
+Name:           gcc-lfs
 Version:        13.2.0
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
@@ -13,7 +13,8 @@ Source1:        mpfr-%{mpfr_version}.tar.xz
 Source2:        gmp-%{gmp_version}.tar.xz
 Source3:        mpc-%{mpc_version}.tar.gz
 
-Conflicts:      libstdc++-lfs-bootstrap
+Prefix:         %lfs
+Obsoletes:      gcc-libstdc++-lfs = %{version}
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
@@ -36,7 +37,7 @@ mv mpc-%{mpc_version}    mpc
 
 
 %build
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
 
 case $(uname -m) in
   x86_64)
@@ -73,7 +74,7 @@ make
 
 
 %install
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
 cd build
 DESTDIR=%{buildroot}/%{lfs} make install
 ln -sv gcc %{buildroot}/%{lfs}/usr/bin/cc

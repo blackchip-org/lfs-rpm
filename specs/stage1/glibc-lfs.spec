@@ -1,4 +1,4 @@
-Name:           glibc-lfs-bootstrap
+Name:           glibc-lfs
 Version:        2.38
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
@@ -7,11 +7,10 @@ License:        GPL
 Source0:        glibc-%{version}.tar.xz
 Patch0:         glibc-%{version}-fhs-1.patch
 
+Prefix:         %lfs
+
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
-
-BuildRequires:  gcc-lfs-bootstrap
-BuildRequires:  linux-headers-lfs-bootstrap
 
 
 %description
@@ -24,7 +23,7 @@ Toolchain for building LFS
 
 
 %build
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
 
 case $(uname -m) in
     i?86)   mkdir -p %{buildroot}/%{lfs}/lib
@@ -52,13 +51,12 @@ make
 
 
 %install
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
 cd build
 DESTDIR=%{buildroot}/%{lfs} make install
-
 sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/%{lfs}/usr/bin/ldd
+%lfs_remove_docs
 
-rm -rf %{buildroot}/%{lfs}/usr/share/info
 
 %files
 %{lfs}/etc/rpc
