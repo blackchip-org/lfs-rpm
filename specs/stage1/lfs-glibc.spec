@@ -68,6 +68,7 @@ sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/%{lfs}/usr/bin/ldd
 %{lfs}/usr/share/i18n/charmaps/*
 %{lfs}/usr/share/i18n/locales/*
 %{lfs}/usr/share/locale/locale.alias
+%{lfs}/var/db/Makefile
 
 
 %changelog
