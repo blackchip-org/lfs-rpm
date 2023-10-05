@@ -1,12 +1,10 @@
-Name:           ncurses-lfs
+Name:           lfs-ncurses
 Version:        6.4
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        X11
 
-Source0:        ncurses-%{version}.tar.gz
-
-Prefix:         %lfs
+Source0:        https://invisible-mirror.net/archives/ncurses/ncurses-%{version}.tar.gz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
@@ -26,7 +24,7 @@ Toolchain for building LFS
 sed -i s/mawk// configure
 
 mkdir build
-pushd build
+pushd build-tools
   ../configure
   make -C include
   make -C progs tic

@@ -1,12 +1,10 @@
-Name:           file-lfs
+Name:           lfs-file
 Version:        5.45
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        BSD
 
-Source0:        file-%{version}.tar.gz
-
-Prefix:         %lfs
+Source0:        https://astron.com/pub/file/file-%{version}.tar.gz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

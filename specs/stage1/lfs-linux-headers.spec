@@ -1,12 +1,10 @@
-Name:           linux-headers-lfs
+Name:           lfs-linux-headers
 Version:        6.4.12
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL2
 
-Source0:        linux-%{version}.tar.xz
-
-Prefix:         %{lfs}
+Source0:        https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{version}.tar.xz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

@@ -1,10 +1,10 @@
-Name:           sed-lfs
-Version:        4.9
+Name:           lfs-gzip
+Version:        1.12
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        sed-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/gzip/gzip-%{version}.tar.xz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
@@ -15,14 +15,12 @@ Toolchain for building LFS
 
 
 %prep
-%setup -q -n sed-%{version}
+%setup -q -n gzip-%{version}
 
 
 %build
 %lfs_path
-./configure --prefix=/usr     \
-            --host=%{lfs_tgt} \
-            --build=$(build-aux/config.guess)
+./configure --prefix=/usr --host=%{lfs_tgt}
 make
 
 
@@ -34,11 +32,10 @@ make DESTDIR=%{buildroot}/%{lfs} install
 
 %files
 %{lfs}/usr/bin/*
-%{lfs}/usr/share/locale/*/LC_MESSAGES/sed.mo
 
 
 %changelog
-* Wed Oct 4 2023 Mike McGann <mike.mcgann@blackchip.org> - 4.9-1
+* Wed Oct 4 2023 Mike McGann <mike.mcgann@blackchip.org> - 1.12-1
 - Initial package
 
 
