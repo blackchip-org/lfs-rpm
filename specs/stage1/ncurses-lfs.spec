@@ -1,10 +1,12 @@
-Name:           ncurses-lfs-tools
+Name:           ncurses-lfs
 Version:        6.4
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        X11
 
 Source0:        ncurses-%{version}.tar.gz
+
+Prefix:         %lfs
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
@@ -19,7 +21,7 @@ Toolchain for building LFS
 
 
 %build
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
 
 sed -i s/mawk// configure
 
@@ -46,11 +48,10 @@ make
 
 
 %install
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
 make DESTDIR=%{buildroot}/%{lfs} TIC_PATH=$(pwd)/build/progs/tic install
 echo "INPUT(-lncursesw)" > %{buildroot}/%{lfs}/usr/lib/libncurses.so
-
-rm -rf %{buildroot}/%{lfs}/usr/share/man*
+%lfs_remove_docs
 
 
 %files

@@ -1,10 +1,12 @@
-Name:           coreutils-lfs-tools
+Name:           coreutils-lfs
 Version:        9.3
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
 Source0:        coreutils-%{version}.tar.xz
+
+Prefix:         %lfs
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}

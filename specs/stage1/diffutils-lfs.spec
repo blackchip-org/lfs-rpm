@@ -1,10 +1,12 @@
-Name:           patch-lfs-tools
-Version:        2.7.6
+Name:           diffutils-lfs
+Version:        3.10
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        patch-%{version}.tar.xz
+Source0:        diffutils-%{version}.tar.xz
+
+Prefix:         %lfs
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
@@ -15,14 +17,14 @@ Toolchain for building LFS
 
 
 %prep
-%setup -q -n patch-%{version}
+%setup -q -n diffutils-%{version}
 
 
 %build
 %lfs_path
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
-            --build=$(build-aux/config.guess)
+            --build=$(./build-aux/config.guess)
 make
 
 
@@ -34,10 +36,11 @@ make DESTDIR=%{buildroot}/%{lfs} install
 
 %files
 %{lfs}/usr/bin/*
+%{lfs}/usr/share/locale/*/LC_MESSAGES/diffutils.mo
 
 
 %changelog
-* Wed Oct 4 2023 Mike McGann <mike.mcgann@blackchip.org> - 2.7.6-1
+* Wed Oct 4 2023 Mike McGann <mike.mcgann@blackchip.org> - 3.10-1
 - Initial package
 
 

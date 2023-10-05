@@ -1,4 +1,4 @@
-Name:           binutils-lfs-bootstrap
+Name:           binutils-lfs-tools
 Version:        2.41
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
@@ -22,7 +22,7 @@ Toolchain for building LFS
 mkdir build
 cd build
 
-../configure --prefix=%{tools} \
+../configure --prefix=%{lfs_tools} \
              --with-sysroot=%{lfs} \
              --target=%{lfs_tgt}   \
              --disable-nls         \
@@ -34,16 +34,14 @@ make
 %install
 cd build
 DESTDIR=%{buildroot} make install
-
-rm -rf %{buildroot}/%{tools}/share/info
-rm -rf %{buildroot}/%{tools}/share/man*
+%lfs_remove_docs
 
 
 %files
-%{tools}/bin/*
-%{tools}/lib/*
-%{tools}/%{lfs_tgt}/bin/*
-%{tools}/%{lfs_tgt}/lib/*
+%{lfs_tools}/bin/*
+%{lfs_tools}/lib/*
+%{lfs_tools}/%{lfs_tgt}/bin/*
+%{lfs_tools}/%{lfs_tgt}/lib/*
 
 
 %changelog

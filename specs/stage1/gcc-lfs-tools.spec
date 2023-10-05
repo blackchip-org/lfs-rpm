@@ -1,4 +1,4 @@
-Name:           gcc-lfs-bootstrap
+Name:           gcc-lfs-tools
 Version:        13.2.0
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
@@ -15,8 +15,6 @@ Source3:        mpc-%{mpc_version}.tar.gz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
-
-BuildRequires:  binutils-lfs-bootstrap
 
 
 %description
@@ -43,14 +41,14 @@ esac
 
 
 %build
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
 
 mkdir build
 cd build
 
 ../configure                  \
     --target=%{lfs_tgt}       \
-    --prefix=%{lfs}/tools     \
+    --prefix=%{lfs_tools}     \
     --with-glibc-version=2.38 \
     --with-sysroot=%{lfs}     \
     --with-newlib             \
@@ -72,23 +70,24 @@ make
 
 
 %install
-export PATH=%{tools}/bin:${PATH}
+%lfs_path
+
 cd build
 DESTDIR=%{buildroot} make install
 
 cd ..
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
-  %{buildroot}/%{tools}/lib/gcc/%{lfs_tgt}/%{version}/include/limits.h
+  %{buildroot}/%{lfs_tools}/lib/gcc/%{lfs_tgt}/%{version}/include/limits.h
 
-rm -rf %{buildroot}/%{tools}/share/info
-rm -rf %{buildroot}/%{tools}/share/man*
+rm -rf %{buildroot}/%{lfs_tools}/share/info
+rm -rf %{buildroot}/%{lfs_tools}/share/man*
 
 
 %files
-%{tools}/bin/*
-%{tools}/lib/gcc/%{lfs_tgt}/%{version}
-%{tools}/lib64/*
-%{tools}/libexec/gcc/%{lfs_tgt}/%{version}
+%{lfs_tools}/bin/*
+%{lfs_tools}/lib/gcc/%{lfs_tgt}/%{version}
+%{lfs_tools}/lib64/*
+%{lfs_tools}/libexec/gcc/%{lfs_tgt}/%{version}
 
 
 %changelog
