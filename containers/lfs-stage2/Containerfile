@@ -1,0 +1,6 @@
+FROM scratch 
+
+ARG builddir 
+ADD lfs-stage2.tar.gz /
+
+CMD [ "/usr/bin/tail", "-f", "/dev/null" ]
