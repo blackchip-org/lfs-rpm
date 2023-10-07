@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        https://ftp.gnu.org/gnu/m4/m4-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/make/make-%{version}.tar.gz
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
