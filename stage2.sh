@@ -6,7 +6,7 @@ case $1 in
     init)
         podman stop -t 0 lfs-stage2
         podman rm -f lfs-stage2
-        podman build --build-arg "builddir=$builddir" -t lfs-stage2 containers/lfs-stage2
+        podman build -t lfs-stage2 containers/lfs-stage2
         podman create \
             --name lfs-stage2 \
             --hostname lfs-stage2 \
