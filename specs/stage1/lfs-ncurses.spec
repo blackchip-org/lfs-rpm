@@ -24,7 +24,7 @@ Toolchain for building LFS
 sed -i s/mawk// configure
 
 mkdir build
-pushd build-tools
+pushd build
   ../configure
   make -C include
   make -C progs tic

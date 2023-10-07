@@ -11,7 +11,7 @@ packages="
     lfs-tools-gcc
     lfs-linux-headers
     lfs-glibc
-    lfs-gcc-libstdc++
+    lfs-libstdc++
     lfs-m4
     lfs-ncurses
     lfs-bash

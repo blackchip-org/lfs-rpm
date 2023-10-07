@@ -1,4 +1,4 @@
-Name:           lfs-gcc-libstdc++
+Name:           lfs-libstdc++
 Version:        13.2.0
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
