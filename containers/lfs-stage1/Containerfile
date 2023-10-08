@@ -3,6 +3,7 @@ FROM fedora:38
 RUN dnf install -y \
     binutils \
     bison \
+    cmake \
     diffutils \
     gcc \
     g++ \
