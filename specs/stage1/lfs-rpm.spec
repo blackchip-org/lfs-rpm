@@ -1,10 +1,10 @@
-Name:           lfs-m4
-Version:        1.4.19
+Name:           lfs-rpm
+Version:        4.19.0
 Release:        1%{?dist}
 Summary:        Toolchain for building LFS
 License:        GPL
 
-Source0:        https://ftp.gnu.org/gnu/m4/m4-%{version}.tar.xz
+Source0:        https://ftp.osuosl.org/pub/rpm/releases/rpm-4.19.x/rpm-%{version}.tar.bz2
 
 %undefine       _auto_set_build_flags
 %global         debug_package %{nil}
@@ -15,14 +15,20 @@ Toolchain for building LFS
 
 
 %prep
-%setup -q -n m4-%{version}
+%setup -q -n rpm-%{version}
 
 
 %build
 %lfs_path
-./configure --prefix=/usr     \
-            --host=%{lfs_tgt} \
-            --build=$(build-aux/config.guess)
+mkdir _build 
+cd _build 
+cmake -DCMAKE_INSTALL_PREFIX=/usr \
+      -DENABLE_PYTHON=OFF \
+      -DENABLE_SQLITE=OFF \
+      -DENABLE_TESTSUITE=OFF \
+      -DRPM_CONFIGDIR=/usr/lib/rpm \
+      -DRPM_VENDOR=lfs \
+      ..
 make
 
 
@@ -33,8 +39,7 @@ DESTDIR=%{buildroot}/%{lfs} make install
 
 
 %files
-%{lfs}/usr/bin/*
-%{lfs}/usr/share/locale/*/LC_MESSAGES/m4.mo
+
 
 
 %changelog
