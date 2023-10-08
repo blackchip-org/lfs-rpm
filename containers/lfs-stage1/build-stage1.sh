@@ -29,6 +29,7 @@ packages="
     lfs-xz
     lfs-binutils
     lfs-gcc
+    lfs-root-fs
 "
 
 cd $specdir

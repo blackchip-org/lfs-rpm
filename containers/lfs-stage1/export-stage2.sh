@@ -1,4 +1,5 @@
 #!/bin/sh 
 
 cd /lfs
-tar zcf /tmp/lfs-stage2.tar.gz . 
+sudo rm -rf /tmp/lfs-stage2.tar.gz
+sudo tar zcf /tmp/lfs-stage2.tar.gz . 

@@ -15,9 +15,9 @@ case $1 in
             --volume "$builddir:/home/lfs/rpmbuild:z" \
             --volume .:/home/lfs/lfs-rpm:z \
             lfs-stage1
+        podman start lfs-stage1
         ;;
     start)
-        podman start lfs-stage1
         ;;
     stop)
         podman stop -t 0 lfs-stage1
@@ -29,6 +29,7 @@ case $1 in
         exec podman exec -it lfs-stage1 bash
         ;;
     export)
+        rm -f containers/lfs-stage2/lfs-stage2.tar.gz
         podman exec -t lfs-stage1 bash -i /home/lfs/lfs-rpm/containers/lfs-stage1/export-stage2.sh 
         podman cp lfs-stage1:/tmp/lfs-stage2.tar.gz containers/lfs-stage2
         ;; 

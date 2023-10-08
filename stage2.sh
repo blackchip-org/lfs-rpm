@@ -13,6 +13,7 @@ case $1 in
             --volume "$builddir:/home/lfs/rpmbuild:z" \
             --volume .:/home/lfs/lfs-rpm:z \
             lfs-stage2
+        podman start lfs-stage2 
         ;;
     start)
         podman start lfs-stage2 
