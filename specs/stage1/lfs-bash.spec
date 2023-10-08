@@ -31,12 +31,11 @@ make
 %lfs_path
 make DESTDIR=%{buildroot}/%{lfs} install
 mkdir -p %{buildroot}/%{lfs}/bin
-ln -s bash %{buildroot}/%{lfs}/bin/sh
+ln -s bash %{buildroot}/%{lfs}/usr/bin/sh
 %lfs_remove_docs
 
 
 %files
-%{lfs}/bin/*
 %{lfs}/usr/bin/*
 %{lfs}/usr/include/bash
 %{lfs}/usr/lib/bash

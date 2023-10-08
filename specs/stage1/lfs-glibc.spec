@@ -25,16 +25,6 @@ Toolchain for building LFS
 %build
 %lfs_path
 
-case $(uname -m) in
-    i?86)   mkdir -p %{buildroot}/%{lfs}/lib
-            ln -sfv ld-linux.so.2 %{buildroot}/%{lfs}/lib/ld-lsb.so.3
-    ;;
-    x86_64) mkdir -p %{buildroot}/%{lfs}/lib64
-            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{lfs}/lib64
-            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{lfs}/lib64/ld-lsb-x86-64.so.3
-    ;;
-esac
-
 mkdir build
 cd build
 
@@ -55,10 +45,22 @@ make
 cd build
 DESTDIR=%{buildroot}/%{lfs} make install
 sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/%{lfs}/usr/bin/ldd
+
+case $(uname -m) in
+    i?86)   mkdir -p %{buildroot}/%{lfs}/lib
+            ln -sfv ld-linux.so.2 %{buildroot}/%{lfs}/lib/ld-lsb.so.3
+    ;;
+    x86_64) mkdir -p %{buildroot}/%{lfs}/lib64
+            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{lfs}/lib64
+            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{lfs}/lib64/ld-lsb-x86-64.so.3
+    ;;
+esac
+
 %lfs_remove_docs
 
 
 %files
+%{lfs}/lib64/*
 %{lfs}/etc/rpc
 %{lfs}/usr/bin/*
 %{lfs}/usr/include/*
