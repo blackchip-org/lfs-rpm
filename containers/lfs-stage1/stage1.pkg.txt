@@ -30,4 +30,3 @@ lfs-gettext
 lfs-zlib
 lfs-bzip2
 lfs-elfutils
-lfs-util-linux
