@@ -1,28 +1,28 @@
-#!/bin/bash 
+#!/bin/bash
 
 set -e -x
 
-cmake_version=3.27.7 
+cmake_version=3.27.7
 rpm_version=4.19.0
 
-srcdir=/root/rpmbuild/SOURCES
+srcdir=/home/lfs/rpmbuild/SOURCES
 export MAKEFLAGS=-j$(nproc)
 
-mkdir -p /root/rpm-bootstrap
+mkdir -p /home/lfs/rpm-bootstrap
 
-cd /root/rpm-bootstrap
+cd /home/lfs/rpm-bootstrap
 tar xf "$srcdir/cmake-${cmake_version}.tar.gz"
 cd cmake-${cmake_version}
 ./bootstrap -- -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_USE_OPENSSL=OFF
-make 
-make install 
+make
+make install
 
-cd /root/rpm-bootstrap 
+cd /home/lfs/rpm-bootstrap
 rm -rf rpm-${rpm_version}
 tar xf "$srcdir/rpm-${rpm_version}.tar.bz2"
 cd rpm-${rpm_version}
-mkdir -p _build 
-cd _build 
+mkdir -p _build
+cd _build
 cmake -DCMAKE_INSTALL_PREFIX=/usr \
       -DCMAKE_INSTALL_LIBDIR=/lib \
       -DENABLE_NLS=OFF \
@@ -41,5 +41,5 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr \
       -DWITH_INTERNAL_OPENPGP=ON \
       -DWITH_SELINUX=OFF \
       ..
-make 
-make install 
+make
+make install
