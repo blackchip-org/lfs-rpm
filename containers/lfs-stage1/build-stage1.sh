@@ -30,6 +30,15 @@ packages="
     lfs-binutils
     lfs-gcc
     lfs-root-fs
+    lfs-lua 
+    lfs-pkg-config
+    lfs-popt
+    lfs-libgpg-error
+    lfs-libgcrypt
+    lfs-gettext
+    lfs-zlib
+    lfs-bzip2
+    lfs-elfutils
 "
 
 cd $specdir
