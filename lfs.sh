@@ -4,6 +4,7 @@ set -e
 
 builddir=$HOME/.local/cache/lfs/rpmbuild
 arch=$(arch)
+nproc=$(nproc) 
 
 prog="$(basename $0)"
 
@@ -39,7 +40,10 @@ lfs-init() {
     podman rm -f        lfs-$stage
     set -e
 
-    podman build -t lfs-$stage containers/lfs-$stage
+    podman build \
+        --build-arg nproc=$nproc \
+        --tag       lfs-$stage \
+        containers/lfs-$stage
     podman create \
         --name      lfs-$stage \
         --hostname  lfs-$stage \
@@ -60,9 +64,9 @@ lfs-download() {
 lfs-build() {
     packages="$(cat containers/lfs-$stage/$stage.pkg.txt)"
     for package in $packages; do
-        if ! podman exec -it lfs-$stage rpm -q $package ; then
-            podman exec -it lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/$stage/${package}.spec
-            podman exec --user root -it lfs-$stage rpm -i --replacefiles rpmbuild/RPMS/$arch/${package}-*.rpm
+        if ! podman exec lfs-$stage rpm -q $package ; then
+            podman exec lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/$stage/${package}.spec
+            podman exec --user root lfs-$stage rpm -i --replacefiles rpmbuild/RPMS/$arch/${package}-*.rpm
         fi
     done
 }

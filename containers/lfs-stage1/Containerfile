@@ -20,16 +20,18 @@ RUN dnf install -y \
 RUN ln -s /usr/bin/bison /usr/bin/yacc
 
 COPY version-check.sh /bin/version-check.sh
-COPY bashrc /home/lfs/.bashrc
 COPY rpmmacros /home/lfs/.rpmmacros
 COPY sudoers /etc/sudoers.d/lfs
 
 RUN groupadd lfs && \
     useradd -s /bin/bash -g lfs -m -k /dev/null lfs && \
-    chown lfs:lfs /home/lfs /home/lfs/.bashrc /home/lfs/.rpmmacros
+    chown lfs:lfs /home/lfs /home/lfs/.rpmmacros
 
 
 WORKDIR /home/lfs
 USER lfs
+
+ARG nproc
+ENV MAKEFLAGS=-j${nproc} 
 
 CMD [ "tail", "-f", "/dev/null" ]
