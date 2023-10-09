@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./env 
+. ./env
 
 case $1 in
     init)
@@ -18,9 +18,16 @@ case $1 in
         podman start lfs-stage1
         ;;
     start)
+        podman start lfs-stage1
         ;;
     stop)
         podman stop -t 0 lfs-stage1
+        ;;
+    download)
+        packages=$(cat containers/lfs-stage1/stage1.txt)
+        for package in $packages; do
+            spectool -g -C $HOME/.local/cache/lfs/rpmbuild/SOURCES specs/stage1/${package}.spec
+        done
         ;;
     build)
         exec podman exec -t lfs-stage1 bash -i /home/lfs/lfs-rpm/containers/lfs-stage1/build-stage1.sh
@@ -30,9 +37,9 @@ case $1 in
         ;;
     export)
         rm -f containers/lfs-stage2/lfs-stage2.tar.gz
-        podman exec -t lfs-stage1 bash -i /home/lfs/lfs-rpm/containers/lfs-stage1/export-stage2.sh 
+        podman exec -t lfs-stage1 bash -i /home/lfs/lfs-rpm/containers/lfs-stage1/export-stage2.sh
         podman cp lfs-stage1:/tmp/lfs-stage2.tar.gz containers/lfs-stage2
-        ;; 
+        ;;
     *)
         echo "invalid command"
         exit 1
