@@ -1,16 +1,21 @@
-#!/bin/bash -e 
+#!/bin/bash -e
 
-echo "==== creating podman image for stage1"
-./stage1.sh init 
-echo "==== building stage1"
-./stage1.sh build 
-echo "==== exporting stage2"
-./stage1.sh export 
+msg() {
+    echo -e "\n===== $@"
+}
 
+msg "downloading sources for stage1"
+./lfs.sh 1 download
+msg "creating podman image for stage1"
+./lfs.sh 1 init
+msg "building stage1"
+./lfs.sh 1 build
+msg "exporting stage1"
+./lfs.sh 1 export
 
-echo "==== creating podman image for stage2"
-./stage2.sh init 
-echo "==== downloading rpm bootstrap files"
-./stage2.sh download 
-echo "==== bootstrapping rpm"
-./stage2.sh bootstrap 
+msg "downloading sources for stage1a"
+./lfs.sh 1a download
+msg "creating podman image for stage1a"
+./lfs.sh 1a init
+msg "bootstrapping rpm"
+./lfs.sh 1a bootstrap

@@ -1,1 +1,5 @@
 lfs-bison
+lfs-perl
+lfs-python
+lfs-texinfo
+lfs-util-linux

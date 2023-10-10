@@ -4,7 +4,10 @@ set -e
 
 builddir=$HOME/.local/cache/lfs/rpmbuild
 arch=$(arch)
-nproc=$(nproc) 
+nproc=$(nproc)
+
+cmake_version=3.27.7
+rpm_version=4.19.0
 
 prog="$(basename $0)"
 
@@ -24,7 +27,13 @@ case $1 in
         ;;
     1a)
         stage=stage1a
-        rpmbuild_flags=-bb
+        rpmbuild_flags="-bb"
+        rpm_flags="--nodeps"
+        ;;
+    2)
+        stage=stage2
+        rpmbuild_flags="-ba"
+        rpm_flags="--nodeps"
         ;;
     *)
         echo "$prog: error: invalid stage" 2>&1
@@ -35,10 +44,8 @@ esac
 lfs-init() {
     mkdir -p "$builddir"
 
-    set +e
-    podman stop -t 0    lfs-$stage
-    podman rm -f        lfs-$stage
-    set -e
+    podman stop -t 0    lfs-$stage || true
+    podman rm -f        lfs-$stage || true
 
     podman build \
         --build-arg nproc=$nproc \
@@ -59,6 +66,13 @@ lfs-download() {
     for package in $packages; do
         spectool -g -C "$builddir/SOURCES" specs/$stage/${package}.spec
     done
+
+    if [ "$stage" == "stage1a" ] ; then
+        ( cd $builddir/SOURCES &&
+            wget -nc https://github.com/Kitware/CMake/releases/download/v${cmake_version}/cmake-${cmake_version}.tar.gz &&
+            wget -nc https://ftp.osuosl.org/pub/rpm/releases/rpm-4.19.x/rpm-${rpm_version}.tar.bz2
+        )
+    fi
 }
 
 lfs-build() {
@@ -66,7 +80,7 @@ lfs-build() {
     for package in $packages; do
         if ! podman exec lfs-$stage rpm -q $package ; then
             podman exec lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/$stage/${package}.spec
-            podman exec --user root lfs-$stage rpm -i --replacefiles rpmbuild/RPMS/$arch/${package}-*.rpm
+            podman exec --user root lfs-$stage rpm -i --replacefiles $rpm_flags rpmbuild/RPMS/$arch/${package}-*.rpm
         fi
     done
 }
@@ -76,13 +90,25 @@ lfs-export() {
         rm -f containers/lfs-stage1a/lfs-stage1.tar.gz
         podman exec --user root -t lfs-stage1 tar -C /lfs -c -z -f /tmp/lfs-stage1.tar.gz --exclude=./tools .
         podman cp lfs-stage1:/tmp/lfs-stage1.tar.gz containers/lfs-stage1a
-    fi 
+    elif [ "$stage" == "stage1a" ] ; then
+        rm -f containers/lfs-stage2/lfs-stage1a.tar.gz
+        podman exec --user root -t lfs-stage1a \
+            tar -C / -c -z -f /tmp/lfs-stage1a.tar.gz \
+            --exclude='./tmp/*' \
+            --exclude './home/lfs/*' \
+            --exclude './root/*' \
+            --exclude './dev/*' \
+            --exclude './proc/*' \
+            --exclude './sys/*' \
+            .
+        podman cp lfs-stage1a:/tmp/lfs-stage1a.tar.gz containers/lfs-stage2
+    fi
 }
 
 lfs-bootstrap() {
-    if [ "$stage" == "stage1a" ] ; then 
-        podman exec --user root -t lfs-stage1a lfs-rpm/containers/lfs-stage1a/rpm-bootstrap.sh 
-    fi 
+    if [ "$stage" == "stage1a" ] ; then
+        podman exec --user root -t lfs-stage1a lfs-rpm/containers/lfs-stage1a/rpm-bootstrap.sh
+    fi
 }
 
 case $2 in

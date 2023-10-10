@@ -1,0 +1,8 @@
+man-pages
+iana-etc
+glibc
+zlib
+bzip2
+xz
+zstd
+file
