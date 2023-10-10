@@ -11,4 +11,7 @@ RUN mkdir -p /home/lfs && \
 WORKDIR /home/lfs
 USER lfs
 
+ARG nproc
+ENV MAKEFLAGS=-j${nproc} 
+
 CMD [ "/usr/bin/tail", "-f", "/dev/null" ]

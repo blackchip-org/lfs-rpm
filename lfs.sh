@@ -71,10 +71,18 @@ lfs-build() {
     done
 }
 
-lfs-export-stage1() {
-    rm -f containers/lfs-stage1a/lfs-stage1.tar.gz
-    podman exec --user root -t lfs-stage1 tar -C /lfs -c -z -f /tmp/lfs-stage1.tar.gz .
-    podman cp lfs-stage1:/tmp/lfs-stage1.tar.gz containers/lfs-stage1a
+lfs-export() {
+    if [ "$stage" == "stage1" ] ; then
+        rm -f containers/lfs-stage1a/lfs-stage1.tar.gz
+        podman exec --user root -t lfs-stage1 tar -C /lfs -c -z -f /tmp/lfs-stage1.tar.gz --exclude=./tools .
+        podman cp lfs-stage1:/tmp/lfs-stage1.tar.gz containers/lfs-stage1a
+    fi 
+}
+
+lfs-bootstrap() {
+    if [ "$stage" == "stage1a" ] ; then 
+        podman exec --user root -t lfs-stage1a lfs-rpm/containers/lfs-stage1a/rpm-bootstrap.sh 
+    fi 
 }
 
 case $2 in
@@ -85,7 +93,8 @@ case $2 in
     root-shell) exec podman exec --user root -it lfs-$stage /bin/bash ;;
     download)   lfs-download ;;
     build)      lfs-build ;;
-    export)     lfs-export-$stage ;;
+    export)     lfs-export ;;
+    bootstrap)  lfs-bootstrap ;;
     *)
         echo "$prog: error: invalid command" 2>&1
         usage
