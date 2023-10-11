@@ -19,3 +19,14 @@ msg "creating podman image for stage1a"
 ./lfs.sh 1a init
 msg "bootstrapping rpm"
 ./lfs.sh 1a bootstrap
+msg "building stage1a"
+./lfs.sh 1a build 
+msg "exporting stage1a"
+./lfs.sh 1a export
+
+msg "downloading sources for stage2"
+./lfs.sh 2 download
+msg "creating podman image for stage2"
+./lfs.sh 2 init 
+msg "building stage2"
+./lfs.sh 2 build 

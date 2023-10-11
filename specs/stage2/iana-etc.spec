@@ -1,4 +1,4 @@
-%define version     20230810
+%global version     20230810
 
 Name:           iana-etc
 Version:        %{version}

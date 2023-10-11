@@ -6,3 +6,11 @@ bzip2
 xz
 zstd
 file
+readline 
+m4
+bc
+flex 
+tcl
+expect 
+dejagnu
+

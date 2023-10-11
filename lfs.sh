@@ -20,6 +20,10 @@ EOF
 exit 2
 }
 
+msg() {
+    echo -e "\n----- $@"
+}
+
 case $1 in
     1)
         stage=stage1
@@ -79,6 +83,7 @@ lfs-build() {
     packages="$(cat containers/lfs-$stage/$stage.pkg.txt)"
     for package in $packages; do
         if ! podman exec lfs-$stage rpm -q $package ; then
+            msg "building $stage:$package" 
             podman exec lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/$stage/${package}.spec
             podman exec --user root lfs-$stage rpm -i --replacefiles $rpm_flags rpmbuild/RPMS/$arch/${package}-*.rpm
         fi

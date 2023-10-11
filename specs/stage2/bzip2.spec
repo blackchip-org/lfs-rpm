@@ -72,4 +72,4 @@ rm -f %{buildroot}/usr/lib/libbz2.a
 
 %changelog
 * Wed Oct 4 2023 Mike McGann <mike.mcgann@blackchip.org> - 5.2.15-1
-- Initial pack/etc/ld.so.cache
+- Initial package

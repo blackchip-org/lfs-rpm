@@ -1,4 +1,4 @@
-%define version     5.4.4
+%global version     5.4.4
 
 Name:           xz
 Version:        %{version}
