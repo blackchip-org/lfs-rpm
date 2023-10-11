@@ -1,4 +1,4 @@
-%define version     1.2.13
+%global version     1.2.13
 
 Name:           zlib
 Version:        %{version}
@@ -35,7 +35,7 @@ rm -f %{buildroot}/usr/lib/libz.a
 /usr/include/*
 %attr(755,root,root) /usr/lib/libz.so.%{version}
 /usr/lib/libz.so{,.1}
-/usr/lib/pkgconfig/*
+/usr/lib/pkgconfig/zlib.pc
 /usr/share/man/man3/*
 
 

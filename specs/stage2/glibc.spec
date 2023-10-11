@@ -1,5 +1,5 @@
-%define version     2.38
-%define lfs_version 12.0
+%global version     2.38
+%global lfs_version 12.0
 
 Name:           glibc
 Version:        %{version}
@@ -93,6 +93,7 @@ include /etc/ld.so.conf.d/*.conf
 EOF
 mkdir -pv %{buildroot}/etc/ld.so.conf.d
 
+
 %files
 /etc/ld.so.cache
 /etc/ld.so.conf
@@ -100,22 +101,96 @@ mkdir -pv %{buildroot}/etc/ld.so.conf.d
 /etc/nscd.conf
 /etc/nsswitch.conf
 /etc/rpc
-/usr/bin/*
-/usr/include/*
-%attr(755,root,root) /usr/lib/*.so.*
-/usr/lib/*.{a,o,so}
+/usr/bin/gencat
+/usr/bin/getconf
+/usr/bin/getent
+/usr/bin/iconv
+/usr/bin/ld.so
+/usr/bin/ldd
+/usr/bin/locale
+/usr/bin/localedef
+/usr/bin/makedb
+/usr/bin/mtrace
+/usr/bin/pcprofiledump
+/usr/bin/pldd
+/usr/bin/sotruss
+/usr/bin/sprof
+/usr/bin/tzselect
+/usr/bin/xtrace
+/usr/bin/zdump
+/usr/include/* 
+/usr/lib/Mcrt1.o
+/usr/lib/Scrt1.o
+/usr/lib/crt1.o
+/usr/lib/crti.o
+/usr/lib/crtn.o
+/usr/lib/gcrt1.o
+/usr/lib/grcrt1.o
+/usr/lib/libBrokenLocale.a
+/usr/lib/libBrokenLocale.so
+/usr/lib/libanl.a
+/usr/lib/libanl.so
+/usr/lib/libc.a
+/usr/lib/libc.so
+/usr/lib/libc_malloc_debug.so
+/usr/lib/libc_nonshared.a
+/usr/lib/libdl.a
+/usr/lib/libg.a
+/usr/lib/libm-2.38.a
+/usr/lib/libm.a
+/usr/lib/libm.so
+/usr/lib/libmcheck.a
+/usr/lib/libmemusage.so
+/usr/lib/libmvec.a
+/usr/lib/libmvec.so
+/usr/lib/libnss_compat.so
+/usr/lib/libnss_db.so
+/usr/lib/libnss_hesiod.so
+/usr/lib/libpcprofile.so
+/usr/lib/libpthread.a
+/usr/lib/libresolv.a
+/usr/lib/libresolv.so
+/usr/lib/librt.a
+/usr/lib/libthread_db.so
+/usr/lib/libutil.a
+/usr/lib/rcrt1.o
 /usr/lib/{audit,gconv}
 /usr/lib/systemd/system/nscd.service
 /usr/lib/tmpfiles.d/nscd.conf
 /usr/libexec/getconf
-/usr/sbin/*
+/usr/sbin/iconvconfig
+/usr/sbin/ldconfig
+/usr/sbin/nscd
+/usr/sbin/sln
+/usr/sbin/zic
 /usr/share/i18n/charmaps/*
 /usr/share/i18n/locales/*
-/usr/share/info/dir
+/usr/share/info/dir 
 /usr/share/info/libc*
 /usr/share/locale/*/LC_MESSAGES/libc.mo
 /usr/share/locale/locale.alias
 /var/lib/nss_db/Makefile
+
+%defattr(755,root,root,755) 
+/usr/lib/ld-linux-x86-64.so.2
+/usr/lib/libanl.so.1
+/usr/lib/libBrokenLocale.so.1
+/usr/lib/libc.so.6
+/usr/lib/libc_malloc_debug.so.0
+/usr/lib/libdl.so.2
+/usr/lib/libm.so.6
+/usr/lib/libmvec.so.1
+/usr/lib/libnsl.so.1
+/usr/lib/libnss_compat.so.2
+/usr/lib/libnss_db.so.2
+/usr/lib/libnss_dns.so.2
+/usr/lib/libnss_files.so.2
+/usr/lib/libnss_hesiod.so.2
+/usr/lib/libpthread.so.0
+/usr/lib/libresolv.so.2
+/usr/lib/librt.so.1
+/usr/lib/libthread_db.so.1
+/usr/lib/libutil.so.1
 
 
 %changelog

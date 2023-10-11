@@ -1,4 +1,4 @@
-%define version     1.5.5
+%global version     1.5.5
 
 Name:           zstd
 Version:        %{version}

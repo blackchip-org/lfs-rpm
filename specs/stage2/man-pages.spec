@@ -1,4 +1,4 @@
-%define version     6.05.01
+%global version     6.05.01
 
 Name:           man-pages
 Version:        %{version}
