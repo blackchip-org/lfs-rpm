@@ -2,9 +2,14 @@
 
 set -e
 
-builddir=$HOME/.local/cache/lfs/rpmbuild
+[ -z "$builddir" ] && builddir=$HOME/.local/cache/lfs/rpmbuild
+[ -z "$nproc" ]    && nproc=$(nproc)
+
+if [ "$with_check" != "1" ] ; then
+    rpm_nocheck="--nocheck"
+fi
+
 arch=$(arch)
-nproc=$(nproc)
 
 cmake_version=3.27.7
 rpm_version=4.19.0
@@ -27,17 +32,23 @@ msg() {
 case $1 in
     1)
         stage=stage1
-        rpmbuild_flags=-bb
+        rpmbuild_flags="-bb $rpm_nocheck"
         ;;
     1a)
         stage=stage1a
-        rpmbuild_flags="-bb"
+        rpmbuild_flags="-bb $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;
     2)
         stage=stage2
-        rpmbuild_flags="-ba"
+        rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
+        ;;
+    info)
+        echo "builddir: $builddir"
+        echo "arch:     $arch"
+        echo "nproc:    $nproc"
+        exit 0
         ;;
     *)
         echo "$prog: error: invalid stage" 2>&1
@@ -78,12 +89,13 @@ lfs-download() {
         )
     fi
 }
+nproc=$(nproc)
 
 lfs-build() {
     packages="$(cat containers/lfs-$stage/$stage.pkg.txt)"
     for package in $packages; do
         if ! podman exec lfs-$stage rpm -q $package ; then
-            msg "building $stage:$package" 
+            msg "building $stage:$package"
             podman exec lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/$stage/${package}.spec
             podman exec --user root lfs-$stage rpm -i --replacefiles $rpm_flags rpmbuild/RPMS/$arch/${package}-*.rpm
         fi
