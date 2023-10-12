@@ -6,11 +6,21 @@ bzip2
 xz
 zstd
 file
-readline 
+readline
 m4
 bc
-flex 
+flex
 tcl
-expect 
+expect
 dejagnu
+binutils
+gmp
+mpfr
+mpc
+attr
+acl
+libcap
+libxcrypt
+shadow
+gcc
 
