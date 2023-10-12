@@ -23,4 +23,9 @@ libcap
 libxcrypt
 shadow
 gcc
+pkgconf
+ncurses
+sed
+psmisc
+gettext
 
