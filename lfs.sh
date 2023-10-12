@@ -20,7 +20,8 @@ usage() {
     cat 2>&1 <<EOF
 
 Usage: $prog <stage> <command>
-
+       $prog <stage> rpm <package>
+       $prog info
 EOF
 exit 2
 }
@@ -102,6 +103,16 @@ lfs-build() {
     done
 }
 
+lfs-rpm() {
+    package=$1
+    if [ -z "$package" ] ; then
+        echo "$prog: no package specified: $package" 2>&1
+        usage
+    fi
+    podman exec lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/$stage/${package}.spec
+    podman exec --user root lfs-$stage rpm --reinstall --replacefiles $rpm_flags rpmbuild/RPMS/$arch/${package}-*.rpm
+}
+
 lfs-export() {
     if [ "$stage" == "stage1" ] ; then
         rm -f containers/lfs-stage1a/lfs-stage1.tar.gz
@@ -136,6 +147,7 @@ case $2 in
     root-shell) exec podman exec --user root -it lfs-$stage /bin/bash ;;
     download)   lfs-download ;;
     build)      lfs-build ;;
+    rpm)        lfs-rpm $3 ;;
     export)     lfs-export ;;
     bootstrap)  lfs-bootstrap ;;
     *)
