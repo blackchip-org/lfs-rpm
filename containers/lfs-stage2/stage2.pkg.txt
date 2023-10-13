@@ -30,3 +30,4 @@ psmisc
 gettext
 bison
 grep
+bash 
