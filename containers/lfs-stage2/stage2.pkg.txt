@@ -28,4 +28,5 @@ ncurses
 sed
 psmisc
 gettext
-
+bison
+grep
