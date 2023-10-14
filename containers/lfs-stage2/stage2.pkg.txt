@@ -69,3 +69,9 @@ vim
 python-MarkupSafe
 python-Jinja2
 systemd
+dbus 
+man-db 
+procps-ng 
+util-linux 
+e2fsprogs 
+

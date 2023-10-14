@@ -29,13 +29,11 @@ so long as they can be imported on Python 3.
 
 
 %build
-python3 -m flit_core.wheel
+pip3 wheel -w dist --no-build-isolation --no-deps $PWD
 
 
 %install
-python3 bootstrap_install.py \
-    --installdir %{buildroot}/usr/lib/python%{py_version}/site-packages \
-    dist/flit_core-*.whl
+pip3 install --root=%{buildroot} --no-index --no-user --find-links dist flit_core
 
 
 %files
