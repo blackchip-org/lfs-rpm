@@ -182,8 +182,6 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/share/systemd/language-fallback-map
 /usr/share/zsh/site-functions/*
 
-
-
 %defattr(755,root,root,755)
 /usr/lib/libsystemd.so.0.37.0
 /usr/lib/libudev.so.1.7.7

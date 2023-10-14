@@ -29,8 +29,10 @@ pip3 wheel -w dist --no-build-isolation --no-deps $PWD
 
 
 %install
-pip3 install --root %{destdir} --no-index --find-links=dist wheel
+pip3 install --root %{buildroot} --no-index --find-links=dist wheel
 
 
 %files
-
+/usr/bin/wheel 
+/usr/lib/python%{py_version}/site-packages/wheel-%{version}.dist-info 
+/usr/lib/python%{py_version}/site-packages/wheel
