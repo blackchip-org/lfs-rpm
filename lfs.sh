@@ -45,6 +45,9 @@ case $1 in
         rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;
+    3)
+        stage=stage3 
+        ;;
     info)
         echo "builddir: $builddir"
         echo "arch:     $arch"
@@ -75,6 +78,10 @@ lfs-init() {
         --volume    .:/home/lfs/lfs-rpm:z \
         lfs-$stage
     podman start    lfs-$stage
+
+    if [ "$stage" == "stage3" ] ; then 
+        podman exec --user root lfs-$stage bash -c 'cd /home/lfs/rpmbuild/RPMS/* ; rpm --reinstall --justdb --nodeps $(ls | grep -v "^lfs-")'
+    fi 
 }
 
 lfs-download() {
@@ -118,18 +125,20 @@ lfs-export() {
         rm -f containers/lfs-stage1a/lfs-stage1.tar.gz
         podman exec --user root -t lfs-stage1 tar -C /lfs -c -z -f /tmp/lfs-stage1.tar.gz --exclude=./tools .
         podman cp lfs-stage1:/tmp/lfs-stage1.tar.gz containers/lfs-stage1a
-    elif [ "$stage" == "stage1a" ] ; then
-        rm -f containers/lfs-stage2/lfs-stage1a.tar.gz
-        podman exec --user root -t lfs-stage1a \
-            tar -C / -c -z -f /tmp/lfs-stage1a.tar.gz \
+    elif [ "$stage" == "stage1a" ] || [ "$stage" == "stage2" ] ; then
+        [ "$stage" == "stage1a" ] && next_stage="stage2" || next_stage="stage3"
+        rm -f containers/lfs-$next_stage/lfs-stage1a.tar.gz
+        podman exec --user root -t lfs-$stage \
+            tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
             --exclude='./tmp/*' \
             --exclude './home/lfs/*' \
             --exclude './root/*' \
             --exclude './dev/*' \
             --exclude './proc/*' \
             --exclude './sys/*' \
+            --exclude './var/lib/rpm/*' \
             .
-        podman cp lfs-stage1a:/tmp/lfs-stage1a.tar.gz containers/lfs-stage2
+        podman cp lfs-$stage:/tmp/lfs-$stage.tar.gz containers/lfs-$next_stage
     fi
 }
 

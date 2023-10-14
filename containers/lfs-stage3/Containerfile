@@ -1,0 +1,7 @@
+FROM scratch
+
+ADD lfs-stage2.tar.gz /
+
+ARG nproc
+
+CMD [ "/usr/bin/tail", "-f", "/dev/null" ]
