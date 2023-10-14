@@ -31,6 +31,7 @@ Install m4 if you need a macro processor.
 
 %install
 make DESTDIR=%{buildroot} install
+rm %{buildroot}/usr/share/info/dir 
 
 
 %files

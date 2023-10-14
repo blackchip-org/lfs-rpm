@@ -92,6 +92,7 @@ include /etc/ld.so.conf.d/*.conf
 
 EOF
 mkdir -pv %{buildroot}/etc/ld.so.conf.d
+rm %{buildroot}/usr/share/info/dir 
 
 
 %files
@@ -165,7 +166,6 @@ mkdir -pv %{buildroot}/etc/ld.so.conf.d
 /usr/sbin/zic
 /usr/share/i18n/charmaps/*
 /usr/share/i18n/locales/*
-/usr/share/info/dir 
 /usr/share/info/libc*
 /usr/share/locale/*/LC_MESSAGES/libc.mo
 /usr/share/locale/locale.alias
