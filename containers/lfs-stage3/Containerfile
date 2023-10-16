@@ -3,5 +3,10 @@ FROM scratch
 ADD lfs-stage2.tar.gz /
 
 ARG nproc
+ENV MAKEFLAGS=-j${nproc}
+ENV TERM=xterm-256color
+
+USER lfs 
+WORKDIR /home/lfs 
 
 CMD [ "/usr/bin/tail", "-f", "/dev/null" ]
