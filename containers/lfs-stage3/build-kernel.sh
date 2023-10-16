@@ -1,31 +1,34 @@
-#!/bin/bash 
+#!/bin/bash
 
-set -e -x 
+set -e -x
 
 lfs_version="12.0"
-kernel_version="6.4.12" 
+kernel_version="6.4.12"
 
-basedir=/home/lfs/kernel 
+distdir=/home/lfs/dist
+basedir=/home/lfs/kernel
 
 srcdir="$basedir/linux"
 bootdir="$basedir/boot"
-rootdir="$basedir/root" 
+rootdir="$basedir/root"
 
-if [ ! -d "$srcdir" ] ; then 
-    mkdir -p "$srcdir" 
-    tar xf rpmbuild/SOURCES/linux-*.tar.xz -C "$srcdir" --strip-components=1 
-fi 
+
+
+if [ ! -d "$srcdir" ] ; then
+    mkdir -p "$srcdir"
+    tar xf rpmbuild/SOURCES/linux-*.tar.xz -C "$srcdir" --strip-components=1
+fi
 
 cd "$srcdir"
-if [ ! -e .config ] ; then 
-    make mrproper   
-    make defconfig 
-fi 
+if [ ! -e .config ] ; then
+    make mrproper
+    make defconfig
+fi
 
-make 
+make
 
 mkdir -p "$rootdir"
-make INSTALL_MOD_PATH=${rootdir} modules_install 
+make INSTALL_MOD_PATH=${rootdir} modules_install
 
 mkdir -p "$bootdir"
 cp -v arch/x86/boot/bzImage "$bootdir/vmlinuz-${kernel_version}-lfs-${lfs_version}"
@@ -38,9 +41,11 @@ install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
 install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
 EOF
 
+mkdir -p "$distdir"
+
 cd "$bootdir/.."
-tar zcf boot-lfs-${lfs_version}.tar.gz "$(basename $bootdir)"
+tar zcf "$distdir/boot-lfs-${lfs_version}.tar.gz" "$(basename $bootdir)"
 
 cd "$rootdir"
-tar zcf /home/lfs/modules-lfs-${lfs_version}.tar.gz * 
+tar zcf "$distdir/modules-lfs-${lfs_version}.tar.gz" *
 
