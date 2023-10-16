@@ -1,4 +1,5 @@
 %global version     4.4.36
+%global _build_id_links none
 
 Name:           libxcrypt
 Version:        %{version}
@@ -7,8 +8,6 @@ Summary:        Extended crypt library for DES, MD5, Blowfish and others
 License:        LGPLv2+ and BSD and Public Domain
 
 Source0:        https://github.com/besser82/libxcrypt/releases/download/v%{version}/libxcrypt-%{version}.tar.xz
-
-%global _build_id_links none
 
 %description
 libxcrypt is a modern library for one-way hashing of passwords. It supports

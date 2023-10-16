@@ -2,17 +2,20 @@
 
 set -e
 
-[ -z "$builddir" ] && builddir=$HOME/.local/cache/lfs/rpmbuild
+[ -z "$lfsdir" ]    && lfsdir=$HOME/.local/cache/lfs 
 [ -z "$nproc" ]    && nproc=$(nproc)
 
 if [ "$with_check" != "1" ] ; then
     rpm_nocheck="--nocheck"
 fi
 
+builddir="$lfsdir/rpmbuild"
 arch=$(arch)
 
+lfs_version=12.0 
 cmake_version=3.27.7
 rpm_version=4.19.0
+kernel_version=6.4.12
 
 prog="$(basename $0)"
 
@@ -28,6 +31,33 @@ exit 2
 
 msg() {
     echo -e "\n----- $@"
+}
+
+lfs-kernel() {
+    ( cd $builddir/SOURCES &&
+        wget -nc https://www.kernel.org/pub/linux/kernel/v6.x/linux-${kernel_version}.tar.xz )
+    podman exec -t lfs-stage3 lfs-rpm/containers/lfs-stage3/build-kernel.sh 
+    podman cp lfs-stage3:/home/lfs/boot-lfs-${lfs_version}.tar.gz "$lfsdir" 
+    podman cp lfs-stage3:/home/lfs/modules-lfs-${lfs_version}.tar.gz "$lfsdir" 
+}
+
+lfs-qcow2() {
+    qcow2file="$lfsdir/lfs-${lfs_version}.qcow2"
+    rm -f "$qcow2file" 
+    qemu-img create -f qcow2 "$qcow2file" 10G 
+    sudo qemu-nbd --connect=/dev/nbd0 "$qcow2file"
+    #sudo sgdisk -n 1:0:0 /dev/nbd0  
+    sudo mkfs -t ext4 /dev/nbd0p1 
+    sudo mkdir -p /run/lfs 
+    sudo mount /dev/nbd0p1 /run/lfs 
+    sudo tar xf containers/lfs-stage3/lfs-stage2.tar.gz -C /run/lfs 
+    sudo tar xf "$lfsdir/boot-lfs-${lfs_version}.tar.gz" -C /run/lfs 
+    sudo tar xf "$lfsdir/modules-lfs-${lfs_version}.tar.gz" -C /run/lfs 
+    sudo mkdir -p /run/lfs/boot/grub
+    sudo cp conf/qcow2/grub.cfg /run/lfs/boot/grub
+    sudo grub2-install -d /usr/lib/grub/i386-pc /dev/nbd0 
+    sudo umount /run/lfs 
+    sudo qemu-nbd --disconnect /dev/nbd0
 }
 
 case $1 in
@@ -54,6 +84,8 @@ case $1 in
         echo "nproc:    $nproc"
         exit 0
         ;;
+    kernel) lfs-kernel  && exit 0 ;;
+    qcow2)  lfs-qcow2   && exit 0 ;; 
     *)
         echo "$prog: error: invalid stage" 2>&1
         usage
@@ -147,6 +179,9 @@ lfs-bootstrap() {
         podman exec --user root -t lfs-stage1a lfs-rpm/containers/lfs-stage1a/rpm-bootstrap.sh
     fi
 }
+
+
+
 
 case $2 in
     init)       lfs-init ;;
