@@ -1,0 +1,35 @@
+FROM fedora:38
+
+RUN dnf install -y \
+    binutils \
+    bison \
+    cmake \
+    diffutils \
+    gcc \
+    g++ \
+    less \
+    nano \
+    patch \
+    perl \
+    python \
+    rpm-build \
+    rpmdevtools \
+    texinfo \
+    xz
+
+RUN ln -s /usr/bin/bison /usr/bin/yacc
+
+COPY version-check.sh /bin/version-check.sh
+COPY rpmmacros /home/lfs/.rpmmacros
+COPY sudoers /etc/sudoers.d/lfs
+
+RUN groupadd lfs && \
+    useradd -s /bin/bash -g lfs -m -k /dev/null lfs && \
+    chown lfs:lfs /home/lfs /home/lfs/.rpmmacros
+
+COPY SOURCES /SOURCES
+
+WORKDIR /home/lfs
+USER lfs
+
+CMD [ "tail", "-f", "/dev/null" ]

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set -e
+
+prog="$(basename $0)"
+
+if [ ! -e ./env ] ; then
+    echo "$prog: error: env file not found" 1>&2
+    exit 1
+fi
+
+if [ "$with_check" != "1" ] ; then
+    rpm_nocheck="--nocheck"
+fi
+
+usage() {
+    cat <<EOF
+
+Usage: $prog <command>
+
+EOF
+    exit 2
+}
+
+lfs-stage() {
+    case $1 in
+        stage1|1)
+            stage="stage1"
+            rpmbuild_flags="-bb $rpm_nocheck"
+            ;;
+        *)
+            echo "$prog: error: invalid stage" 1>&2
+            usage
+            ;;
+    esac
+    echo $stage
+}
+
+lfs-init() {
+    stage=$1
+
+    bash -c "source ./env ; env | grep lfs_" > env.eval
+
+    podman stop -t 0    lfs-$stage || true
+    podman rm -f        lfs-$stage || true
+
+    podman build \
+        --tag       lfs-$stage \
+        containers/lfs-$stage
+    podman create \
+        --name      lfs-$stage \
+        --hostname  lfs-$stage \
+        --env-file  env.eval \
+        --userns    keep-id \
+        #--volume    "$builddir:/home/lfs/rpmbuild:z" \
+        --volume    .:/home/lfs/lfs-rpm:z \
+        lfs-$stage
+    podman start    lfs-$stage
+}
+
+case $1 in
+    init) lfs-init $(lfs-stage $2) ;;
+    *)
+        echo "$prog: error: invalid command" 1>&2
+        usage
+        ;;
+esac
+

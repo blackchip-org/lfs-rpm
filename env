@@ -1,0 +1,15 @@
+set -a
+
+lfs_version=12.0
+lfs_arch=x86_64
+
+lfs_dir=/lfs
+lfs_tools_dir=${lfs_dir}/tools
+lfs_tgt=x86_64-lfs-linux-gnu
+
+lfs_version_1=$(echo $lfs_version | cut -f1 -d.)
+lfs_dist=.lfs${lfs_version_1}
+
+lfs_nproc=$(nproc)
+
+MAKEFLAGS=-j${lfs_nproc}
