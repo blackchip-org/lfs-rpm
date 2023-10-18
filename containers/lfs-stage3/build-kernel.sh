@@ -3,6 +3,7 @@
 set -e -x
 
 lfs_version="12.0"
+lfs_release="lfs12"
 kernel_version="6.4.12"
 
 distdir=/home/lfs/dist
@@ -27,11 +28,13 @@ fi
 
 make
 
+rm -rf "$rootdir"
 mkdir -p "$rootdir"
-make INSTALL_MOD_PATH=${rootdir} modules_install
+make INSTALL_MOD_PATH=${rootdir}/usr modules_install
 
+rm -rf "$bootdir"
 mkdir -p "$bootdir"
-cp -v arch/x86/boot/bzImage "$bootdir/vmlinuz-${kernel_version}-lfs-${lfs_version}"
+cp -v arch/x86/boot/bzImage "$bootdir/vmlinuz-${kernel_version}.${lfs_release}.x86_64"
 cp -v System.map "$bootdir/System.map-$kernel_version"
 cp -v .config "$bootdir/config-6.4.12"
 
