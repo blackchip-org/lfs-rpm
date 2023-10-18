@@ -42,9 +42,12 @@ lfs-kernel() {
 }
 
 lfs-qcow2() {
+    set -x
     qcow2file="$lfsdir/lfs-${lfs_version}.qcow2"
-    rm -f "$qcow2file"
+    rawfile="$lfsdir/lfs-${lfs_version}.raw"
+    rm -f "$qcow2file" "$rawfile"
     qemu-img create -f qcow2 "$qcow2file" 10G
+    #dd if=/dev/zero of="$rawfile" count=1 bs=1 seek=10737418239
     sudo modprobe nbd
     sudo qemu-nbd --connect=/dev/nbd0 "$qcow2file"
     cat conf/qcow2/fdisk.txt | sudo fdisk /dev/nbd0
@@ -54,12 +57,15 @@ lfs-qcow2() {
     sudo tar xf containers/lfs-stage3/lfs-stage2.tar.gz -C /run/lfs
     sudo tar xf "$lfsdir/boot-lfs-${lfs_version}.tar.gz" -C /run/lfs
     sudo tar xf "$lfsdir/modules-lfs-${lfs_version}.tar.gz" -C /run/lfs
-    sudo mkdir -p /run/lfs/boot/extlinux
-    sudo extlinux --install /run/lfs/boot/extlinux
-    sudo cp conf/qcow2/extlinux.conf /run/lfs/boot/extlinux/extlinux.conf
-    sudo bash -c 'cat /usr/share/syslinux/mbr.bin > /dev/nbd0'
+    sudo cp -r conf/qcow2/fs/* /run/lfs
+    #sudo chmod 755 /run/lfs/usr/lib/*.so*
+    #sudo mkdir -p /run/lfs/boot/extlinux
+    #sudo cp conf/qcow2/extlinux.conf /run/lfs/boot/extlinux/extlinux.conf
+    #sudo extlinux --install /run/lfs/boot/extlinux
+    #sudo bash -c 'cat /usr/share/syslinux/mbr.bin > /dev/nbd0'
     sudo umount /run/lfs
     sudo qemu-nbd --disconnect /dev/nbd0
+    #sudo qemu-img convert -f raw -O qcow2 "$rawfile" "$qcow2file"
 }
 
 case $1 in
