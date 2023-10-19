@@ -1,0 +1,24 @@
+%dist           %{getenv:lfs_dist}
+%lfs_version    %{getenv:lfs_version}
+%lfs_stage      1b
+
+%_build_id_links    none
+%debug_package      %{nil}
+
+%lfs_dir            %{getenv:lfs_dir}
+%lfs_tools_dir      %{getenv:lfs_tools_dir}
+%lfs_tgt            %{getenv:lfs_tgt}
+
+%with_lfs_stage1b       1
+%with_lfs_gcc_bootstrap 1
+
+%make               make -j%{getenv:lfs_nproc}
+%lfs_build_begin    export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
+%lfs_build_end      %{nil}
+%lfs_install_begin  export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
+%lfs_install_end    \
+    rm -rf %{buildroot}/lfs/tools/share/{doc,info,man} \
+    rm -rf %{buildroot}/lfs/usr/share/{doc,info,man}
+
+
+

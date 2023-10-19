@@ -1,0 +1,1 @@
+export PATH=${lfs_tools_dir}/bin:${PATH}
