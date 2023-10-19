@@ -3,15 +3,9 @@
 set -e
 
 prog="$(basename $0)"
+cd "$(dirname $0)"
 
-if [ ! -e ./env ] ; then
-    echo "$prog: error: env file not found" 1>&2
-    exit 1
-fi
-
-if [ "$with_check" != "1" ] ; then
-    rpm_nocheck="--nocheck"
-fi
+source ./env
 
 usage() {
     cat <<EOF
@@ -22,24 +16,9 @@ EOF
     exit 2
 }
 
-lfs-stage() {
-    case $1 in
-        stage1|1)
-            stage="stage1"
-            rpmbuild_flags="-bb $rpm_nocheck"
-            ;;
-        *)
-            echo "$prog: error: invalid stage" 1>&2
-            usage
-            ;;
-    esac
-    echo $stage
-}
-
 lfs-init() {
-    stage=$1
-
-    bash -c "source ./env ; env | grep lfs_" > env.eval
+    set -x
+    bash -c "source ./env ; env | grep -e '^lfs_'" > eval.env
 
     podman stop -t 0    lfs-$stage || true
     podman rm -f        lfs-$stage || true
@@ -50,16 +29,88 @@ lfs-init() {
     podman create \
         --name      lfs-$stage \
         --hostname  lfs-$stage \
-        --env-file  env.eval \
+        --env-file  eval.env \
         --userns    keep-id \
-        #--volume    "$builddir:/home/lfs/rpmbuild:z" \
+        --volume    "./build/sources:/home/lfs/rpmbuild/SOURCES:z" \
+        --volume    "./build/stages/${stage}/rpms:/home/lfs/rpmbuild/RPMS:z" \
+        --volume    "./build/stages/${stage}/srpms:/home/lfs/rpmbuild/SRPMS:z" \
         --volume    .:/home/lfs/lfs-rpm:z \
         lfs-$stage
     podman start    lfs-$stage
 }
 
+lfs-download() {
+    set -x
+    specs="$(ls specs/*.spec | sort)"
+    for spec in $specs; do
+        spectool -d 'with_lfs_gcc_bootstrap 1' -g -C build/sources $spec
+    done
+}
+
+lfs-build() {
+    set -x
+    method=$1
+    packages=$2
+    [ -z "$packages" ] && packages="$(cat containers/lfs-$stage/$stage.pkg.txt)"
+    for package in $packages; do
+        if [ -n "$2" ] || ! podman exec lfs-$stage rpm -q $package ; then
+            echo -e "\n----- building $stage:$package"
+            podman exec lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/${package}.spec
+            podman exec --user root lfs-$stage rpm $method $rpm_flags rpmbuild/RPMS/$lfs_arch/${package}-*.rpm
+        fi
+    done
+}
+
+lfs-export() {
+    set -x
+    case $stage in
+        stage1a)
+            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /tmp/lfs-${stage}.tar.gz  .
+            podman cp lfs-${stage}:/tmp/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            ;;
+        *)
+            echo "export not defined for $stage"
+            exit 1
+            ;;
+    esac
+}
+
+mkdir -p build/{sources,stages}
+
+for mkstage in stage1a stage1b stage1c stage2; do
+    mkdir -p build/stages/$mkstage/{rpms,srpms}
+done
+
+if [ "$with_check" != "1" ] ; then
+    rpm_nocheck="--nocheck"
+fi
+
 case $1 in
-    init) lfs-init $(lfs-stage $2) ;;
+    stage1a|1a)
+        shift
+        stage=stage1a
+        next_stage=stage1b
+        rpmbuild_flags="-bb $rpm_nocheck"
+        rpm_flags="--nodeps"
+        ;;
+    stage1b|1b)
+        shift
+        stage=stage1b
+        next_stage=stage1c
+        rpmbuild_flags="-bb $rpm_nocheck"
+        rpm_flags="--nodeps"
+        ;;
+esac
+
+
+case $1 in
+    download)   lfs-download ;;
+    init)       lfs-init ;;
+    build)      lfs-build --install ;;
+    rpm)        lfs-build --reinstall $2 ;;
+    shell)      exec podman exec -it lfs-$stage /bin/bash ;;
+    root)       exec podman exec --user root -it lfs-$stage /bin/bash ;;
+    export)     lfs-export ;;
     *)
         echo "$prog: error: invalid command" 1>&2
         usage

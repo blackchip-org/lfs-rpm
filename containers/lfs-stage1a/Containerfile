@@ -19,15 +19,17 @@ RUN dnf install -y \
 
 RUN ln -s /usr/bin/bison /usr/bin/yacc
 
-COPY version-check.sh /bin/version-check.sh
-COPY rpmmacros /home/lfs/.rpmmacros
+COPY macros.lfs /usr/lib/rpm/macros.d/macros.lfs
 COPY sudoers /etc/sudoers.d/lfs
 
 RUN groupadd lfs && \
     useradd -s /bin/bash -g lfs -m -k /dev/null lfs && \
-    chown lfs:lfs /home/lfs /home/lfs/.rpmmacros
+    chown lfs:lfs /home/lfs && \
+    install -o lfs -g lfs -m 755 -d /home/lfs/rpmbuild && \
+    rm -rf /var/lib/rpm/*
 
-COPY SOURCES /SOURCES
+RUN sed -i 's/%source_date_epoch_from_changelog 1/%source_date_epoch_from_changelog 0/' /usr/lib/rpm/redhat/macros && \
+    sed -i 's/%_auto_set_build_flags 1//' /usr/lib/rpm/redhat/macros
 
 WORKDIR /home/lfs
 USER lfs

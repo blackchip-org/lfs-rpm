@@ -1,9 +1,0 @@
-%dist           %{getenv:lfs_dist}
-%lfs_version    %{getenv:lfs_version}
-
-%_build_id_links none
-
-%lfs_dir            %{getenv:lfs_dir}
-%lfs_tools_dir      %{getenv:lfs_tools_dir}
-%lfs_tgt            %{getenv:lfs_tgt}
-%lfs_path           export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}

@@ -1,3 +1,5 @@
+build
 *.tar.gz
 *~
-env.eval
+eval.env
+local.env
