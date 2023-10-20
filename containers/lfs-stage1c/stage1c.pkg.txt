@@ -1,5 +1,5 @@
 bison
 perl
 python
-lfs-texinfo
-lfs-util-linux
+texinfo
+util-linux

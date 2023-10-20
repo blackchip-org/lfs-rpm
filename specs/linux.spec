@@ -24,6 +24,7 @@ system: memory allocation, process allocation, device input and output, etc.
 %if %{with lfs_stage1b}
 %make headers
 find usr/include -type f ! -name '*.h' -delete
+
 %endif
 %lfs_build_end 
 
@@ -34,12 +35,13 @@ find usr/include -type f ! -name '*.h' -delete
 %if %{with lfs_stage1b}
 mkdir -p %{buildroot}/%{lfs_dir}/usr
 cp -rv usr/include %{buildroot}/%{lfs_dir}/usr
+
 %endif 
 %lfs_build_end 
 
 #---------------------------------------------------------------------------
 %files
-
 %if %{with lfs_stage1b}
 %{lfs_dir}/usr/include/*
+
 %endif 
