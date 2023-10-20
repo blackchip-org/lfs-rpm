@@ -18,11 +18,11 @@ object or archive file), strings (for listing printable strings from files),
 strip (for discarding symbols), and addr2line (for converting addresses to file
 and line).
 
-
+#---------------------------------------------------------------------------
 %prep
 %setup -q
 
-
+#---------------------------------------------------------------------------
 %build
 %lfs_build_begin
 
@@ -40,20 +40,19 @@ cd build
 %make
 %lfs_build_end
 
-
+#---------------------------------------------------------------------------
 %install
 %lfs_install_begin
 cd build
 DESTDIR=%{buildroot} %make install
 %lfs_install_end
 
-
+#---------------------------------------------------------------------------
 %files
+
 %if %{with lfs_stage1a}
 %{lfs_tools_dir}/bin/*
 %{lfs_tools_dir}/lib/*
 %{lfs_tools_dir}/%{lfs_tgt}/bin/*
 %{lfs_tools_dir}/%{lfs_tgt}/lib/*
 %endif
-
-
