@@ -1,39 +1,6 @@
-FROM fedora:38
-
-RUN dnf install -y \
-    binutils \
-    bison \
-    cmake \
-    diffutils \
-    gcc \
-    g++ \
-    less \
-    nano \
-    patch \
-    perl \
-    python \
-    rpm-build \
-    rpmdevtools \
-    texinfo \
-    xz
-
-RUN ln -s /usr/bin/bison /usr/bin/yacc
+FROM lfs-stage1a 
 
 ADD  lfs-stage1a.tar.gz /lfs/
-COPY macros.lfs /usr/lib/rpm/macros.d/macros.lfs
-COPY sudoers /etc/sudoers.d/lfs
-COPY bashrc /home/lfs/.bashrc
 
-RUN groupadd lfs && \
-    useradd -s /bin/bash -g lfs -m -k /dev/null lfs && \
-    chown lfs:lfs /home/lfs /home/lfs/.bashrc && \
-    install -o lfs -g lfs -m 755 -d /home/lfs/rpmbuild && \
-    rm -rf /var/lib/rpm/*
-
-RUN sed -i 's/%source_date_epoch_from_changelog 1/%source_date_epoch_from_changelog 0/' /usr/lib/rpm/redhat/macros && \
-    sed -i 's/%_auto_set_build_flags 1//' /usr/lib/rpm/redhat/macros
-
-WORKDIR /home/lfs
-USER lfs
-
-CMD [ "tail", "-f", "/dev/null" ]
+COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage 
+COPY bashrc             /home/lfs/.bashrc

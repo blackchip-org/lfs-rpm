@@ -1,4 +1,5 @@
-FROM fedora:38
+ARG  host_image
+FROM ${host_image}
 
 RUN dnf install -y \
     binutils \
@@ -19,12 +20,12 @@ RUN dnf install -y \
 
 RUN ln -s /usr/bin/bison /usr/bin/yacc
 
-COPY macros.lfs /usr/lib/rpm/macros.d/macros.lfs
-COPY sudoers /etc/sudoers.d/lfs
+COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
+COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage 
+COPY sudoers            /etc/sudoers.d/lfs
 
 RUN groupadd lfs && \
     useradd -s /bin/bash -g lfs -m -k /dev/null lfs && \
-    chown lfs:lfs /home/lfs && \
     install -o lfs -g lfs -m 755 -d /home/lfs/rpmbuild && \
     rm -rf /var/lib/rpm/*
 

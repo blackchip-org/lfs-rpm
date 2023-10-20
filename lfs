@@ -16,57 +16,72 @@ EOF
     exit 2
 }
 
+assert-stage() {
+    if [ -z "$stage" ] ; then 
+        echo "$prog: error: stage name should preceed command" 
+        exit 1
+    fi 
+}
+
 lfs-init() {
+    if [ "$stage" == "stage1a" ] ; then 
+        build_arg="--build-arg host_image=${host_image}"
+    fi 
+
     set -x
     bash -c "source ./env ; env | grep -e '^lfs_'" > eval.env
 
     podman stop -t 0    lfs-$stage || true
     podman rm -f        lfs-$stage || true
 
-    podman build \
-        --tag       lfs-$stage \
-        containers/lfs-$stage
+    podman build --tag lfs-$stage $build_arg containers/lfs-$stage
     podman create \
         --name      lfs-$stage \
         --hostname  lfs-$stage \
         --env-file  eval.env \
         --userns    keep-id \
         --volume    "./build/sources:/home/lfs/rpmbuild/SOURCES:z" \
-        --volume    "./build/stages/${stage}/rpms:/home/lfs/rpmbuild/RPMS:z" \
-        --volume    "./build/stages/${stage}/srpms:/home/lfs/rpmbuild/SRPMS:z" \
+        --volume    "./build/${stage}/rpms:/home/lfs/rpmbuild/RPMS:z" \
+        --volume    "./build/${stage}/srpms:/home/lfs/rpmbuild/SRPMS:z" \
         --volume    .:/home/lfs/lfs-rpm:z \
         lfs-$stage
-    podman start    lfs-$stage
+    podman start lfs-$stage
 }
 
 lfs-download() {
-    set -x
     specs="$(ls specs/*.spec | sort)"
     for spec in $specs; do
-        spectool -d 'with_lfs_gcc_bootstrap 1' -g -C build/sources $spec
+        ( 
+        set -x
+        spectool -d "with_lfs_gcc_bootstrap 1" -d "lfs_version ${lfs_version}" -g -C build/sources $spec 
+        )
     done
 }
 
 lfs-build() {
-    set -x
     method=$1
     packages=$2
     [ -z "$packages" ] && packages="$(cat containers/lfs-$stage/$stage.pkg.txt)"
     for package in $packages; do
         if [ -n "$2" ] || ! podman exec lfs-$stage rpm -q $package ; then
             echo -e "\n----- building $stage:$package"
-            podman exec lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/${package}.spec
-            podman exec --user root lfs-$stage rpm $method $rpm_flags rpmbuild/RPMS/$lfs_arch/${package}-*.rpm
+            ( set -x
+            podman exec lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/${package}.spec 
+            podman exec --user root lfs-$stage rpm $method $rpm_flags rpmbuild/RPMS/$lfs_arch/${package}-*.rpm 
+            )
         fi
     done
 }
 
 lfs-export() {
-    set -x
     case $stage in
         stage1a)
+            ( 
+            set -x 
             podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /tmp/lfs-${stage}.tar.gz  .
-            podman cp lfs-${stage}:/tmp/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            podman cp lfs-${stage}:/tmp/lfs-${stage}.tar.gz build/${stage}
+            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            ) 
             ;;
         *)
             echo "export not defined for $stage"
@@ -75,10 +90,17 @@ lfs-export() {
     esac
 }
 
-mkdir -p build/{sources,stages}
+lfs-dist-clean() {
+    set -x
+    rm -rf build 
+    rm -rf containers/*/*.tar.gz
+    rm -f eval.env
+}
+
+mkdir -p build/sources 
 
 for mkstage in stage1a stage1b stage1c stage2; do
-    mkdir -p build/stages/$mkstage/{rpms,srpms}
+    mkdir -p build/$mkstage/{rpms,srpms}
 done
 
 if [ "$with_check" != "1" ] ; then
@@ -105,12 +127,13 @@ esac
 
 case $1 in
     download)   lfs-download ;;
-    init)       lfs-init ;;
-    build)      lfs-build --install ;;
-    rpm)        lfs-build --reinstall $2 ;;
-    shell)      exec podman exec -it lfs-$stage /bin/bash ;;
-    root)       exec podman exec --user root -it lfs-$stage /bin/bash ;;
-    export)     lfs-export ;;
+    init)       assert-stage && lfs-init ;;
+    build)      assert-stage && lfs-build --install ;;
+    rpm)        assert-stage &&lfs-build --reinstall $2 ;;
+    shell)      assert-stage && exec podman exec -it lfs-$stage /bin/bash ;;
+    root)       assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
+    export)     assert-stage && lfs-export ;;
+    dist-clean) lfs-dist-clean ;;
     *)
         echo "$prog: error: invalid command" 1>&2
         usage

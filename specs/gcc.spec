@@ -20,7 +20,7 @@ Source3:        https://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
 The gcc package contains the GNU Compiler Collection version 8. You'll need
 this package in order to compile C code.
 
-
+#---------------------------------------------------------------------------
 %prep
 %setup -q
 
@@ -34,7 +34,7 @@ mv gmp-%{gmp_version}    gmp
 mv mpc-%{mpc_version}    mpc
 %endif
 
-
+#---------------------------------------------------------------------------
 %build
 %lfs_build_begin
 
@@ -70,10 +70,11 @@ cd build
     --disable-libstdcxx         \
     --enable-languages=c,c++
 %endif
+
 %make
 %lfs_build_end
 
-
+#---------------------------------------------------------------------------
 %install
 %lfs_install_begin
 
@@ -87,12 +88,12 @@ cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 %endif
 %lfs_install_end
 
-
+#---------------------------------------------------------------------------
 %files
+
 %if %{with lfs_stage1a}
 %{lfs_tools_dir}/bin/*
 %{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}
 %{lfs_tools_dir}/lib64/*
 %{lfs_tools_dir}/libexec/gcc/%{lfs_tgt}/%{version}
 %endif
-
