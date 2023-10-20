@@ -1,5 +1,5 @@
-ARG  host_image
-FROM ${host_image}
+ARG  lfs_host_image
+FROM ${lfs_host_image}
 
 RUN dnf install -y \
     binutils \
@@ -21,7 +21,7 @@ RUN dnf install -y \
 RUN ln -s /usr/bin/bison /usr/bin/yacc
 
 COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
-COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage 
+COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
 COPY sudoers            /etc/sudoers.d/lfs
 
 RUN groupadd lfs && \

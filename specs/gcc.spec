@@ -1,4 +1,7 @@
-Name:           gcc
+%bcond_with     lfs_gcc_bootstrap
+%bcond_with     lfs_gcc_libstdcpp_only
+
+Name:           %{!?with_lfs_gcc_libstdcpp_only:gcc}%{?with_lfs_gcc_libstdcpp_only:libstdc++}
 Version:        13.2.0
 Release:        1%{?dist}
 Summary:        Various compilers (C, C++, Objective-C, ...)
@@ -22,7 +25,13 @@ this package in order to compile C code.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q
+cat <<EOF
+package name:           %{name}
+lfs_gcc_bootstrap:      %{?with_lfs_gcc_bootstrap}
+lfs_gcc_libstdcpp_only: %{?with_lfs_gcc_libstdcpp_only}
+EOF
+
+%setup -q -n gcc-%{version}
 
 %if %{with lfs_gcc_bootstrap}
 tar -xf %{SOURCE1}
@@ -38,12 +47,14 @@ mv mpc-%{mpc_version}    mpc
 %build
 %lfs_build_begin
 
+%if %{with lfs_stage1a}
 case $(uname -m) in
   x86_64)
     sed -e '/m64=/s/lib64/lib/' \
         -i.orig gcc/config/i386/t-linux64
  ;;
 esac
+%endif
 
 mkdir build
 cd build
@@ -69,22 +80,37 @@ cd build
     --disable-libvtv            \
     --disable-libstdcxx         \
     --enable-languages=c,c++
-%endif
 
+%elif %{with lfs_gcc_libstdcpp_only}
+../libstdc++-v3/configure           \
+    --host=%{lfs_tgt}               \
+    --build=$(../config.guess)      \
+    --prefix=/usr                   \
+    --disable-multilib              \
+    --disable-nls                   \
+    --disable-libstdcxx-pch         \
+    --with-gxx-include-dir=/tools/%{lfs_tgt}/include/c++/%{version}
+
+%endif
 %make
 %lfs_build_end
 
-#---------------------------------------------------------------------------
+#--------------------------------------echo-------------------------------------
 %install
 %lfs_install_begin
 
 cd build
-DESTDIR=%{buildroot} %make install
 
 %if %{with lfs_stage1a}
+DESTDIR=%{buildroot} %make install
 cd ..
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
   %{buildroot}/%{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}/include/limits.h
+
+%elif %{with lfs_gcc_libstdcpp_only}
+DESTDIR=%{buildroot}/%{lfs_dir} %make install
+rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
+
 %endif
 %lfs_install_end
 
@@ -96,4 +122,10 @@ cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 %{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}
 %{lfs_tools_dir}/lib64/*
 %{lfs_tools_dir}/libexec/gcc/%{lfs_tgt}/%{version}
+
+%elif %{with lfs_gcc_libstdcpp_only}
+%{lfs_tools_dir}/%{lfs_tgt}/include/c++/%{version}
+%{lfs_dir}/usr/lib/*
+%{lfs_dir}/usr/share/gcc-%{version}/python
+
 %endif

@@ -14,7 +14,8 @@
 %lfs_install_begin  export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
 %lfs_install_end    \
     rm -rf %{buildroot}/lfs/tools/share/{doc,info,man} \
-    rm -rf %{buildroot}/lfs/usr/share/{doc,info,man}
+    rm -rf %{buildroot}/lfs/usr/share/{doc,info,man} \
+    rm -rf %{buildroot}/usr/share/info/dir
 
 
 
