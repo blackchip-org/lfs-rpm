@@ -1,0 +1,11 @@
+FROM scratch
+
+ADD lfs-stage1c.tar.gz /
+
+COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
+COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
+
+WORKDIR /home/lfs
+USER lfs
+
+CMD [ "/usr/bin/tail", "-f", "/dev/null" ]

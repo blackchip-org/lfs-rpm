@@ -23,7 +23,7 @@ a future rainy day activity. There is a chance that there are major errors with
 the system that have yet to be discovered. I am not an expert in building
 operating systems nor am I an expert in RPM packaging. This repository should
 really only be used as a guide of one way this could be done but it is nowhere
-near an optimal or good way.
+near an optimal or proper way.
 
 ## Build Requirements
 
