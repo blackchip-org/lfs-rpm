@@ -75,6 +75,9 @@ lfs-build() {
             spec=gcc
             local rpmbuild_pkg_flags="--with lfs_gcc_libstdcpp_only"
         fi
+        if [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
+            local rpm_pkg_flags="--replacefiles"
+        fi
         if [ -n "$2" ] || ! podman exec lfs-$stage rpm -q $package ; then
             echo -e "\n----- building $stage:$package"
             ( set -x
@@ -85,6 +88,7 @@ lfs-build() {
             podman exec --user root lfs-$stage rpm \
                 $method \
                 $rpm_flags \
+                $rpm_pkg_flags \
                 rpmbuild/RPMS/$lfs_arch/${package}-*.rpm
             )
         fi
@@ -97,6 +101,14 @@ lfs-export() {
             (
             set -x
             podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /tmp/lfs-${stage}.tar.gz  .
+            podman cp lfs-${stage}:/tmp/lfs-${stage}.tar.gz build/${stage}
+            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            )
+            ;;
+        stage1b)
+            (
+            set -x
+            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /tmp/lfs-${stage}.tar.gz --exclude=./tools .
             podman cp lfs-${stage}:/tmp/lfs-${stage}.tar.gz build/${stage}
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
