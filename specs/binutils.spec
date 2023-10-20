@@ -36,6 +36,18 @@ cd build
              --disable-nls              \
              --enable-gprofng=no        \
              --disable-werror
+
+%elif %{with lfs_stage1b}
+sed '6009s/$add_dir//' -i ../ltmain.sh
+../configure --prefix=/usr              \
+             --build=$(../config.guess) \
+             --host=%{lfs_tgt}          \
+             --disable-nls              \
+             --enable-shared            \
+             --enable-gprofng=no        \
+             --disable-werror           \
+             --enable-64-bit-bfd
+
 %endif
 %make
 %lfs_build_end
@@ -44,15 +56,32 @@ cd build
 %install
 %lfs_install_begin
 cd build
+
+%if %{with lfs_stage1a}
 DESTDIR=%{buildroot} %make install
+
+%elif %{with lfs_stage1b}
+DESTDIR=%{buildroot}/%{lfs_dir} %make install
+rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
+
+%endif
 %lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
-
 %if %{with lfs_stage1a}
 %{lfs_tools_dir}/bin/*
 %{lfs_tools_dir}/lib/*
 %{lfs_tools_dir}/%{lfs_tgt}/bin/*
 %{lfs_tools_dir}/%{lfs_tgt}/lib/*
+
+%elif %{with lfs_stage1b}
+%{lfs_dir}/usr/bin/*
+%{lfs_dir}/usr/include/*
+%{lfs_dir}/usr/lib/bfd-plugins/libdep.so
+%{lfs_dir}/usr/lib/*.so*
+%{lfs_dir}/usr/%{lfs_tgt}/bin/*
+%{lfs_dir}/usr/%{lfs_tgt}/lib/ldscripts/*
+
 %endif
+

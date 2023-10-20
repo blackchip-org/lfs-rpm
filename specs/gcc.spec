@@ -47,7 +47,7 @@ mv mpc-%{mpc_version}    mpc
 %build
 %lfs_build_begin
 
-%if %{with lfs_stage1a}
+%if %{with lfs_bootstrap}
 case $(uname -m) in
   x86_64)
     sed -e '/m64=/s/lib64/lib/' \
@@ -91,6 +91,28 @@ cd build
     --disable-libstdcxx-pch         \
     --with-gxx-include-dir=/tools/%{lfs_tgt}/include/c++/%{version}
 
+%elif %{with lfs_stage1b}
+sed '/thread_header =/s/@.*@/gthr-posix.h/' \
+    -i ../libgcc/Makefile.in ../libstdc++-v3/include/Makefile.in
+../configure                                       \
+    --build=$(../config.guess)                     \
+    --host=%{lfs_tgt}                              \
+    --target=%{lfs_tgt}                            \
+    LDFLAGS_FOR_TARGET=-L$PWD/%{lfs_tgt}/libgcc    \
+    --prefix=/usr                                  \
+    --with-build-sysroot=%{lfs_dir}                \
+    --enable-default-pie                           \
+    --enable-default-ssp                           \
+    --disable-nls                                  \
+    --disable-multilib                             \
+    --disable-libatomic                            \
+    --disable-libgomp                              \
+    --disable-libquadmath                          \
+    --disable-libsanitizer                         \
+    --disable-libssp                               \
+    --disable-libvtv                               \
+    --enable-languages=c,c++
+
 %endif
 %make
 %lfs_build_end
@@ -111,12 +133,15 @@ cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
 
+%elif %{with lfs_stage1b}
+DESTDIR=%{buildroot}/%{lfs_dir} %make install
+ln -sv gcc %{buildroot}/%{lfs_dir}/usr/bin/cc
+
 %endif
 %lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
-
 %if %{with lfs_stage1a}
 %{lfs_tools_dir}/bin/*
 %{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}
@@ -127,5 +152,13 @@ rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
 %{lfs_tools_dir}/%{lfs_tgt}/include/c++/%{version}
 %{lfs_dir}/usr/lib/*
 %{lfs_dir}/usr/share/gcc-%{version}/python
+
+%elif %{with lfs_stage1b}
+%{lfs_dir}/usr/bin/*
+%{lfs_dir}/usr/include/c++/%{version}
+%{lfs_dir}/usr/lib/gcc/%{lfs_tgt}/%{version}
+%{lfs_dir}/usr/lib/*.{so*,a,spec}
+%{lfs_dir}/usr/libexec/gcc/%{lfs_tgt}/%{version}
+%{lfs_dir}/usr/share/gcc-%{version}
 
 %endif
