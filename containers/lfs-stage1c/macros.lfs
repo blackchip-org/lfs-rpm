@@ -1,0 +1,15 @@
+%dist           %{getenv:lfs_dist}
+%lfs_version    %{getenv:lfs_version}
+
+%_build_id_links    none
+
+%make               make -j%{getenv:lfs_nproc}
+%lfs_build_begin    %{nil}
+%lfs_build_end      %{nil}
+%lfs_install_begin  %{nil}
+%lfs_install_end    \
+    rm -rf %{buildroot}/usr/share/{doc,info,man} \
+    rm -rf %{buildroot}/usr/share/info/dir
+
+
+

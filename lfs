@@ -120,6 +120,16 @@ lfs-export() {
     esac
 }
 
+lfs-bootstrap() {
+    if [ "$stage" == "stage1c" ] ; then
+        podman exec --user root -t lfs-stage1c lfs-rpm/containers/lfs-stage1c/rpm-bootstrap.sh
+    else
+        echo "$prog: error: no bootstrap for this stage"
+        exit 1
+    fi
+}
+
+
 lfs-dist-clean() {
     set -x
     rm -rf build
@@ -136,6 +146,10 @@ lfs-build-all() {
     ./lfs 1a export
     ./lfs 1b init
     ./lfs 1b build
+    ./lfs 1b export
+    ./lfs 1c init
+    ./lfs 1c bootstrap
+    ./lfs 1c build
 }
 
 mkdir -p build/sources
@@ -163,6 +177,13 @@ case $1 in
         rpmbuild_flags="-bb $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;
+    stage1c|1c)
+        shift
+        stage=stage1c
+        next_stage=stage2
+        rpmbuild_flags="-bb $rpm_nocheck"
+        rpm_flags="--nodeps"
+        ;;
 esac
 
 
@@ -175,6 +196,7 @@ case $1 in
     shell)      assert-stage && exec podman exec -it lfs-$stage /bin/bash ;;
     root)       assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)     assert-stage && lfs-export ;;
+    bootstrap)  assert-stage && lfs-bootstrap ;;
     dist-clean) lfs-dist-clean ;;
     build-all)  lfs-build-all ;;
     *)
