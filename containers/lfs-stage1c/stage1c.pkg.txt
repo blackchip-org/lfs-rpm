@@ -1,0 +1,5 @@
+bison
+perl
+python
+lfs-texinfo
+lfs-util-linux
