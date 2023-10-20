@@ -16,17 +16,23 @@ EOF
     exit 2
 }
 
+all_stages="stage1a stage1b stage1c stage2"
+
 assert-stage() {
-    if [ -z "$stage" ] ; then 
-        echo "$prog: error: stage name should preceed command" 
+    if [ -z "$stage" ] ; then
+        echo "$prog: error: stage name should preceed command"
         exit 1
-    fi 
+    fi
+}
+
+lfs-env() {
+    env | grep -e "^lfs_" | sort
 }
 
 lfs-init() {
-    if [ "$stage" == "stage1a" ] ; then 
-        build_arg="--build-arg host_image=${host_image}"
-    fi 
+    if [ "$stage" == "stage1a" ] ; then
+        build_arg="--build-arg lfs_host_image=${lfs_host_image}"
+    fi
 
     set -x
     bash -c "source ./env ; env | grep -e '^lfs_'" > eval.env
@@ -49,11 +55,11 @@ lfs-init() {
 }
 
 lfs-download() {
-    specs="$(ls specs/*.spec | sort)"
+    specs="$(ls specs/*.spec | grep -v '#' | sort)"
     for spec in $specs; do
-        ( 
+        (
         set -x
-        spectool -d "with_lfs_gcc_bootstrap 1" -d "lfs_version ${lfs_version}" -g -C build/sources $spec 
+        spectool -d "with_lfs_gcc_bootstrap 1" -d "lfs_version ${lfs_version}" -g -C build/sources $spec
         )
     done
 }
@@ -63,11 +69,23 @@ lfs-build() {
     packages=$2
     [ -z "$packages" ] && packages="$(cat containers/lfs-$stage/$stage.pkg.txt)"
     for package in $packages; do
+        spec=$package
+        if [ "$package" == "gcc#libstdc++" ]; then
+            package=libstdc++
+            spec=gcc
+            local rpmbuild_pkg_flags="--with lfs_gcc_libstdcpp_only"
+        fi
         if [ -n "$2" ] || ! podman exec lfs-$stage rpm -q $package ; then
             echo -e "\n----- building $stage:$package"
             ( set -x
-            podman exec lfs-$stage rpmbuild $rpmbuild_flags lfs-rpm/specs/${package}.spec 
-            podman exec --user root lfs-$stage rpm $method $rpm_flags rpmbuild/RPMS/$lfs_arch/${package}-*.rpm 
+            podman exec lfs-$stage rpmbuild \
+                $rpmbuild_flags \
+                $rpmbuild_pkg_flags \
+                lfs-rpm/specs/${spec}.spec
+            podman exec --user root lfs-$stage rpm \
+                $method \
+                $rpm_flags \
+                rpmbuild/RPMS/$lfs_arch/${package}-*.rpm
             )
         fi
     done
@@ -76,12 +94,12 @@ lfs-build() {
 lfs-export() {
     case $stage in
         stage1a)
-            ( 
-            set -x 
+            (
+            set -x
             podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /tmp/lfs-${stage}.tar.gz  .
             podman cp lfs-${stage}:/tmp/lfs-${stage}.tar.gz build/${stage}
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
-            ) 
+            )
             ;;
         *)
             echo "export not defined for $stage"
@@ -92,12 +110,23 @@ lfs-export() {
 
 lfs-dist-clean() {
     set -x
-    rm -rf build 
+    rm -rf build
     rm -rf containers/*/*.tar.gz
     rm -f eval.env
+    podman stop --time 0 --ignore   $all_stages || true
+    podman rmi --force              $all_stages || true
 }
 
-mkdir -p build/sources 
+lfs-build-all() {
+    ./lfs download
+    ./lfs 1a init
+    ./lfs 1a build
+    ./lfs 1a export
+    ./lfs 1b init
+    ./lfs 1b build
+}
+
+mkdir -p build/sources
 
 for mkstage in stage1a stage1b stage1c stage2; do
     mkdir -p build/$mkstage/{rpms,srpms}
@@ -126,6 +155,7 @@ esac
 
 
 case $1 in
+    env)        lfs-env ;;
     download)   lfs-download ;;
     init)       assert-stage && lfs-init ;;
     build)      assert-stage && lfs-build --install ;;
@@ -134,6 +164,7 @@ case $1 in
     root)       assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)     assert-stage && lfs-export ;;
     dist-clean) lfs-dist-clean ;;
+    build-all)  lfs-build-all ;;
     *)
         echo "$prog: error: invalid command" 1>&2
         usage
