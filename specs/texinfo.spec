@@ -33,6 +33,10 @@ system is well-integrated with GNU Emacs.
 %lfs_install_end
 
 #---------------------------------------------------------------------------
+%post 
+%{?update_info_dir}
+
+#---------------------------------------------------------------------------
 %files
 /usr/bin/info
 /usr/bin/install-info

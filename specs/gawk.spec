@@ -23,11 +23,15 @@ text processing.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
 sed -i 's/extras//' Makefile.in
+
+%if %{with lfs_bootstrap}
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
+
+%else 
+./configure --prefix=/usr
 
 %endif
 %make
@@ -40,8 +44,16 @@ sed -i 's/extras//' Makefile.in
 %if %{with lfs_bootstrap}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else 
+make DESTDIR=%{buildroot} LN='ln -f' install
+ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
+
 %endif
 %lfs_install_end
+
+#---------------------------------------------------------------------------
+%check
+%make check
 
 #---------------------------------------------------------------------------
 %files
@@ -52,6 +64,32 @@ sed -i 's/extras//' Makefile.in
 %{lfs_dir}/usr/libexec/awk
 %{lfs_dir}/usr/share/awk
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/gawk.mo
+
+%else 
+/usr/bin/awk
+/usr/bin/gawk
+/usr/bin/gawk-%{version}
+/usr/bin/gawkbug
+/usr/include/*.h
+/usr/lib/gawk/filefuncs.so
+/usr/lib/gawk/fnmatch.so
+/usr/lib/gawk/fork.so
+/usr/lib/gawk/inplace.so
+/usr/lib/gawk/intdiv.so
+/usr/lib/gawk/ordchr.so
+/usr/lib/gawk/readdir.so
+/usr/lib/gawk/readfile.so
+/usr/lib/gawk/revoutput.so
+/usr/lib/gawk/revtwoway.so
+/usr/lib/gawk/rwarray.so
+/usr/lib/gawk/time.so
+/usr/libexec/awk/grcat
+/usr/libexec/awk/pwcat
+/usr/share/awk
+/usr/share/info/*
+/usr/share/locale/*/LC_MESSAGES/gawk.mo
+/usr/share/man/man{1,3}/*
+
 %endif
 
 

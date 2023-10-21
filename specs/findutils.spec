@@ -30,6 +30,9 @@ finding things on your system.
             --host=%{lfs_tgt}               \
             --build=$(build-aux/config.guess)
 
+%else 
+./configure --prefix=/usr --localstatedir=/var/lib/locate
+
 %endif
 %make
 %lfs_build_end
@@ -41,8 +44,15 @@ finding things on your system.
 %if %{with lfs_bootstrap}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else 
+make DESTDIR=%{buildroot} install
+
 %endif
 %lfs_install_end
+
+#---------------------------------------------------------------------------
+%check
+make check
 
 #---------------------------------------------------------------------------
 %files
@@ -50,6 +60,17 @@ finding things on your system.
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/libexec/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/findutils.mo
+
+%else 
+/usr/bin/find
+/usr/bin/locate
+/usr/bin/updatedb
+/usr/bin/xargs
+/usr/libexec/frcode
+/usr/share/info/*
+/usr/share/locale/*/LC_MESSAGES/findutils.mo
+/usr/share/man/man{1,5}/*
+
 %endif
 
 

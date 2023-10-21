@@ -1,2 +1,2 @@
-binutils
-gcc
+specs/binutils.spec
+specs/gcc.spec

@@ -30,6 +30,10 @@ package on the remote box.
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
 
+%else 
+FORCE_UNSAFE_CONFIGURE=1  \
+./configure --prefix=/usr
+
 %endif
 %make
 %lfs_build_end
@@ -41,8 +45,15 @@ package on the remote box.
 %if %{with lfs_bootstrap}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else 
+%make DESTDIR=%{buildroot} install
+
 %endif
 %lfs_install_end
+
+#---------------------------------------------------------------------------
+%check
+make check
 
 #---------------------------------------------------------------------------
 %files
@@ -50,5 +61,13 @@ package on the remote box.
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/libexec/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/tar.mo
+
+%else 
+/usr/bin/tar
+/usr/libexec/rmt
+/usr/share/info/*
+/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/man/man{1,8}/*
+
 %endif
 

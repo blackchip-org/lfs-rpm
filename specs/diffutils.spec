@@ -32,6 +32,9 @@ Install diffutils if you need to compare text files.
             --host=%{lfs_tgt} \
             --build=$(./build-aux/config.guess)
 
+%else 
+./configure --prefix=/usr
+
 %endif
 %make
 %lfs_build_end
@@ -43,14 +46,31 @@ Install diffutils if you need to compare text files.
 %if %{with lfs_bootstrap}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else 
+make DESTDIR=%{buildroot} install
+
 %endif
 %lfs_install_end
+
+#---------------------------------------------------------------------------
+%check
+%make check
 
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs_bootstrap}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/diffutils.mo
+
+%else
+/usr/bin/cmp
+/usr/bin/diff
+/usr/bin/diff3
+/usr/bin/sdiff
+/usr/share/info/diffutils.info.gz
+/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/man/man1/*
+
 %endif
 
 

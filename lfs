@@ -56,40 +56,51 @@ lfs-init() {
     podman start lfs-$stage
 }
 
+lfs-spectool() {
+    ( 
+    set -x
+    spectool -d "with_lfs_gcc_bootstrap 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
+    )
+}
+
 lfs-download() {
-    specs="$(ls specs/*.spec | grep -v '#' | sort)"
+    specs=$@ 
+    [ -z "$specs" ] && specs="$(ls specs/*.spec | grep -v '#' | sort)"
     for spec in $specs; do
-        (
-        set -x
-        spectool -d "with_lfs_gcc_bootstrap 1" -d "lfs_version ${lfs_version}" -g -C build/sources $spec
-        )
+        lfs-spectool $spec
     done
 }
 
 lfs-build() {
     method=$1
-    packages=$2
-    [ -z "$packages" ] && packages="$(cat containers/lfs-$stage/$stage.pkg.txt)"
+    shift 
+    specs=$@
+
+    [ -z "$specs" ] && specs="$(cat containers/lfs-$stage/$stage.pkg.txt)"
     echo "" >> build/logs/build.log
-    for package in $packages; do
-        spec=$package
-        if [ "$package" == "gcc#libstdc++" ]; then
-            package=libstdc++
-            spec=gcc
+    
+    for spec in $specs; do
+        if [ ! -f "$spec" ] ; then 
+            echo "$prog: error: $spec: file not found" 
+            continue 
+        fi 
+        package=$(basename "$spec" .spec)
+        if [ "$package" == "libstdc++" ]; then
             rpmbuild_pkg_flags="--with lfs_gcc_libstdcpp_only"
-        fi
-        if [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
+        elif [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
             rpm_pkg_flags="--replacefiles"
         fi
-        if [ -n "$2" ] || ! podman exec lfs-$stage rpm -q $package ; then
+
+        if [ -n "$@" ] || ! podman exec lfs-$stage rpm -q $package ; then
+            lfs-spectool "$spec" 
             echo "$stage:$package" > build/logs/last-started
             echo "[$(timestamp)] start $stage:$package" >> build/logs/build.log
             echo -e "\n----- building $stage:$package"
-            ( set -x
+            ( set -e -x
             podman exec lfs-$stage rpmbuild \
                 $rpmbuild_flags \
                 $rpmbuild_pkg_flags \
-                lfs-rpm/specs/${spec}.spec 2>&1 \
+                lfs-rpm/${spec} 2>&1 \
                 | tee build/logs/${stage}/${package}.log  
             podman exec --user root lfs-$stage rpm \
                 $method \
@@ -223,10 +234,12 @@ esac
 
 case $1 in
     env)        lfs-env ;;
-    download)   lfs-download ;;
+    download)   shift ; lfs-download $@ ;;
     init)       assert-stage && lfs-init ;;
+    start)      assert-stage && podman start lfs-$stage ;; 
+    stop)       assert-stage && podman stop --timeout 0 lfs-$stage ;;
     build)      assert-stage && lfs-build --install ;;
-    rpm)        assert-stage && lfs-build --reinstall $2 ;;
+    rpm)        assert-stage && shift ; lfs-build --reinstall $@ ;;
     shell)      assert-stage && exec podman exec -it lfs-$stage /bin/bash ;;
     root)       assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)     assert-stage && lfs-export ;;
