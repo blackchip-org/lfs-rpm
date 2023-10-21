@@ -1,4 +1,0 @@
-lfs_version=12.0
-lfsdir=$HOME/.local/cache/lfs
-qcow2file="$lfsdir/lfs-${lfs_version}.qcow2"
-rawfile="$lfsdir/lfs-${lfs_version}.raw"

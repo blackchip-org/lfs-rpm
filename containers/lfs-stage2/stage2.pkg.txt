@@ -74,3 +74,4 @@ specs/man-db.spec
 specs/procps-ng.spec
 specs/util-linux.spec
 specs/e2fsprogs.spec
+specs/linux.spec 
