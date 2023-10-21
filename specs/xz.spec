@@ -31,6 +31,11 @@ speed fast.
             --disable-static                  \
             --docdir=/usr/share/doc/xz-%{version}
 
+%else
+./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/xz-%{version}
+
 %endif
 %make
 %lfs_build_end
@@ -44,6 +49,9 @@ speed fast.
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
 
+%else 
+%make DESTDIR=%{buildroot} install
+
 %endif
 %lfs_install_end
 
@@ -56,4 +64,42 @@ rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
 %{lfs_dir}/usr/lib/*.so*
 %{lfs_dir}/usr/lib/pkgconfig/liblzma.pc
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/xz.mo
+
+%else 
+/usr/bin/lzcat
+/usr/bin/lzcmp
+/usr/bin/lzdiff
+/usr/bin/lzegrep
+/usr/bin/lzfgrep
+/usr/bin/lzgrep
+/usr/bin/lzless
+/usr/bin/lzma
+/usr/bin/lzmadec
+/usr/bin/lzmainfo
+/usr/bin/lzmore
+/usr/bin/unlzma
+/usr/bin/unxz
+/usr/bin/xz
+/usr/bin/xzcat
+/usr/bin/xzcmp
+/usr/bin/xzdec
+/usr/bin/xzdiff
+/usr/bin/xzegrep
+/usr/bin/xzfgrep
+/usr/bin/xzgrep
+/usr/bin/xzless
+/usr/bin/xzmore
+/usr/include/lzma.h
+/usr/include/lzma
+/usr/lib/liblzma.so
+/usr/lib/liblzma.so.5
+/usr/lib/pkgconfig/liblzma.pc
+/usr/share/doc/xz-%{version}
+/usr/share/locale/*/LC_MESSAGES/xz.mo
+/usr/share/man/{de,fr,ko,pt_BR,ro,uk}/man1/*
+/usr/share/man/man1/*
+
+%defattr(755,root,root,755) 
+/usr/lib/liblzma.so.%{version}
+
 %endif

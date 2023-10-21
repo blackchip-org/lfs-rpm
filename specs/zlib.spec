@@ -18,12 +18,16 @@ is used by many different programs.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
 ./configure --prefix=/usr
+
+%if %{with lfs_bootstrap}
 %make CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar" \
      RANLIB="%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib" \
      CHOST=%{lfs_tgt}
+
+%else 
+%make 
 
 %endif
 %lfs_build_end
@@ -35,15 +39,28 @@ is used by many different programs.
 %if %{with lfs_bootstrap}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else 
+%make DESTDIR=%{buildroot} install
+rm -f %{buildroot}/usr/lib/libz.a
+
 %endif
 %lfs_install_end
 
-#--------------------------_dir-------------------------------------------------
+#---------------------------------------------------------------------------
 %files
 %if %{with lfs_bootstrap}
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*.{a,so*}
 %{lfs_dir}/usr/lib/pkgconfig/*
+
+%else 
+/usr/include/*
+/usr/lib/libz.so{,.1}
+/usr/lib/pkgconfig/zlib.pc
+/usr/share/man/man3/*
+
+%defattr(755,root,root,755) 
+/usr/lib/libz.so.%{version}
 
 %endif
 

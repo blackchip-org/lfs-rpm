@@ -26,6 +26,12 @@ be run by bash without modification.
             --host=%{lfs_tgt}                  \
             --without-bash-malloc
 
+%else 
+./configure --prefix=/usr             \
+            --without-bash-malloc     \
+            --with-installed-readline \
+            --docdir=/usr/share/doc/bash-%{version}
+
 %endif
 %make
 %lfs_build_end
@@ -39,8 +45,15 @@ be run by bash without modification.
 mkdir -p %{buildroot}/%{lfs_dir}/bin
 ln -s bash %{buildroot}/%{lfs_dir}/usr/bin/sh
 
+%else 
+%make DESTDIR=%{buildroot} install 
+
 %endif
 %lfs_install_end
+
+#---------------------------------------------------------------------------
+%check 
+make tests 
 
 #---------------------------------------------------------------------------
 %files
@@ -50,4 +63,16 @@ ln -s bash %{buildroot}/%{lfs_dir}/usr/bin/sh
 %{lfs_dir}/usr/lib/bash
 %{lfs_dir}/usr/lib/pkgconfig/bash.pc
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/bash.mo
+
+%else 
+/usr/bin/bash
+/usr/bin/bashbug
+/usr/include/bash/*
+/usr/lib/bash 
+/usr/lib/pkgconfig/bash.pc
+/usr/share/doc/%{name}-%{version}
+/usr/share/info/*
+/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/man/man1/*
+
 %endif
