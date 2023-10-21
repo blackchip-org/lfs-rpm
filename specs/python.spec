@@ -37,6 +37,13 @@ with the "python3-" prefix.
             --enable-shared \
             --without-ensurepip
 
+%else 
+./configure --prefix=/usr        \
+            --enable-shared      \
+            --with-system-expat  \
+            --with-system-ffi    \
+            --enable-optimizations 
+            
 %endif 
 %make
 %lfs_build_end
@@ -62,6 +69,33 @@ EOF
 /usr/lib/pkgconfig/*
 /usr/lib/python%{python_version}
 /usr/lib/rpm/macros.d/macros.python 
+
+%else 
+/usr/bin/2to3
+/usr/bin/2to3-%{python_version}
+/usr/bin/idle3
+/usr/bin/idle%{python_version}
+/usr/bin/pip3
+/usr/bin/pip%{python_version}
+/usr/bin/pydoc3
+/usr/bin/pydoc%{python_version}
+/usr/bin/python3
+/usr/bin/python3-config
+/usr/bin/python%{python_version}
+/usr/bin/python%{python_version}-config
+/usr/include/python%{python_version}
+/usr/lib/libpython%{python_version}.so
+/usr/lib/libpython3.so
+/usr/lib/pkgconfig/python-%{python_version}-embed.pc
+/usr/lib/pkgconfig/python-%{python_version}.pc
+/usr/lib/pkgconfig/python3-embed.pc
+/usr/lib/pkgconfig/python3.pc
+/usr/lib/python%{python_version}
+/usr/lib/rpm/macros.d/macros.python 
+/usr/share/man/man1/*
+
+%defattr(755,root,root,755)
+/usr/lib/libpython%{python_version}.so.1.0
 
 %endif 
 

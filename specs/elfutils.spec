@@ -29,6 +29,11 @@ elfcompress (to compress or decompress ELF sections).
             --disable-libdebuginfod               \
             --disable-debuginfod
 
+%else 
+./configure --prefix=/usr                \
+            --disable-debuginfod         \
+            --enable-libdebuginfod=dummy
+
 %endif
 %make
 %lfs_build_end
@@ -40,8 +45,18 @@ elfcompress (to compress or decompress ELF sections).
 %if %{with lfs_bootstrap}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else 
+%make -C libelf DESTDIR=%{buildroot} install
+install -d %{buildroot}/usr/lib/pkgconfig
+install -vm644 -t %{buildroot}/usr/lib/pkgconfig config/libelf.pc
+rm %{buildroot}/usr/lib/libelf.a
+
 %endif
 %lfs_install_end
+
+#---------------------------------------------------------------------------
+%check
+%make check
 
 #---------------------------------------------------------------------------
 %files
@@ -52,5 +67,15 @@ elfcompress (to compress or decompress ELF sections).
 %{lfs_dir}/usr/lib/*.{a,so*}
 %{lfs_dir}/usr/lib/pkgconfig/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/elfutils.mo
+
+%else 
+/usr/include/elfutils
+/usr/include/*.h
+/usr/lib/libelf.so
+/usr/lib/libelf.so.1
+/usr/lib/pkgconfig/libelf.pc
+
+%defattr(755,root,root,755)
+/usr/lib/libelf-%{version}.so
 
 %endif

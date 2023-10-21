@@ -24,6 +24,9 @@ data compression program.
 %if %{with lfs_bootstrap}
 ./configure --prefix=/usr --host=%{lfs_tgt}
 
+%else 
+./configure --prefix=/usr
+
 %endif
 %make
 %lfs_build_end
@@ -35,6 +38,9 @@ data compression program.
 %if %{with lfs_bootstrap}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else 
+%make DESTDIR=%{buildroot} install
+
 %endif
 %lfs_install_end
 
@@ -42,4 +48,23 @@ data compression program.
 %files
 %if %{with lfs_bootstrap}
 %{lfs_dir}/usr/bin/*
+
+%else 
+/usr/bin/gunzip
+/usr/bin/gzexe
+/usr/bin/gzip
+/usr/bin/uncompress
+/usr/bin/zcat
+/usr/bin/zcmp
+/usr/bin/zdiff
+/usr/bin/zegrep
+/usr/bin/zfgrep
+/usr/bin/zforce
+/usr/bin/zgrep
+/usr/bin/zless
+/usr/bin/zmore
+/usr/bin/znew
+/usr/share/info/*
+/usr/share/man/man1/*
+
 %endif

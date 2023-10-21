@@ -1,5 +1,5 @@
-bison
-perl
-python
-texinfo
-util-linux
+specs/bison.spec
+specs/perl.spec
+specs/python.spec
+specs/texinfo.spec
+specs/util-linux.spec
