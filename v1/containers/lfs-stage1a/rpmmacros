@@ -1,3 +1,0 @@
-%dist           .lfs12
-%_libdir        %{_prefix}/lib
-%remove_docs    rm -rf %{buildroot}/usr/share/{doc,info,man}

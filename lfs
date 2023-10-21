@@ -149,6 +149,24 @@ lfs-export() {
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
+        stage2)
+            ( 
+            set -x
+            podman exec --user root -t lfs-$stage \
+                tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
+                --exclude='./tmp/*' \
+                --exclude './home/*' \
+                --exclude './root/*' \
+                --exclude './dev/*' \
+                --exclude './proc/*' \
+                --exclude './sys/*' \
+                .
+            podman cp lfs-$stage:/tmp/lfs-$stage.tar.gz build/${stage}
+            rm -rf build/boot
+            podman cp "lfs-$stage:/boot" build/boot
+            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            )
+            ;;
         *)
             echo "export not defined for $stage"
             exit 1
@@ -165,9 +183,18 @@ lfs-bootstrap() {
     fi
 }
 
+lfs-mkimage() {
+    set -x 
+    truncate -s ${lfs_root_size} ${lfs_root_img}
+    sudo mkfs -t ext4 ${lfs_root_img}
+    sudo mkdir -p /run/lfs 
+    sudo mount ${lfs_root_img} /run/lfs 
+    sudo tar xf build/stage2/lfs-stage2.tar.gz -C /run/lfs 
+    sudo umount /run/lfs 
+}
 
 lfs-dist-clean() {
-    local images="lfs-stage1a lfs-stage1b lfs-stage1c lfs-stage2"
+    local images="lfs-stage1a lfs-stage1b lfs-stage1c lfs-stage2 lfs-base"
     set -x
     rm -rf build
     rm -rf containers/*/*.tar.gz
@@ -176,22 +203,38 @@ lfs-dist-clean() {
     podman rmi --force              $images || true
 }
 
+lfs-boot() {
+    exec qemu-system-x86_64 \
+        -kernel build/boot/vmlinuz \
+        -hda ${lfs_root_img} \
+        -append "root=/dev/sda console=ttyS0" \
+        -nographic
+}
+
 lfs-build-all() {
     ./lfs download
+
     ./lfs 1a init
     ./lfs 1a build
     ./lfs 1a export
+    
     ./lfs 1b init
     ./lfs 1b build
     ./lfs 1b export
+    
     ./lfs 1c init
     ./lfs 1c bootstrap
     ./lfs 1c build
+    ./lfs 1c export
+    
+    ./lfs 2 init 
+    ./lfs 2 build 
+    ./lfs 2 export
 }
 
 mkdir -p build/{sources,logs}
 
-for mkstage in stage1a stage1b stage1c stage2; do
+for mkstage in stage1a stage1b stage1c stage2 base; do
     mkdir -p build/$mkstage/{rpms,srpms}
     mkdir -p build/logs/$mkstage
 done
@@ -229,6 +272,10 @@ case $1 in
         rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;
+    base)
+        shift
+        stage=base 
+        ;;
 esac
 
 
@@ -244,6 +291,8 @@ case $1 in
     root)       assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)     assert-stage && lfs-export ;;
     bootstrap)  assert-stage && lfs-bootstrap ;;
+    mkimage)    lfs-mkimage ;;
+    boot)       lfs-boot ;;
     dist-clean) lfs-dist-clean ;;
     build-all)  lfs-build-all ;;
     *)
