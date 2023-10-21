@@ -25,9 +25,14 @@ command line.
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
+%make
+
+%else 
+./configure --prefix=/usr
+%make
+make html
 
 %endif
-%make
 %lfs_build_end
 
 #---------------------------------------------------------------------------
@@ -37,6 +42,11 @@ command line.
 %if %{with lfs_bootstrap}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else 
+%make DESTDIR=%{buildroot} install
+install -d -m755           %{buildroot}/usr/share/doc/sed-4.9
+install -m644 doc/sed.html %{buildroot}/usr/share/doc/sed-4.9
+
 %endif
 %lfs_install_end
 
@@ -45,5 +55,13 @@ command line.
 %if %{with lfs_bootstrap}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/sed.mo
+
+%else 
+/usr/bin/sed
+/usr/share/doc/%{name}-%{version}
+/usr/share/info/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
+/usr/share/man/man1/*
+
 %endif
 

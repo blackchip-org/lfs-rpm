@@ -24,6 +24,10 @@ Install bzip2 if you need a compression utility.
 %prep
 %setup -q
 
+%if %{without lfs_bootstrap}
+%patch 0 -p1 
+%endif 
+
 #---------------------------------------------------------------------------
 %build
 %lfs_build_begin
@@ -35,6 +39,13 @@ Install bzip2 if you need a compression utility.
      AR=%{lfs_tools_dir}/bin/%{lfs_tgt}-ar \
      RANLIB=%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib
 
+%else 
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+%make -f Makefile-libbz2_so
+%make clean
+%make
+
 %endif
 %lfs_build_end
 
@@ -44,7 +55,6 @@ Install bzip2 if you need a compression utility.
 
 %if %{with lfs_bootstrap}
 mkdir -p %{buildroot}/%{lfs_dir}/usr/{bin,lib}
-
 %make PREFIX=%{buildroot}/%{lfs_dir}/usr install
 mkdir -p %{buildroot}/%{lfs_dir}/usr/{bin,lib}
 cp -av libbz2.so.* %{buildroot}/%{lfs_dir}/usr/lib
@@ -55,6 +65,16 @@ for i in /usr/bin/{bzcat,bunzip2,bzcmp,bzegrep,bzfgrep,bzless}; do
 done
 rm -rf %{buildroot}/lfs/usr/man
 
+%else 
+make PREFIX=%{buildroot}/usr install
+cp -av libbz2.so.* %{buildroot}/usr/lib
+ln -sv libbz2.so.%{version} %{buildroot}/usr/lib/libbz2.so
+cp -v bzip2-shared %{buildroot}/usr/bin/bzip2
+for i in /usr/bin/{bzcat,bunzip2}; do
+  ln -sfv bzip2 %{buildroot}/$i
+done
+rm -f %{buildroot}/usr/lib/libbz2.a
+
 %endif
 %lfs_install_end
 
@@ -64,6 +84,27 @@ rm -rf %{buildroot}/lfs/usr/man
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*
+
+%else 
+/usr/bin/bunzip2
+/usr/bin/bzcat
+/usr/bin/bzcmp
+/usr/bin/bzdiff
+/usr/bin/bzegrep
+/usr/bin/bzfgrep
+/usr/bin/bzgrep
+/usr/bin/bzip2
+/usr/bin/bzip2recover
+/usr/bin/bzless
+/usr/bin/bzmore
+/usr/include/bzlib.h
+/usr/lib/libbz2.so
+/usr/lib/libbz2.so.1.0
+/usr/share/doc/bzip2-%{version}
+/usr/share/man/man1/*
+
+%defattr(755,root,root,755) 
+/usr/lib/libbz2.so.%{version}
 
 %endif
 

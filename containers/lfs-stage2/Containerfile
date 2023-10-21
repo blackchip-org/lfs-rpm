@@ -5,6 +5,10 @@ ADD lfs-stage1c.tar.gz /
 COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
 COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
 
+RUN mkdir -p /home/lfs && \
+    chown lfs:lfs /home/lfs && \
+    install -o lfs -g lfs -m 755 -d /home/lfs/rpmbuild
+
 WORKDIR /home/lfs
 USER lfs
 

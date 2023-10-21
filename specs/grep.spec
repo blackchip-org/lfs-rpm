@@ -28,6 +28,10 @@ system.
             --host=%{lfs_tgt} \
             --build=$(./build-aux/config.guess)
 
+%else 
+sed -i "s/echo/#echo/" src/egrep.sh
+./configure --prefix=/usr
+
 %endif
 %make
 %lfs_build_end
@@ -37,14 +41,30 @@ system.
 %lfs_install_begin
 
 %if %{with lfs_bootstrap}
-make DESTDIR=%{buildroot}/%{lfs_dir} install
+%make DESTDIR=%{buildroot}/%{lfs_dir} install
+
+%else 
+%make DESTDIR=%{buildroot} install
 
 %endif
 %lfs_install_end
+
+#---------------------------------------------------------------------------
+%check
+make check
 
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs_bootstrap}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/grep.mo
+
+%else 
+/usr/bin/egrep
+/usr/bin/fgrep
+/usr/bin/grep
+/usr/share/info/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
+/usr/share/man/man1/*
+
 %endif
