@@ -22,7 +22,7 @@ location of documentation tools, for instance.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr \
             --host=%{lfs_tgt}                   \
             --build=$(build-aux/config.guess)   \
@@ -38,7 +38,7 @@ location of documentation tools, for instance.
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %endif
@@ -46,7 +46,7 @@ location of documentation tools, for instance.
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/share/aclocal/*
 

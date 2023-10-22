@@ -25,7 +25,7 @@ text processing.
 
 sed -i 's/extras//' Makefile.in
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
@@ -41,7 +41,7 @@ sed -i 's/extras//' Makefile.in
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %else 
@@ -57,7 +57,7 @@ ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/gawk

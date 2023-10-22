@@ -1,3 +1,2 @@
-%lfs_stage              1c
+%with_lfs_stage1        1 
 %with_lfs_stage1c       1
-%with_lfs_bootstrap     1

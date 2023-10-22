@@ -1,4 +1,3 @@
-%bcond_with     lfs_gcc_bootstrap
 %bcond_with     lfs_gcc_libstdcpp_only
 
 Name:           %{!?with_lfs_gcc_libstdcpp_only:gcc}%{?with_lfs_gcc_libstdcpp_only:libstdc++}
@@ -9,7 +8,7 @@ License:        GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and
 
 Source0:        https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
-%if %{with lfs_gcc_bootstrap}
+%if %{with lfs_stage1}
 %define         mpfr_version    4.2.0
 %define         gmp_version     6.3.0
 %define         mpc_version     1.3.1
@@ -27,13 +26,13 @@ this package in order to compile C code.
 %prep
 cat <<EOF
 package name:           %{name}
-lfs_gcc_bootstrap:      %{?with_lfs_gcc_bootstrap}
+lfs_stage1:             %{?with_lfs_stage1}
 lfs_gcc_libstdcpp_only: %{?with_lfs_gcc_libstdcpp_only}
 EOF
 
 %setup -q -n gcc-%{version}
 
-%if %{with lfs_gcc_bootstrap}
+%if %{with lfs_stage1}
 tar -xf %{SOURCE1}
 tar -xf %{SOURCE2}
 tar -xf %{SOURCE3}
@@ -57,7 +56,17 @@ esac
 mkdir build
 cd build
 
-%if %{with lfs_stage1a}
+%if %{with lfs_gcc_libstdcpp_only}
+../libstdc++-v3/configure           \
+    --host=%{lfs_tgt}               \
+    --build=$(../config.guess)      \
+    --prefix=/usr                   \
+    --disable-multilib              \
+    --disable-nls                   \
+    --disable-libstdcxx-pch         \
+    --with-gxx-include-dir=/tools/%{lfs_tgt}/include/c++/%{version}
+
+%elif %{with lfs_stage1a}
 ../configure                    \
     --target=%{lfs_tgt}         \
     --prefix=%{lfs_tools_dir}   \
@@ -79,15 +88,6 @@ cd build
     --disable-libstdcxx         \
     --enable-languages=c,c++
 
-%elif %{with lfs_gcc_libstdcpp_only}
-../libstdc++-v3/configure           \
-    --host=%{lfs_tgt}               \
-    --build=$(../config.guess)      \
-    --prefix=/usr                   \
-    --disable-multilib              \
-    --disable-nls                   \
-    --disable-libstdcxx-pch         \
-    --with-gxx-include-dir=/tools/%{lfs_tgt}/include/c++/%{version}
 
 %elif %{with lfs_stage1b}
 sed '/thread_header =/s/@.*@/gthr-posix.h/' \
@@ -132,15 +132,15 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
 
 cd build
 
-%if %{with lfs_stage1a}
+%if %{with lfs_gcc_libstdcpp_only}
+DESTDIR=%{buildroot}/%{lfs_dir} %make install
+rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
+
+%elif %{with lfs_stage1a}
 DESTDIR=%{buildroot} %make install
 cd ..
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
   %{buildroot}/%{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}/include/limits.h
-
-%elif %{with lfs_gcc_libstdcpp_only}
-DESTDIR=%{buildroot}/%{lfs_dir} %make install
-rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
 
 %elif %{with lfs_stage1b}
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
@@ -168,16 +168,16 @@ ulimit -s 32768
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1a}
+%if %{with lfs_gcc_libstdcpp_only}
+%{lfs_tools_dir}/%{lfs_tgt}/include/c++/%{version}
+%{lfs_dir}/usr/lib/*
+%{lfs_dir}/usr/share/gcc-%{version}/python
+
+%elif %{with lfs_stage1a}
 %{lfs_tools_dir}/bin/*
 %{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}
 %{lfs_tools_dir}/lib64/*
 %{lfs_tools_dir}/libexec/gcc/%{lfs_tgt}/%{version}
-
-%elif %{with lfs_gcc_libstdcpp_only}
-%{lfs_tools_dir}/%{lfs_tgt}/include/c++/%{version}
-%{lfs_dir}/usr/lib/*
-%{lfs_dir}/usr/share/gcc-%{version}/python
 
 %elif %{with lfs_stage1b}
 %{lfs_dir}/usr/bin/*

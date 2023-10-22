@@ -23,7 +23,7 @@ configuration, scripting, and rapid prototyping.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make INSTALL_TOP=/usr \
      CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar rcu" \
@@ -37,7 +37,7 @@ configuration, scripting, and rapid prototyping.
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make INSTALL_BIN=%{buildroot}/%{lfs_dir}/usr/bin \
      INSTALL_LIB=%{buildroot}/%{lfs_dir}/usr/lib \
      INSTALL_INC=%{buildroot}/%{lfs_dir}/usr/include \
@@ -53,7 +53,7 @@ rm %{buildroot}/%{lfs_dir}/usr/bin/*
 #---------------------------------------------------------------------------
 %files
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*
 

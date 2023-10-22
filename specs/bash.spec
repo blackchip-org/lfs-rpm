@@ -20,7 +20,7 @@ be run by bash without modification.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr                      \
             --build=$(sh support/config.guess) \
             --host=%{lfs_tgt}                  \
@@ -40,7 +40,7 @@ be run by bash without modification.
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 mkdir -p %{buildroot}/%{lfs_dir}/bin
 ln -s bash %{buildroot}/%{lfs_dir}/usr/bin/sh
@@ -57,7 +57,7 @@ make tests
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/bash
 %{lfs_dir}/usr/lib/bash

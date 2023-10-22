@@ -21,7 +21,7 @@ system: memory allocation, process allocation, device input and output, etc.
 
 %make mrproper
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make headers
 find usr/include -type f ! -name '*.h' -delete
 
@@ -36,7 +36,7 @@ find usr/include -type f ! -name '*.h' -delete
 %install
 %lfs_build_begin 
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 mkdir -p %{buildroot}/%{lfs_dir}/usr
 cp -rv usr/include %{buildroot}/%{lfs_dir}/usr
 
@@ -64,7 +64,7 @@ rm %{buildroot}/usr/lib/modules/%{version}/{build,source}
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/include/*
 
 %else 

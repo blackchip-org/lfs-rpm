@@ -20,7 +20,7 @@ is used by many different programs.
 
 ./configure --prefix=/usr
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar" \
      RANLIB="%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib" \
@@ -36,7 +36,7 @@ is used by many different programs.
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %else 
@@ -48,7 +48,7 @@ rm -f %{buildroot}/usr/lib/libz.a
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*.{a,so*}
 %{lfs_dir}/usr/lib/pkgconfig/*

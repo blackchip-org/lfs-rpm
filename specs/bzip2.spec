@@ -5,10 +5,7 @@ Summary:        A file compression utility
 License:        BSD
 
 Source0:        https://www.sourceware.org/pub/bzip2/bzip2-%{version}.tar.gz
-
-%if %{without lfs_bootstrap}
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/bzip2-%{version}-install_docs-1.patch
-%endif
 
 %description
 Bzip2 is a freely available, patent-free, high quality data compressor. Bzip2
@@ -24,7 +21,7 @@ Install bzip2 if you need a compression utility.
 %prep
 %setup -q
 
-%if %{without lfs_bootstrap}
+%if %{without lfs_stage1}
 %patch 0 -p1 
 %endif 
 
@@ -32,7 +29,7 @@ Install bzip2 if you need a compression utility.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make -f Makefile-libbz2_so
 %make clean
 %make CC=%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc \
@@ -53,7 +50,7 @@ sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 mkdir -p %{buildroot}/%{lfs_dir}/usr/{bin,lib}
 %make PREFIX=%{buildroot}/%{lfs_dir}/usr install
 mkdir -p %{buildroot}/%{lfs_dir}/usr/{bin,lib}
@@ -80,7 +77,7 @@ rm -f %{buildroot}/usr/lib/libbz2.a
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*

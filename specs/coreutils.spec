@@ -5,10 +5,7 @@ Summary:        A set of basic GNU tools commonly used in shell scripts
 License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/coreutils/coreutils-%{version}.tar.xz
-
-%if %{without lfs_bootstrap}
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/coreutils-%{version}-i18n-1.patch
-%endif
 
 %description
 These are the GNU core utilities. This package is the combination of the old
@@ -18,12 +15,15 @@ GNU fileutils, sh-utils, and textutils packages.
 %prep
 %setup -q
 
+%if %{without lfs_stage1}
+%patch 0 -p1 
+%endif 
 
 #---------------------------------------------------------------------------
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr                     \
             --host=%{lfs_tgt}                 \
             --build=$(build-aux/config.guess) \
@@ -45,7 +45,7 @@ FORCE_UNSAFE_CONFIGURE=1 ./configure \
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 make DESTDIR=%{buildroot}/%{lfs_dir} install
 mkdir -p %{buildroot}/%{lfs_dir}/usr/sbin
 mv -v %{buildroot}/%{lfs_dir}/usr/bin/chroot %{buildroot}/%{lfs_dir}/usr/sbin
@@ -65,7 +65,7 @@ sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/sbin/*
 %{lfs_dir}/usr/libexec/coreutils

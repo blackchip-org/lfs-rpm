@@ -54,7 +54,7 @@ make check
 /usr/share/%{name}
 /usr/share/locale/*/LC_MESSAGES/*.mo
 
-%if %{without lfs_bootstrap}
+%if %{without lfs_stage1}
 /usr/share/doc/%{name}-%{version}
 /usr/share/info/*
 /usr/share/man/man1/*

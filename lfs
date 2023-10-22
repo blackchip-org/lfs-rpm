@@ -59,7 +59,7 @@ lfs-init() {
 lfs-spectool() {
     ( 
     set -x
-    spectool -d "with_lfs_gcc_bootstrap 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
+    spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
     )
 }
 
@@ -91,7 +91,7 @@ lfs-build() {
             rpm_pkg_flags="--replacefiles"
         fi
 
-        if [ -n "$@" ] || ! podman exec lfs-$stage rpm -q $package ; then
+        if [ ! -z "$@" ] || ! podman exec lfs-$stage rpm -q $package ; then
             lfs-spectool "$spec" 
             echo "$stage:$package" > build/logs/last-started
             echo "[$(timestamp)] start $stage:$package" >> build/logs/build.log
@@ -176,6 +176,8 @@ lfs-export() {
 
 lfs-bootstrap() {
     if [ "$stage" == "stage1c" ] ; then
+        lfs-spectool specs/cmake.spec 
+        lfs-spectool specs/rpm.spec 
         podman exec --user root -t lfs-stage1c lfs-rpm/containers/lfs-stage1c/rpm-bootstrap.sh
     else
         echo "$prog: error: no bootstrap for this stage"
@@ -185,10 +187,11 @@ lfs-bootstrap() {
 
 lfs-mkimage() {
     set -x 
-    truncate -s ${lfs_root_size} ${lfs_root_img}
-    sudo mkfs -t ext4 ${lfs_root_img}
+    rm -f "$lfs_root_img"
+    truncate -s $lfs_root_size "$lfs_root_img"
+    sudo mkfs -t ext4 "$lfs_root_img"
     sudo mkdir -p /run/lfs 
-    sudo mount ${lfs_root_img} /run/lfs 
+    sudo mount "$lfs_root_img" /run/lfs 
     sudo tar xf build/stage2/lfs-stage2.tar.gz -C /run/lfs 
     sudo umount /run/lfs 
 }

@@ -31,7 +31,7 @@ the Perl decomposition into packages.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 sh Configure -des                                                       \
              -Dprefix=/usr                                              \
              -Dvendorprefix=/usr                                        \
@@ -85,7 +85,7 @@ EOF
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 /usr/bin/*
 /usr/lib/perl5/%{perl_version}
 /usr/lib/rpm/macros.d/macros.perl
