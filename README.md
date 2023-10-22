@@ -12,9 +12,9 @@ system.
 
 I built LFS about five years ago and I decided now was a good time to give it
 another try. This time, though, I wanted to mix it up a bit. Instead of using
-the host system and a chroot to build the system, I wanted to use podman
-instead. And I wanted to use RPM infrastructure for building and installing the
-packages too. This repository holds the result of this work.
+my Linux system and a chroot to build LFS, I wanted to use podman instead. And
+I wanted to use RPM infrastructure for building and installing the packages
+too. This repository holds the result of this work.
 
 This build creates a bootable system, using QEMU, where you can get to a login
 prompt, login, and type in `echo "hello world!"`. Not much else has been tested
@@ -104,18 +104,18 @@ Contexts are found in the `containers` directory. Each context has a
 the repository root. 
 
 This command always attempts to remove the existing podman container. If work
-has already been done in the container, this will be lost. It makes it easy to
-start over when needed but be aware that it will do so without any confirmation
-from you.
+has already been done in a container, this work will be lost. It makes it easy
+to start over when needed but be aware that it will do so without any
+confirmation from you.
 
 ### `./lfs <stage> build`
 
 This command builds all packages, in order, found in `<stage>.pkg.txt` and then
 uses RPM to install. In the event that the build fails, this command can be
-reissued and it will start building the first package that is not already been
-installed. All RPMs during the LFS build are installed using the `--nodeps`
-flag. We are not concerned with declaring dependencies at this point and the
-book already details the correct order to follow. 
+reissued and it will skip packages that have already been installed. All RPMs
+during the LFS build are installed using the `--nodeps` flag. We are not
+concerned with declaring dependencies at this point and the book already
+details the correct order to follow.
 
 Temporary packages are built with the `-bb` flag to only build RPMs while the
 packages in stage2 are built with `-ba` to create RPMs and SRPMs. These 
@@ -225,18 +225,18 @@ now but reserved for future use.
 adds the tools directory like in the build scriptlet. 
 - `%lfs_install_end`: All packages built in stage1 are temporary so there 
 is no need to keep the documentation around and these are removed. For stage2,
-we want to keep the documentation so those commands are moved. But, when 
+we want to keep the documentation so those commands are not necessary. But, when 
 info pages are generated, the `/usr/share/info/dir` file usually gets updated. 
 We cannot do this at build or install time because multiple RPMs cannot "own"
 the same file. This marco deletes this file and the `%update_info_dir` macro
 should instead be used in the `%post` scriptlet. 
 
 When using Fedora in stage1a and stage1b, there are two other macros 
-provided in `/usr/lib/rpm/redhat/macros` that we want to change. Sed scripts
+provided in `/usr/lib/rpm/redhat/macros` that are changed. Sed scripts
 in the Containerfile make these modifications:
 
-- `%source_date_epoch_from_changelog`: We are not using changelogs here and
-by changing this to zero, it removes a warning about not having a changelog. 
+- `%source_date_epoch_from_changelog`: The specfiles are not using changelogs 
+and by setting this to zero, it removes a warning about not having a changelog. 
 - `%_auto_set_build_flags`: This sets a whole list of additional CFLAGS that
 Fedora wants you to use when building packages but this causes a build 
 failure somewhere. This is disable to prevent this from happening. 
@@ -250,11 +250,11 @@ but differences in the builds are separated with conditionals using the
 `%with_stage1` macro. Some packages are built three or four times and use 
 the additional `with` macros as necessary. 
 
-The RPM database is used during to build to track which packages have been 
-built and installed for that stage, not for which packages already exist
-on the system. When the container for stage1a is created, the contents of the
-existing RPM database are deleted. Subsequent stages do not keep the database
-between exports. 
+The RPM database is used during the build to track which packages have been
+built and installed for that stage, not for packages which already exist on the
+system. When the container for stage1a is created, the contents of the existing
+RPM database is deleted. Subsequent stages do not keep the database between
+exports.
 
 ### `./lfs 1c bootstrap`
 
