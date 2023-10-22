@@ -1,2 +1,5 @@
 specs/binutils.spec
 specs/gcc.spec
+specs/linux.spec 
+specs/glibc.spec 
+specs/libstdc++.spec 

@@ -7,7 +7,7 @@ License:        MIT
 %description
 Directories and symbolic links for the root filesystem.
 
-%global root %{?with_lfs_bootstrap:%{lfs_dir}}
+%global root %{?with_lfs_stage1:%{lfs_dir}}
 
 #---------------------------------------------------------------------------
 %install

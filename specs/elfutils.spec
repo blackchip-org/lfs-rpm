@@ -21,7 +21,7 @@ elfcompress (to compress or decompress ELF sections).
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr                         \
             --host=%{lfs_tgt}                     \
             --build=x86_64-pc-linux-gnu           \
@@ -42,7 +42,7 @@ elfcompress (to compress or decompress ELF sections).
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %else 
@@ -60,7 +60,7 @@ rm %{buildroot}/usr/lib/libelf.a
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*.h
 %{lfs_dir}/usr/include/elfutils

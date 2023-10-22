@@ -22,7 +22,7 @@ Patch should be installed because it is a common way of upgrading applications.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
@@ -38,7 +38,7 @@ Patch should be installed because it is a common way of upgrading applications.
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %else 
@@ -49,7 +49,7 @@ Patch should be installed because it is a common way of upgrading applications.
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 
 %else 

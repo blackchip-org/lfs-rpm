@@ -19,7 +19,7 @@ Daemon and possibly more in the future.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr                       \
             --host=%{lfs_tgt}                   \
             --build=$(build-aux/config.guess)   \
@@ -33,7 +33,7 @@ Daemon and possibly more in the future.
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %endif
@@ -41,7 +41,7 @@ Daemon and possibly more in the future.
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*.so*

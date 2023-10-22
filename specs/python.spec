@@ -32,7 +32,7 @@ with the "python3-" prefix.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr   \
             --enable-shared \
             --without-ensurepip
@@ -62,7 +62,7 @@ EOF
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 /usr/bin/*
 /usr/include/python%{python_version}
 /usr/lib/*.so*

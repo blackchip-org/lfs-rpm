@@ -1,6 +1,3 @@
-specs/linux.spec
-specs/glibc.spec
-specs/gcc#libstdc++.spec
 specs/m4.spec
 specs/ncurses.spec
 specs/bash.spec

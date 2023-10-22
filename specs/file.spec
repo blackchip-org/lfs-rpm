@@ -20,7 +20,7 @@ formats.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 mkdir build
 pushd build
   ../configure --disable-bzlib      \
@@ -44,7 +44,7 @@ popd
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 make DESTDIR=%{buildroot}/%{lfs_dir} install
 rm %{buildroot}/%{lfs_dir}/usr/lib/libmagic.la
 
@@ -56,7 +56,7 @@ rm %{buildroot}/%{lfs_dir}/usr/lib/libmagic.la
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*.so*

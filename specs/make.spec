@@ -21,7 +21,7 @@ for make in the program's makefile.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr   \
             --without-guile \
             --host=%{lfs_tgt} \
@@ -35,7 +35,7 @@ for make in the program's makefile.
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %endif
@@ -43,7 +43,7 @@ for make in the program's makefile.
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/make.mo

@@ -23,7 +23,7 @@ decompiler infocmp, clear, tput, tset, and a termcap conversion tool captoinfo.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 sed -i s/mawk// configure
 
 mkdir build
@@ -65,7 +65,7 @@ popd
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} TIC_PATH=$(pwd)/build/progs/tic install
 echo "INPUT(-lncursesw)" > %{buildroot}/%{lfs_dir}/usr/lib/libncurses.so
 
@@ -90,7 +90,7 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*

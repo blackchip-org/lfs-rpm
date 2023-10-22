@@ -53,7 +53,7 @@ system is well-integrated with GNU Emacs.
 /usr/share/locale/*/LC_MESSAGES/*
 /usr/share/texinfo
 
-%if %{without lfs_bootstrap}
+%if %{without lfs_stage1}
 /usr/share/info/*
 /usr/share/man/man{1,5}/*
 

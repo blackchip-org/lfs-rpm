@@ -24,7 +24,7 @@ finding things on your system.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr                   \
             --localstatedir=/var/lib/locate \
             --host=%{lfs_tgt}               \
@@ -41,7 +41,7 @@ finding things on your system.
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %else 
@@ -56,7 +56,7 @@ make check
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/libexec/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/findutils.mo

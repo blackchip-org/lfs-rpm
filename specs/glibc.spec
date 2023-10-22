@@ -7,7 +7,7 @@ License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with e
 Source0:        https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-memalign_fix-1.patch
 
-%if %{without %lfs_bootstrap}
+%if %{without %lfs_stage1}
 Patch1:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch
 %endif
 
@@ -25,7 +25,7 @@ these two libraries, a Linux system will not function.
 %setup -q 
 %patch 0 -p1 
 
-%if %{without %lfs_bootstrap}
+%if %{without %lfs_stage1}
 %patch 1 -p1 
 %endif 
 
@@ -37,7 +37,7 @@ mkdir build
 cd build
 echo "rootsbindir=/usr/sbin" > configparms
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ../configure --prefix=/usr                         \
              --host=%{lfs_tgt}                     \
              --build=$(../scripts/config.guess)    \
@@ -63,7 +63,7 @@ echo "rootsbindir=/usr/sbin" > configparms
 
 cd build
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/%{lfs_dir}/usr/bin/ldd
 
@@ -130,7 +130,7 @@ make check
 #---------------------------------------------------------------------------
 %files
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/lib64/*
 %{lfs_dir}/etc/rpc
 %{lfs_dir}/usr/bin/*

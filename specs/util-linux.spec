@@ -20,7 +20,7 @@ program.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 mkdir -pv %{buildroot}/var/lib/hwclock
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime    \
             --libdir=/usr/lib    \
@@ -72,7 +72,7 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 /bin/*
 /sbin/*
 /usr/bin/*

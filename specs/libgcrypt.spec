@@ -18,7 +18,7 @@ Privacy Guard. This is a development version.
 %build
 %lfs_build_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr                         \
             --host=%{lfs_tgt}                     \
             --build=$(build-aux/config.guess)     \
@@ -32,7 +32,7 @@ Privacy Guard. This is a development version.
 %install
 %lfs_install_begin
 
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %endif
@@ -40,7 +40,7 @@ Privacy Guard. This is a development version.
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_bootstrap}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*.so*
