@@ -21,16 +21,16 @@ these two libraries, a Linux system will not function.
 
 
 #---------------------------------------------------------------------------
-%prep 
-%setup -q 
-%patch 0 -p1 
+%prep
+%setup -q
+%patch 0 -p1
 
 %if %{without %lfs_stage1}
-%patch 1 -p1 
-%endif 
+%patch 1 -p1
+%endif
 
 #---------------------------------------------------------------------------
-%build 
+%build
 %lfs_build_begin
 
 mkdir build
@@ -53,13 +53,13 @@ echo "rootsbindir=/usr/sbin" > configparms
              --with-headers=/usr/include              \
              libc_cv_slibdir=/usr/lib
 
-%endif 
-%make 
-%lfs_build_end 
+%endif
+%make
+%lfs_build_end
 
 #---------------------------------------------------------------------------
-%install 
-%lfs_install_begin 
+%install
+%lfs_install_begin
 
 cd build
 
@@ -78,7 +78,7 @@ case $(uname -m) in
 esac
 rm -rf %{buildroot}/%{lfs_dir}/var
 
-%else 
+%else
 sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 make DESTDIR=%{buildroot} install
 sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/usr/bin/ldd
@@ -120,12 +120,17 @@ include /etc/ld.so.conf.d/*.conf
 EOF
 mkdir -pv %{buildroot}/etc/ld.so.conf.d
 
-%endif 
-%lfs_install_end 
+mkdir -p %{buildroot}/usr/lib/locale
+%{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
+%{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f ISO-8859-1 en_US
+%{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f UTF-8 en_US.UTF-8
+
+%endif
+%lfs_install_end
 
 #---------------------------------------------------------------------------
-%check 
-make check 
+%check
+make check
 
 #---------------------------------------------------------------------------
 %files
@@ -142,7 +147,7 @@ make check
 %{lfs_dir}/usr/share/i18n/locales/*
 %{lfs_dir}/usr/share/locale/locale.alias
 
-%else 
+%else
 /etc/ld.so.cache
 /etc/ld.so.conf
 /etc/ld.so.conf.d
@@ -166,7 +171,7 @@ make check
 /usr/bin/tzselect
 /usr/bin/xtrace
 /usr/bin/zdump
-/usr/include/* 
+/usr/include/*
 /usr/lib/Mcrt1.o
 /usr/lib/Scrt1.o
 /usr/lib/crt1.o
@@ -201,6 +206,7 @@ make check
 /usr/lib/librt.a
 /usr/lib/libthread_db.so
 /usr/lib/libutil.a
+/usr/lib/locale/locale-archive
 /usr/lib/rcrt1.o
 /usr/lib/{audit,gconv}
 /usr/lib/systemd/system/nscd.service
@@ -218,7 +224,7 @@ make check
 /usr/share/locale/locale.alias
 /var/lib/nss_db/Makefile
 
-%defattr(755,root,root,755) 
+%defattr(755,root,root,755)
 /usr/lib/ld-linux-x86-64.so.2
 /usr/lib/libanl.so.1
 /usr/lib/libBrokenLocale.so.1
@@ -239,4 +245,4 @@ make check
 /usr/lib/libthread_db.so.1
 /usr/lib/libutil.so.1
 
-%endif 
+%endif

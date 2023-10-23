@@ -34,6 +34,8 @@ lfs-env() {
 lfs-init() {
     if [ "$stage" == "stage1a" ] ; then
         build_arg="--build-arg lfs_host_image=${lfs_host_image}"
+    elif [ "$stage" == "basic" ] ; then
+        build_arg="--build-arg lfs_init_user=${lfs_init_user}"
     fi
 
     set -x
@@ -48,23 +50,23 @@ lfs-init() {
         --hostname  lfs-$stage \
         --env-file  eval.env \
         --userns    keep-id \
-        --volume    "./build/sources:/home/lfs/rpmbuild/SOURCES:z" \
-        --volume    "./build/${stage}/rpms:/home/lfs/rpmbuild/RPMS:z" \
-        --volume    "./build/${stage}/srpms:/home/lfs/rpmbuild/SRPMS:z" \
-        --volume    .:/home/lfs/lfs-rpm:z \
+        --volume    "./build/sources:${use_home}/rpmbuild/SOURCES:z" \
+        --volume    "./build/${stage}/rpms:${use_home}/rpmbuild/RPMS:z" \
+        --volume    "./build/${stage}/srpms:${use_home}/rpmbuild/SRPMS:z" \
+        --volume    .:${use_home}/lfs-rpm:z \
         lfs-$stage
     podman start lfs-$stage
 }
 
 lfs-spectool() {
-    ( 
+    (
     set -x
     spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
     )
 }
 
 lfs-download() {
-    specs=$@ 
+    specs=$@
     [ -z "$specs" ] && specs="$(ls specs/*.spec | grep -v '#' | sort)"
     for spec in $specs; do
         lfs-spectool $spec
@@ -73,17 +75,17 @@ lfs-download() {
 
 lfs-build() {
     method=$1
-    shift 
+    shift
     specs=$@
 
     [ -z "$specs" ] && specs="$(cat containers/lfs-$stage/$stage.pkg.txt)"
     echo "" >> build/logs/build.log
-    
+
     for spec in $specs; do
-        if [ ! -f "$spec" ] ; then 
-            echo "$prog: error: $spec: file not found" 
-            continue 
-        fi 
+        if [ ! -f "$spec" ] ; then
+            echo "$prog: error: $spec: file not found"
+            continue
+        fi
         package=$(basename "$spec" .spec)
         if [ "$package" == "libstdc++" ]; then
             rpmbuild_pkg_flags="--with lfs_gcc_libstdcpp_only"
@@ -92,7 +94,7 @@ lfs-build() {
         fi
 
         if [ ! -z "$@" ] || ! podman exec lfs-$stage rpm -q $package ; then
-            lfs-spectool "$spec" 
+            lfs-spectool "$spec"
             echo "$stage:$package" > build/logs/last-started
             echo "[$(timestamp)] start $stage:$package" >> build/logs/build.log
             echo -e "\n----- building $stage:$package"
@@ -101,12 +103,13 @@ lfs-build() {
                 $rpmbuild_flags \
                 $rpmbuild_pkg_flags \
                 lfs-rpm/${spec} 2>&1 \
-                | tee build/logs/${stage}/${package}.log  
+                | tee build/logs/${stage}/${package}.log
             podman exec --user root lfs-$stage rpm \
                 $method \
                 $rpm_flags \
                 $rpm_pkg_flags \
-                rpmbuild/RPMS/$lfs_arch/${package}-*.rpm
+                rpmbuild/RPMS/$lfs_arch/${package}-*.rpm  2>&1 \
+                | tee --append build/logs/${stage}/${package}.log
             )
             echo "$stage:$package" > build/logs/last-success
             echo "[$(timestamp)] done  $stage:$package" >> build/logs/build.log
@@ -134,7 +137,7 @@ lfs-export() {
             ;;
         stage1c)
             (
-            set -x 
+            set -x
             podman exec --user root -t lfs-$stage \
                 tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
                 --exclude='./tmp/*' \
@@ -150,7 +153,7 @@ lfs-export() {
             )
             ;;
         stage2)
-            ( 
+            (
             set -x
             podman exec --user root -t lfs-$stage \
                 tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
@@ -167,6 +170,21 @@ lfs-export() {
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
+        basic)
+            (
+            set -x
+            podman exec --user root -t lfs-$stage \
+                tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
+                --exclude='./tmp/*' \
+                --exclude './dev/*' \
+                --exclude './root/rpmbuild' \
+                --exclude './root/lfs-rpm' \
+                --exclude './proc/*' \
+                --exclude './sys/*' \
+                .
+            podman cp lfs-$stage:/tmp/lfs-$stage.tar.gz build/${stage}
+            )
+            ;;
         *)
             echo "export not defined for $stage"
             exit 1
@@ -176,8 +194,8 @@ lfs-export() {
 
 lfs-bootstrap() {
     if [ "$stage" == "stage1c" ] ; then
-        lfs-spectool specs/cmake.spec 
-        lfs-spectool specs/rpm.spec 
+        lfs-spectool specs/cmake.spec
+        lfs-spectool specs/rpm.spec
         podman exec --user root -t lfs-stage1c lfs-rpm/containers/lfs-stage1c/rpm-bootstrap.sh
     else
         echo "$prog: error: no bootstrap for this stage"
@@ -186,28 +204,22 @@ lfs-bootstrap() {
 }
 
 lfs-mkimage() {
-    set -x 
+    set -x
     rm -f "$lfs_root_img"
     truncate -s $lfs_root_size "$lfs_root_img"
     sudo mkfs -t ext4 "$lfs_root_img"
-    sudo mkdir -p /run/lfs 
-    sudo mount "$lfs_root_img" /run/lfs 
-    sudo tar xf build/stage2/lfs-stage2.tar.gz -C /run/lfs 
-    sudo umount /run/lfs 
-}
-
-lfs-dist-clean() {
-    local images="lfs-stage1a lfs-stage1b lfs-stage1c lfs-stage2 lfs-base"
-    set -x
-    rm -rf build
-    rm -rf containers/*/*.tar.gz
-    rm -f eval.env
-    podman stop --time 0 --ignore   $images || true
-    podman rmi --force              $images || true
+    sudo mkdir -p /run/lfs
+    sudo mount "$lfs_root_img" /run/lfs
+    sudo tar xf build/basic/lfs-basic.tar.gz -C /run/lfs
+    sudo umount /run/lfs
 }
 
 lfs-boot() {
-    exec qemu-system-x86_64 \
+    qemu=qemu-system-x86_64
+    if [ -e /usr/libexec/qemu-kvm ] ; then
+        qemu=/usr/libexec/qemu-kvm
+    fi
+    exec $qemu \
         -kernel build/boot/vmlinuz \
         -hda ${lfs_root_img} \
         -append "root=/dev/sda console=ttyS0" \
@@ -220,24 +232,35 @@ lfs-build-all() {
     ./lfs 1a init
     ./lfs 1a build
     ./lfs 1a export
-    
+
     ./lfs 1b init
     ./lfs 1b build
     ./lfs 1b export
-    
+
     ./lfs 1c init
     ./lfs 1c bootstrap
     ./lfs 1c build
     ./lfs 1c export
-    
-    ./lfs 2 init 
-    ./lfs 2 build 
+
+    ./lfs 2 init
+    ./lfs 2 build
     ./lfs 2 export
+}
+
+
+lfs-dist-clean() {
+    local images="lfs-stage1a lfs-stage1b lfs-stage1c lfs-stage2 lfs-basic"
+    set -x
+    rm -rf build
+    rm -rf containers/*/*.tar.gz
+    rm -f eval.env
+    podman stop --time 0 --ignore   $images || true
+    podman rmi --force              $images || true
 }
 
 mkdir -p build/{sources,logs}
 
-for mkstage in stage1a stage1b stage1c stage2 base; do
+for mkstage in stage1a stage1b stage1c stage2 basic; do
     mkdir -p build/$mkstage/{rpms,srpms}
     mkdir -p build/logs/$mkstage
 done
@@ -253,6 +276,7 @@ case $1 in
         next_stage=stage1b
         rpmbuild_flags="-bb $rpm_nocheck"
         rpm_flags="--nodeps"
+        use_home=/home/lfs
         ;;
     stage1b|1b)
         shift
@@ -260,6 +284,7 @@ case $1 in
         next_stage=stage1c
         rpmbuild_flags="-bb $rpm_nocheck"
         rpm_flags="--nodeps"
+        use_home=/home/lfs
         ;;
     stage1c|1c)
         shift
@@ -267,17 +292,20 @@ case $1 in
         next_stage=stage2
         rpmbuild_flags="-bb $rpm_nocheck"
         rpm_flags="--nodeps"
+        use_home=/home/lfs
         ;;
     stage2|2)
-        shift 
+        shift
         stage=stage2
-        next_stage=base 
+        next_stage=basic
         rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
+        use_home=/home/lfs
         ;;
-    base)
+    basic)
         shift
-        stage=base 
+        stage=basic
+        use_home=/root
         ;;
 esac
 
@@ -286,7 +314,7 @@ case $1 in
     env)        lfs-env ;;
     download)   shift ; lfs-download $@ ;;
     init)       assert-stage && lfs-init ;;
-    start)      assert-stage && podman start lfs-$stage ;; 
+    start)      assert-stage && podman start lfs-$stage ;;
     stop)       assert-stage && podman stop --timeout 0 lfs-$stage ;;
     build)      assert-stage && lfs-build --install ;;
     rpm)        assert-stage && shift ; lfs-build --reinstall $@ ;;

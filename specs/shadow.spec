@@ -51,6 +51,15 @@ sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD YESCRYPT:' \
 %lfs_install_end
 
 #---------------------------------------------------------------------------
+%post
+
+/usr/sbin/pwconv
+/usr/sbin/grpconv
+mkdir -p /etc/default
+useradd -D --gid 999
+sed -i '/MAIL/s/yes/no/' /etc/default/useradd
+
+#---------------------------------------------------------------------------
 %files
 %config(noreplace) /etc/limits
 %config(noreplace) /etc/login.access

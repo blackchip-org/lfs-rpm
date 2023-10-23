@@ -1,8 +1,0 @@
-FROM scratch
-
-ADD lfs-stage2.tar.gz /
-
-WORKDIR /
-USER root
-
-CMD [ "/usr/bin/tail", "-f", "/dev/null" ]
