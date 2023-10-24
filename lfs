@@ -103,7 +103,7 @@ lfs-build() {
             echo "$stage:$package" > build/logs/last-started
             echo "[$(timestamp)] start $stage:$package" >> build/logs/build.log
             echo -e "\n----- building $stage:$package"
-            ( set -e -x
+            ( set -e -x -o pipefail 
             podman exec lfs-$stage rpmbuild \
                 $rpmbuild_flags \
                 $rpmbuild_pkg_flags \
