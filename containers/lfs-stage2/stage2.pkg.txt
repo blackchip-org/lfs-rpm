@@ -74,4 +74,9 @@ specs/man-db.spec
 specs/procps-ng.spec
 specs/util-linux.spec
 specs/e2fsprogs.spec
-specs/linux.spec 
+specs/lua.spec
+specs/popt.spec
+specs/libgpg-error.spec
+specs/libgcrypt.spec
+specs/rpm.spec
+specs/linux.spec

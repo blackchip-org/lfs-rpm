@@ -25,6 +25,10 @@ Daemon and possibly more in the future.
             --build=$(build-aux/config.guess)   \
             --enable-install-gpg-error-config
 
+%else
+./configure --prefix=/usr \
+            --enable-install-gpg-error-config
+
 %endif
 %make
 %lfs_build_end
@@ -36,8 +40,15 @@ Daemon and possibly more in the future.
 %if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else
+%make DESTDIR=%{buildroot} install
+
 %endif
 %lfs_install_end
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -50,5 +61,24 @@ Daemon and possibly more in the future.
 %{lfs_dir}/usr/share/common-lisp/source/gpg-error
 %{lfs_dir}/usr/share/libgpg-error
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/libgpg-error.mo
+
+%else
+/usr/bin/gpg-error
+/usr/bin/gpg-error-config
+/usr/bin/gpgrt-config
+/usr/bin/yat2m
+/usr/include/*.h
+/usr/lib/libgpg-error.so
+/usr/lib/libgpg-error.so.0
+/usr/lib/pkgconfig/gpg-error.pc
+/usr/share/aclocal/*
+/usr/share/common-lisp/source/gpg-error
+/usr/share/info/*
+/usr/share/libgpg-error
+/usr/share/locale/*/LC_MESSAGES/libgpg-error.mo
+/usr/share/man/man1/*
+
+%defattr(755,root,root,755)
+/usr/lib/libgpg-error.so.0.34.0
 
 %endif

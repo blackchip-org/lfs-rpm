@@ -24,6 +24,9 @@ Privacy Guard. This is a development version.
             --build=$(build-aux/config.guess)     \
             --with-libgpg-error-prefix=%{lfs_dir}/usr
 
+%else
+./configure --prefix=/usr
+
 %endif
 %make
 %lfs_build_end
@@ -35,8 +38,15 @@ Privacy Guard. This is a development version.
 %if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else
+%make DESTDIR=%{buildroot} install
+
 %endif
 %lfs_install_end
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -46,6 +56,22 @@ Privacy Guard. This is a development version.
 %{lfs_dir}/usr/lib/*.so*
 %{lfs_dir}/usr/lib/pkgconfig/*
 %{lfs_dir}/usr/share/aclocal/*
+
+%else
+/usr/bin/dumpsexp
+/usr/bin/hmac256
+/usr/bin/libgcrypt-config
+/usr/bin/mpicalc
+/usr/include/*.h
+/usr/lib/libgcrypt.so
+/usr/lib/libgcrypt.so.20
+/usr/lib/pkgconfig/libgcrypt.pc
+/usr/share/aclocal/*
+/usr/share/info/*
+/usr/share/man/man1/*
+
+%defattr(755,root,root,755)
+/usr/lib/libgcrypt.so.20.4.2
 
 %endif
 

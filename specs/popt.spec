@@ -28,6 +28,9 @@ using shell-like rules.
             --host=%{lfs_tgt}                   \
             --build=$(build-aux/config.guess)
 
+%else
+./configure --prefix=/usr
+
 %endif
 %lfs_build_end
 
@@ -38,6 +41,10 @@ using shell-like rules.
 %if %{with lfs_stage1}
 make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else
+make DESTDIR=%{buildroot} install
+rm %{buildroot}/usr/lib/libpopt.a
+
 %endif
 %lfs_install_end
 
@@ -47,5 +54,16 @@ make DESTDIR=%{buildroot}/%{lfs_dir} install
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/popt.mo
+
+%else
+/usr/include/*.h
+/usr/lib/libpopt.so
+/usr/lib/libpopt.so.0
+/usr/lib/pkgconfig/popt.pc
+/usr/share/locale/*/LC_MESSAGES/popt.mo
+/usr/share/man/man3/*
+
+%defattr(755,root,root,755)
+/usr/lib/libpopt.so.0.0.2
 
 %endif
