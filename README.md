@@ -16,15 +16,15 @@ my Linux system and a chroot to build LFS, I wanted to use podman instead. And
 I wanted to use RPM infrastructure for building and installing the packages
 too. This repository holds the result of this work.
 
-This build creates a bootable system, using QEMU, where you can get to a login
-prompt, login, and type in `echo "hello world!"`. Not much else has been tested
-beyond that. Additional testing and hacking is left to me as a fun exercise for
-a future rainy day activity. There is a chance that there are major errors with
-the system that have yet to be discovered. I am not an expert in building
-operating systems nor am I an expert in RPM packaging. This repository should
-only be used as a guide of one way this could be done but it is nowhere near an
-optimal or proper way. Others may have done this already but that was done for
-their fun, not mine.
+This build creates a bootable system, using a virutal machine, where you can
+get to a login prompt, login, and type in `echo "hello world!"`. Not much else
+has been tested beyond that. Additional testing and hacking is left to me as a
+fun exercise for a future rainy day activity. There is a chance that there are
+major errors with the system that have yet to be discovered. I am not an expert
+in building operating systems nor am I an expert in RPM packaging. This
+repository should only be used as a guide of one way this could be done but it
+is nowhere near an optimal or proper way. Others may have done this already but
+that was done for their fun, not mine.
 
 ## Build Requirements
 
@@ -36,7 +36,7 @@ download the necessary source packages:
 sudo dnf install podman rpmdevtools
 ```
 
-To test the image in a virtual machine, install QEMU with:
+To test the image in a virtual machine, install:
 
 ```
 sudo dnf install qemu-kvm virt-manager
