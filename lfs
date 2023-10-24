@@ -221,20 +221,6 @@ lfs-mkimage() {
     sudo umount /run/lfs
 }
 
-lfs-boot() {
-    qemu=qemu-system-x86_64
-    if [ -e /usr/libexec/qemu-kvm ] ; then
-        qemu=/usr/libexec/qemu-kvm
-    fi
-    exec $qemu \
-        -kernel build/boot/vmlinuz \
-        -hda ${lfs_root_img} \
-        -append "root=/dev/sda rw console=ttyS0" \
-        -netdev tap,id=nd0,ifname=tap0,script=no,downscript=no \
-        -device e1000,netdev=nd0 \
-        -nographic
-}
-
 lfs-build-all() {
     ./lfs download
 
@@ -334,7 +320,6 @@ case $1 in
     export)     assert-stage && lfs-export ;;
     bootstrap)  assert-stage && lfs-bootstrap ;;
     mkimage)    lfs-mkimage ;;
-    boot)       lfs-boot ;;
     dist-clean) lfs-dist-clean ;;
     build-all)  lfs-build-all ;;
     *)

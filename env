@@ -5,7 +5,7 @@ lfs_version=12.0
 lfs_nproc=$(nproc)
 lfs_arch=x86_64
 lfs_root_size=10G
-lfs_init_user=user
+lfs_init_user=lfs
 
 lfs_dir=/lfs
 lfs_tools_dir=${lfs_dir}/tools

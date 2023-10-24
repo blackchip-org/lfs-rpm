@@ -2,19 +2,19 @@
 
 set -e -x
 
-srcdir=/home/lfs/rpmbuild/SOURCES
+srcdir=/build/rpmbuild/SOURCES
 export MAKEFLAGS=-j${lfs_nproc}
 
-mkdir -p /home/lfs/rpm-bootstrap
+mkdir -p /build/rpm-bootstrap
 
-cd /home/lfs/rpm-bootstrap
+cd /build/rpm-bootstrap
 tar xf $srcdir/cmake-*.tar.gz
 cd cmake-*
 ./bootstrap -- -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_USE_OPENSSL=OFF
 make
 make install
 
-cd /home/lfs/rpm-bootstrap
+cd /build/rpm-bootstrap
 rm -rf rpm-*
 tar xf $srcdir/rpm-*.tar.bz2
 cd rpm-*

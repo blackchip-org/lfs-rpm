@@ -39,15 +39,15 @@ sudo dnf install podman rpmdevtools
 To test the image in a virtual machine, install QEMU with:
 
 ```
-sudo dnf install qemu
+sudo dnf install qemu-kvm virt-manager
 ```
 
 ## tl;dr
 
 If you are lucky and cross your fingers the entire system can be built and
-booted with the following three commands:
+booted with the following three steps:
 
-### `./lfs build-all`
+### Run `./lfs build-all`
 
 This downloads all the necessary source files and builds them using podman. This
 will take some time. Here are the timing results from my personal desktop with
@@ -58,23 +58,39 @@ configuration, and *make -j8*:
 real	118m7.072s
 ```
 
-Once done, the root filesystem can be found at *build/stage2/stage2.tar.gz* and
+Once done, the root filesystem can be found at *build/config/config.tar.gz* and
 the kernel at *build/boot*.
 
-
-### `./lfs mkimage`
+### Run `./lfs mkimage`
 
 The tarball now has to be converted to a filesystem image. This requires root
 privileges as it is necessary to temporarily mount the image to copy in the
 filesystem. Run this command and enter in your password if prompted. The root
 filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 
-### `./lfs boot`
+### Create and boot a VM
 
-This tests the newly created image in a QEMU virtual machine. Login with user
-*lfs* and you should then be at a bash prompt. To exit the virtual machine,
-enter in *Control-a c* to get to the qemu prompt and then type in *quit*.
+- Start virt-manager
+- Select File -> New Virtual Machine
+- Select "Import existing disk image"
+- For "Provide the existing storage path" enter in the full path to "build/lfs-12.0-root.img"
+- For "Choose the operating system your are installing", select "Generic Linux 2022"
+- Click on "Forward"
+- Adjust memory and CPUs as needed and click on "Forward"
+- For "Name", put in "LFS" or any name that you like
+- Click on "Customize configuration before install"
+- Click on "Finish"
+- On the left sidebar, select "Boot Options" and the open "Direct kernel boot"
+- Click on "Enable direct kernel boot"
+- For "Kernel path" enter the full path to "build/boot/vmlinuz"
+- Leave "Initrd path" blank
+- For "Kernel args" enter in "root=/dev/vda rw"
+- Click on "Apply"
+- In the top left-hand corner, select "Begin Installation"
 
+The operating system should now boot. Login with user "lfs", password
+"lfs". The root password is also "lfs". Verify network connectivity with
+"ping 8.8.8.8"
 
 ## Build Process
 
@@ -89,6 +105,40 @@ in the [LFS](https://www.linuxfromscratch.org/) book. Those stages are:
 The chapter breaks provide natural "save points" in the build process. Each
 stage is built in a separate podman container and the results of the build are
 exported for use in the next stage.
+
+There is an additional stage named "config" that loads in the results from
+stage2 and applies any necessary configurations for the initial boot.
+
+The full procedure to build LFS without `build-all` is:
+
+    ./lfs download  # optional
+
+    ./lfs 1a init
+    ./lfs 1a build
+    ./lfs 1a export
+
+    ./lfs 1b init
+    ./lfs 1b build
+    ./lfs 1b export
+
+    ./lfs 1c init
+    ./lfs 1c bootstrap
+    ./lfs 1c build
+    ./lfs 1c export
+
+    ./lfs 2 init
+    ./lfs 2 build
+    ./lfs 2 export
+
+    ./lfs config init
+    ./lfs config export
+    ./lfs mkimage
+
+
+## The `lfs` script
+
+The `lfs` script is used to automate portions of the build process. The
+available commands are as follows:
 
 ### `./lfs <stage> init`
 
@@ -120,7 +170,7 @@ is an exercise for another day.
 Temporary packages are built with the *-bb* flag to only build RPMs while the
 packages in stage2 are built with *-ba* to create RPMs and SRPMs. These
 can be found in the *build/\<stage\>/{rpms,srpms}* directories which are
-bind mounted in the containers at */home/lfs/rpmbuild/{RPMS,SRPMS}*. All
+bind mounted in the containers at */build/rpmbuild/{RPMS,SRPMS}*. All
 packages are built with the *x86_64* arch even if they qualify as a *noarch*
 package.
 
@@ -148,7 +198,7 @@ Login to the container as the unprivileged user lfs (using *shell*) or as the
 root user (using *root*). In stage1a and stage1b you can *sudo* to root as the
 lfs user but in stage1c and stage2 that command is not available and you must
 use the *./lfs \<stage\> root* command. The repository root is bind mounted at
-*/home/lfs/lfs-rpm* and the sources directory at */home/lfs/rpmbuild/SOURCES*.
+*/build/lfs-rpm* and the sources directory at */build/rpmbuild/SOURCES*.
 
 ### `./lfs <stage> rpm [specfile...]`
 

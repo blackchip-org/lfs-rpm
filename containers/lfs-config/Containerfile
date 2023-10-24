@@ -9,10 +9,6 @@ RUN echo    "root:lfs" | chpasswd && \
     useradd --create-home ${lfs_init_user} && \
     echo    "${lfs_init_user}:lfs" | chpasswd
 
-RUN systemd-machine-id-setup && \
-    systemctl preset-all && \
-    systemctl disable systemd-sysupdate{,-reboot}
-
 WORKDIR /build
 
 CMD [ "/usr/bin/tail", "-f", "/dev/null" ]
