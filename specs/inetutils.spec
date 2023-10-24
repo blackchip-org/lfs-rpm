@@ -63,7 +63,6 @@ mv -v %{buildroot}/usr/{,s}bin/ifconfig
 /usr/bin/dnsdomainname
 /usr/bin/ftp
 /usr/bin/hostname
-/usr/bin/ping
 /usr/bin/ping6
 /usr/bin/talk
 /usr/bin/telnet
@@ -72,3 +71,8 @@ mv -v %{buildroot}/usr/{,s}bin/ifconfig
 /usr/sbin/ifconfig
 /usr/share/info/*
 /usr/share/man/man1/*
+
+%defattr(755,root,root,755)
+/usr/bin/ping
+/usr/bin/ping6
+

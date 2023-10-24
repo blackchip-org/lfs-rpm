@@ -1,20 +1,18 @@
 FROM scratch
 
-ADD lfs-stage2.tar.gz /
+ADD  lfs-stage2.tar.gz   /
+COPY root-fs /
 
-COPY passwd         /etc/passwd
-COPY group          /etc/group
-COPY passwd.root    /root
-COPY passwd.user    /root
+ARG lfs_init_user
 
-ARG  lfs_init_user
-
-RUN cat /root/passwd.root /root/passwd.root /root/passwd.root | passwd root && \
+RUN echo    "root:lfs" | chpasswd && \
     useradd --create-home ${lfs_init_user} && \
-    cat /root/passwd.user /root/passwd.user /root/passwd.user | passwd ${lfs_init_user} && \
-    rm -f /root/passwd.{root,user}
+    echo    "${lfs_init_user}:lfs" | chpasswd
 
-WORKDIR /home/${lfs_init_user}
-USER ${lfs_init_user}
+RUN systemd-machine-id-setup && \
+    systemctl preset-all && \
+    systemctl disable systemd-sysupdate{,-reboot}
+
+WORKDIR /build
 
 CMD [ "/usr/bin/tail", "-f", "/dev/null" ]

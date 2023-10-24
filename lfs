@@ -217,6 +217,7 @@ lfs-mkimage() {
     sudo mkdir -p /run/lfs
     sudo mount "$lfs_root_img" /run/lfs
     sudo tar xf build/config/lfs-config.tar.gz -C /run/lfs
+    sudo cp -r containers/lfs-config/overlay/* /run/lfs
     sudo umount /run/lfs
 }
 
@@ -228,7 +229,9 @@ lfs-boot() {
     exec $qemu \
         -kernel build/boot/vmlinuz \
         -hda ${lfs_root_img} \
-        -append "root=/dev/sda console=ttyS0" \
+        -append "root=/dev/sda rw console=ttyS0" \
+        -netdev tap,id=nd0,ifname=tap0,script=no,downscript=no \
+        -device e1000,netdev=nd0 \
         -nographic
 }
 
