@@ -5,12 +5,12 @@ lfs_version=12.0
 lfs_nproc=$(nproc)
 lfs_arch=x86_64
 lfs_root_size=10G
-lfs_root_img=build/lfs-${lfs_version}-root.img
 lfs_init_user=user
 
 lfs_dir=/lfs
 lfs_tools_dir=${lfs_dir}/tools
 lfs_tgt=x86_64-lfs-linux-gnu
+lfs_root_img=build/lfs-${lfs_version}-root.img
 
 lfs_version_1=$(echo $lfs_version | cut -f1 -d.)
 lfs_dist=.lfs${lfs_version_1}

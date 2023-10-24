@@ -7,6 +7,11 @@ cd "$(dirname $0)"
 
 source ./env
 
+stages="stage1a stage1b stage1c stage2 config basic"
+for stage in $stages; do
+    images+="lfs-${stage} "
+done
+
 usage() {
     cat <<EOF
 
@@ -34,7 +39,7 @@ lfs-env() {
 lfs-init() {
     if [ "$stage" == "stage1a" ] ; then
         build_arg="--build-arg lfs_host_image=${lfs_host_image}"
-    elif [ "$stage" == "basic" ] ; then
+    elif [ "$stage" == "config" ] ; then
         build_arg="--build-arg lfs_init_user=${lfs_init_user}"
     fi
 
@@ -50,10 +55,10 @@ lfs-init() {
         --hostname  lfs-$stage \
         --env-file  eval.env \
         --userns    keep-id \
-        --volume    "./build/sources:${use_home}/rpmbuild/SOURCES:z" \
-        --volume    "./build/${stage}/rpms:${use_home}/rpmbuild/RPMS:z" \
-        --volume    "./build/${stage}/srpms:${use_home}/rpmbuild/SRPMS:z" \
-        --volume    .:${use_home}/lfs-rpm:z \
+        --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
+        --volume    "./build/${stage}/rpms:/build/rpmbuild/RPMS:z" \
+        --volume    "./build/${stage}/srpms:/build/rpmbuild/SRPMS:z" \
+        --volume    .:/build/lfs-rpm:z \
         lfs-$stage
     podman start lfs-$stage
 }
@@ -140,8 +145,9 @@ lfs-export() {
             set -x
             podman exec --user root -t lfs-$stage \
                 tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
+                --exclude='./build' \
                 --exclude='./tmp/*' \
-                --exclude './home/lfs/*' \
+                --exclude './home/*' \
                 --exclude './root/*' \
                 --exclude './dev/*' \
                 --exclude './proc/*' \
@@ -157,6 +163,7 @@ lfs-export() {
             set -x
             podman exec --user root -t lfs-$stage \
                 tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
+                --exclude='./build' \
                 --exclude='./tmp/*' \
                 --exclude './home/*' \
                 --exclude './root/*' \
@@ -170,15 +177,14 @@ lfs-export() {
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
-        basic)
+        config)
             (
             set -x
             podman exec --user root -t lfs-$stage \
                 tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
+                --exclude='./build' \
                 --exclude='./tmp/*' \
                 --exclude './dev/*' \
-                --exclude './root/rpmbuild' \
-                --exclude './root/lfs-rpm' \
                 --exclude './proc/*' \
                 --exclude './sys/*' \
                 .
@@ -210,7 +216,7 @@ lfs-mkimage() {
     sudo mkfs -t ext4 "$lfs_root_img"
     sudo mkdir -p /run/lfs
     sudo mount "$lfs_root_img" /run/lfs
-    sudo tar xf build/basic/lfs-basic.tar.gz -C /run/lfs
+    sudo tar xf build/config/lfs-config.tar.gz -C /run/lfs
     sudo umount /run/lfs
 }
 
@@ -245,11 +251,13 @@ lfs-build-all() {
     ./lfs 2 init
     ./lfs 2 build
     ./lfs 2 export
+
+    ./lfs config init
+    ./lfs config export
 }
 
 
 lfs-dist-clean() {
-    local images="lfs-stage1a lfs-stage1b lfs-stage1c lfs-stage2 lfs-basic"
     set -x
     rm -rf build
     rm -rf containers/*/*.tar.gz
@@ -260,7 +268,7 @@ lfs-dist-clean() {
 
 mkdir -p build/{sources,logs}
 
-for mkstage in stage1a stage1b stage1c stage2 basic; do
+for mkstage in $stages; do
     mkdir -p build/$mkstage/{rpms,srpms}
     mkdir -p build/logs/$mkstage
 done
@@ -276,7 +284,6 @@ case $1 in
         next_stage=stage1b
         rpmbuild_flags="-bb $rpm_nocheck"
         rpm_flags="--nodeps"
-        use_home=/home/lfs
         ;;
     stage1b|1b)
         shift
@@ -284,7 +291,6 @@ case $1 in
         next_stage=stage1c
         rpmbuild_flags="-bb $rpm_nocheck"
         rpm_flags="--nodeps"
-        use_home=/home/lfs
         ;;
     stage1c|1c)
         shift
@@ -292,20 +298,22 @@ case $1 in
         next_stage=stage2
         rpmbuild_flags="-bb $rpm_nocheck"
         rpm_flags="--nodeps"
-        use_home=/home/lfs
         ;;
     stage2|2)
         shift
         stage=stage2
-        next_stage=basic
+        next_stage=config
         rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
-        use_home=/home/lfs
+        ;;
+    config)
+        shift
+        stage=config
+        next_stage=basic
         ;;
     basic)
-        shift
+        sihft
         stage=basic
-        use_home=/root
         ;;
 esac
 

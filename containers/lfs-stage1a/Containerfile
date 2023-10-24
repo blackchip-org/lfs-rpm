@@ -24,15 +24,12 @@ COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
 COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
 COPY sudoers            /etc/sudoers.d/lfs
 
-RUN groupadd lfs && \
-    useradd -s /bin/bash -g lfs -m -k /dev/null lfs && \
-    install -o lfs -g lfs -m 755 -d /home/lfs/rpmbuild && \
+RUN install -o 1000 -g 1000 -d /build/rpmbuild && \
     rm -rf /var/lib/rpm/*
 
 RUN sed -i 's/%source_date_epoch_from_changelog 1/%source_date_epoch_from_changelog 0/' /usr/lib/rpm/redhat/macros && \
     sed -i 's/%_auto_set_build_flags 1//' /usr/lib/rpm/redhat/macros
 
-WORKDIR /home/lfs
-USER lfs
+WORKDIR /build
 
 CMD [ "tail", "-f", "/dev/null" ]

@@ -7,11 +7,8 @@ COPY group              /etc/group
 COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
 COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
 
-RUN mkdir -p /home/lfs && \
-    chown lfs:lfs /home/lfs && \
-    install -o lfs -g lfs -m 755 -d /home/lfs/rpmbuild
+RUN install -o 1000 -g 1000 -d /build/rpmbuild
 
-WORKDIR /home/lfs
-USER lfs
+WORKDIR /build
 
 CMD [ "/usr/bin/tail", "-f", "/dev/null" ]
