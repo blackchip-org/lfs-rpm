@@ -91,7 +91,7 @@ filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 - For "Name", put in "LFS" or any name that you like
 - Click on "Customize configuration before install"
 - Click on "Finish"
-- On the left sidebar, select "Boot Options" and the open "Direct kernel boot"
+- On the left sidebar, select "Boot Options" and then open "Direct kernel boot"
 - Click on "Enable direct kernel boot"
 - For "Kernel path" enter the full path to "build/boot/vmlinuz"
 - Leave "Initrd path" blank
