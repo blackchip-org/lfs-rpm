@@ -42,7 +42,7 @@ To test the image in a virtual machine, install:
 sudo dnf install qemu-kvm virt-manager
 ```
 
-## tl;dr
+## Automated Build
 
 If you are lucky and cross your fingers the entire system can be built and
 booted with the following three steps:
@@ -60,6 +60,17 @@ real	118m7.072s
 
 Once done, the root filesystem can be found at *build/config/config.tar.gz* and
 the kernel at *build/boot*.
+
+If the build fails for some reason, you can continue the build using the
+manual procedure below. Running this command will start everything from
+the beginning which is usually what you don't want.
+
+Known issues:
+
+- stage1b:binutils: sometimes fails during strip with a file truncated
+error. Maybe more memory is needed? Running again usually resolves the
+issue.
+
 
 ### Run `./lfs mkimage`
 
@@ -327,6 +338,17 @@ I chose the other option which is to build those final packages in stage1c
 and install directly to the filesystem. This command does that final
 bootstrapping for RPM and this needs to be executed after the stage1b export
 and before the stage1c build.
+
+## Logs
+
+Logs can be found in *build/logs*. Those files are:
+
+- `build.log`: Timestamp and record of when each package build is started
+and completed.
+- `last-started`: Name of the last package that the build started
+- `last-success`: Name of the last package that was built successfully
+- `<stage>/<package>.log`: Standard output and standard error capture of
+*rpmbuild* and *rpm* for that package.
 
 ## Final Notes
 
