@@ -13,11 +13,11 @@ system: memory allocation, process allocation, device input and output, etc.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q 
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin 
+%lfs_build_begin
 
 %make mrproper
 
@@ -25,33 +25,41 @@ system: memory allocation, process allocation, device input and output, etc.
 %make headers
 find usr/include -type f ! -name '*.h' -delete
 
-%else 
+%else
 %make defconfig
-%make 
+
+cat <<EOF >.config.sed
+# This prevents debug messages like "... used greatest stack depth"
+# https://forums.gentoo.org/viewtopic-t-1024636-start-0-postdays-0-postorder-asc-highlight-.html
+s/CONFIG_DEBUG_STACK_USAGE=y/CONFIG_DEBUG_STACK_USAGE=n/
+EOF
+sed -i .config -f .config.sed
+
+%make
 
 %endif
-%lfs_build_end 
+%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_build_begin 
+%lfs_build_begin
 
 %if %{with lfs_stage1}
 mkdir -p %{buildroot}/%{lfs_dir}/usr
 cp -rv usr/include %{buildroot}/%{lfs_dir}/usr
 
-%else 
-%make INSTALL_MOD_PATH=%{buildroot}/usr modules_install 
-install -m 755 -d %{buildroot}/boot 
+%else
+%make INSTALL_MOD_PATH=%{buildroot}/usr modules_install
+install -m 755 -d %{buildroot}/boot
 install -m 644 arch/x86/boot/bzImage %{buildroot}/boot/vmlinuz-%{version}%{dist}.%{lfs_arch}
 install -m 644 System.map            %{buildroot}/boot/System.map-%{version}
 install -m 644 .config               %{buildroot}/boot/config-%{version}
 
 ln -s vmlinuz-%{version}%{dist}.%{lfs_arch} %{buildroot}/boot/vmlinuz
-ln -s System.map-%{version}                 %{buildroot}/boot/System.map 
-ln -s config-%{version}                     %{buildroot}/boot/config 
+ln -s System.map-%{version}                 %{buildroot}/boot/System.map
+ln -s config-%{version}                     %{buildroot}/boot/config
 
-install -m755 -d %{buildroot}/etc/modprobe.d 
+install -m755 -d %{buildroot}/etc/modprobe.d
 cat > %{buildroot}/etc/modprobe.d/usb.conf <<EOF
 install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
 install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
@@ -59,22 +67,22 @@ EOF
 
 rm %{buildroot}/usr/lib/modules/%{version}/{build,source}
 
-%endif 
-%lfs_build_end 
+%endif
+%lfs_build_end
 
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/include/*
 
-%else 
+%else
 /boot/System.map-%{version}
 /boot/System.map
 /boot/config-%{version}
 /boot/config
 /boot/vmlinuz-%{version}%{dist}.%{lfs_arch}
 /boot/vmlinuz
-/etc/modprobe.d 
+/etc/modprobe.d
 /usr/lib/modules/%{version}
 
-%endif 
+%endif
