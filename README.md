@@ -285,7 +285,7 @@ is no need to keep the documentation around and these are removed. For stage2,
 we want to keep the documentation so those commands are not necessary. But, when
 info pages are generated, the */usr/share/info/dir* file usually gets updated.
 We cannot do this at build or install time because multiple RPMs cannot "own"
-the same file. This marco deletes this file and the *%update_info_dir* macro
+the same file. This macro deletes this file and the *%update_info_dir* macro
 should instead be used in the *%post* scriptlet.
 
 When using Fedora in stage1a and stage1b, there are two other macros
