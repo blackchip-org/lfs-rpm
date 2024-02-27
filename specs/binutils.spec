@@ -1,5 +1,5 @@
 Name:           binutils
-Version:        2.41
+Version:        2.42
 Release:        1%{?dist}
 Summary:        A GNU collection of binary utilities
 License:        GPLv3+
@@ -50,7 +50,7 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --enable-64-bit-bfd
 %make
 
-%else 
+%else
 ../configure --prefix=/usr       \
              --sysconfdir=/etc   \
              --enable-gold       \
@@ -77,7 +77,7 @@ DESTDIR=%{buildroot} %make install
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
 
-%else 
+%else
 %make tooldir=/usr DESTDIR=%{buildroot} install
 rm -fv %{buildroot}/usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
 rm -rf %{buildroot}/usr/share/info/dir
@@ -106,7 +106,7 @@ make -k check
 %{lfs_dir}/usr/%{lfs_tgt}/bin/*
 %{lfs_dir}/usr/%{lfs_tgt}/lib/ldscripts/*
 
-%else 
+%else
 %config(noreplace) /etc/gprofng.rc
 /usr/bin/addr2line
 /usr/bin/ar
