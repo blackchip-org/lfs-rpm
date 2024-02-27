@@ -1,10 +1,10 @@
 Name:           xz
-Version:        5.4.4
+Version:        5.4.6
 Release:        1%{?dist}
 Summary:        LZMA compression utilities
 License:        GPLv2+ and Public Domain
 
-Source0:        https://tukaani.org/xz/xz-%{version}.tar.xz
+Source0:        https://github.com/tukaani-project/xz/releases/download/v%{version}/xz-%{version}.tar.xz
 
 %description
 XZ Utils are an attempt to make LZMA compression easy to use on free (as in
@@ -49,7 +49,7 @@ speed fast.
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
 
-%else 
+%else
 %make DESTDIR=%{buildroot} install
 
 %endif
@@ -65,7 +65,7 @@ rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
 %{lfs_dir}/usr/lib/pkgconfig/liblzma.pc
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/xz.mo
 
-%else 
+%else
 /usr/bin/lzcat
 /usr/bin/lzcmp
 /usr/bin/lzdiff
@@ -99,7 +99,7 @@ rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
 /usr/share/man/{de,fr,ko,pt_BR,ro,uk}/man1/*
 /usr/share/man/man1/*
 
-%defattr(755,root,root,755) 
+%defattr(755,root,root,755)
 /usr/lib/liblzma.so.%{version}
 
 %endif

@@ -1,5 +1,5 @@
 Name:           elfutils
-Version:        0.189
+Version:        0.190
 Release:        1%{?dist}
 Summary:        A collection of utilities and DSOs to handle ELF files and DWARF data
 License:        GPLv2+
@@ -29,7 +29,7 @@ elfcompress (to compress or decompress ELF sections).
             --disable-libdebuginfod               \
             --disable-debuginfod
 
-%else 
+%else
 ./configure --prefix=/usr                \
             --disable-debuginfod         \
             --enable-libdebuginfod=dummy
@@ -45,7 +45,7 @@ elfcompress (to compress or decompress ELF sections).
 %if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
-%else 
+%else
 %make -C libelf DESTDIR=%{buildroot} install
 install -d %{buildroot}/usr/lib/pkgconfig
 install -vm644 -t %{buildroot}/usr/lib/pkgconfig config/libelf.pc
@@ -68,7 +68,7 @@ rm %{buildroot}/usr/lib/libelf.a
 %{lfs_dir}/usr/lib/pkgconfig/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/elfutils.mo
 
-%else 
+%else
 /usr/include/elfutils
 /usr/include/*.h
 /usr/lib/libelf.so

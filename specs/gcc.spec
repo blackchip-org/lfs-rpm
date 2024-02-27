@@ -9,7 +9,7 @@ License:        GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and
 Source0:        https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
 %if %{with lfs_stage1}
-%define         mpfr_version    4.2.0
+%define         mpfr_version    4.2.1
 %define         gmp_version     6.3.0
 %define         mpc_version     1.3.1
 
@@ -111,7 +111,7 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     --disable-libvtv                               \
     --enable-languages=c,c++
 
-%else 
+%else
 ../configure --prefix=/usr            \
              LD=ld                    \
              --enable-languages=c,c++ \
@@ -146,7 +146,7 @@ cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 ln -sv gcc %{buildroot}/%{lfs_dir}/usr/bin/cc
 
-%else 
+%else
 make DESTDIR=%{buildroot} install
 ln -svr /usr/bin/cpp %{buildroot}/usr/lib
 ln -sv gcc %{buildroot}/usr/bin/cc
@@ -187,7 +187,7 @@ ulimit -s 32768
 %{lfs_dir}/usr/libexec/gcc/%{lfs_tgt}/%{version}
 %{lfs_dir}/usr/share/gcc-%{version}
 
-%else 
+%else
 /usr/bin/c++
 /usr/bin/cc
 /usr/bin/cpp

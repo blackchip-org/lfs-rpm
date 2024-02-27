@@ -1,5 +1,5 @@
 Name:           linux
-Version:        6.4.12
+Version:        6.7.4
 Release:        1%{?dist}
 Summary:        The Linux kernel
 License:        GPLv2 and Redistributable, no modification permitted

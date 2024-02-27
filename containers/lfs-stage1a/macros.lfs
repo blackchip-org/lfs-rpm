@@ -16,6 +16,3 @@
     rm -rf %{buildroot}/lfs/tools/share/{doc,info,man} \
     rm -rf %{buildroot}/lfs/usr/share/{doc,info,man} \
     rm -rf %{buildroot}/usr/share/info/dir
-
-
-

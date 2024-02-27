@@ -1,5 +1,5 @@
 Name:           gawk
-Version:        5.2.2
+Version:        5.3.0
 Release:        1%{?dist}
 Summary:        The GNU version of the AWK text processing utility
 License:        GPLv3+ and GPLv2+ and LGPLv2+ and BSD
@@ -30,7 +30,7 @@ sed -i 's/extras//' Makefile.in
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
 
-%else 
+%else
 ./configure --prefix=/usr
 
 %endif
@@ -44,7 +44,7 @@ sed -i 's/extras//' Makefile.in
 %if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
-%else 
+%else
 make DESTDIR=%{buildroot} LN='ln -f' install
 ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
 
@@ -65,7 +65,7 @@ ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
 %{lfs_dir}/usr/share/awk
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/gawk.mo
 
-%else 
+%else
 /usr/bin/awk
 /usr/bin/gawk
 /usr/bin/gawk-%{version}

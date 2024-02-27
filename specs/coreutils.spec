@@ -1,5 +1,5 @@
 Name:           coreutils
-Version:        9.3
+Version:        9.4
 Release:        1%{?dist}
 Summary:        A set of basic GNU tools commonly used in shell scripts
 License:        GPLv3+
@@ -16,8 +16,8 @@ GNU fileutils, sh-utils, and textutils packages.
 %setup -q
 
 %if %{without lfs_stage1}
-%patch 0 -p1 
-%endif 
+%patch 0 -p1
+%endif
 
 #---------------------------------------------------------------------------
 %build
@@ -31,7 +31,7 @@ GNU fileutils, sh-utils, and textutils packages.
             --enable-no-install-program=kill,uptime \
             gl_cv_macro_MB_CUR_MAX_good=y
 
-%else 
+%else
 autoreconf -fiv
 FORCE_UNSAFE_CONFIGURE=1 ./configure \
             --prefix=/usr            \
@@ -50,7 +50,7 @@ make DESTDIR=%{buildroot}/%{lfs_dir} install
 mkdir -p %{buildroot}/%{lfs_dir}/usr/sbin
 mv -v %{buildroot}/%{lfs_dir}/usr/bin/chroot %{buildroot}/%{lfs_dir}/usr/sbin
 
-%else 
+%else
 make DESTDIR=%{buildroot} install
 
 mkdir %{buildroot}/usr/sbin
@@ -71,7 +71,7 @@ sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 %{lfs_dir}/usr/libexec/coreutils
 %{lfs_dir}/usr/share/locale/*/LC_{MESSAGES,TIME}/coreutils.mo
 
-%else 
+%else
 /usr/bin/[
 /usr/bin/b2sum
 /usr/bin/base32

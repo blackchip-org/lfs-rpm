@@ -1,5 +1,5 @@
 Name:           gettext
-Version:        0.22
+Version:        0.22.4
 Release:        1%{?dist}
 Summary:        GNU libraries and utilities for producing multi-lingual messages
 License:        GPLv3+ and LGPLv2+
@@ -30,7 +30,7 @@ programs.
             --host=%{lfs_tgt}                     \
             --build=$(./build-aux/config.guess)
 
-%else 
+%else
 ./configure --prefix=/usr    \
             --disable-static \
             --docdir=/usr/share/doc/%{name}-%{version}
@@ -46,7 +46,7 @@ programs.
 %if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
-%else 
+%else
 %make DESTDIR=%{buildroot} install
 chmod -v 0755 %{buildroot}/usr/lib/preloadable_libintl.so
 
@@ -69,7 +69,7 @@ make check
 %{lfs_dir}/usr/share/gettext
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/*.mo
 
-%else 
+%else
 /usr/bin/autopoint
 /usr/bin/envsubst
 /usr/bin/gettext
