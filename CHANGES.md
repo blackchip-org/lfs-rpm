@@ -18,6 +18,10 @@ Changes from 12.0 to 12.1:
 | zlib         | 1.2.13 | 1.3.1
 | rpm          | 4.19.0 | 4.19.1.1
 | cmake        | 3.27.7 | 3.28.3
+| perl         | 5.38.0 | 5.38.2
+| python       | 3.11.4 | 3.12.2
+| texinfo      | 7.0.3  | 7.1
+| util-linux   | 2.39.1 | 2.39.3
 
 Not done:
 

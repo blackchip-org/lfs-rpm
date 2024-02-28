@@ -1,12 +1,12 @@
 Name:           util-linux
-Version:        2.39.1
+Version:        2.39.3
 Release:        1%{?dist}
 Summary:        Collection of basic system utilities
 License:        GPLv2 and GPLv2+ and LGPLv2+ and BSD with advertising and Public Domain
 
 Source0:        https://www.kernel.org/pub/linux/utils/util-linux/v2.39/util-linux-%{version}.tar.xz
 
-%description 
+%description
 The util-linux package contains a large variety of low-level system
 utilities that are necessary for a Linux system to function. Among
 others, util-linux contains the fdisk configuration tool and the login
@@ -38,7 +38,7 @@ mkdir -pv %{buildroot}/var/lib/hwclock
             --disable-makeinstall-chown \
             --disable-makeinstall-setuid
 
-%else 
+%else
 sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime \
@@ -59,7 +59,7 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
             --disable-makeinstall-setuid \
             --docdir=/usr/share/doc/util-linux-%{version}
 
-%endif 
+%endif
 %make
 %lfs_build_end
 
@@ -82,7 +82,7 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/share/bash-completion/completions/*
 /usr/share/locale/*/LC_MESSAGES/*.mo
 
-%else 
+%else
 /usr/bin/cal
 /usr/bin/chmem
 /usr/bin/choom
@@ -223,7 +223,7 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/sbin/zramctl
 /usr/share/bash-completion/completions/*
 /usr/share/doc/util-linux-%{version}
-/usr/share/locale/*/LC_MESSAGES/*.mo 
+/usr/share/locale/*/LC_MESSAGES/*.mo
 /usr/share/man/man{1,3,5,8}
 
 %defattr(755,root,root,755)
@@ -233,4 +233,4 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/lib/libsmartcols.so.1.1.0
 /usr/lib/libuuid.so.1.3.0
 
-%endif 
+%endif

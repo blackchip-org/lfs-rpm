@@ -1,5 +1,5 @@
 Name:           perl
-Version:        5.38.0
+Version:        5.38.2
 %global         perl_version 5.38
 Release:        1%{?dist}
 Summary:        Practical Extraction and Report Language
@@ -45,7 +45,7 @@ sh Configure -des                                                       \
              -Dman1dir=/usr/share/man/man1                              \
              -Dman3dir=/usr/share/man/man3                              \
 
-%else 
+%else
 export BUILD_ZLIB=False
 export BUILD_BZIP2=0
 sh Configure -des                                                    \
@@ -90,7 +90,7 @@ EOF
 /usr/lib/perl5/%{perl_version}
 /usr/lib/rpm/macros.d/macros.perl
 
-%else 
+%else
 /usr/bin/corelist
 /usr/bin/cpan
 /usr/bin/enc2xs

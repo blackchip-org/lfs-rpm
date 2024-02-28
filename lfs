@@ -99,7 +99,7 @@ lfs-build() {
         fi
 
         if [ "$method" == "--reinstall" ] ; then
-            rpm_flags="$rpm_pkg_flags --replacefiles"
+            rpm_pkg_flags="$rpm_pkg_flags --replacefiles"
         fi
 
         if [ ! -z "$*" ] || ! podman exec lfs-$stage rpm -q $package ; then
@@ -305,7 +305,7 @@ case $1 in
         next_stage=basic
         ;;
     basic)
-        sihft
+        shift
         stage=basic
         ;;
 esac

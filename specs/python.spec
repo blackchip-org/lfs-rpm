@@ -1,6 +1,6 @@
 Name:           python
-Version:        3.11.4
-%global         python_version 3.11
+Version:        3.12.2
+%global         python_version 3.12
 Release:        1%{?dist}
 Summary:        Interpreter of the Python programming language
 License:        Python
@@ -37,14 +37,14 @@ with the "python3-" prefix.
             --enable-shared \
             --without-ensurepip
 
-%else 
+%else
 ./configure --prefix=/usr        \
             --enable-shared      \
             --with-system-expat  \
             --with-system-ffi    \
-            --enable-optimizations 
-            
-%endif 
+            --enable-optimizations
+
+%endif
 %make
 %lfs_build_end
 
@@ -68,9 +68,9 @@ EOF
 /usr/lib/*.so*
 /usr/lib/pkgconfig/*
 /usr/lib/python%{python_version}
-/usr/lib/rpm/macros.d/macros.python 
+/usr/lib/rpm/macros.d/macros.python
 
-%else 
+%else
 /usr/bin/2to3
 /usr/bin/2to3-%{python_version}
 /usr/bin/idle3
@@ -91,11 +91,11 @@ EOF
 /usr/lib/pkgconfig/python3-embed.pc
 /usr/lib/pkgconfig/python3.pc
 /usr/lib/python%{python_version}
-/usr/lib/rpm/macros.d/macros.python 
+/usr/lib/rpm/macros.d/macros.python
 /usr/share/man/man1/*
 
 %defattr(755,root,root,755)
 /usr/lib/libpython%{python_version}.so.1.0
 
-%endif 
+%endif
 
