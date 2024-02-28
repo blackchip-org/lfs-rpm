@@ -38,6 +38,7 @@ cmake \
       -DWITH_FAPOLICYD=OFF \
       -DWITH_INTERNAL_OPENPGP=ON \
       -DWITH_SELINUX=OFF \
+      -DWITH_READLINE=OFF \
       ..
 make
 make install
