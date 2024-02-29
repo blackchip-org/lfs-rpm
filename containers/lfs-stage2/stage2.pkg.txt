@@ -49,6 +49,7 @@ specs/libffi.spec
 specs/python.spec
 specs/python-flit-core.spec
 specs/python-wheel.spec
+specs/python-setuptools.spec
 specs/ninja.spec
 specs/meson.spec
 specs/coreutils.spec

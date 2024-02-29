@@ -138,7 +138,7 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 /usr/lib/pkgconfig/panel.pc
 /usr/lib/pkgconfig/panelw.pc
 /usr/lib/terminfo
-/usr/share/doc/%{name}-%{version}
+/usr/share/doc/%{name}-*
 /usr/share/man/man{1,3,5,7}/*
 /usr/share/tabset/*
 /usr/share/terminfo/*/*

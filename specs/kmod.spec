@@ -1,5 +1,5 @@
 Name:           kmod
-Version:        30
+Version:        31
 Release:        1%{?dist}
 Summary:        Linux kernel module management utilities
 License:        GPLv2+
@@ -60,4 +60,4 @@ ln -sfv kmod %{buildroot}/usr/bin/lsmod
 /usr/share/man/man{5,8}/*
 
 %defattr(755,root,root,755)
-/usr/lib/libkmod.so.2.4.0
+/usr/lib/libkmod.so.2.*

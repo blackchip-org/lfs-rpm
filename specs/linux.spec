@@ -65,7 +65,7 @@ install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
 install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
 EOF
 
-rm %{buildroot}/usr/lib/modules/%{version}/{build,source}
+rm %{buildroot}/usr/lib/modules/%{version}/build
 
 %endif
 %lfs_build_end

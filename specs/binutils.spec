@@ -136,7 +136,7 @@ make -k check
 /usr/lib/bfd-plugins/*
 /usr/lib/gprofng
 /usr/lib/ldscripts
-/usr/lib/libbfd-2.41.so
+/usr/lib/libbfd-%{version}.so
 /usr/lib/libbfd.so
 /usr/lib/libctf-nobfd.so
 /usr/lib/libctf-nobfd.so.0
@@ -144,7 +144,7 @@ make -k check
 /usr/lib/libctf.so.0
 /usr/lib/libgprofng.so
 /usr/lib/libgprofng.so.0
-/usr/lib/libopcodes-2.41.so
+/usr/lib/libopcodes-%{version}.so
 /usr/lib/libopcodes.so
 /usr/lib/libsframe.so
 /usr/lib/libsframe.so.1

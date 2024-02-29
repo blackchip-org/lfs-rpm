@@ -187,7 +187,7 @@ make check
 /usr/lib/libc_nonshared.a
 /usr/lib/libdl.a
 /usr/lib/libg.a
-/usr/lib/libm-2.38.a
+/usr/lib/libm-%{version}.a
 /usr/lib/libm.a
 /usr/lib/libm.so
 /usr/lib/libmcheck.a

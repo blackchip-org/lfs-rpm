@@ -1,5 +1,5 @@
 Name:           systemd
-Version:        254
+Version:        255
 Release:        1%{?dist}
 Summary:        System and Service Manager
 License:        LGPLv2+ and MIT and GPLv2+
@@ -92,6 +92,7 @@ systemctl disable systemd-sysupdate{,-reboot}
 %config(noreplace) /etc/udev/iocost.conf
 %config(noreplace) /etc/udev/udev.conf
 %config(noreplace) /etc/xdg/systemd/user
+/usr/bin/bootctl
 /usr/bin/busctl
 /usr/bin/coredumpctl
 /usr/bin/hostnamectl
@@ -136,11 +137,14 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/bin/systemd-umount
 /usr/bin/timedatectl
 /usr/bin/udevadm
+/usr/bin/ukify
+/usr/bin/varlinkctl
 /usr/include/libudev.h
 /usr/include/systemd
 /usr/lib/environment.d/99-environment.conf
 /usr/lib/kernel/install.conf
 /usr/lib/kernel/install.d/50-depmod.install
+/usr/lib/kernel/install.d/60-ukify.install
 /usr/lib/kernel/install.d/90-loaderentry.install
 /usr/lib/kernel/install.d/90-uki-copy.install
 /usr/lib/libnss_myhostname.so.2
@@ -186,5 +190,5 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/share/zsh/site-functions/*
 
 %defattr(755,root,root,755)
-/usr/lib/libsystemd.so.0.37.0
-/usr/lib/libudev.so.1.7.7
+/usr/lib/libsystemd.so.0.*
+/usr/lib/libudev.so.1.*

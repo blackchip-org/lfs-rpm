@@ -6,7 +6,7 @@ License:        GPL+ and GPLv2 and GPLv2+ and GPLv3+ and LGPLv2+
 
 Source0:        https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-%{version}.tar.xz
 
-%description 
+%description
 The procps package contains a set of system utilities that provide system
 information. Procps includes ps, free, skill, pkill, pgrep, snice, tload, top,
 uptime, vmstat, pidof, pmap, slabtop, w, watch, pwdx and pidwait.
@@ -28,11 +28,11 @@ of a process or processes. The pidwait command waits for processes of specified
 names.
 
 #---------------------------------------------------------------------------
-%prep 
-%setup -q 
+%prep
+%setup -q
 
 #---------------------------------------------------------------------------
-%build 
+%build
 %lfs_build_begin
 
 ./configure --prefix=/usr                           \
@@ -40,22 +40,22 @@ names.
             --disable-static                        \
             --disable-kill                          \
             --with-systemd
-%make 
+%make
 %lfs_build_end
 
 #---------------------------------------------------------------------------
-%install 
+%install
 %lfs_install_begin
 
-%make DESTDIR=%{buildroot} install 
+%make DESTDIR=%{buildroot} install
 %lfs_install_end
 
 #---------------------------------------------------------------------------
-%check 
-%make check 
+%check
+%make check
 
 #---------------------------------------------------------------------------
-%files 
+%files
 /usr/bin/free
 /usr/bin/pgrep
 /usr/bin/pidof
@@ -71,15 +71,15 @@ names.
 /usr/bin/vmstat
 /usr/bin/w
 /usr/bin/watch
-/usr/include/libproc2 
+/usr/include/libproc2
 /usr/lib/libproc2.so
 /usr/lib/libproc2.so.0
 /usr/lib/pkgconfig/libproc2.pc
 /usr/sbin/sysctl
 /usr/share/doc/procps-ng-%{version}
-/usr/share/locale/*/LC_MESSAGES/*.mo 
-/usr/share/man/{??,pt_BR}/man{1,3,5,8}/* 
-/usr/share/man/man{1,3,5,8}/* 
+/usr/share/locale/*/LC_MESSAGES/*.mo
+/usr/share/man/{??,pt_BR}/man{1,3,5,8}/*
+/usr/share/man/man{1,3,5,8}/*
 
 %defattr(755,root,root,755)
 /usr/lib/libproc2.so.0.0.1

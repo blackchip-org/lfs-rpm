@@ -1,5 +1,5 @@
 Name:           bc
-Version:        6.6.0
+Version:        6.7.5
 Release:        1%{?dist}
 Summary:        GNU's bc (a numeric processing language) and dc (a calculator)
 License:        GPLv2+
@@ -23,7 +23,7 @@ would like to use its text mode calculator.
 %lfs_build_begin
 
 CC=gcc ./configure --prefix=/usr -G -O3 -r
-%make 
+%make
 %lfs_build_end
 
 #---------------------------------------------------------------------------
@@ -35,7 +35,7 @@ CC=gcc ./configure --prefix=/usr -G -O3 -r
 
 #---------------------------------------------------------------------------
 %files
-/usr/bin/bc 
-/usr/bin/dc 
-/usr/share/locale/*/bc 
-/usr/share/man/man1/* 
+/usr/bin/bc
+/usr/bin/dc
+/usr/share/locale/*/bc
+/usr/share/man/man1/*

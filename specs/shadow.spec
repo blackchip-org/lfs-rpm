@@ -1,5 +1,5 @@
 Name:           shadow
-Version:        4.13
+Version:        4.14.5
 Release:        1%{?dist}
 Summary:        Utilities for managing accounts and shadow password files
 License:        BSD and GPLv2+
@@ -38,6 +38,7 @@ sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD YESCRYPT:' \
 ./configure --sysconfdir=/etc   \
             --disable-static    \
             --with-{b,yes}crypt \
+            --without-libbsd    \
             --with-group-name-max-length=32
 %make
 %lfs_build_end
@@ -71,7 +72,6 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 /usr/bin/faillog
 /usr/bin/getsubids
 /usr/bin/gpasswd
-/usr/bin/lastlog
 /usr/bin/login
 /usr/bin/newgidmap
 /usr/bin/newgrp

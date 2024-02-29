@@ -97,12 +97,12 @@ make check
 /usr/lib/gettext
 /usr/lib/libasprintf.so
 /usr/lib/libasprintf.so.0
-/usr/lib/libgettextlib-0.22.so
 /usr/lib/libgettextlib.so
+/usr/lib/libgettextlib-0.*.so
 /usr/lib/libgettextpo.so
 /usr/lib/libgettextpo.so.0
-/usr/lib/libgettextsrc-0.22.so
 /usr/lib/libgettextsrc.so
+/usr/lib/libgettextsrc-0.*.so
 /usr/lib/libtextstyle.so
 /usr/lib/libtextstyle.so.0
 /usr/lib/preloadable_libintl.so
@@ -116,7 +116,7 @@ make check
 
 %defattr(755,root,root,755)
 /usr/lib/libasprintf.so.0.0.0
-/usr/lib/libgettextpo.so.0.5.9
-/usr/lib/libtextstyle.so.0.2.0
+/usr/lib/libgettextpo.so.0.*
+/usr/lib/libtextstyle.so.0.*
 
 %endif
