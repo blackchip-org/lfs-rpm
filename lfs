@@ -249,14 +249,23 @@ lfs-build-all() {
     ./lfs config export
 }
 
-
-lfs-dist-clean() {
+lfs-reset() {
     set -x
-    rm -rf build
+    rm -rf
+    for stage in $stages; do
+        rm -rf "build/${stage}"
+    done
+    rm -rf build/logs
     rm -rf containers/*/*.tar.gz
     rm -f eval.env
     podman stop --time 0 --ignore   $images || true
     podman rmi --force              $images || true
+}
+
+lfs-dist-clean() {
+    set -x
+    lfs-reset
+    rm -rf build
 }
 
 mkdir -p build/{sources,logs}
@@ -324,6 +333,7 @@ case $1 in
     export)     assert-stage && lfs-export ;;
     bootstrap)  assert-stage && lfs-bootstrap ;;
     mkimage)    lfs-mkimage ;;
+    reset)      lfs-reset ;;
     dist-clean) lfs-dist-clean ;;
     build-all)  lfs-build-all ;;
     *)

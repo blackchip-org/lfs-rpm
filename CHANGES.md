@@ -48,9 +48,8 @@ Changes from 12.0 to 12.1:
 | systemd           | 254      | 255
 | dbus              | 1.14.8   | 1.14.10
 | man-db            | 2.11.2   | 2.12.0
-
+| elfutils     | 0.189  | 0.190
 
 Not done:
 
 | procps-ng         | 4.0.3    | 4.0.4
-| elfutils     | 0.189  | 0.190

@@ -220,7 +220,7 @@ is useful during development when iterating on a specific package without
 needing to run *build*.
 
 By default, *%check* scriptlets are skipped when building RPMs. Prefix this
-command with 8with_check=1* to run any provided tests. This shouldn't be
+command with *with_check=1* to run any provided tests. This shouldn't be
 done with the general build command as quite a few packages work fine with
 a few test failures.
 
