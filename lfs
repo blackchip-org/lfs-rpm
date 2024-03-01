@@ -7,7 +7,7 @@ cd "$(dirname $0)"
 
 source ./env
 
-stages="stage1a stage1b stage1c stage2 config basic"
+stages="stage1a stage1b stage1c stage2 config"
 for stage in $stages; do
     images+="lfs-${stage} "
 done
@@ -311,11 +311,6 @@ case $1 in
     config)
         shift
         stage=config
-        next_stage=basic
-        ;;
-    basic)
-        shift
-        stage=basic
         ;;
 esac
 

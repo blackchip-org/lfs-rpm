@@ -89,9 +89,9 @@ cd _build
 /usr/share/man/man{1,8}/*
 
 %defattr(755,root,root,755)
-/usr/lib/librpm.so.10.0.0
-/usr/lib/librpmbuild.so.10.0.0
-/usr/lib/librpmio.so.10.0.0
-/usr/lib/librpmsign.so.10.0.0
+/usr/lib/librpm.so.10.*
+/usr/lib/librpmbuild.so.10.*
+/usr/lib/librpmio.so.10.*
+/usr/lib/librpmsign.so.10.*
 
 

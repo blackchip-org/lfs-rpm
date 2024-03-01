@@ -84,7 +84,7 @@ filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 - Start virt-manager
 - Select File -> New Virtual Machine
 - Select "Import existing disk image"
-- For "Provide the existing storage path" enter in the full path to "build/lfs-12.0-root.img"
+- For "Provide the existing storage path" enter in the full path to "build/lfs-12.1-root.img"
 - For "Choose the operating system your are installing", select "Generic Linux 2022"
 - Click on "Forward"
 - Adjust memory and CPUs as needed and click on "Forward"
@@ -249,11 +249,16 @@ used in the containers for stage1a and stage1b.
 is usually set to the number of processors on your machine.
 - `lfs_root_size`: Size to use for the root partition filesystem image.
 
+### `./lfs reset`
+
+This resets everyting to start a build from scratch again. It deletes everything
+under the *build* directory except for the sources, all exports under
+*containers* and removes any podman images or containers.
+
 ### `./lfs dist-clean`
 
-This should clean up all artifacts created by the build. It deletes everything
-under the *build* directory, all exports under *containers* and removes
-any podman images or containers.
+The same as `./lfs reset` but also removes the sources directory.
+
 
 ## RPM Notes
 
@@ -327,12 +332,12 @@ additional packages are built for this purpose:
 - gettext
 - zlib
 - bzip2
-- elfutils
 
-The only packages after this that are necessary is *rpm* to build RPM itself
-and *cmake* which is needed to build *rpm*. As you can tell, RPM uses cmake
-as its build system. I tried to cross-compile cmake in stage1b but I really
-just didn't have the patience to figure that out. cmake gives me a headache.
+The only packages after this that are necessary is *elfutils*, *rpm* to build
+RPM itself and *cmake* which is needed to build *rpm*. As you can tell, RPM
+uses cmake as its build system. I tried to cross-compile cmake in stage1b but
+I really just didn't have the patience to figure that out. cmake gives me a
+headache.
 
 I chose the other option which is to build those final packages in stage1c
 and install directly to the filesystem. This command does that final
@@ -357,6 +362,10 @@ a fun exercise but there is plenty of room for improvement with the current
 build. And I would like to explore building some packages in the BLFS
 series.
 
+I have subscribed to the LFS announcement mailing list and will try to keep this
+up-to-date as new versions of LFS are published. No guarantee on when that
+happens or even if I follow through with it.
+
 ## License
 
 MIT
@@ -364,4 +373,3 @@ MIT
 ## Feedback
 
 Contact me at lfs@blackchip.org
-

@@ -75,6 +75,6 @@ Daemon and possibly more in the future.
 /usr/share/man/man1/*
 
 %defattr(755,root,root,755)
-/usr/lib/libgpg-error.so.0.34.0
+/usr/lib/libgpg-error.so.0.*
 
 %endif
