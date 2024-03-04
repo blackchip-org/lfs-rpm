@@ -1,5 +1,5 @@
 Name:           bash
-Version:        5.2.15
+Version:        5.2.21
 Release:        1%{?dist}
 Summary:        The GNU Bourne Again shell
 License:        GPLv3+
@@ -26,7 +26,7 @@ be run by bash without modification.
             --host=%{lfs_tgt}                  \
             --without-bash-malloc
 
-%else 
+%else
 ./configure --prefix=/usr             \
             --without-bash-malloc     \
             --with-installed-readline \
@@ -45,15 +45,15 @@ be run by bash without modification.
 mkdir -p %{buildroot}/%{lfs_dir}/bin
 ln -s bash %{buildroot}/%{lfs_dir}/usr/bin/sh
 
-%else 
-%make DESTDIR=%{buildroot} install 
+%else
+%make DESTDIR=%{buildroot} install
 
 %endif
 %lfs_install_end
 
 #---------------------------------------------------------------------------
-%check 
-make tests 
+%check
+make tests
 
 #---------------------------------------------------------------------------
 %files
@@ -64,11 +64,11 @@ make tests
 %{lfs_dir}/usr/lib/pkgconfig/bash.pc
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/bash.mo
 
-%else 
+%else
 /usr/bin/bash
 /usr/bin/bashbug
 /usr/include/bash/*
-/usr/lib/bash 
+/usr/lib/bash
 /usr/lib/pkgconfig/bash.pc
 /usr/share/doc/%{name}-%{version}
 /usr/share/info/*

@@ -1,22 +1,22 @@
-Name:           dbus 
-Version:        1.14.8
+Name:           dbus
+Version:        1.14.10
 Release:        1%{?dist}
 Summary:        D-BUS message bus
 License:        (AFL-2.1 OR GPL-2.0-or-later) AND GPL-2.0-or-later
 
 Source0:        https://dbus.freedesktop.org/releases/dbus/dbus-%{version}.tar.xz
 
-%description 
+%description
 D-BUS is a system for sending messages between applications. It is used both
 for the system-wide message bus service, and as a per-user-login-session
 messaging facility.
 
 #---------------------------------------------------------------------------
-%prep 
-%setup -q 
+%prep
+%setup -q
 
 #---------------------------------------------------------------------------
-%build 
+%build
 %lfs_build_begin
 
 ./configure --prefix=/usr                        \
@@ -29,25 +29,25 @@ messaging facility.
             --disable-xml-docs                   \
             --docdir=/usr/share/doc/dbus-%{version}  \
             --with-system-socket=/run/dbus/system_bus_socket
-%make 
+%make
 %lfs_build_end
 
 #---------------------------------------------------------------------------
-%install 
+%install
 %lfs_install_begin
 
-%make DESTDIR=%{buildroot} install 
+%make DESTDIR=%{buildroot} install
 
-mkdir -p                %{buildroot}/var/lib 
-ln -sfv /etc/machine-id %{buildroot}/var/lib/dbus 
+mkdir -p                %{buildroot}/var/lib
+ln -sfv /etc/machine-id %{buildroot}/var/lib/dbus
 %lfs_install_end
 
 #---------------------------------------------------------------------------
-%check 
-make check 
+%check
+make check
 
 #---------------------------------------------------------------------------
-%files 
+%files
 %config(noreplace) /etc/dbus-1/session.conf
 %config(noreplace) /etc/dbus-1/system.conf
 /usr/bin/dbus-cleanup-sockets
@@ -77,8 +77,8 @@ make check
 /usr/lib/tmpfiles.d/dbus.conf
 /usr/share/doc/dbus-%{version}
 /usr/share/dbus-1
-/usr/share/xml/dbus-1 
-/var/lib/dbus/machine-id 
+/usr/share/xml/dbus-1
+/var/lib/dbus/machine-id
 
 %defattr(755,root,root,755)
-/usr/lib/libdbus-1.so.3.32.3
+/usr/lib/libdbus-1.so.3.*

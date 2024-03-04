@@ -7,7 +7,7 @@ cd "$(dirname $0)"
 
 source ./env
 
-stages="stage1a stage1b stage1c stage2 config basic"
+stages="stage1a stage1b stage1c stage2 config"
 for stage in $stages; do
     images+="lfs-${stage} "
 done
@@ -81,7 +81,7 @@ lfs-download() {
 lfs-build() {
     method=$1
     shift
-    specs=$@
+    specs=$*
 
     [ -z "$specs" ] && specs="$(cat containers/lfs-$stage/$stage.pkg.txt)"
     echo "" >> build/logs/build.log
@@ -98,12 +98,16 @@ lfs-build() {
             rpm_pkg_flags="--replacefiles"
         fi
 
-        if [ ! -z "$@" ] || ! podman exec lfs-$stage rpm -q $package ; then
+        if [ "$method" == "--reinstall" ] ; then
+            rpm_pkg_flags="$rpm_pkg_flags --replacefiles"
+        fi
+
+        if [ ! -z "$*" ] || ! podman exec lfs-$stage rpm -q $package ; then
             lfs-spectool "$spec"
             echo "$stage:$package" > build/logs/last-started
             echo "[$(timestamp)] start $stage:$package" >> build/logs/build.log
             echo -e "\n----- building $stage:$package"
-            ( set -e -x -o pipefail 
+            ( set -e -x -o pipefail
             podman exec lfs-$stage rpmbuild \
                 $rpmbuild_flags \
                 $rpmbuild_pkg_flags \
@@ -245,14 +249,23 @@ lfs-build-all() {
     ./lfs config export
 }
 
-
-lfs-dist-clean() {
+lfs-reset() {
     set -x
-    rm -rf build
+    rm -rf
+    for stage in $stages; do
+        rm -rf "build/${stage}"
+    done
+    rm -rf build/logs
     rm -rf containers/*/*.tar.gz
     rm -f eval.env
     podman stop --time 0 --ignore   $images || true
     podman rmi --force              $images || true
+}
+
+lfs-dist-clean() {
+    set -x
+    lfs-reset
+    rm -rf build
 }
 
 mkdir -p build/{sources,logs}
@@ -298,28 +311,24 @@ case $1 in
     config)
         shift
         stage=config
-        next_stage=basic
-        ;;
-    basic)
-        sihft
-        stage=basic
         ;;
 esac
 
 
 case $1 in
     env)        lfs-env ;;
-    download)   shift ; lfs-download $@ ;;
+    download)   shift ; lfs-download "$@" ;;
     init)       assert-stage && lfs-init ;;
     start)      assert-stage && podman start lfs-$stage ;;
     stop)       assert-stage && podman stop --timeout 0 lfs-$stage ;;
     build)      assert-stage && lfs-build --install ;;
-    rpm)        assert-stage && shift ; lfs-build --reinstall $@ ;;
+    rpm)        assert-stage && shift ; lfs-build --reinstall "$@" ;;
     shell)      assert-stage && exec podman exec -it lfs-$stage /bin/bash ;;
     root)       assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)     assert-stage && lfs-export ;;
     bootstrap)  assert-stage && lfs-bootstrap ;;
     mkimage)    lfs-mkimage ;;
+    reset)      lfs-reset ;;
     dist-clean) lfs-dist-clean ;;
     build-all)  lfs-build-all ;;
     *)

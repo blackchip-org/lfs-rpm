@@ -8,10 +8,12 @@ License:        GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and
 
 Source0:        https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
+%global         glibc_version   2.39
+
 %if %{with lfs_stage1}
-%define         mpfr_version    4.2.0
-%define         gmp_version     6.3.0
-%define         mpc_version     1.3.1
+%global         mpfr_version    4.2.1
+%global         gmp_version     6.3.0
+%global         mpc_version     1.3.1
 
 Source1:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
 Source2:        https://ftp.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
@@ -67,25 +69,25 @@ cd build
     --with-gxx-include-dir=/tools/%{lfs_tgt}/include/c++/%{version}
 
 %elif %{with lfs_stage1a}
-../configure                    \
-    --target=%{lfs_tgt}         \
-    --prefix=%{lfs_tools_dir}   \
-    --with-glibc-version=2.38   \
-    --with-sysroot=%{lfs_dir}   \
-    --with-newlib               \
-    --without-headers           \
-    --enable-default-pie        \
-    --enable-default-ssp        \
-    --disable-nls               \
-    --disable-shared            \
-    --disable-multilib          \
-    --disable-threads           \
-    --disable-libatomic         \
-    --disable-libgomp           \
-    --disable-libquadmath       \
-    --disable-libssp            \
-    --disable-libvtv            \
-    --disable-libstdcxx         \
+../configure                              \
+    --target=%{lfs_tgt}                   \
+    --prefix=%{lfs_tools_dir}             \
+    --with-glibc-version=%{glibc_version} \
+    --with-sysroot=%{lfs_dir}             \
+    --with-newlib                         \
+    --without-headers                     \
+    --enable-default-pie                  \
+    --enable-default-ssp                  \
+    --disable-nls                         \
+    --disable-shared                      \
+    --disable-multilib                    \
+    --disable-threads                     \
+    --disable-libatomic                   \
+    --disable-libgomp                     \
+    --disable-libquadmath                 \
+    --disable-libssp                      \
+    --disable-libvtv                      \
+    --disable-libstdcxx                   \
     --enable-languages=c,c++
 
 
@@ -111,7 +113,7 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     --disable-libvtv                               \
     --enable-languages=c,c++
 
-%else 
+%else
 ../configure --prefix=/usr            \
              LD=ld                    \
              --enable-languages=c,c++ \
@@ -146,7 +148,7 @@ cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 ln -sv gcc %{buildroot}/%{lfs_dir}/usr/bin/cc
 
-%else 
+%else
 make DESTDIR=%{buildroot} install
 ln -svr /usr/bin/cpp %{buildroot}/usr/lib
 ln -sv gcc %{buildroot}/usr/bin/cc
@@ -187,7 +189,7 @@ ulimit -s 32768
 %{lfs_dir}/usr/libexec/gcc/%{lfs_tgt}/%{version}
 %{lfs_dir}/usr/share/gcc-%{version}
 
-%else 
+%else
 /usr/bin/c++
 /usr/bin/cc
 /usr/bin/cpp

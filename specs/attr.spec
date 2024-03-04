@@ -1,5 +1,5 @@
 Name:           attr
-Version:        2.5.1
+Version:        2.5.2
 Release:        1%{?dist}
 Summary:        Utilities for managing filesystem extended attributes
 License:        GPLv2+
@@ -52,4 +52,4 @@ which is largely compatible with the SGI IRIX tool of the same name.
 /usr/share/man/man{1,3}/*
 
 %defattr(755,root,root,755)
-/usr/lib/libattr.so.1.1.2501
+/usr/lib/libattr.so.1.*

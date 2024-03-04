@@ -1,11 +1,11 @@
 Name:           vim
-Version:        9.0.1677
-%global         version2    90
+Version:        9.1.0041
+%global         version2    91
 Release:        1%{?dist}
 Summary:        Visual editor improved
 License:        Vim and MIT
 
-Source0:        https://anduin.linuxfromscratch.org/LFS/vim-%{version}.tar.gz
+Source0:        https://github.com/vim/vim/archive/v%{version}/vim-%{version}.tar.gz
 
 %description
 VIM (VIsual editor iMproved) is an updated and improved version of the vi
@@ -26,7 +26,7 @@ vim-common package is installed.
 
 echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 ./configure --prefix=/usr
-%make 
+%make
 %lfs_build_end
 
 #---------------------------------------------------------------------------

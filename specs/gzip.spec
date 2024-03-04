@@ -1,5 +1,5 @@
 Name:           gzip
-Version:        1.12
+Version:        1.13
 Release:        1%{?dist}
 Summary:        The GNU data compression program
 License:        GPLv3+ and GFDL
@@ -24,7 +24,7 @@ data compression program.
 %if %{with lfs_stage1}
 ./configure --prefix=/usr --host=%{lfs_tgt}
 
-%else 
+%else
 ./configure --prefix=/usr
 
 %endif
@@ -38,7 +38,7 @@ data compression program.
 %if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
-%else 
+%else
 %make DESTDIR=%{buildroot} install
 
 %endif
@@ -49,7 +49,7 @@ data compression program.
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 
-%else 
+%else
 /usr/bin/gunzip
 /usr/bin/gzexe
 /usr/bin/gzip

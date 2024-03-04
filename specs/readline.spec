@@ -5,7 +5,7 @@ Summary:        A library for editing typed command lines
 License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/readline-%{version}-upstream_fix-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/readline-%{version}-upstream_fixes-3.patch
 
 %description
 The Readline library provides a set of functions that allow users to edit
@@ -17,7 +17,7 @@ performing csh-like history expansion on previous commands
 #---------------------------------------------------------------------------
 %prep
 %setup -q
-%patch 0 -p1 
+%patch 0 -p1
 
 #---------------------------------------------------------------------------
 %build
@@ -44,14 +44,14 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 #---------------------------------------------------------------------------
 %files
 /usr/share/doc/readline-%{version}
-/usr/include/readline 
+/usr/include/readline
 /usr/lib/libhistory.so
 /usr/lib/libhistory.so.8
 /usr/lib/libreadline.so
 /usr/lib/libreadline.so.8
-/usr/lib/pkgconfig/history.pc 
-/usr/lib/pkgconfig/readline.pc 
-/usr/share/info/* 
+/usr/lib/pkgconfig/history.pc
+/usr/lib/pkgconfig/readline.pc
+/usr/share/info/*
 /usr/share/man/man3/*
 
 %defattr(755,root,root,755)

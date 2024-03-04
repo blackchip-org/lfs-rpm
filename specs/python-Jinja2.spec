@@ -1,5 +1,5 @@
 Name:           python-Jinja2
-Version:        3.1.2
+Version:        3.1.3
 Release:        1%{?dist}
 Summary:        General purpose template engine for python
 License:        BSD
@@ -24,14 +24,14 @@ useful for templating environments.
 %build
 %lfs_build_begin
 
-pip3 wheel -w dist --no-build-isolation --no-deps $PWD
+pip3 wheel -w dist  --no-cache-dir --no-build-isolation --no-deps $PWD
 %lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
 %lfs_install_begin
 
-pip3 install --root=%{buildroot} --no-index --no-user --find-links dist Jinja2
+pip3 install --ignore-installed --no-deps --root=%{buildroot} --no-index --no-user --find-links=dist Jinja2
 %lfs_install_end
 
 #---------------------------------------------------------------------------

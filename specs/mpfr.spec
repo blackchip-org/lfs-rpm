@@ -1,5 +1,5 @@
 Name:           mpfr
-Version:        4.2.0
+Version:        4.2.1
 Release:        1%{?dist}
 Summary:        A C library for multiple-precision floating-point computations
 License:        LGPLv3+ or GPLv2+
@@ -54,4 +54,4 @@ sed -e 's/+01,234,567/+1,234,567 /' \
 /usr/share/info/*
 
 %defattr(755,root,root,755)
-/usr/lib/libmpfr.so.6.2.0
+/usr/lib/libmpfr.so.6.2.1

@@ -27,6 +27,9 @@ for make in the program's makefile.
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
 
+%else
+./configure --prefix=/usr
+
 %endif
 %make
 %lfs_build_end

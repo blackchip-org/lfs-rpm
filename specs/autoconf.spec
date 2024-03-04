@@ -1,5 +1,5 @@
 Name:           autoconf
-Version:        2.71
+Version:        2.72
 Release:        1%{?dist}
 Summary:        A GNU tool for automatically configuring source code
 License:        GPLv2+ and GFDL

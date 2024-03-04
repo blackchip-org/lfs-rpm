@@ -1,5 +1,5 @@
 Name:           iana-etc
-Version:        20230810
+Version:        20240125
 Release:        1%{?dist}
 Summary:        Data for network services and protocols
 License:        MIT

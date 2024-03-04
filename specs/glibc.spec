@@ -1,14 +1,13 @@
 Name:           glibc
-Version:        2.38
+Version:        2.39
 Release:        1%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
 
 Source0:        https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-memalign_fix-1.patch
 
 %if %{without %lfs_stage1}
-Patch1:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch
 %endif
 
 %description
@@ -23,10 +22,9 @@ these two libraries, a Linux system will not function.
 #---------------------------------------------------------------------------
 %prep
 %setup -q
-%patch 0 -p1
 
 %if %{without %lfs_stage1}
-%patch 1 -p1
+%patch 0 -p1
 %endif
 
 #---------------------------------------------------------------------------
@@ -189,7 +187,7 @@ make check
 /usr/lib/libc_nonshared.a
 /usr/lib/libdl.a
 /usr/lib/libg.a
-/usr/lib/libm-2.38.a
+/usr/lib/libm-%{version}.a
 /usr/lib/libm.a
 /usr/lib/libm.so
 /usr/lib/libmcheck.a

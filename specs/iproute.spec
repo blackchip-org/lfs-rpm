@@ -1,5 +1,5 @@
 Name:           iproute
-Version:        6.4.0
+Version:        6.7.0
 Release:        1%{?dist}
 Summary:        Advanced IP routing and network device configuration tools
 License:        GPLv2+ and Public Domain
@@ -34,15 +34,6 @@ rm -fv man/man8/arpd.8
 
 #---------------------------------------------------------------------------
 %files
-/etc/iproute2/bpf_pinning
-/etc/iproute2/ematch_map
-/etc/iproute2/group
-/etc/iproute2/nl_protos
-/etc/iproute2/rt_dsfield
-/etc/iproute2/rt_protos
-/etc/iproute2/rt_realms
-/etc/iproute2/rt_scopes
-/etc/iproute2/rt_tables
 /usr/include/iproute2
 /usr/lib/tc/*
 /usr/sbin/bridge
@@ -59,4 +50,13 @@ rm -fv man/man8/arpd.8
 /usr/sbin/ss
 /usr/sbin/tc
 /usr/share/bash-completion/completions/*
+/usr/share/iproute2/bpf_pinning
+/usr/share/iproute2/ematch_map
+/usr/share/iproute2/group
+/usr/share/iproute2/nl_protos
+/usr/share/iproute2/rt_dsfield
+/usr/share/iproute2/rt_protos
+/usr/share/iproute2/rt_realms
+/usr/share/iproute2/rt_scopes
+/usr/share/iproute2/rt_tables
 /usr/share/man/man{3,7,8}/*

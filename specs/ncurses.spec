@@ -1,10 +1,11 @@
 Name:           ncurses
-Version:        6.4
+Version:        6.4.lfs20230520
 Release:        1%{?dist}
 Summary:        Ncurses support utilities
 License:        MIT
 
-Source0:        https://invisible-mirror.net/archives/ncurses/ncurses-%{version}.tar.gz
+#Source0:        https://invisible-mirror.net/archives/ncurses/ncurses-%{version}.tar.gz
+Source0:        https://anduin.linuxfromscratch.org/LFS/ncurses-6.4-20230520.tar.xz
 
 %description
 The curses library routines are a terminal-independent method of updating
@@ -17,7 +18,8 @@ decompiler infocmp, clear, tput, tset, and a termcap conversion tool captoinfo.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n ncurses-%{version}
+#%setup -q -n ncurses-%{version}
+%setup -q -n ncurses-6.4-20230520
 
 #---------------------------------------------------------------------------
 %build
@@ -46,7 +48,7 @@ popd
             --disable-stripping          \
             --enable-widec
 
-%else 
+%else
 ./configure --prefix=/usr           \
             --mandir=/usr/share/man \
             --with-shared           \
@@ -69,7 +71,7 @@ popd
 %make DESTDIR=%{buildroot}/%{lfs_dir} TIC_PATH=$(pwd)/build/progs/tic install
 echo "INPUT(-lncursesw)" > %{buildroot}/%{lfs_dir}/usr/lib/libncurses.so
 
-%else 
+%else
 make DESTDIR=%{buildroot} install
 
 for lib in ncurses form panel menu ; do
@@ -97,7 +99,7 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 %{lfs_dir}/usr/share/tabset/*
 %{lfs_dir}/usr/share/terminfo/*/*
 
-%else 
+%else
 /usr/bin/captoinfo
 /usr/bin/clear
 /usr/bin/infocmp
@@ -136,7 +138,7 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 /usr/lib/pkgconfig/panel.pc
 /usr/lib/pkgconfig/panelw.pc
 /usr/lib/terminfo
-/usr/share/doc/%{name}-%{version}
+/usr/share/doc/%{name}-*
 /usr/share/man/man{1,3,5,7}/*
 /usr/share/tabset/*
 /usr/share/terminfo/*/*

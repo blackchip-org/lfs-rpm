@@ -1,5 +1,5 @@
 Name:           linux
-Version:        6.4.12
+Version:        6.7.4
 Release:        1%{?dist}
 Summary:        The Linux kernel
 License:        GPLv2 and Redistributable, no modification permitted
@@ -29,11 +29,20 @@ find usr/include -type f ! -name '*.h' -delete
 %make defconfig
 
 cat <<EOF >.config.sed
+# Settings recommeded in the LFS book
+s/CONFIG_WERROR=y/CONFIG_WERROR=n/
+s/CONFIG_AUDIT=y/CONFIG_AUDIT=n/
+s/. CONFIG_PSI is not set/CONFIG_PSI=y/
+s/. CONFIG_MEMCG is not set/CONFIG_MEMCG=y/
+s/. CONFIG_X86_X2APIC is not set/CONFIG_X86_X2APIC=y/
+s/. CONFIG_IRQ_REMAP is not set/CONFIG_IRQ_REMAP=y/
+
 # This prevents debug messages like "... used greatest stack depth"
 # https://forums.gentoo.org/viewtopic-t-1024636-start-0-postdays-0-postorder-asc-highlight-.html
 s/CONFIG_DEBUG_STACK_USAGE=y/CONFIG_DEBUG_STACK_USAGE=n/
 EOF
 sed -i .config -f .config.sed
+cat .config
 
 %make
 
@@ -65,7 +74,7 @@ install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
 install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
 EOF
 
-rm %{buildroot}/usr/lib/modules/%{version}/{build,source}
+rm %{buildroot}/usr/lib/modules/%{version}/build
 
 %endif
 %lfs_build_end

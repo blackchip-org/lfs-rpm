@@ -1,5 +1,5 @@
 Name:           acl
-Version:        2.3.1
+Version:        2.3.2
 Release:        1%{?dist}
 Summary:        Access control list utilities
 License:        GPLv2+
@@ -46,4 +46,4 @@ access control lists.
 /usr/share/man/man{1,3,5}/*
 
 %defattr(755,root,root,755)
-/usr/lib/libacl.so.1.1.2301
+/usr/lib/libacl.so.1.1.*

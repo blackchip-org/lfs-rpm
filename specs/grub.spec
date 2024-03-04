@@ -1,11 +1,10 @@
 Name:           grub
-Version:        2.06
+Version:        2.12
 Release:        1%{?dist}
 Summary:        The GRand Unified Bootloader
 License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/grub-%{version}-upstream_fixes-1.patch
 
 
 %description
@@ -17,13 +16,13 @@ turn, initializes the rest of the operating system (e.g. GNU).
 #---------------------------------------------------------------------------
 %prep
 %setup -q
-%patch 0 -p 1
 
 #---------------------------------------------------------------------------
 %build
 %lfs_build_begin
 
 unset {C,CPP,CXX,LD}FLAGS
+echo depends bli part_gpt > grub-core/extra_deps.lst
 ./configure --prefix=/usr          \
             --sysconfdir=/etc      \
             --disable-efiemu       \

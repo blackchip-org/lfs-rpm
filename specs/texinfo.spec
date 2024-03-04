@@ -1,5 +1,5 @@
 Name:           texinfo
-Version:        7.0.3
+Version:        7.1
 Release:        1%{?dist}
 Summary:        Programs for reading, writing, and converting info pages
 License:        GPLv3+
@@ -33,7 +33,7 @@ system is well-integrated with GNU Emacs.
 %lfs_install_end
 
 #---------------------------------------------------------------------------
-%post 
+%post
 %{?update_info_dir}
 
 #---------------------------------------------------------------------------
@@ -57,4 +57,4 @@ system is well-integrated with GNU Emacs.
 /usr/share/info/*
 /usr/share/man/man{1,5}/*
 
-%endif 
+%endif

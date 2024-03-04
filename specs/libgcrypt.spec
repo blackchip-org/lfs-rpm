@@ -1,5 +1,5 @@
 Name:           libgcrypt
-Version:        1.10.2
+Version:        1.10.3
 Release:        1%{?dist}
 Summary:        A general-purpose cryptography library
 License:        LGPLv2+
@@ -45,10 +45,6 @@ Privacy Guard. This is a development version.
 %lfs_install_end
 
 #---------------------------------------------------------------------------
-%post
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
@@ -71,7 +67,7 @@ Privacy Guard. This is a development version.
 /usr/share/man/man1/*
 
 %defattr(755,root,root,755)
-/usr/lib/libgcrypt.so.20.4.2
+/usr/lib/libgcrypt.so.20.*
 
 %endif
 

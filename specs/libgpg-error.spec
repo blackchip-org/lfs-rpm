@@ -1,5 +1,5 @@
 Name:           libgpg-error
-Version:        1.47
+Version:        1.48
 Release:        1%{?dist}
 Summary:        Library for error values used by GnuPG components
 License:        LGPLv2+
@@ -47,10 +47,6 @@ Daemon and possibly more in the future.
 %lfs_install_end
 
 #---------------------------------------------------------------------------
-%post
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
@@ -79,6 +75,6 @@ Daemon and possibly more in the future.
 /usr/share/man/man1/*
 
 %defattr(755,root,root,755)
-/usr/lib/libgpg-error.so.0.34.0
+/usr/lib/libgpg-error.so.0.*
 
 %endif

@@ -1,5 +1,5 @@
 Name:           inetutils
-Version:        2.4
+Version:        2.5
 Release:        1%{?dist}
 Summary:        A collection of common network programs
 License:        GPLv2+
@@ -60,19 +60,19 @@ mv -v %{buildroot}/usr/{,s}bin/ifconfig
 
 #---------------------------------------------------------------------------
 %files
+/usr/share/info/*
+/usr/share/man/man1/*
+
+%defattr(755,root,root,755)
 /usr/bin/dnsdomainname
 /usr/bin/ftp
 /usr/bin/hostname
+/usr/bin/ping
 /usr/bin/ping6
 /usr/bin/talk
 /usr/bin/telnet
 /usr/bin/tftp
 /usr/bin/traceroute
 /usr/sbin/ifconfig
-/usr/share/info/*
-/usr/share/man/man1/*
 
-%defattr(755,root,root,755)
-/usr/bin/ping
-/usr/bin/ping6
 

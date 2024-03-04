@@ -1,5 +1,5 @@
 Name:           python-wheel
-Version:        0.41.1
+Version:        0.42.0
 Release:        1%{?dist}
 Summary:        Built-package format for Python
 License:        MIT
@@ -23,18 +23,18 @@ Python 3 version.
 %build
 %lfs_build_begin
 
-pip3 wheel -w dist --no-build-isolation --no-deps $PWD
+pip3 wheel -w dist --no-cache-dir --no-build-isolation --no-deps $PWD
 %lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
 %lfs_install_begin
 
-pip3 install --root %{buildroot} --no-index --find-links=dist wheel
+pip3 install --ignore-installed --root %{buildroot} --no-index --find-links=dist wheel
 %lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
-/usr/bin/wheel 
-/usr/lib/python%{python_version}/site-packages/wheel-%{version}.dist-info 
+/usr/bin/wheel
+/usr/lib/python%{python_version}/site-packages/wheel-%{version}.dist-info
 /usr/lib/python%{python_version}/site-packages/wheel
