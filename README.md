@@ -103,6 +103,9 @@ The operating system should now boot. Login with user "lfs", password
 "lfs". The root password is also "lfs". Verify network connectivity with
 "ping 8.8.8.8"
 
+If the boot hangs after a bunch of pci and pci_bus messages, change the video settings
+under "Video Virtio" from "Virtio" to "VGA". 
+
 ## Build Process
 
 The build is split into four separate stages which correspond to chapters
