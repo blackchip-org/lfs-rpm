@@ -1,5 +1,5 @@
 Name:           binutils
-Version:        2.42
+Version:        2.43.1
 Release:        1%{?dist}
 Summary:        A GNU collection of binary utilities
 License:        GPLv3+
@@ -35,7 +35,9 @@ cd build
              --target=%{lfs_tgt}        \
              --disable-nls              \
              --enable-gprofng=no        \
-             --disable-werror
+             --disable-werror           \
+             --enable-new-dtags         \
+             --enable-default-hash-style=gnu
 %make
 
 %elif %{with lfs_stage1b}

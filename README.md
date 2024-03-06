@@ -28,12 +28,10 @@ that was done for their fun, not mine.
 
 ## Build Requirements
 
-This has only been tested on a Fedora operating system. Install *podman* for
-use as the build environment and *rpmdevtools* to use *spectool* to
-download the necessary source packages:
+Install *podman* for use as the build environment:
 
 ```
-sudo dnf install podman rpmdevtools
+sudo dnf install podman 
 ```
 
 To test the image in a virtual machine, install:
@@ -41,6 +39,13 @@ To test the image in a virtual machine, install:
 ```
 sudo dnf install qemu-kvm virt-manager
 ```
+
+For Ubuntu, additionally install *rpm* and *curl*:
+
+```
+sudo apt install rpm curl 
+```
+
 
 ## Automated Build
 
@@ -102,6 +107,9 @@ filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 The operating system should now boot. Login with user "lfs", password
 "lfs". The root password is also "lfs". Verify network connectivity with
 "ping 8.8.8.8"
+
+If the boot hangs after a bunch of pci and pci_bus messages, change the video settings
+under "Video Virtio" from "Virtio" to "VGA". 
 
 ## Build Process
 

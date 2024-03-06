@@ -66,7 +66,7 @@ lfs-init() {
 lfs-spectool() {
     (
     set -x
-    spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
+    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
     )
 }
 

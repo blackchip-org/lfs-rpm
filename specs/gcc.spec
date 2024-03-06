@@ -1,14 +1,14 @@
 %bcond_with     lfs_gcc_libstdcpp_only
 
 Name:           %{!?with_lfs_gcc_libstdcpp_only:gcc}%{?with_lfs_gcc_libstdcpp_only:libstdc++}
-Version:        13.2.0
+Version:        14.2.0
 Release:        1%{?dist}
 Summary:        Various compilers (C, C++, Objective-C, ...)
 License:        GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 
 Source0:        https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
-%global         glibc_version   2.39
+%global         glibc_version   2.40
 
 %if %{with lfs_stage1}
 %global         mpfr_version    4.2.1

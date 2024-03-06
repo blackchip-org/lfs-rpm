@@ -1,5 +1,5 @@
 Name:           expat
-Version:        2.6.0
+Version:        2.6.2
 Release:        1%{?dist}
 Summary:        An XML parser library
 License:        MIT

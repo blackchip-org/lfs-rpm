@@ -1,5 +1,5 @@
 Name:           glibc
-Version:        2.39
+Version:        2.40
 Release:        1%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
@@ -39,7 +39,7 @@ echo "rootsbindir=/usr/sbin" > configparms
 ../configure --prefix=/usr                         \
              --host=%{lfs_tgt}                     \
              --build=$(../scripts/config.guess)    \
-             --enable-kernel=4.14                  \
+             --enable-kernel=4.19                  \
              --with-headers=%{lfs_dir}/usr/include \
              libc_cv_slibdir=/usr/lib
 
