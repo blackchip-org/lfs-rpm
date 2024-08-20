@@ -49,7 +49,9 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --enable-shared            \
              --enable-gprofng=no        \
              --disable-werror           \
-             --enable-64-bit-bfd
+             --enable-64-bit-bfd        \
+             --enable-new-dtags         \
+             --enable-default-hash-style=gnu
 %make
 
 %else

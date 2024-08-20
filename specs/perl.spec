@@ -1,6 +1,6 @@
 Name:           perl
-Version:        5.38.2
-%global         perl_version 5.38
+Version:        5.40.0 
+%global         perl_version 5.40
 Release:        1%{?dist}
 Summary:        Practical Extraction and Report Language
 License:        GPL+ or Artistic
@@ -33,35 +33,35 @@ the Perl decomposition into packages.
 
 %if %{with lfs_stage1}
 sh Configure -des                                                       \
-             -Dprefix=/usr                                              \
-             -Dvendorprefix=/usr                                        \
-             -Duseshrplib                                               \
-             -Dprivlib=/usr/lib/perl5/%{perl_version}/core_perl         \
-             -Darchlib=/usr/lib/perl5/%{perl_version}/core_perl         \
-             -Dsitelib=/usr/lib/perl5/%{perl_version}/site_perl         \
-             -Dsitearch=/usr/lib/perl5/%{perl_version}/site_perl        \
-             -Dvendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl     \
-             -Dvendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl    \
-             -Dman1dir=/usr/share/man/man1                              \
-             -Dman3dir=/usr/share/man/man3                              \
+             -D prefix=/usr                                              \
+             -D vendorprefix=/usr                                        \
+             -D useshrplib                                               \
+             -D privlib=/usr/lib/perl5/%{perl_version}/core_perl         \
+             -D archlib=/usr/lib/perl5/%{perl_version}/core_perl         \
+             -D sitelib=/usr/lib/perl5/%{perl_version}/site_perl         \
+             -D sitearch=/usr/lib/perl5/%{perl_version}/site_perl        \
+             -D vendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl     \
+             -D vendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl    \
+             -D man1dir=/usr/share/man/man1                              \
+             -D man3dir=/usr/share/man/man3                              \
 
 %else
 export BUILD_ZLIB=False
 export BUILD_BZIP2=0
 sh Configure -des                                                    \
-             -Dprefix=/usr                                           \
-             -Dvendorprefix=/usr                                     \
-             -Dprivlib=/usr/lib/perl5/%{perl_version}/core_perl      \
-             -Darchlib=/usr/lib/perl5/%{perl_version}/core_perl      \
-             -Dsitelib=/usr/lib/perl5/%{perl_version}/site_perl      \
-             -Dsitearch=/usr/lib/perl5/%{perl_version}/site_perl     \
-             -Dvendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl  \
-             -Dvendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl \
-             -Dman1dir=/usr/share/man/man1                           \
-             -Dman3dir=/usr/share/man/man3                           \
-             -Dpager="/usr/bin/less -isR"                            \
-             -Duseshrplib                                            \
-             -Dusethreads
+             -D prefix=/usr                                           \
+             -D vendorprefix=/usr                                     \
+             -D privlib=/usr/lib/perl5/%{perl_version}/core_perl      \
+             -D archlib=/usr/lib/perl5/%{perl_version}/core_perl      \
+             -D sitelib=/usr/lib/perl5/%{perl_version}/site_perl      \
+             -D sitearch=/usr/lib/perl5/%{perl_version}/site_perl     \
+             -D vendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl  \
+             -D vendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl \
+             -D man1dir=/usr/share/man/man1                           \
+             -D man3dir=/usr/share/man/man3                           \
+             -D pager="/usr/bin/less -isR"                            \
+             -D useshrplib                                            \
+             -D usethreads
 
 %endif
 %make

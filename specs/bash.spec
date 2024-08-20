@@ -1,5 +1,5 @@
 Name:           bash
-Version:        5.2.21
+Version:        5.2.32
 Release:        1%{?dist}
 Summary:        The GNU Bourne Again shell
 License:        GPLv3+
@@ -24,7 +24,8 @@ be run by bash without modification.
 ./configure --prefix=/usr                      \
             --build=$(sh support/config.guess) \
             --host=%{lfs_tgt}                  \
-            --without-bash-malloc
+            --without-bash-malloc              \
+            bash_cv_strtold_broken=no
 
 %else
 ./configure --prefix=/usr             \

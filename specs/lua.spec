@@ -1,5 +1,5 @@
 Name:           lua
-Version:        5.4.6
+Version:        5.4.7
 Release:        1%{?dist}
 Summary:        Powerful light-weight programming language
 License:        MIT

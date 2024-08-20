@@ -1,11 +1,10 @@
 Name:           ncurses
-Version:        6.4.lfs20230520
+Version:        6.5
 Release:        1%{?dist}
 Summary:        Ncurses support utilities
 License:        MIT
 
-#Source0:        https://invisible-mirror.net/archives/ncurses/ncurses-%{version}.tar.gz
-Source0:        https://anduin.linuxfromscratch.org/LFS/ncurses-6.4-20230520.tar.xz
+Source0:        https://invisible-mirror.net/archives/ncurses/ncurses-%{version}.tar.gz
 
 %description
 The curses library routines are a terminal-independent method of updating
@@ -18,8 +17,7 @@ decompiler infocmp, clear, tput, tset, and a termcap conversion tool captoinfo.
 
 #---------------------------------------------------------------------------
 %prep
-#%setup -q -n ncurses-%{version}
-%setup -q -n ncurses-6.4-20230520
+%setup -q -n ncurses-%{version}
 
 #---------------------------------------------------------------------------
 %build
@@ -45,8 +43,7 @@ popd
             --with-cxx-shared            \
             --without-debug              \
             --without-ada                \
-            --disable-stripping          \
-            --enable-widec
+            --disable-stripping          
 
 %else
 ./configure --prefix=/usr           \

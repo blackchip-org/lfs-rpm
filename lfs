@@ -205,6 +205,7 @@ lfs-export() {
 lfs-bootstrap() {
     if [ "$stage" == "stage1c" ] ; then
         lfs-spectool specs/cmake.spec
+        lfs-spectool specs/elfutils.spec
         lfs-spectool specs/rpm.spec
         podman exec --user root -t lfs-stage1c lfs-rpm/containers/lfs-stage1c/rpm-bootstrap.sh
     else

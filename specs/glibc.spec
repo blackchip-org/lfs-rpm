@@ -41,6 +41,7 @@ echo "rootsbindir=/usr/sbin" > configparms
              --build=$(../scripts/config.guess)    \
              --enable-kernel=4.19                  \
              --with-headers=%{lfs_dir}/usr/include \
+             --disable-nscd                        \
              libc_cv_slibdir=/usr/lib
 
 %else

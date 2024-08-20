@@ -2,8 +2,8 @@
 
 set -e -x
 
-elfutils_source=elfutils-0.190.tar.bz2
-cmake_source=cmake-3.28.3.tar.gz
+elfutils_source=elfutils-0.191.tar.bz2
+cmake_source=cmake-3.30.2.tar.gz
 rpm_source=rpm-4.19.1.1.tar.bz2
 
 srcdir=/build/rpmbuild/SOURCES

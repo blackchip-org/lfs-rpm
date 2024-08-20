@@ -1,5 +1,5 @@
 Name:           xz
-Version:        5.4.6
+Version:        5.6.2
 Release:        1%{?dist}
 Summary:        LZMA compression utilities
 License:        GPLv2+ and Public Domain
