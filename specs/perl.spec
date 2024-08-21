@@ -7,6 +7,8 @@ License:        GPL+ or Artistic
 
 Source0:        https://www.cpan.org/src/5.0/perl-%{version}.tar.xz
 
+AutoReqProv:    no
+
 %description
 Perl is a high-level programming language with roots in C, sed, awk and shell
 scripting. Perl is good at handling processes and files, and is especially good
@@ -32,36 +34,38 @@ the Perl decomposition into packages.
 %lfs_build_begin
 
 %if %{with lfs_stage1}
+unset LC_ALL
+
 sh Configure -des                                                       \
-             -D prefix=/usr                                              \
-             -D vendorprefix=/usr                                        \
-             -D useshrplib                                               \
-             -D privlib=/usr/lib/perl5/%{perl_version}/core_perl         \
-             -D archlib=/usr/lib/perl5/%{perl_version}/core_perl         \
-             -D sitelib=/usr/lib/perl5/%{perl_version}/site_perl         \
-             -D sitearch=/usr/lib/perl5/%{perl_version}/site_perl        \
-             -D vendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl     \
-             -D vendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl    \
-             -D man1dir=/usr/share/man/man1                              \
-             -D man3dir=/usr/share/man/man3                              \
+             -Dprefix=/usr                                              \
+             -Dvendorprefix=/usr                                        \
+             -Duseshrplib                                               \
+             -Dprivlib=/usr/lib/perl5/%{perl_version}/core_perl         \
+             -Darchlib=/usr/lib/perl5/%{perl_version}/core_perl         \
+             -Dsitelib=/usr/lib/perl5/%{perl_version}/site_perl         \
+             -Dsitearch=/usr/lib/perl5/%{perl_version}/site_perl        \
+             -Dvendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl     \
+             -Dvendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl    \
+             -Dman1dir=/usr/share/man/man1                              \
+             -Dman3dir=/usr/share/man/man3                              \
 
 %else
 export BUILD_ZLIB=False
 export BUILD_BZIP2=0
 sh Configure -des                                                    \
-             -D prefix=/usr                                           \
-             -D vendorprefix=/usr                                     \
-             -D privlib=/usr/lib/perl5/%{perl_version}/core_perl      \
-             -D archlib=/usr/lib/perl5/%{perl_version}/core_perl      \
-             -D sitelib=/usr/lib/perl5/%{perl_version}/site_perl      \
-             -D sitearch=/usr/lib/perl5/%{perl_version}/site_perl     \
-             -D vendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl  \
-             -D vendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl \
-             -D man1dir=/usr/share/man/man1                           \
-             -D man3dir=/usr/share/man/man3                           \
-             -D pager="/usr/bin/less -isR"                            \
-             -D useshrplib                                            \
-             -D usethreads
+             -Dprefix=/usr                                           \
+             -Dvendorprefix=/usr                                     \
+             -Dprivlib=/usr/lib/perl5/%{perl_version}/core_perl      \
+             -Darchlib=/usr/lib/perl5/%{perl_version}/core_perl      \
+             -Dsitelib=/usr/lib/perl5/%{perl_version}/site_perl      \
+             -Dsitearch=/usr/lib/perl5/%{perl_version}/site_perl     \
+             -Dvendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl  \
+             -Dvendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl \
+             -Dman1dir=/usr/share/man/man1                           \
+             -Dman3dir=/usr/share/man/man3                           \
+             -Dpager="/usr/bin/less -isR"                            \
+             -Duseshrplib                                            \
+             -Dusethreads
 
 %endif
 %make
@@ -77,6 +81,12 @@ mkdir -p %{buildroot}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.perl
 @perl_version %{perl_version}
 EOF
+
+find \
+    %{buildroot}/usr/lib/perl5/%{perl_version} \
+    -name "*.so" \
+    -exec chmod 755 {} \;
+
 %lfs_install_end
 
 #---------------------------------------------------------------------------

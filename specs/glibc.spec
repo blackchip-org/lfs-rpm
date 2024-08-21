@@ -6,6 +6,8 @@ License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with e
 
 Source0:        https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
+%global         enable_kernel   4.19 
+
 %if %{without %lfs_stage1}
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch
 %endif
@@ -39,7 +41,7 @@ echo "rootsbindir=/usr/sbin" > configparms
 ../configure --prefix=/usr                         \
              --host=%{lfs_tgt}                     \
              --build=$(../scripts/config.guess)    \
-             --enable-kernel=4.19                  \
+             --enable-kernel=%{enable_kernel}      \
              --with-headers=%{lfs_dir}/usr/include \
              --disable-nscd                        \
              libc_cv_slibdir=/usr/lib
@@ -47,7 +49,7 @@ echo "rootsbindir=/usr/sbin" > configparms
 %else
 ../configure --prefix=/usr                            \
              --disable-werror                         \
-             --enable-kernel=4.14                     \
+             --enable-kernel=%{enable_kernel}         \
              --enable-stack-protector=strong          \
              --with-headers=/usr/include              \
              libc_cv_slibdir=/usr/lib

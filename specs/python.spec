@@ -1,5 +1,5 @@
 Name:           python
-Version:        3.12.2
+Version:        3.12.5
 %global         python_version 3.12
 Release:        1%{?dist}
 Summary:        Interpreter of the Python programming language

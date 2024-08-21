@@ -1,10 +1,11 @@
 Name:           util-linux
-Version:        2.39.3
+Version:        2.40.2
+%global         version2    2.40
 Release:        1%{?dist}
 Summary:        Collection of basic system utilities
 License:        GPLv2 and GPLv2+ and LGPLv2+ and BSD with advertising and Public Domain
 
-Source0:        https://www.kernel.org/pub/linux/utils/util-linux/v2.39/util-linux-%{version}.tar.xz
+Source0:        https://www.kernel.org/pub/linux/utils/util-linux/v%{version2}/util-linux-%{version}.tar.xz
 
 %description
 The util-linux package contains a large variety of low-level system
@@ -23,20 +24,21 @@ program.
 %if %{with lfs_stage1}
 mkdir -pv %{buildroot}/var/lib/hwclock
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime    \
-            --libdir=/usr/lib    \
-            --runstatedir=/run   \
-            --docdir=/usr/share/doc/util-linux-2.39.1 \
-            --disable-chfn-chsh  \
-            --disable-login      \
-            --disable-nologin    \
-            --disable-su         \
-            --disable-setpriv    \
-            --disable-runuser    \
-            --disable-pylibmount \
-            --disable-static     \
-            --without-python     \
+            --libdir=/usr/lib     \
+            --runstatedir=/run    \
+            --disable-chfn-chsh   \
+            --disable-login       \
+            --disable-nologin     \
+            --disable-su          \
+            --disable-setpriv     \
+            --disable-runuser     \
+            --disable-pylibmount  \
+            --disable-static      \
+            --disable-liblastlog2 \
+            --without-python      \
             --disable-makeinstall-chown \
-            --disable-makeinstall-setuid
+            --disable-makeinstall-setuid \
+            --docdir=/usr/share/doc/util-linux-%{version} 
 
 %else
 sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
