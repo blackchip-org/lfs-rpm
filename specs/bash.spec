@@ -31,6 +31,7 @@ be run by bash without modification.
 ./configure --prefix=/usr             \
             --without-bash-malloc     \
             --with-installed-readline \
+            bash_cv_strtold_broken=no \
             --docdir=/usr/share/doc/bash-%{version}
 
 %endif

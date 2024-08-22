@@ -1,5 +1,5 @@
 Name:           libcap
-Version:        2.69
+Version:        2.70
 Release:        1%{?dist}
 Summary:        Library for getting and setting POSIX.1e capabilities
 License:        BSD or GPLv2
@@ -46,7 +46,7 @@ sed -i '/install -m.*STA/d' libcap/Makefile
 /usr/sbin/getcap
 /usr/sbin/getpcaps
 /usr/sbin/setcap
-/usr/share/man/man{1,3,8}/*
+/usr/share/man/man{1,3,5,8}/*
 
 %defattr(755,root,root,755)
 /usr/lib/libcap.so.%{version}

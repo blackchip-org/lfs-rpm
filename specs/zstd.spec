@@ -1,5 +1,5 @@
 Name:           zstd
-Version:        1.5.5
+Version:        1.5.6
 Release:        1%{?dist}
 Summary:        Zstd compression library
 License:        BSD and GPLv2

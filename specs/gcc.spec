@@ -119,6 +119,7 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
              --enable-languages=c,c++ \
              --enable-default-pie     \
              --enable-default-ssp     \
+             --enable-host-pie        \
              --disable-multilib       \
              --disable-bootstrap      \
              --disable-fixincludes    \
@@ -205,7 +206,7 @@ ulimit -s 32768
 /usr/bin/x86_64-pc-linux-gnu-c++
 /usr/bin/x86_64-pc-linux-gnu-g++
 /usr/bin/x86_64-pc-linux-gnu-gcc
-/usr/bin/x86_64-pc-linux-gnu-gcc-13.2.0
+/usr/bin/x86_64-pc-linux-gnu-gcc-%{version}
 /usr/bin/x86_64-pc-linux-gnu-gcc-ar
 /usr/bin/x86_64-pc-linux-gnu-gcc-nm
 /usr/bin/x86_64-pc-linux-gnu-gcc-ranlib
@@ -279,7 +280,7 @@ ulimit -s 32768
 /usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/lto1
 /usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/plugin/gengtype
 /usr/share/gcc-%{version}
-/usr/share/gdb/auto-load/usr/lib/libstdc++.so.6.0.32-gdb.py
+/usr/share/gdb/auto-load/usr/lib/libstdc++.so.6.0.33-gdb.py
 /usr/share/info/*
 /usr/share/locale/*/LC_MESSAGES/*.mo
 /usr/share/man/man{1,7}/*
@@ -296,7 +297,7 @@ ulimit -s 32768
 /usr/lib/liblsan.so.0.0.0
 /usr/lib/libquadmath.so.0.0.0
 /usr/lib/libssp.so.0.0.0
-/usr/lib/libstdc++.so.6.0.32
+/usr/lib/libstdc++.so.6.0.33
 /usr/lib/libtsan.so.2.0.0
 /usr/lib/libubsan.so.1.0.0
 

@@ -53,7 +53,6 @@ popd
             --without-normal        \
             --with-cxx-shared       \
             --enable-pc-files       \
-            --enable-widec          \
             --with-pkg-config-libdir=/usr/lib/pkgconfig
 
 %endif
@@ -141,11 +140,11 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 /usr/share/terminfo/*/*
 
 %defattr(755,root,root,755)
-/usr/lib/libformw.so.6.4
-/usr/lib/libmenuw.so.6.4
-/usr/lib/libncurses++w.so.6.4
-/usr/lib/libncursesw.so.6.4
-/usr/lib/libpanelw.so.6.4
+/usr/lib/libformw.so.%{version}
+/usr/lib/libmenuw.so.%{version}
+/usr/lib/libncurses++w.so.%{version}
+/usr/lib/libncursesw.so.%{version}
+/usr/lib/libpanelw.so.%{version}
 
 %endif
 

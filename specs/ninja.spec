@@ -1,5 +1,5 @@
 Name:           ninja
-Version:        1.11.1
+Version:        1.12.1
 Release:        1%{?dist}
 Summary:        Ninja is a small build system with a focus on speed
 License:        ASL

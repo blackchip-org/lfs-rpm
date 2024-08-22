@@ -41,7 +41,6 @@ with the "python3-" prefix.
 ./configure --prefix=/usr        \
             --enable-shared      \
             --with-system-expat  \
-            --with-system-ffi    \
             --enable-optimizations
 
 %endif

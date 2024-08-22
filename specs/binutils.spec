@@ -63,7 +63,10 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --enable-shared     \
              --disable-werror    \
              --enable-64-bit-bfd \
-             --with-system-zlib
+             --with-system-zlib  \
+             --enable-new-dtags  \
+             --with-system-zlib  \
+             --enable-default-hash-style=gnu
 %make tooldir=/usr
 
 %endif

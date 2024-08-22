@@ -55,6 +55,7 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
             --disable-setpriv    \
             --disable-runuser    \
             --disable-pylibmount \
+            --disable-liblastlog2 \
             --disable-static     \
             --without-python     \
             --disable-makeinstall-chown \
@@ -95,6 +96,8 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/bin/column
 /usr/bin/dmesg
 /usr/bin/eject
+/usr/bin/enosys
+/usr/bin/exch
 /usr/bin/fadvise
 /usr/bin/fallocate
 /usr/bin/fincore
@@ -118,6 +121,7 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/bin/logger
 /usr/bin/look
 /usr/bin/lsblk
+/usr/bin/lsclocks
 /usr/bin/lscpu
 /usr/bin/lsfd
 /usr/bin/lsipc
@@ -142,6 +146,7 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/bin/scriptlive
 /usr/bin/scriptreplay
 /usr/bin/setarch
+/usr/bin/setpgid
 /usr/bin/setsid
 /usr/bin/setterm
 /usr/bin/taskset
@@ -182,6 +187,7 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/lib/systemd/system/fstrim.timer
 /usr/lib/systemd/system/uuidd.service
 /usr/lib/systemd/system/uuidd.socket
+/usr/lib/tmpfiles.d/uuidd-tmpfiles.conf
 /usr/sbin/addpart
 /usr/sbin/agetty
 /usr/sbin/blkdiscard

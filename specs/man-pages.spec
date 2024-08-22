@@ -1,5 +1,5 @@
 Name:           man-pages
-Version:        6.06
+Version:        6.9.1 
 Release:        1%{?dist}
 Summary:        Linux kernel and C library user-space interface documentation
 License:        GPL+ and GPLv2+ and BSD and MIT and Copyright only

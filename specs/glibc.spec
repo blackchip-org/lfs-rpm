@@ -51,7 +51,7 @@ echo "rootsbindir=/usr/sbin" > configparms
              --disable-werror                         \
              --enable-kernel=%{enable_kernel}         \
              --enable-stack-protector=strong          \
-             --with-headers=/usr/include              \
+             --disable-nscd                           \
              libc_cv_slibdir=/usr/lib
 
 %endif
@@ -87,7 +87,6 @@ cp -v ../nscd/nscd.conf %{buildroot}/etc/nscd.conf
 mkdir -pv %{buildroot}/var/cache/nscd
 install -v -Dm644 ../nscd/nscd.tmpfiles %{buildroot}/usr/lib/tmpfiles.d/nscd.conf
 install -v -Dm644 ../nscd/nscd.service %{buildroot}/usr/lib/systemd/system/nscd.service
-mkdir -pv %{buildroot}/usr/lib/locale
 
 cat > %{buildroot}/etc/nsswitch.conf << "EOF"
 # Begin /etc/nsswitch.conf
@@ -215,7 +214,6 @@ make check
 /usr/libexec/getconf
 /usr/sbin/iconvconfig
 /usr/sbin/ldconfig
-/usr/sbin/nscd
 /usr/sbin/sln
 /usr/sbin/zic
 /usr/share/i18n/charmaps/*

@@ -7,7 +7,11 @@ License:        GPL+ or Artistic
 
 Source0:        https://www.cpan.org/src/5.0/perl-%{version}.tar.xz
 
+# If yes, this calls a perl script to find this information but perl isn't 
+# installed yet
+%if %{with lfs_stage1}
 AutoReqProv:    no
+%endif 
 
 %description
 Perl is a high-level programming language with roots in C, sed, awk and shell
