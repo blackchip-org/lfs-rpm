@@ -11,6 +11,7 @@ lfs_dir=/lfs
 lfs_tools_dir=${lfs_dir}/tools
 lfs_tgt=x86_64-lfs-linux-gnu
 lfs_root_img=build/lfs-${lfs_version}-root.img
+lfs_install_dir=/var/lib/libvirt/images
 
 lfs_version_1=$(echo $lfs_version | cut -f1 -d.)
 lfs_dist=.lfs${lfs_version_1}

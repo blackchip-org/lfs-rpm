@@ -226,6 +226,12 @@ lfs-mkimage() {
     sudo umount /run/lfs
 }
 
+lfs-install() {
+    sudo mkdir -p ${lfs_install_dir}
+    sudo cp ${lfs_root_img} ${lfs_install_dir} 
+    sudo cp build/boot/vmlinuz ${lfs_install_dir}/lfs-${lfs_version}-vmlinuz
+}
+
 lfs-build-all() {
     ./lfs download
 
@@ -329,6 +335,7 @@ case $1 in
     export)     assert-stage && lfs-export ;;
     bootstrap)  assert-stage && lfs-bootstrap ;;
     mkimage)    lfs-mkimage ;;
+    install)    lfs-install ;;
     reset)      lfs-reset ;;
     dist-clean) lfs-dist-clean ;;
     build-all)  lfs-build-all ;;

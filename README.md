@@ -36,9 +36,11 @@ sudo dnf install podman
 
 To test the image in a virtual machine, install:
 
-```
-sudo dnf install qemu-kvm virt-manager
-```
+    sudo dnf install qemu-kvm virt-manager
+
+or:
+
+    sudo apt install qemu-kvm virt-manager
 
 For Ubuntu, additionally install *rpm* and *curl*:
 
@@ -50,7 +52,7 @@ sudo apt install rpm curl
 ## Automated Build
 
 If you are lucky and cross your fingers the entire system can be built and
-booted with the following three steps:
+booted with the following four steps:
 
 ### Run `./lfs build-all`
 
@@ -70,13 +72,6 @@ If the build fails for some reason, you can continue the build using the
 manual procedure below. Running this command will start everything from
 the beginning which is usually what you don't want.
 
-Known issues:
-
-- stage1b:binutils: sometimes fails during strip with a file truncated
-error. Maybe more memory is needed? Running again usually resolves the
-issue.
-
-
 ### Run `./lfs mkimage`
 
 The tarball now has to be converted to a filesystem image. This requires root
@@ -84,12 +79,23 @@ privileges as it is necessary to temporarily mount the image to copy in the
 filesystem. Run this command and enter in your password if prompted. The root
 filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 
+### Run `./lfs install`
+
+The emulator is going to need access to two files: the root filesystem image, 
+and the kernel. By default, it won't have access to files in your home 
+directory. Running install will copy those files to /var/lib/libvirt/images as:
+
+- lfs-12.2-root-img
+- lfs-12.2-vmlinuz
+
 ### Create and boot a VM
+
+Now configure a virtual machine:
 
 - Start virt-manager
 - Select File -> New Virtual Machine
 - Select "Import existing disk image"
-- For "Provide the existing storage path" enter in the full path to "build/lfs-12.1-root.img"
+- For "Provide the existing storage path" and select "lfs-12.2-root.img"
 - For "Choose the operating system your are installing", select "Generic Linux 2022"
 - Click on "Forward"
 - Adjust memory and CPUs as needed and click on "Forward"
@@ -98,18 +104,18 @@ filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 - Click on "Finish"
 - On the left sidebar, select "Boot Options" and then open "Direct kernel boot"
 - Click on "Enable direct kernel boot"
-- For "Kernel path" enter the full path to "build/boot/vmlinuz"
+- For "Kernel path" select "lfs-12.2-vmlinuz"
 - Leave "Initrd path" blank
 - For "Kernel args" enter in "root=/dev/vda rw"
+- Click on "Apply"
+- On the left sidebar, select "Video Virtio"
+- Change Model from "Virtio" to "VGA"
 - Click on "Apply"
 - In the top left-hand corner, select "Begin Installation"
 
 The operating system should now boot. Login with user "lfs", password
 "lfs". The root password is also "lfs". Verify network connectivity with
 "ping 8.8.8.8"
-
-If the boot hangs after a bunch of pci and pci_bus messages, change the video settings
-under "Video Virtio" from "Virtio" to "VGA". 
 
 ## Build Process
 

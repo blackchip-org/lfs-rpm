@@ -31,5 +31,5 @@ rm -v man3/crypt*
 %files
 /usr/share/man/man{1,2,3,4,5,6,7,8}/*
 /usr/share/man/man{2,3}type/*
-/usr/share/man/man3const/*
+/usr/share/man/man{2,3}const/*
 /usr/share/man/man3head/*
