@@ -1,8 +1,8 @@
-# lfs-rpm
+# lfs-rpm 
 
 A [Linux from Scratch](https://www.linuxfromscratch.org/) (LFS) build using
 [podman](https://podman.io/) and the [RPM](https://rpm.org/) package
-manager.
+manager. These build steps follow LFS version 12.2-systemd. 
 
 Before you read any further, have you built [Linux from
 Scratch](https://www.linuxfromscratch.org/) yourself? If not, I highly
@@ -90,10 +90,32 @@ as:
 - lfs-12.2-root-img
 - lfs-12.2-vmlinuz
 
-This also copies over a VM configuration file to */etc/libvirt/qemu*. Start
-`virt-manager` and select the LFS VM from the menu. The operating system should 
-now boot. Login with user "lfs", password "lfs". The root password is also 
-"lfs". Verify network connectivity with "ping 8.8.8.8"
+Now create a virtual machine using the following steps:
+
+- Start virt-manager
+- Select File -> New Virtual Machine
+- Select "Import existing disk image"
+- For "Provide the existing storage path" and select "lfs-12.2-root.img"
+- For "Choose the operating system your are installing", select "Generic Linux 2022"
+- Click on "Forward"
+- Adjust memory and CPUs as needed and click on "Forward"
+- For "Name", put in "LFS" or any name that you like
+- Click on "Customize configuration before install"
+- Click on "Finish"
+- On the left sidebar, select "Boot Options" and then open "Direct kernel boot"
+- Click on "Enable direct kernel boot"
+- For "Kernel path" select "lfs-12.2-vmlinuz"
+- Leave "Initrd path" blank
+- For "Kernel args" enter in "root=/dev/vda rw"
+- Click on "Apply"
+- On the left sidebar, select "Video Virtio"
+- Change Model from "Virtio" to "VGA"
+- Click on "Apply"
+- In the top left-hand corner, select "Begin Installation"
+
+The operating system should now boot. Login with user "lfs", password "lfs". 
+The root password is also "lfs". Verify network connectivity with 
+"ping 8.8.8.8"
 
 ## Build Process
 
