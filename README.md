@@ -45,7 +45,7 @@ Install *podman* for use as the build environment and also *rpm* and *curl*:
 
     sudo apt install podman rpm curl 
 
-To test the image in a virtual machine, intall: 
+To test the image in a virtual machine, install: 
 
     sudo apt install qemu-kvm virt-manager
     
