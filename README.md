@@ -28,26 +28,27 @@ that was done for their fun, not mine.
 
 ## Build Requirements
 
+### Fedora 
+
 Install *podman* for use as the build environment:
 
-```
-sudo dnf install podman 
-```
+    sudo dnf install podman 
 
 To test the image in a virtual machine, install:
 
     sudo dnf install qemu-kvm virt-manager
 
-or:
+
+### Ubuntu 
+
+Install *podman* for use as the build environment and also *rpm* and *curl*:
+
+    sudo apt install podman rpm curl 
+
+To test the image in a virtual machine, intall: 
 
     sudo apt install qemu-kvm virt-manager
-
-For Ubuntu, additionally install *rpm* and *curl*:
-
-```
-sudo apt install rpm curl 
-```
-
+    
 
 ## Automated Build
 
@@ -88,34 +89,10 @@ directory. Running install will copy those files to /var/lib/libvirt/images as:
 - lfs-12.2-root-img
 - lfs-12.2-vmlinuz
 
-### Create and boot a VM
-
-Now configure a virtual machine:
-
-- Start virt-manager
-- Select File -> New Virtual Machine
-- Select "Import existing disk image"
-- For "Provide the existing storage path" and select "lfs-12.2-root.img"
-- For "Choose the operating system your are installing", select "Generic Linux 2022"
-- Click on "Forward"
-- Adjust memory and CPUs as needed and click on "Forward"
-- For "Name", put in "LFS" or any name that you like
-- Click on "Customize configuration before install"
-- Click on "Finish"
-- On the left sidebar, select "Boot Options" and then open "Direct kernel boot"
-- Click on "Enable direct kernel boot"
-- For "Kernel path" select "lfs-12.2-vmlinuz"
-- Leave "Initrd path" blank
-- For "Kernel args" enter in "root=/dev/vda rw"
-- Click on "Apply"
-- On the left sidebar, select "Video Virtio"
-- Change Model from "Virtio" to "VGA"
-- Click on "Apply"
-- In the top left-hand corner, select "Begin Installation"
-
-The operating system should now boot. Login with user "lfs", password
-"lfs". The root password is also "lfs". Verify network connectivity with
-"ping 8.8.8.8"
+This also copies over a VM configuration file to /etc/libvirt/qemu. Start
+`virt-manager` and select the LFS VM from the menu. The operating system should 
+now boot. Login with user "lfs", password "lfs". The root password is also 
+"lfs". Verify network connectivity with "ping 8.8.8.8"
 
 ## Build Process
 
