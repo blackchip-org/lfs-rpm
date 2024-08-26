@@ -53,7 +53,7 @@ To test the image in a virtual machine, install:
 ## Automated Build
 
 If you are lucky and cross your fingers the entire system can be built and
-booted with the following four steps:
+booted with the following three steps:
 
 ### Run `./lfs build-all`
 
