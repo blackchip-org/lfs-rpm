@@ -84,12 +84,13 @@ filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 
 The emulator is going to need access to two files: the root filesystem image, 
 and the kernel. By default, it won't have access to files in your home 
-directory. Running install will copy those files to /var/lib/libvirt/images as:
+directory. Running install will copy those files to */var/lib/libvirt/images* 
+as:
 
 - lfs-12.2-root-img
 - lfs-12.2-vmlinuz
 
-This also copies over a VM configuration file to /etc/libvirt/qemu. Start
+This also copies over a VM configuration file to */etc/libvirt/qemu*. Start
 `virt-manager` and select the LFS VM from the menu. The operating system should 
 now boot. Login with user "lfs", password "lfs". The root password is also 
 "lfs". Verify network connectivity with "ping 8.8.8.8"
