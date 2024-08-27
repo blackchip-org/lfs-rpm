@@ -66,7 +66,7 @@ configuration, and *make -j8*:
 real	118m7.072s
 ```
 
-Once done, the root filesystem can be found at *build/config/config.tar.gz* and
+Once done, the root filesystem can be found at *build/final/final.tar.gz* and
 the kernel at *build/boot*.
 
 If the build fails for some reason, you can continue the build using the
@@ -131,7 +131,7 @@ The chapter breaks provide natural "save points" in the build process. Each
 stage is built in a separate podman container and the results of the build are
 exported for use in the next stage.
 
-There is an additional stage named "config" that loads in the results from
+There is an additional stage named "final" that loads in the results from
 stage2 and applies any necessary configurations for the initial boot.
 
 The full procedure to build LFS without `build-all` is:
@@ -155,8 +155,8 @@ The full procedure to build LFS without `build-all` is:
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs config init
-    ./lfs config export
+    ./lfs final init
+    ./lfs final export
     ./lfs mkimage
 
 
@@ -263,7 +263,7 @@ used in the containers for stage1a and stage1b.
 is usually set to the number of processors on your machine.
 - `lfs_root_size`: Size to use for the root partition filesystem image.
 
-### `./lfs reset`
+### `./lfs clean`
 
 This resets everyting to start a build from scratch again. It deletes everything
 under the *build* directory except for the sources, all exports under
@@ -271,7 +271,7 @@ under the *build* directory except for the sources, all exports under
 
 ### `./lfs dist-clean`
 
-The same as `./lfs reset` but also removes the sources directory.
+The same as `./lfs clean` but also removes the sources directory.
 
 
 ## RPM Notes
