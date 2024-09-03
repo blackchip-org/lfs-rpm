@@ -224,10 +224,8 @@ lfs-mkimage() {
 lfs-install() {
     set -x
     sudo mkdir -p ${lfs_install_dir}
-    sudo cp ${lfs_root_img} ${lfs_install_dir} 
+    sudo cp ${lfs_root_img} ${lfs_install_dir}
     sudo cp build/boot/vmlinuz ${lfs_install_dir}/lfs-${lfs_version}-vmlinuz
-    envsubst < lfs.template.xml > build/lfs-${lfs_version}.xml 
-    sudo cp build/lfs-${lfs_version}.xml /etc/libvirt/qemu/lfs-${lfs_version}.xml 
 }
 
 lfs-build-all() {

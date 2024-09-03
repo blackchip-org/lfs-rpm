@@ -1,7 +1,7 @@
 set -a
 
 lfs_host_image=fedora:40
-lfs_version=12.2-rc1
+lfs_version=12.2
 lfs_nproc=$(nproc)
 lfs_arch=x86_64
 lfs_root_size=10G

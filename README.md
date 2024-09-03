@@ -1,8 +1,8 @@
-# lfs-rpm 
+# lfs-rpm
 
 A [Linux from Scratch](https://www.linuxfromscratch.org/) (LFS) build using
 [podman](https://podman.io/) and the [RPM](https://rpm.org/) package
-manager. These build steps follow LFS version 12.2-systemd. 
+manager. These build steps follow LFS version 12.2-systemd.
 
 Before you read any further, have you built [Linux from
 Scratch](https://www.linuxfromscratch.org/) yourself? If not, I highly
@@ -28,27 +28,33 @@ that was done for their fun, not mine.
 
 ## Build Requirements
 
-### Fedora 
+### Fedora
 
 Install *podman* for use as the build environment:
 
-    sudo dnf install podman 
+    sudo dnf install podman
 
 To test the image in a virtual machine, install:
 
     sudo dnf install qemu-kvm virt-manager
 
 
-### Ubuntu 
+### Ubuntu
 
 Install *podman* for use as the build environment and also *rpm* and *curl*:
 
-    sudo apt install podman rpm curl 
+    sudo apt install podman rpm curl
 
-To test the image in a virtual machine, install: 
+To test the image in a virtual machine, install:
 
     sudo apt install qemu-kvm virt-manager
-    
+
+Start libvirtd and add yourself to the libvirt group:
+
+    sudo systemctl start libvirtd
+    sudo usermod -a -G libvirt $USER
+    newgrp libvirt
+
 
 ## Automated Build
 
@@ -82,9 +88,9 @@ filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 
 ### Run `./lfs install`
 
-The emulator is going to need access to two files: the root filesystem image, 
-and the kernel. By default, it won't have access to files in your home 
-directory. Running install will copy those files to */var/lib/libvirt/images* 
+The emulator is going to need access to two files: the root filesystem image,
+and the kernel. By default, it won't have access to files in your home
+directory. Running install will copy those files to */var/lib/libvirt/images*
 as:
 
 - lfs-12.2-root-img
@@ -113,8 +119,8 @@ Now create a virtual machine using the following steps:
 - Click on "Apply"
 - In the top left-hand corner, select "Begin Installation"
 
-The operating system should now boot. Login with user "lfs", password "lfs". 
-The root password is also "lfs". Verify network connectivity with 
+The operating system should now boot. Login with user "lfs", password "lfs".
+The root password is also "lfs". Verify network connectivity with
 "ping 8.8.8.8"
 
 ## Build Process
