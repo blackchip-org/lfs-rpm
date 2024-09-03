@@ -1,5 +1,5 @@
 Name:           gettext
-Version:        0.22.4
+Version:        0.22.5
 Release:        1%{?dist}
 Summary:        GNU libraries and utilities for producing multi-lingual messages
 License:        GPLv3+ and LGPLv2+

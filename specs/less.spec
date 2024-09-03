@@ -1,5 +1,5 @@
 Name:           less
-Version:        643
+Version:        661
 Release:        1%{?dist}
 Summary:        A text file browser similar to more, but better
 License:        GPLv3+ or BSD

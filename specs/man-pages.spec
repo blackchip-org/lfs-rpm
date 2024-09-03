@@ -1,5 +1,5 @@
 Name:           man-pages
-Version:        6.06
+Version:        6.9.1 
 Release:        1%{?dist}
 Summary:        Linux kernel and C library user-space interface documentation
 License:        GPL+ and GPLv2+ and BSD and MIT and Copyright only
@@ -31,5 +31,5 @@ rm -v man3/crypt*
 %files
 /usr/share/man/man{1,2,3,4,5,6,7,8}/*
 /usr/share/man/man{2,3}type/*
-/usr/share/man/man3const/*
+/usr/share/man/man{2,3}const/*
 /usr/share/man/man3head/*

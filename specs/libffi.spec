@@ -1,5 +1,6 @@
 Name:           libffi
-Version:        3.4.4
+Version:        3.4.6
+%global         so_version  8.1.4
 Release:        1%{?dist}
 Summary:        A portable foreign function interface library
 License:        MIT
@@ -66,4 +67,4 @@ passed between the two languages.
 /usr/share/man/man3/*
 
 %defattr(755,root,root,755)
-/usr/lib/libffi.so.8.1.2
+/usr/lib/libffi.so.%{so_version}

@@ -1,5 +1,5 @@
 Name:           shadow
-Version:        4.14.5
+Version:        4.16.0
 Release:        1%{?dist}
 Summary:        Utilities for managing accounts and shadow password files
 License:        BSD and GPLv2+
@@ -81,7 +81,7 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 /usr/bin/su
 /usr/include/shadow
 /usr/lib/libsubid.so
-/usr/lib/libsubid.so.4
+/usr/lib/libsubid.so.5
 /usr/sbin/chgpasswd
 /usr/sbin/chpasswd
 /usr/sbin/groupadd
@@ -106,4 +106,4 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 /usr/share/man/man{1,3,5,8}/*
 
 %defattr(755,root,root,755)
-/usr/lib/libsubid.so.4.0.0
+/usr/lib/libsubid.so.5.0.0

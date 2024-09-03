@@ -1,10 +1,10 @@
 Name:           python-Jinja2
-Version:        3.1.3
+Version:        3.1.4
 Release:        1%{?dist}
 Summary:        General purpose template engine for python
 License:        BSD
 
-Source0:        https://pypi.org/packages/source/J/Jinja2/Jinja2-%{version}.tar.gz
+Source0:        https://pypi.org/packages/source/J/Jinja2/jinja2-%{version}.tar.gz
 
 %description
 Jinja2 is a template engine written in pure Python. It provides a Django
@@ -18,7 +18,7 @@ useful for templating environments.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n Jinja2-%{version}
+%setup -q -n jinja2-%{version}
 
 #---------------------------------------------------------------------------
 %build
@@ -36,5 +36,5 @@ pip3 install --ignore-installed --no-deps --root=%{buildroot} --no-index --no-us
 
 #---------------------------------------------------------------------------
 %files
-/usr/lib/python%{python_version}/site-packages/Jinja2-%{version}.dist-info
+/usr/lib/python%{python_version}/site-packages/jinja2-%{version}.dist-info
 /usr/lib/python%{python_version}/site-packages/jinja2

@@ -1,11 +1,11 @@
 Name:           readline
-Version:        8.2
+Version:        8.2.13
+%global         version2    8.2
 Release:        1%{?dist}
 Summary:        A library for editing typed command lines
 License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/readline-%{version}-upstream_fixes-3.patch
 
 %description
 The Readline library provides a set of functions that allow users to edit
@@ -17,7 +17,6 @@ performing csh-like history expansion on previous commands
 #---------------------------------------------------------------------------
 %prep
 %setup -q
-%patch 0 -p1
 
 #---------------------------------------------------------------------------
 %build
@@ -25,6 +24,8 @@ performing csh-like history expansion on previous commands
 
 sed -i '/MV.*old/d' Makefile.in
 sed -i '/{OLDSUFF}/c:' support/shlib-install
+
+sed -i 's/-Wl,-rpath,[^ ]*//' support/shobj-conf
 
 ./configure --prefix=/usr    \
             --disable-static \
@@ -55,5 +56,5 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 /usr/share/man/man3/*
 
 %defattr(755,root,root,755)
-/usr/lib/libhistory.so.%{version}
-/usr/lib/libreadline.so.%{version}
+/usr/lib/libhistory.so.%{version2}
+/usr/lib/libreadline.so.%{version2}

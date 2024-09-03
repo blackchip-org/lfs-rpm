@@ -5,6 +5,7 @@ Summary:        A program-script interaction and testing utility
 License:        Public Domain 
 
 Source0:        https://prdownloads.sourceforge.net/expect/expect%{version}.tar.gz
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/expect-%{version}-gcc14-1.patch
 
 %description
 Expect is a tcl application for automating and testing interactive applications
@@ -16,6 +17,9 @@ This package contains expect and some scripts that use it.
 #---------------------------------------------------------------------------
 %prep
 %setup -q -n %{name}%{version}
+
+# patch macro has fuzz=0 which fail, manually patch 
+patch -Np1 -i %{PATCH0}
 
 #---------------------------------------------------------------------------
 %build

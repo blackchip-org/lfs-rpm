@@ -1,5 +1,5 @@
 Name:           gdbm
-Version:        1.23
+Version:        1.24
 Release:        1%{?dist}
 Summary:        A GNU set of database routines which use extensible hashing
 License:        GPLv3+

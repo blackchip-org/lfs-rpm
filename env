@@ -1,7 +1,7 @@
 set -a
 
-lfs_host_image=fedora:39
-lfs_version=12.1
+lfs_host_image=fedora:40
+lfs_version=12.2
 lfs_nproc=$(nproc)
 lfs_arch=x86_64
 lfs_root_size=10G
@@ -11,6 +11,7 @@ lfs_dir=/lfs
 lfs_tools_dir=${lfs_dir}/tools
 lfs_tgt=x86_64-lfs-linux-gnu
 lfs_root_img=build/lfs-${lfs_version}-root.img
+lfs_install_dir=/var/lib/libvirt/images
 
 lfs_version_1=$(echo $lfs_version | cut -f1 -d.)
 lfs_dist=.lfs${lfs_version_1}

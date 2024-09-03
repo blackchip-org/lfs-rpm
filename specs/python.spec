@@ -1,5 +1,5 @@
 Name:           python
-Version:        3.12.2
+Version:        3.12.5
 %global         python_version 3.12
 Release:        1%{?dist}
 Summary:        Interpreter of the Python programming language
@@ -41,7 +41,6 @@ with the "python3-" prefix.
 ./configure --prefix=/usr        \
             --enable-shared      \
             --with-system-expat  \
-            --with-system-ffi    \
             --enable-optimizations
 
 %endif

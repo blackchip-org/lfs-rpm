@@ -4,6 +4,7 @@ specs/glibc.spec
 specs/zlib.spec
 specs/bzip2.spec
 specs/xz.spec
+specs/lz4.spec
 specs/zstd.spec
 specs/file.spec
 specs/readline.spec

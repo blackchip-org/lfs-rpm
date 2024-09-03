@@ -1,10 +1,12 @@
 Name:           glibc
-Version:        2.39
+Version:        2.40
 Release:        1%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
 
 Source0:        https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
+
+%global         enable_kernel   4.19 
 
 %if %{without %lfs_stage1}
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch
@@ -39,16 +41,17 @@ echo "rootsbindir=/usr/sbin" > configparms
 ../configure --prefix=/usr                         \
              --host=%{lfs_tgt}                     \
              --build=$(../scripts/config.guess)    \
-             --enable-kernel=4.14                  \
+             --enable-kernel=%{enable_kernel}      \
              --with-headers=%{lfs_dir}/usr/include \
+             --disable-nscd                        \
              libc_cv_slibdir=/usr/lib
 
 %else
 ../configure --prefix=/usr                            \
              --disable-werror                         \
-             --enable-kernel=4.14                     \
+             --enable-kernel=%{enable_kernel}         \
              --enable-stack-protector=strong          \
-             --with-headers=/usr/include              \
+             --disable-nscd                           \
              libc_cv_slibdir=/usr/lib
 
 %endif
@@ -84,7 +87,6 @@ cp -v ../nscd/nscd.conf %{buildroot}/etc/nscd.conf
 mkdir -pv %{buildroot}/var/cache/nscd
 install -v -Dm644 ../nscd/nscd.tmpfiles %{buildroot}/usr/lib/tmpfiles.d/nscd.conf
 install -v -Dm644 ../nscd/nscd.service %{buildroot}/usr/lib/systemd/system/nscd.service
-mkdir -pv %{buildroot}/usr/lib/locale
 
 cat > %{buildroot}/etc/nsswitch.conf << "EOF"
 # Begin /etc/nsswitch.conf
@@ -212,7 +214,6 @@ make check
 /usr/libexec/getconf
 /usr/sbin/iconvconfig
 /usr/sbin/ldconfig
-/usr/sbin/nscd
 /usr/sbin/sln
 /usr/sbin/zic
 /usr/share/i18n/charmaps/*

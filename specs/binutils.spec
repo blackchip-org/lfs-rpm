@@ -1,5 +1,5 @@
 Name:           binutils
-Version:        2.42
+Version:        2.43.1
 Release:        1%{?dist}
 Summary:        A GNU collection of binary utilities
 License:        GPLv3+
@@ -35,7 +35,9 @@ cd build
              --target=%{lfs_tgt}        \
              --disable-nls              \
              --enable-gprofng=no        \
-             --disable-werror
+             --disable-werror           \
+             --enable-new-dtags         \
+             --enable-default-hash-style=gnu
 %make
 
 %elif %{with lfs_stage1b}
@@ -47,7 +49,9 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --enable-shared            \
              --enable-gprofng=no        \
              --disable-werror           \
-             --enable-64-bit-bfd
+             --enable-64-bit-bfd        \
+             --enable-new-dtags         \
+             --enable-default-hash-style=gnu
 %make
 
 %else
@@ -59,7 +63,10 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --enable-shared     \
              --disable-werror    \
              --enable-64-bit-bfd \
-             --with-system-zlib
+             --with-system-zlib  \
+             --enable-new-dtags  \
+             --with-system-zlib  \
+             --enable-default-hash-style=gnu
 %make tooldir=/usr
 
 %endif

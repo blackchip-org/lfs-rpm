@@ -7,7 +7,7 @@ cd "$(dirname $0)"
 
 source ./env
 
-stages="stage1a stage1b stage1c stage2 config"
+stages="stage1a stage1b stage1c stage2 final"
 for stage in $stages; do
     images+="lfs-${stage} "
 done
@@ -39,7 +39,7 @@ lfs-env() {
 lfs-init() {
     if [ "$stage" == "stage1a" ] ; then
         build_arg="--build-arg lfs_host_image=${lfs_host_image}"
-    elif [ "$stage" == "config" ] ; then
+    elif [ "$stage" == "final" ] ; then
         build_arg="--build-arg lfs_init_user=${lfs_init_user}"
     fi
 
@@ -66,7 +66,7 @@ lfs-init() {
 lfs-spectool() {
     (
     set -x
-    spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
+    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
     )
 }
 
@@ -131,16 +131,14 @@ lfs-export() {
         stage1a)
             (
             set -x
-            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /tmp/lfs-${stage}.tar.gz  .
-            podman cp lfs-${stage}:/tmp/lfs-${stage}.tar.gz build/${stage}
+            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /build/lfs-rpm/build/${stage}/lfs-${stage}.tar.gz  .
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
         stage1b)
             (
             set -x
-            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /tmp/lfs-${stage}.tar.gz --exclude=./tools .
-            podman cp lfs-${stage}:/tmp/lfs-${stage}.tar.gz build/${stage}
+            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /build/lfs-rpm/build/${stage}/lfs-${stage}.tar.gz --exclude=./tools .
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
@@ -148,7 +146,7 @@ lfs-export() {
             (
             set -x
             podman exec --user root -t lfs-$stage \
-                tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
+                tar -C / -c -z -f /build/lfs-rpm/build/${stage}/lfs-$stage.tar.gz \
                 --exclude='./build' \
                 --exclude='./tmp/*' \
                 --exclude './home/*' \
@@ -158,7 +156,6 @@ lfs-export() {
                 --exclude './sys/*' \
                 --exclude './var/lib/rpm/*' \
                 .
-            podman cp lfs-$stage:/tmp/lfs-$stage.tar.gz build/${stage}
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
@@ -166,7 +163,7 @@ lfs-export() {
             (
             set -x
             podman exec --user root -t lfs-$stage \
-                tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
+                tar -C / -c -z -f /build/lfs-rpm/build/${stage}/lfs-$stage.tar.gz \
                 --exclude='./build' \
                 --exclude='./tmp/*' \
                 --exclude './home/*' \
@@ -175,24 +172,22 @@ lfs-export() {
                 --exclude './proc/*' \
                 --exclude './sys/*' \
                 .
-            podman cp lfs-$stage:/tmp/lfs-$stage.tar.gz build/${stage}
             rm -rf build/boot
             podman cp "lfs-$stage:/boot" build/boot
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
-        config)
+        final)
             (
             set -x
             podman exec --user root -t lfs-$stage \
-                tar -C / -c -z -f /tmp/lfs-$stage.tar.gz \
+                tar -C / -c -z -f /build/lfs-rpm/build/${stage}/lfs-$stage.tar.gz \
                 --exclude='./build' \
                 --exclude='./tmp/*' \
                 --exclude './dev/*' \
                 --exclude './proc/*' \
                 --exclude './sys/*' \
                 .
-            podman cp lfs-$stage:/tmp/lfs-$stage.tar.gz build/${stage}
             )
             ;;
         *)
@@ -205,6 +200,7 @@ lfs-export() {
 lfs-bootstrap() {
     if [ "$stage" == "stage1c" ] ; then
         lfs-spectool specs/cmake.spec
+        lfs-spectool specs/elfutils.spec
         lfs-spectool specs/rpm.spec
         podman exec --user root -t lfs-stage1c lfs-rpm/containers/lfs-stage1c/rpm-bootstrap.sh
     else
@@ -220,9 +216,16 @@ lfs-mkimage() {
     sudo mkfs -t ext4 "$lfs_root_img"
     sudo mkdir -p /run/lfs
     sudo mount "$lfs_root_img" /run/lfs
-    sudo tar xf build/config/lfs-config.tar.gz -C /run/lfs
-    sudo cp -r containers/lfs-config/overlay/* /run/lfs
+    sudo tar xf build/final/lfs-final.tar.gz -C /run/lfs
+    sudo cp -r containers/lfs-final/overlay/* /run/lfs
     sudo umount /run/lfs
+}
+
+lfs-install() {
+    set -x
+    sudo mkdir -p ${lfs_install_dir}
+    sudo cp ${lfs_root_img} ${lfs_install_dir}
+    sudo cp build/boot/vmlinuz ${lfs_install_dir}/lfs-${lfs_version}-vmlinuz
 }
 
 lfs-build-all() {
@@ -245,11 +248,11 @@ lfs-build-all() {
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs config init
-    ./lfs config export
+    ./lfs final init
+    ./lfs final export
 }
 
-lfs-reset() {
+lfs-clean() {
     set -x
     rm -rf
     for stage in $stages; do
@@ -304,13 +307,13 @@ case $1 in
     stage2|2)
         shift
         stage=stage2
-        next_stage=config
+        next_stage=final
         rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;
-    config)
+    final)
         shift
-        stage=config
+        stage=final
         ;;
 esac
 
@@ -328,7 +331,8 @@ case $1 in
     export)     assert-stage && lfs-export ;;
     bootstrap)  assert-stage && lfs-bootstrap ;;
     mkimage)    lfs-mkimage ;;
-    reset)      lfs-reset ;;
+    install)    lfs-install ;;
+    clean)      lfs-clean ;;
     dist-clean) lfs-dist-clean ;;
     build-all)  lfs-build-all ;;
     *)

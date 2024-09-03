@@ -9,7 +9,9 @@
 %lfs_tgt            %{getenv:lfs_tgt}
 
 %make               make -j%{getenv:lfs_nproc}
-%lfs_build_begin    export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
+%lfs_build_begin    \
+    export PATH=%{getenv:lfs_tools_dir}/bin:${PATH} \
+    export LC_ALL=POSIX
 %lfs_build_end      %{nil}
 %lfs_install_begin  export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
 %lfs_install_end    \

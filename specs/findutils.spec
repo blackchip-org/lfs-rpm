@@ -1,5 +1,5 @@
 Name:           findutils
-Version:        4.9.0
+Version:        4.10.0 
 Release:        1%{?dist}
 Summary:        The GNU versions of find utilities (find and xargs)
 License:        GPLv3+

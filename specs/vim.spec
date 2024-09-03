@@ -1,5 +1,5 @@
 Name:           vim
-Version:        9.1.0041
+Version:        9.1.0660
 %global         version2    91
 Release:        1%{?dist}
 Summary:        Visual editor improved

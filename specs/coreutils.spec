@@ -1,11 +1,10 @@
 Name:           coreutils
-Version:        9.4
+Version:        9.5
 Release:        1%{?dist}
 Summary:        A set of basic GNU tools commonly used in shell scripts
 License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/coreutils/coreutils-%{version}.tar.xz
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/coreutils-%{version}-i18n-1.patch
 
 %description
 These are the GNU core utilities. This package is the combination of the old
@@ -14,10 +13,6 @@ GNU fileutils, sh-utils, and textutils packages.
 #---------------------------------------------------------------------------
 %prep
 %setup -q
-
-%if %{without lfs_stage1}
-%patch 0 -p1
-%endif
 
 #---------------------------------------------------------------------------
 %build
@@ -28,9 +23,8 @@ GNU fileutils, sh-utils, and textutils packages.
             --host=%{lfs_tgt}                 \
             --build=$(build-aux/config.guess) \
             --enable-install-program=hostname \
-            --enable-no-install-program=kill,uptime \
-            gl_cv_macro_MB_CUR_MAX_good=y
-
+            --enable-no-install-program=kill,uptime 
+            
 %else
 autoreconf -fiv
 FORCE_UNSAFE_CONFIGURE=1 ./configure \

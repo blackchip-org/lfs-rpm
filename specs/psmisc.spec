@@ -1,5 +1,5 @@
 Name:           psmisc
-Version:        23.6
+Version:        23.7
 Release:        1%{?dist}
 Summary:        Utilities for managing processes on your system
 License:        GPLv2+

@@ -1,5 +1,5 @@
 Name:           perl-XML-Parser
-Version:        2.46
+Version:        2.47
 Release:        1%{?dist}
 Summary:        Perl module for parsing XML documents
 License:        GPL+ or Artistic

@@ -1,11 +1,17 @@
 Name:           perl
-Version:        5.38.2
-%global         perl_version 5.38
+Version:        5.40.0 
+%global         perl_version 5.40
 Release:        1%{?dist}
 Summary:        Practical Extraction and Report Language
 License:        GPL+ or Artistic
 
 Source0:        https://www.cpan.org/src/5.0/perl-%{version}.tar.xz
+
+# If yes, this calls a perl script to find this information but perl isn't 
+# installed yet
+%if %{with lfs_stage1}
+AutoReqProv:    no
+%endif 
 
 %description
 Perl is a high-level programming language with roots in C, sed, awk and shell
@@ -32,6 +38,8 @@ the Perl decomposition into packages.
 %lfs_build_begin
 
 %if %{with lfs_stage1}
+unset LC_ALL
+
 sh Configure -des                                                       \
              -Dprefix=/usr                                              \
              -Dvendorprefix=/usr                                        \
@@ -77,6 +85,12 @@ mkdir -p %{buildroot}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.perl
 @perl_version %{perl_version}
 EOF
+
+find \
+    %{buildroot}/usr/lib/perl5/%{perl_version} \
+    -name "*.so" \
+    -exec chmod 755 {} \;
+
 %lfs_install_end
 
 #---------------------------------------------------------------------------

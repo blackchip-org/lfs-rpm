@@ -1,5 +1,5 @@
 Name:           systemd
-Version:        255
+Version:        256.4
 Release:        1%{?dist}
 Summary:        System and Service Manager
 License:        LGPLv2+ and MIT and GPLv2+
@@ -38,19 +38,22 @@ cd       build
 meson setup \
       --prefix=/usr                 \
       --buildtype=release           \
-      -Ddefault-dnssec=no           \
-      -Dfirstboot=false             \
-      -Dinstall-tests=false         \
-      -Dldconfig=false              \
-      -Dsysusers=false              \
-      -Drpmmacrosdir=no             \
-      -Dhomed=false                 \
-      -Duserdb=false                \
-      -Dman=false                   \
-      -Dmode=release                \
-      -Dpamconfdir=no               \
-      -Ddev-kvm-mode=0660           \
-      -Ddocdir=/usr/share/doc/systemd-%{version} \
+      -D default-dnssec=no           \
+      -D firstboot=false             \
+      -D install-tests=false         \
+      -D ldconfig=false              \
+      -D sysusers=false              \
+      -D rpmmacrosdir=no             \
+      -D homed=disabled              \
+      -D userdb=false                \
+      -D man=false                   \
+      -D mode=release                \
+      -D pamconfdir=no               \
+      -D dev-kvm-mode=0660           \
+      -D nobody-group=nogroup        \
+      -D sysupdate=disabled          \
+      -D ukify=disabled              \
+      -D docdir=/usr/share/doc/systemd-%{version} \
       ..
 ninja
 %lfs_build_end
@@ -78,6 +81,7 @@ systemctl disable systemd-sysupdate{,-reboot}
 %files
 /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
 /etc/init.d/README
+%config(noreplace) /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
 %config(noreplace) /etc/systemd/coredump.conf
 %config(noreplace) /etc/systemd/journald.conf
 %config(noreplace) /etc/systemd/logind.conf
@@ -105,6 +109,7 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/bin/oomctl
 /usr/bin/portablectl
 /usr/bin/resolvectl
+/usr/bin/run0
 /usr/bin/systemctl
 /usr/bin/systemd-ac-power
 /usr/bin/systemd-analyze
@@ -135,16 +140,15 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/bin/systemd-tmpfiles
 /usr/bin/systemd-tty-ask-password-agent
 /usr/bin/systemd-umount
+/usr/bin/systemd-vpick
 /usr/bin/timedatectl
 /usr/bin/udevadm
-/usr/bin/ukify
 /usr/bin/varlinkctl
 /usr/include/libudev.h
 /usr/include/systemd
 /usr/lib/environment.d/99-environment.conf
 /usr/lib/kernel/install.conf
 /usr/lib/kernel/install.d/50-depmod.install
-/usr/lib/kernel/install.d/60-ukify.install
 /usr/lib/kernel/install.d/90-loaderentry.install
 /usr/lib/kernel/install.d/90-uki-copy.install
 /usr/lib/libnss_myhostname.so.2
@@ -181,6 +185,7 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/share/factory/etc/*
 /usr/share/locale/*/LC_MESSAGES/systemd.mo
 /usr/share/man/man{1,3,5,7,8}/*
+/usr/share/mime/packages/io.systemd.xml
 /usr/share/pkgconfig/systemd.pc
 /usr/share/pkgconfig/udev.pc
 /usr/share/polkit-1/actions/*

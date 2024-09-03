@@ -2,7 +2,7 @@
 
 A [Linux from Scratch](https://www.linuxfromscratch.org/) (LFS) build using
 [podman](https://podman.io/) and the [RPM](https://rpm.org/) package
-manager.
+manager. These build steps follow LFS version 12.2-systemd.
 
 Before you read any further, have you built [Linux from
 Scratch](https://www.linuxfromscratch.org/) yourself? If not, I highly
@@ -28,19 +28,33 @@ that was done for their fun, not mine.
 
 ## Build Requirements
 
-This has only been tested on a Fedora operating system. Install *podman* for
-use as the build environment and *rpmdevtools* to use *spectool* to
-download the necessary source packages:
+### Fedora
 
-```
-sudo dnf install podman rpmdevtools
-```
+Install *podman* for use as the build environment:
+
+    sudo dnf install podman
 
 To test the image in a virtual machine, install:
 
-```
-sudo dnf install qemu-kvm virt-manager
-```
+    sudo dnf install qemu-kvm virt-manager
+
+
+### Ubuntu
+
+Install *podman* for use as the build environment and also *rpm* and *curl*:
+
+    sudo apt install podman rpm curl
+
+To test the image in a virtual machine, install:
+
+    sudo apt install qemu-kvm virt-manager
+
+Start libvirtd and add yourself to the libvirt group:
+
+    sudo systemctl start libvirtd
+    sudo usermod -a -G libvirt $USER
+    newgrp libvirt
+
 
 ## Automated Build
 
@@ -58,19 +72,12 @@ configuration, and *make -j8*:
 real	118m7.072s
 ```
 
-Once done, the root filesystem can be found at *build/config/config.tar.gz* and
+Once done, the root filesystem can be found at *build/final/final.tar.gz* and
 the kernel at *build/boot*.
 
 If the build fails for some reason, you can continue the build using the
 manual procedure below. Running this command will start everything from
 the beginning which is usually what you don't want.
-
-Known issues:
-
-- stage1b:binutils: sometimes fails during strip with a file truncated
-error. Maybe more memory is needed? Running again usually resolves the
-issue.
-
 
 ### Run `./lfs mkimage`
 
@@ -79,12 +86,22 @@ privileges as it is necessary to temporarily mount the image to copy in the
 filesystem. Run this command and enter in your password if prompted. The root
 filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 
-### Create and boot a VM
+### Run `./lfs install`
+
+The emulator is going to need access to two files: the root filesystem image,
+and the kernel. By default, it won't have access to files in your home
+directory. Running install will copy those files to */var/lib/libvirt/images*
+as:
+
+- lfs-12.2-root-img
+- lfs-12.2-vmlinuz
+
+Now create a virtual machine using the following steps:
 
 - Start virt-manager
 - Select File -> New Virtual Machine
 - Select "Import existing disk image"
-- For "Provide the existing storage path" enter in the full path to "build/lfs-12.1-root.img"
+- For "Provide the existing storage path" and select "lfs-12.2-root.img"
 - For "Choose the operating system your are installing", select "Generic Linux 2022"
 - Click on "Forward"
 - Adjust memory and CPUs as needed and click on "Forward"
@@ -93,14 +110,17 @@ filesystem image will now be at *build/lfs-${lfs_version}-root.img*
 - Click on "Finish"
 - On the left sidebar, select "Boot Options" and then open "Direct kernel boot"
 - Click on "Enable direct kernel boot"
-- For "Kernel path" enter the full path to "build/boot/vmlinuz"
+- For "Kernel path" select "lfs-12.2-vmlinuz"
 - Leave "Initrd path" blank
 - For "Kernel args" enter in "root=/dev/vda rw"
 - Click on "Apply"
+- On the left sidebar, select "Video Virtio"
+- Change Model from "Virtio" to "VGA"
+- Click on "Apply"
 - In the top left-hand corner, select "Begin Installation"
 
-The operating system should now boot. Login with user "lfs", password
-"lfs". The root password is also "lfs". Verify network connectivity with
+The operating system should now boot. Login with user "lfs", password "lfs".
+The root password is also "lfs". Verify network connectivity with
 "ping 8.8.8.8"
 
 If the boot hangs after a bunch of pci and pci_bus messages, change the video settings
@@ -120,7 +140,7 @@ The chapter breaks provide natural "save points" in the build process. Each
 stage is built in a separate podman container and the results of the build are
 exported for use in the next stage.
 
-There is an additional stage named "config" that loads in the results from
+There is an additional stage named "final" that loads in the results from
 stage2 and applies any necessary configurations for the initial boot.
 
 The full procedure to build LFS without `build-all` is:
@@ -144,8 +164,8 @@ The full procedure to build LFS without `build-all` is:
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs config init
-    ./lfs config export
+    ./lfs final init
+    ./lfs final export
     ./lfs mkimage
 
 
@@ -252,7 +272,7 @@ used in the containers for stage1a and stage1b.
 is usually set to the number of processors on your machine.
 - `lfs_root_size`: Size to use for the root partition filesystem image.
 
-### `./lfs reset`
+### `./lfs clean`
 
 This resets everyting to start a build from scratch again. It deletes everything
 under the *build* directory except for the sources, all exports under
@@ -260,7 +280,7 @@ under the *build* directory except for the sources, all exports under
 
 ### `./lfs dist-clean`
 
-The same as `./lfs reset` but also removes the sources directory.
+The same as `./lfs clean` but also removes the sources directory.
 
 
 ## RPM Notes

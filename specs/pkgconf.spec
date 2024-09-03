@@ -1,5 +1,5 @@
 Name:           pkgconf
-Version:        2.1.1
+Version:        2.3.0
 Release:        1%{?dist}
 Summary:        Package compiler and linker metadata toolkit
 License:        ISC
@@ -43,11 +43,11 @@ ln -sv pkgconf.1 %{buildroot}/usr/share/man/man1/pkg-config.1
 /usr/bin/pkgconf
 /usr/include/pkgconf/libpkgconf
 /usr/lib/libpkgconf.so
-/usr/lib/libpkgconf.so.4
+/usr/lib/libpkgconf.so.5
 /usr/lib/pkgconfig/libpkgconf.pc
 /usr/share/aclocal/*
 /usr/share/doc/%{name}-%{version}
 /usr/share/man/man{1,5,7}/*
 
 %defattr(755,root,root,755)
-/usr/lib/libpkgconf.so.4.0.0
+/usr/lib/libpkgconf.so.5.0.0

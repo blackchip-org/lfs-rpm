@@ -1,5 +1,5 @@
 Name:           libgpg-error
-Version:        1.48
+Version:        1.50
 Release:        1%{?dist}
 Summary:        Library for error values used by GnuPG components
 License:        LGPLv2+
