@@ -6,11 +6,15 @@ License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with e
 
 Source0:        https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
-%global         enable_kernel   4.19 
+%global         enable_kernel   4.19
 
 %if %{without %lfs_stage1}
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch
 %endif
+
+Provides:       rtld(GNU_HASH)
+
+BuildRequires:  bison
 
 %description
 The glibc package contains standard libraries which are used by multiple
@@ -80,6 +84,16 @@ esac
 rm -rf %{buildroot}/%{lfs_dir}/var
 
 %else
+case $(uname -m) in
+    i?86)   mkdir -p              %{buildroot}/lib
+            ln -sfv ld-linux.so.2 %{buildroot}/lib/ld-lsb.so.3
+    ;;
+    x86_64) mkdir -p %{buildroot}/lib64
+            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/lib64
+            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/lib64/ld-lsb-x86-64.so.3
+    ;;
+esac
+
 sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 make DESTDIR=%{buildroot} install
 sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/usr/bin/ldd
@@ -154,6 +168,8 @@ make check
 /etc/nscd.conf
 /etc/nsswitch.conf
 /etc/rpc
+/lib64/ld-linux-x86-64.so.2
+/lib64/ld-lsb-x86-64.so.3
 /usr/bin/gencat
 /usr/bin/getconf
 /usr/bin/getent

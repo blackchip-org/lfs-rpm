@@ -49,6 +49,7 @@ ln -s bash %{buildroot}/%{lfs_dir}/usr/bin/sh
 
 %else
 %make DESTDIR=%{buildroot} install
+ln -s bash %{buildroot}/usr/bin/sh
 
 %endif
 %lfs_install_end
@@ -69,6 +70,7 @@ make tests
 %else
 /usr/bin/bash
 /usr/bin/bashbug
+/usr/bin/sh
 /usr/include/bash/*
 /usr/lib/bash
 /usr/lib/pkgconfig/bash.pc

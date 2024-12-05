@@ -72,7 +72,7 @@ configuration, and *make -j8*:
 real	118m7.072s
 ```
 
-Once done, the root filesystem can be found at *build/final/final.tar.gz* and
+Once done, the root filesystem can be found at *build/boot/boot.tar.gz* and
 the kernel at *build/boot*.
 
 If the build fails for some reason, you can continue the build using the
@@ -124,7 +124,7 @@ The root password is also "lfs". Verify network connectivity with
 "ping 8.8.8.8"
 
 If the boot hangs after a bunch of pci and pci_bus messages, change the video settings
-under "Video Virtio" from "Virtio" to "VGA". 
+under "Video Virtio" from "Virtio" to "VGA".
 
 ## Build Process
 
@@ -140,7 +140,7 @@ The chapter breaks provide natural "save points" in the build process. Each
 stage is built in a separate podman container and the results of the build are
 exported for use in the next stage.
 
-There is an additional stage named "final" that loads in the results from
+There is an additional stage named "boot" that loads in the results from
 stage2 and applies any necessary configurations for the initial boot.
 
 The full procedure to build LFS without `build-all` is:
@@ -164,8 +164,8 @@ The full procedure to build LFS without `build-all` is:
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs final init
-    ./lfs final export
+    ./lfs boot init
+    ./lfs boot export
     ./lfs mkimage
 
 

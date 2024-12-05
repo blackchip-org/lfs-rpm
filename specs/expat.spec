@@ -6,6 +6,8 @@ License:        MIT
 
 Source0:        https://prdownloads.sourceforge.net/expat/expat-%{version}.tar.xz
 
+BuildRequires:  tar
+
 %description
 This is expat, the C library for parsing XML, written by James Clark. Expat is
 a stream oriented XML parser. This means that you register handlers with the

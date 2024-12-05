@@ -6,6 +6,8 @@ License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/tar/tar-%{version}.tar.xz
 
+BuildRequires:  flex
+
 %description
 The GNU tar program saves many files together in one archive and can restore
 individual files (or all of the files) from that archive. Tar can also be used
@@ -30,7 +32,7 @@ package on the remote box.
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
 
-%else 
+%else
 FORCE_UNSAFE_CONFIGURE=1  \
 ./configure --prefix=/usr
 
@@ -45,7 +47,7 @@ FORCE_UNSAFE_CONFIGURE=1  \
 %if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
-%else 
+%else
 %make DESTDIR=%{buildroot} install
 
 %endif
@@ -62,7 +64,7 @@ make check
 %{lfs_dir}/usr/libexec/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/tar.mo
 
-%else 
+%else
 /usr/bin/tar
 /usr/libexec/rmt
 /usr/share/info/*

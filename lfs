@@ -7,7 +7,7 @@ cd "$(dirname $0)"
 
 source ./env
 
-stages="stage1a stage1b stage1c stage2 final"
+stages="stage1a stage1b stage1c stage2 boot"
 for stage in $stages; do
     images+="lfs-${stage} "
 done
@@ -39,7 +39,7 @@ lfs-env() {
 lfs-init() {
     if [ "$stage" == "stage1a" ] ; then
         build_arg="--build-arg lfs_host_image=${lfs_host_image}"
-    elif [ "$stage" == "final" ] ; then
+    elif [ "$stage" == "boot" ] ; then
         build_arg="--build-arg lfs_init_user=${lfs_init_user}"
     fi
 
@@ -64,9 +64,11 @@ lfs-init() {
 }
 
 lfs-spectool() {
+    name=$(basename ${1%.*})
     (
     set -x
-    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
+    mkdir -p build/sources/$name
+    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources/$name $1
     )
 }
 
@@ -175,9 +177,10 @@ lfs-export() {
             rm -rf build/boot
             podman cp "lfs-$stage:/boot" build/boot
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-pod
             )
             ;;
-        final)
+        boot)
             (
             set -x
             podman exec --user root -t lfs-$stage \
@@ -216,8 +219,8 @@ lfs-mkimage() {
     sudo mkfs -t ext4 "$lfs_root_img"
     sudo mkdir -p /run/lfs
     sudo mount "$lfs_root_img" /run/lfs
-    sudo tar xf build/final/lfs-final.tar.gz -C /run/lfs
-    sudo cp -r containers/lfs-final/overlay/* /run/lfs
+    sudo tar xf build/boot/lfs-boot.tar.gz -C /run/lfs
+    sudo cp -r containers/lfs-boot/overlay/* /run/lfs
     sudo umount /run/lfs
 }
 
@@ -226,6 +229,15 @@ lfs-install() {
     sudo mkdir -p ${lfs_install_dir}
     sudo cp ${lfs_root_img} ${lfs_install_dir}
     sudo cp build/boot/vmlinuz ${lfs_install_dir}/lfs-${lfs_version}-vmlinuz
+}
+
+lfs-mkpod() {
+    if [ "$stage" != "stage2" ] ; then
+        echo "$prog: error: only in stage2"
+        exit 1
+    fi
+    set -x
+    podman exec --user root -t lfs-stage2 bash /build/lfs-rpm/containers/lfs-stage2/mkpod.sh
 }
 
 lfs-build-all() {
@@ -248,8 +260,8 @@ lfs-build-all() {
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs final init
-    ./lfs final export
+    ./lfs boot init
+    ./lfs boot export
 }
 
 lfs-clean() {
@@ -307,13 +319,13 @@ case $1 in
     stage2|2)
         shift
         stage=stage2
-        next_stage=final
+        next_stage=boot
         rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;
-    final)
+    boot)
         shift
-        stage=final
+        stage=boot
         ;;
 esac
 
@@ -330,6 +342,7 @@ case $1 in
     root)       assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)     assert-stage && lfs-export ;;
     bootstrap)  assert-stage && lfs-bootstrap ;;
+    mkpod)      assert-stage && lfs-mkpod ;;
     mkimage)    lfs-mkimage ;;
     install)    lfs-install ;;
     clean)      lfs-clean ;;

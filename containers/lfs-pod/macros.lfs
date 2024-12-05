@@ -1,0 +1,22 @@
+%dist           %{getenv:lfs_dist}
+%lfs_version    %{getenv:lfs_version}
+%lfs_arch       %{getenv:lfs_arch}
+
+%_build_id_links    none
+
+%make               make -j%{getenv:lfs_nproc}
+%lfs_build_begin    %{nil}
+%lfs_build_end      %{nil}
+%lfs_install_begin  %{nil}
+%lfs_install_end    %{nil}
+
+%update_info_dir \
+    if [ -e /usr/bin/install-info ] ; then \
+        pushd /usr/share/info \
+            rm -v dir \
+            for f in * \
+                do install-info $f dir 2>/dev/null \
+            done \
+        popd \
+    fi
+

@@ -35,10 +35,11 @@ elfcompress (to compress or decompress ELF sections).
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %else
-%make -C libelf DESTDIR=%{buildroot} install
+%make DESTDIR=%{buildroot} install
 install -d %{buildroot}/usr/lib/pkgconfig
 install -vm644 -t %{buildroot}/usr/lib/pkgconfig config/libelf.pc
-rm %{buildroot}/usr/lib/libelf.a
+
+rm %{buildroot}/usr/lib/*.a
 
 %endif
 %lfs_install_end
@@ -49,11 +50,45 @@ rm %{buildroot}/usr/lib/libelf.a
 
 #---------------------------------------------------------------------------
 %files
+/usr/bin/debuginfod-find
+/usr/bin/eu-addr2line
+/usr/bin/eu-ar
+/usr/bin/eu-elfclassify
+/usr/bin/eu-elfcmp
+/usr/bin/eu-elfcompress
+/usr/bin/eu-elflint
+/usr/bin/eu-findtextrel
+/usr/bin/eu-make-debug-archive
+/usr/bin/eu-nm
+/usr/bin/eu-objdump
+/usr/bin/eu-ranlib
+/usr/bin/eu-readelf
+/usr/bin/eu-size
+/usr/bin/eu-srcfiles
+/usr/bin/eu-stack
+/usr/bin/eu-strings
+/usr/bin/eu-strip
+/usr/bin/eu-unstrip
+/usr/etc/profile.d/debuginfod.csh
+/usr/etc/profile.d/debuginfod.sh
 /usr/include/elfutils
 /usr/include/*.h
+/usr/lib/libasm.so
+/usr/lib/libasm.so.1
+/usr/lib/libdebuginfod.so
+/usr/lib/libdebuginfod.so.1
+/usr/lib/libdw.so
+/usr/lib/libdw.so.1
 /usr/lib/libelf.so
 /usr/lib/libelf.so.1
 /usr/lib/pkgconfig/libelf.pc
+/usr/lib/pkgconfig/libdebuginfod.pc
+/usr/lib/pkgconfig/libdw.pc
+/usr/share/locale/*/LC_MESSAGES/%{name}.mo
+/usr/share/man/man{1,3,7}/*
 
 %defattr(755,root,root,755)
+/usr/lib/libasm-%{version}.so
 /usr/lib/libelf-%{version}.so
+/usr/lib/libdebuginfod-%{version}.so
+/usr/lib/libdw-%{version}.so

@@ -29,7 +29,7 @@ development.
 ./configure --prefix=/usr \
             --docdir=/usr/share/doc/flex-%{version} \
             --disable-static
-%make 
+%make
 %lfs_build_end
 
 #---------------------------------------------------------------------------
@@ -43,16 +43,16 @@ ln -sv flex.1 %{buildroot}/usr/share/man/man1/lex.1
 
 #---------------------------------------------------------------------------
 %files
-/usr/bin/flex 
+/usr/bin/flex
 /usr/bin/flex++
-/usr/bin/lex 
+/usr/bin/lex
 /usr/include/*
 /usr/lib/libfl.so
 /usr/lib/libfl.so.2
 /usr/share/doc/flex-%{version}
-/usr/share/info/* 
-/usr/share/locale/*/LC_MESSAGES/flex.mo 
-/usr/share/man/man1/* 
+/usr/share/info/*
+/usr/share/locale/*/LC_MESSAGES/flex.mo
+/usr/share/man/man1/*
 
-%defattr(755,root,root,755) 
+%defattr(755,root,root,755)
 /usr/lib/libfl.so.2.0.0

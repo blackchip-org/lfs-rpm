@@ -41,6 +41,9 @@ for make in the program's makefile.
 %if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
+%else
+%make DESTDIR=%{buildroot} install
+
 %endif
 %lfs_install_end
 
@@ -49,5 +52,13 @@ for make in the program's makefile.
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/make.mo
+%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/%{name}.mo
+
+%else
+/usr/bin/make
+/usr/include/*
+/usr/share/info/*
+/usr/share/locale/*/LC_MESSAGES/%{name}.mo
+/usr/share/man/man1/*
+
 %endif

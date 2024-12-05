@@ -2,9 +2,14 @@
 
 set -e -x
 
-elfutils_source=elfutils-0.191.tar.bz2
-cmake_source=cmake-3.30.2.tar.gz
-rpm_source=rpm-4.19.1.1.tar.bz2
+elfutils_version=0.191
+cmake_version=3.30.2
+cmake_version2=3.30
+rpm_version=4.19.1.1
+
+elfutils_source=elfutils-${elfutils_version}.tar.bz2
+cmake_source=cmake-${cmake_version}.tar.gz
+rpm_source=rpm-${rpm_version}.tar.bz2
 
 srcdir=/build/rpmbuild/SOURCES
 export MAKEFLAGS=-j${lfs_nproc}
@@ -28,6 +33,10 @@ cd cmake-*
 ./bootstrap -- -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_USE_OPENSSL=OFF
 make
 make install
+
+cat <<EOF > /usr/lib/rpm/macros.d/macros.cmake
+%cmake_version ${cmake_version2}
+EOF
 
 cd /build/rpm-bootstrap
 rm -rf rpm-*

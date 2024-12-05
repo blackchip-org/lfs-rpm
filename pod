@@ -1,0 +1,92 @@
+#!/bin/bash
+
+set -e
+
+prog="$(basename $0)"
+cd "$(dirname $0)"
+
+source ./env
+
+usage() {
+    cat <<EOF
+
+Usage: $prog [specfile...]
+
+EOF
+    exit 2
+}
+
+pod-init() {
+    set -x
+    bash -c "source ./env ; env | grep -e '^lfs_'" > eval.env
+
+    podman build --tag lfs-pod containers/lfs-pod
+}
+
+pod-build() {
+    set -x
+
+    podman stop -t 0    lfs-pod || true
+    podman rm -f        lfs-pod || true
+
+    podman create \
+        --name      lfs-pod \
+        --hostname  lfs-pod \
+        --env-file  eval.env \
+        --userns    keep-id \
+        --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
+        --volume    "./build/pod/rpms:/build/rpmbuild/RPMS:z" \
+        --volume    "./build/pod/srpms:/build/rpmbuild/SRPMS:z" \
+        --volume    .:/build/lfs-rpm:z \
+        lfs-pod
+
+    podman start lfs-pod
+
+    mkdir -p     build/pod/rpms/x86_64
+    createrepo_c build/pod/rpms/x86_64
+
+    rm -rf  build/deps
+    mkdir   build/deps
+
+    reqs=$(rpmspec -q --buildrequires $1)
+    if [ -n "$reqs" ] ; then
+        dnf download \
+            --repofrompath pod,build/pod/rpms/x86_64 \
+            --disablerepo='*' \
+            --enablerepo=pod \
+            --downloaddir build/deps \
+            --refresh \
+            --resolve \
+            $reqs
+
+        podman exec \
+            --user root \
+            lfs-pod \
+            rpm -i --force /build/lfs-rpm/build/deps/*.rpm
+    fi
+
+    podman exec \
+        lfs-pod \
+        rpmbuild -ba --nocheck lfs-rpm/$1
+
+}
+
+case $1 in
+    init)
+        pod-init
+        ;;
+    rpm)
+        shift
+        for arg in $@ ; do
+            pod-build $arg
+        done
+        ;;
+    shell)
+        exec podman exec -it lfs-pod /bin/bash
+        ;;
+    *)
+        echo "$prog: error: invalid command" 1>&2
+        usage
+        ;;
+esac
+

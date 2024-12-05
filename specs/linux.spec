@@ -20,14 +20,7 @@ system: memory allocation, process allocation, device input and output, etc.
 %lfs_build_begin
 
 %make mrproper
-
-%if %{with lfs_stage1}
-%make headers
-find usr/include -type f ! -name '*.h' -delete
-
-%else
 %make defconfig
-
 cat <<EOF >.config.sed
 # Settings recommeded in the LFS book
 s/CONFIG_WERROR=y/CONFIG_WERROR=n/
@@ -46,18 +39,12 @@ cat .config
 
 %make
 
-%endif
 %lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_build_begin
+%lfs_install_begin
 
-%if %{with lfs_stage1}
-mkdir -p %{buildroot}/%{lfs_dir}/usr
-cp -rv usr/include %{buildroot}/%{lfs_dir}/usr
-
-%else
 %make INSTALL_MOD_PATH=%{buildroot}/usr modules_install
 install -m 755 -d %{buildroot}/boot
 install -m 644 arch/x86/boot/bzImage %{buildroot}/boot/vmlinuz-%{version}%{dist}.%{lfs_arch}
@@ -76,15 +63,10 @@ EOF
 
 rm %{buildroot}/usr/lib/modules/%{version}/build
 
-%endif
-%lfs_build_end
+%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/include/*
-
-%else
 /boot/System.map-%{version}
 /boot/System.map
 /boot/config-%{version}
@@ -94,4 +76,4 @@ rm %{buildroot}/usr/lib/modules/%{version}/build
 /etc/modprobe.d
 /usr/lib/modules/%{version}
 
-%endif
+
