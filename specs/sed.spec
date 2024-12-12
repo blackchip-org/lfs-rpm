@@ -15,40 +15,43 @@ command line.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q
+rm -rf      %{name}-%{version}
+tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.xz
+cd          %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
 %make
 
-%else 
+%else
 ./configure --prefix=/usr
 %make
 make html
 
 %endif
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
-%else 
+%else
 %make DESTDIR=%{buildroot} install
 install -d -m755           %{buildroot}/usr/share/doc/sed-4.9
 install -m644 doc/sed.html %{buildroot}/usr/share/doc/sed-4.9
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
@@ -56,7 +59,7 @@ install -m644 doc/sed.html %{buildroot}/usr/share/doc/sed-4.9
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/sed.mo
 
-%else 
+%else
 /usr/bin/sed
 /usr/share/doc/%{name}-%{version}
 /usr/share/info/*

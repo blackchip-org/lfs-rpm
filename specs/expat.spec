@@ -1,12 +1,11 @@
 Name:           expat
-Version:        2.6.2
+Version:        2.6.4
 Release:        1%{?dist}
 Summary:        An XML parser library
 License:        MIT
 
 Source0:        https://prdownloads.sourceforge.net/expat/expat-%{version}.tar.xz
 
-BuildRequires:  tar
 
 %description
 This is expat, the C library for parsing XML, written by James Clark. Expat is

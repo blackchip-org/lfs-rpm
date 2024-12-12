@@ -12,19 +12,22 @@ GNU fileutils, sh-utils, and textutils packages.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q
+rm -rf      %{name}-%{version}
+tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.xz
+cd          %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr                     \
             --host=%{lfs_tgt}                 \
             --build=$(build-aux/config.guess) \
             --enable-install-program=hostname \
-            --enable-no-install-program=kill,uptime 
-            
+            --enable-no-install-program=kill,uptime
+
 %else
 autoreconf -fiv
 FORCE_UNSAFE_CONFIGURE=1 ./configure \
@@ -33,16 +36,17 @@ FORCE_UNSAFE_CONFIGURE=1 ./configure \
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 make DESTDIR=%{buildroot}/%{lfs_dir} install
 mkdir -p %{buildroot}/%{lfs_dir}/usr/sbin
 mv -v %{buildroot}/%{lfs_dir}/usr/bin/chroot %{buildroot}/%{lfs_dir}/usr/sbin
+%discard_docs
 
 %else
 make DESTDIR=%{buildroot} install
@@ -55,7 +59,6 @@ mv -v %{buildroot}/usr/share/man/man1/chroot.1 %{buildroot}/usr/share/man/man8/c
 sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

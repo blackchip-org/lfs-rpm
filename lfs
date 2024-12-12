@@ -7,7 +7,7 @@ cd "$(dirname $0)"
 
 source ./env
 
-stages="stage1a stage1b stage1c stage2 boot"
+stages="stage1a stage1b stage1c stage2 image"
 for stage in $stages; do
     images+="lfs-${stage} "
 done
@@ -39,7 +39,7 @@ lfs-env() {
 lfs-init() {
     if [ "$stage" == "stage1a" ] ; then
         build_arg="--build-arg lfs_host_image=${lfs_host_image}"
-    elif [ "$stage" == "boot" ] ; then
+    elif [ "$stage" == "image" ] ; then
         build_arg="--build-arg lfs_init_user=${lfs_init_user}"
     fi
 
@@ -101,7 +101,7 @@ lfs-build() {
         fi
 
         if [ "$method" == "--reinstall" ] ; then
-            rpm_pkg_flags="$rpm_pkg_flags --replacefiles"
+            rpm_pkg_flags="$rpm_pkg_flags --replacefiles --force"
         fi
 
         if [ ! -z "$*" ] || ! podman exec lfs-$stage rpm -q $package ; then
@@ -180,7 +180,7 @@ lfs-export() {
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-pod
             )
             ;;
-        boot)
+        image)
             (
             set -x
             podman exec --user root -t lfs-$stage \
@@ -219,8 +219,8 @@ lfs-mkimage() {
     sudo mkfs -t ext4 "$lfs_root_img"
     sudo mkdir -p /run/lfs
     sudo mount "$lfs_root_img" /run/lfs
-    sudo tar xf build/boot/lfs-boot.tar.gz -C /run/lfs
-    sudo cp -r containers/lfs-boot/overlay/* /run/lfs
+    sudo tar xf build/image/lfs-image.tar.gz -C /run/lfs
+    sudo cp -r containers/lfs-image/overlay/* /run/lfs
     sudo umount /run/lfs
 }
 
@@ -260,8 +260,8 @@ lfs-build-all() {
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs boot init
-    ./lfs boot export
+    ./lfs image init
+    ./lfs image export
 }
 
 lfs-clean() {
@@ -279,7 +279,7 @@ lfs-clean() {
 
 lfs-dist-clean() {
     set -x
-    lfs-reset
+    lfs-clean
     rm -rf build
 }
 
@@ -323,9 +323,9 @@ case $1 in
         rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;
-    boot)
+    image)
         shift
-        stage=boot
+        stage=image
         ;;
 esac
 

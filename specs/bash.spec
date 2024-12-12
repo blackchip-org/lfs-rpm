@@ -14,13 +14,16 @@ be run by bash without modification.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q
+rm -rf      %{name}-%{version}
+tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.gz
+cd          %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr                      \
             --build=$(sh support/config.guess) \
             --host=%{lfs_tgt}                  \
@@ -36,23 +39,23 @@ be run by bash without modification.
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 mkdir -p %{buildroot}/%{lfs_dir}/bin
 ln -s bash %{buildroot}/%{lfs_dir}/usr/bin/sh
+%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
 ln -s bash %{buildroot}/usr/bin/sh
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

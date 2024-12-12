@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        A GNU collection of binary utilities
 License:        GPLv3+
 
-Source0:        https://sourceware.org/pub/binutils/releases/binutils-%{version}.tar.xz
+Source0:        https://sourceware.org/pub/binutils/releases/%{name}-%{version}.tar.gz
 
 %description
 Binutils is a collection of binary utilities, including ar (for creating,
@@ -18,18 +18,21 @@ object or archive file), strings (for listing printable strings from files),
 strip (for discarding symbols), and addr2line (for converting addresses to file
 and line).
 
+
 #---------------------------------------------------------------------------
 %prep
-%setup -q
+rm -rf      %{name}-%{version}
+tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.gz
+cd          %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
-mkdir build
-cd build
+cd          %{name}-%{version}
+mkdir -p    build
+cd          build
 
 %if %{with lfs_stage1a}
+%use_lfs_tools
 ../configure --prefix=%{lfs_tools_dir}  \
              --with-sysroot=%{lfs_dir}  \
              --target=%{lfs_tgt}        \
@@ -41,6 +44,7 @@ cd build
 %make
 
 %elif %{with lfs_stage1b}
+%use_lfs_tools
 sed '6009s/$add_dir//' -i ../ltmain.sh
 ../configure --prefix=/usr              \
              --build=$(../config.guess) \
@@ -70,19 +74,22 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
 %make tooldir=/usr
 
 %endif
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-cd build
+cd          %{name}-%{version}
+cd          build
 
 %if %{with lfs_stage1a}
+%use_lfs_tools
 DESTDIR=%{buildroot} %make install
+%discard_docs
 
 %elif %{with lfs_stage1b}
+%use_lfs_tools
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
+%discard_docs
 
 %else
 %make tooldir=/usr DESTDIR=%{buildroot} install
@@ -90,7 +97,6 @@ rm -fv %{buildroot}/usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
 rm -rf %{buildroot}/usr/share/info/dir
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

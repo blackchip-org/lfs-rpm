@@ -17,15 +17,18 @@ text processing.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q
+rm -rf      %{name}-%{version}
+tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.xz
+cd          %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
+cd %{name}-%{version}
 
 sed -i 's/extras//' Makefile.in
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
@@ -35,21 +38,21 @@ sed -i 's/extras//' Makefile.in
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
 %else
 make DESTDIR=%{buildroot} LN='ln -f' install
 ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

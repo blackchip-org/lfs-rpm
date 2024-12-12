@@ -29,6 +29,9 @@ pod-build() {
     podman stop -t 0    lfs-pod || true
     podman rm -f        lfs-pod || true
 
+    mkdir -p        build/pod/rpms/x86_64
+    mkdir -p        build/pod/srpms
+
     podman create \
         --name      lfs-pod \
         --hostname  lfs-pod \
@@ -42,27 +45,34 @@ pod-build() {
 
     podman start lfs-pod
 
-    mkdir -p     build/pod/rpms/x86_64
     createrepo_c build/pod/rpms/x86_64
 
     rm -rf  build/deps
     mkdir   build/deps
 
     reqs=$(rpmspec -q --buildrequires $1)
+    deps=$(dnf repoquery \
+        --repofrompath pod,build/pod/rpms/x86_64 \
+        --disablerepo='*' \
+        --enablerepo=pod \
+        --refresh \
+        --requires \
+        --resolve \
+        $reqs)
+
     if [ -n "$reqs" ] ; then
         dnf download \
             --repofrompath pod,build/pod/rpms/x86_64 \
             --disablerepo='*' \
             --enablerepo=pod \
-            --downloaddir build/deps \
+            --downloaddir build/deps\
             --refresh \
-            --resolve \
-            $reqs
+            $reqs $deps
 
         podman exec \
             --user root \
             lfs-pod \
-            rpm -i --force /build/lfs-rpm/build/deps/*.rpm
+            rpm -i --force --nodeps /build/lfs-rpm/build/deps/*.rpm
     fi
 
     podman exec \
@@ -74,6 +84,14 @@ pod-build() {
 case $1 in
     init)
         pod-init
+        ;;
+    build)
+        shift
+        specs=$(cat $1)
+        for arg in $specs; do
+            echo -e "\n----- building $arg"
+            pod-build $arg
+        done
         ;;
     rpm)
         shift

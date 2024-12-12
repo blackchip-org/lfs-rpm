@@ -20,37 +20,40 @@ Install diffutils if you need to compare text files.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q
-
+rm -rf      %{name}-%{version}
+tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.xz
+cd          %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(./build-aux/config.guess)
 
-%else 
+%else
 ./configure --prefix=/usr
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
-%else 
+%else
 make DESTDIR=%{buildroot} install
+rm -f %{buildroot}/usr/share/info/dir
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

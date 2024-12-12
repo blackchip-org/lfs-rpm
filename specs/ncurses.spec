@@ -17,13 +17,16 @@ decompiler infocmp, clear, tput, tset, and a termcap conversion tool captoinfo.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n ncurses-%{version}
+rm -rf      %{name}-%{version}
+tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.gz
+cd          %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 sed -i s/mawk// configure
 
 mkdir build
@@ -43,7 +46,7 @@ popd
             --with-cxx-shared            \
             --without-debug              \
             --without-ada                \
-            --disable-stripping          
+            --disable-stripping
 
 %else
 ./configure --prefix=/usr           \
@@ -57,15 +60,16 @@ popd
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} TIC_PATH=$(pwd)/build/progs/tic install
 echo "INPUT(-lncursesw)" > %{buildroot}/%{lfs_dir}/usr/lib/libncurses.so
+%discard_docs
 
 %else
 make DESTDIR=%{buildroot} install
@@ -84,7 +88,6 @@ mkdir -p        %{buildroot}/usr/share/doc
 cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

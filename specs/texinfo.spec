@@ -6,6 +6,7 @@ License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/texinfo/texinfo-%{version}.tar.xz
 
+
 %description
 Texinfo uses a single source file to produce output in a number of formats,
 both online and printed (HTML, PDF, DVI, Info, DocBook, LaTeX, EPUB 3). This

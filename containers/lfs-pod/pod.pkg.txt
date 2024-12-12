@@ -1,5 +1,0 @@
-specs/linux-headers.spec
-specs/flex.spec
-specs/bison.spec
-specs/tar.spec
-specs/expat.spec

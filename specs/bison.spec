@@ -6,7 +6,6 @@ License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/bison/bison-%{version}.tar.xz
 
-BuildRequires:  flex
 
 %description
 Bison is a general purpose parser generator that converts a grammar

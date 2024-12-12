@@ -5,7 +5,6 @@ Version:        14.2.0
 Release:        1%{?dist}
 Summary:        Various compilers (C, C++, Objective-C, ...)
 License:        GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
-
 Source0:        https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
 %global         glibc_version   2.40
@@ -32,12 +31,14 @@ lfs_stage1:             %{?with_lfs_stage1}
 lfs_gcc_libstdcpp_only: %{?with_lfs_gcc_libstdcpp_only}
 EOF
 
-%setup -q -n gcc-%{version}
+rm -rf      gcc-%{version}
+tar xf      %{_sourcedir}/gcc/gcc-%{version}.tar.xz
+cd          gcc-%{version}
 
 %if %{with lfs_stage1}
-tar -xf %{SOURCE1}
-tar -xf %{SOURCE2}
-tar -xf %{SOURCE3}
+tar -xf %{_sourcedir}/gcc/mpfr-%{mpfr_version}.tar.xz
+tar -xf %{_sourcedir}/gcc/gmp-%{gmp_version}.tar.xz
+tar -xf %{_sourcedir}/gcc/mpc-%{mpc_version}.tar.gz
 
 mv mpfr-%{mpfr_version}  mpfr
 mv gmp-%{gmp_version}    gmp
@@ -46,7 +47,7 @@ mv mpc-%{mpc_version}    mpc
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
+cd gcc-%{version}
 
 case $(uname -m) in
   x86_64)
@@ -59,6 +60,7 @@ mkdir build
 cd build
 
 %if %{with lfs_gcc_libstdcpp_only}
+%use_lfs_tools
 ../libstdc++-v3/configure           \
     --host=%{lfs_tgt}               \
     --build=$(../config.guess)      \
@@ -69,6 +71,7 @@ cd build
     --with-gxx-include-dir=/tools/%{lfs_tgt}/include/c++/%{version}
 
 %elif %{with lfs_stage1a}
+%use_lfs_tools
 ../configure                              \
     --target=%{lfs_tgt}                   \
     --prefix=%{lfs_tools_dir}             \
@@ -92,6 +95,7 @@ cd build
 
 
 %elif %{with lfs_stage1b}
+%use_lfs_tools
 sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     -i ../libgcc/Makefile.in ../libstdc++-v3/include/Makefile.in
 ../configure                                       \
@@ -127,27 +131,32 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
 
+cd gcc-%{version}
 cd build
 
 %if %{with lfs_gcc_libstdcpp_only}
+%use_lfs_tools
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
+%discard_docs
 
 %elif %{with lfs_stage1a}
+%use_lfs_tools
 DESTDIR=%{buildroot} %make install
 cd ..
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
   %{buildroot}/%{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}/include/limits.h
+%discard_docs
 
 %elif %{with lfs_stage1b}
+%use_lfs_tools
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 ln -sv gcc %{buildroot}/%{lfs_dir}/usr/bin/cc
+%discard_docs
 
 %else
 make DESTDIR=%{buildroot} install
@@ -161,7 +170,6 @@ mkdir -pv %{buildroot}/usr/share/gdb/auto-load/usr/lib
 mv -v %{buildroot}/usr/lib/*gdb.py %{buildroot}/usr/share/gdb/auto-load/usr/lib
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

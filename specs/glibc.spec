@@ -14,7 +14,6 @@ Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glib
 
 Provides:       rtld(GNU_HASH)
 
-BuildRequires:  bison
 
 %description
 The glibc package contains standard libraries which are used by multiple
@@ -27,21 +26,25 @@ these two libraries, a Linux system will not function.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q
+rm -rf      %{name}-%{version}
+tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.xz
+cd          %{name}-%{version}
 
 %if %{without %lfs_stage1}
-%patch 0 -p1
+patch   %{_sourcedir}/%{name}/glibc-%{version}-fhs-1.patch \
+        -p1
 %endif
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
+cd      %{name}-%{version}
+mkdir    build
+cd       build
 
-mkdir build
-cd build
 echo "rootsbindir=/usr/sbin" > configparms
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 ../configure --prefix=/usr                         \
              --host=%{lfs_tgt}                     \
              --build=$(../scripts/config.guess)    \
@@ -60,15 +63,14 @@ echo "rootsbindir=/usr/sbin" > configparms
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
-cd build
+cd      %{name}-%{version}
+cd      build
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/%{lfs_dir}/usr/bin/ldd
 
@@ -82,6 +84,7 @@ case $(uname -m) in
     ;;
 esac
 rm -rf %{buildroot}/%{lfs_dir}/var
+%discard_docs
 
 %else
 case $(uname -m) in
@@ -140,7 +143,6 @@ mkdir -p %{buildroot}/usr/lib/locale
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f UTF-8 en_US.UTF-8
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

@@ -4,17 +4,16 @@
 %_build_id_links    none
 %debug_package      %{nil}
 
+%lfs                1
 %lfs_dir            %{getenv:lfs_dir}
 %lfs_tools_dir      %{getenv:lfs_tools_dir}
 %lfs_tgt            %{getenv:lfs_tgt}
 
 %make               make -j%{getenv:lfs_nproc}
-%lfs_build_begin    \
-    export PATH=%{getenv:lfs_tools_dir}/bin:${PATH} \
-    export LC_ALL=POSIX
-%lfs_build_end      %{nil}
-%lfs_install_begin  export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
-%lfs_install_end    \
+
+%use_lfs_tools      export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
+%locale_posix       export LC_ALL=POSIX
+%discard_docs    \
     rm -rf %{buildroot}/lfs/tools/share/{doc,info,man} \
     rm -rf %{buildroot}/lfs/usr/share/{doc,info,man} \
     rm -rf %{buildroot}/usr/share/info/dir

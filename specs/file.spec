@@ -14,13 +14,16 @@ formats.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q
+rm -rf      %{name}-%{version}
+tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.gz
+cd          %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 mkdir build
 pushd build
   ../configure --disable-bzlib      \
@@ -33,26 +36,26 @@ popd
 ./configure --prefix=/usr --host=%{lfs_tgt} --build=$(./config.guess)
 %make FILE_COMPILE=$(pwd)/build/src/file
 
-%else 
+%else
 ./configure --prefix=/usr
 %make
 
-%endif 
-%lfs_build_end
+%endif
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
+cd %{name}-%{version}
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 make DESTDIR=%{buildroot}/%{lfs_dir} install
 rm %{buildroot}/%{lfs_dir}/usr/lib/libmagic.la
+%discard_docs
 
-%else 
+%else
 %make DESTDIR=%{buildroot} install
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
@@ -63,7 +66,7 @@ rm %{buildroot}/%{lfs_dir}/usr/lib/libmagic.la
 %{lfs_dir}/usr/lib/pkgconfig/libmagic.pc
 %{lfs_dir}/usr/share/misc/magic.mgc
 
-%else 
+%else
 /usr/bin/file
 /usr/include/magic.h
 /usr/lib/libmagic.so
@@ -72,7 +75,7 @@ rm %{buildroot}/%{lfs_dir}/usr/lib/libmagic.la
 /usr/share/man/man{1,3,4}/*
 /usr/share/misc/magic.mgc
 
-%defattr(755,root,root,755) 
+%defattr(755,root,root,755)
 /usr/lib/libmagic.so.1.0.0
 
 %endif

@@ -1,5 +1,5 @@
 Name:           perl
-Version:        5.40.0 
+Version:        5.40.0
 %global         perl_version 5.40
 Release:        1%{?dist}
 Summary:        Practical Extraction and Report Language
@@ -7,11 +7,13 @@ License:        GPL+ or Artistic
 
 Source0:        https://www.cpan.org/src/5.0/perl-%{version}.tar.xz
 
-# If yes, this calls a perl script to find this information but perl isn't 
+# If yes, this calls a perl script to find this information but perl isn't
 # installed yet
 %if %{with lfs_stage1}
 AutoReqProv:    no
-%endif 
+%else
+AutoReq:        no
+%endif
 
 %description
 Perl is a high-level programming language with roots in C, sed, awk and shell
