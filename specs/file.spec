@@ -14,14 +14,10 @@ formats.
 
 #---------------------------------------------------------------------------
 %prep
-rm -rf      %{name}-%{version}
-tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.gz
-cd          %{name}-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 mkdir build
@@ -44,8 +40,6 @@ popd
 
 #---------------------------------------------------------------------------
 %install
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 make DESTDIR=%{buildroot}/%{lfs_dir} install

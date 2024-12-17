@@ -31,14 +31,12 @@ lfs_stage1:             %{?with_lfs_stage1}
 lfs_gcc_libstdcpp_only: %{?with_lfs_gcc_libstdcpp_only}
 EOF
 
-rm -rf      gcc-%{version}
-tar xf      %{_sourcedir}/gcc/gcc-%{version}.tar.xz
-cd          gcc-%{version}
+%setup -q -n gcc-%{version}
 
 %if %{with lfs_stage1}
-tar -xf %{_sourcedir}/gcc/mpfr-%{mpfr_version}.tar.xz
-tar -xf %{_sourcedir}/gcc/gmp-%{gmp_version}.tar.xz
-tar -xf %{_sourcedir}/gcc/mpc-%{mpc_version}.tar.gz
+tar -xf %{SOURCE1}
+tar -xf %{SOURCE2}
+tar -xf %{SOURCE3}
 
 mv mpfr-%{mpfr_version}  mpfr
 mv gmp-%{gmp_version}    gmp
@@ -47,7 +45,6 @@ mv mpc-%{mpc_version}    mpc
 
 #---------------------------------------------------------------------------
 %build
-cd gcc-%{version}
 
 case $(uname -m) in
   x86_64)
@@ -135,7 +132,6 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
 #---------------------------------------------------------------------------
 %install
 
-cd gcc-%{version}
 cd build
 
 %if %{with lfs_gcc_libstdcpp_only}

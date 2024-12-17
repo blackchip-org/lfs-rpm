@@ -21,13 +21,10 @@ and line).
 
 #---------------------------------------------------------------------------
 %prep
-rm -rf      %{name}-%{version}
-tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.gz
-cd          %{name}-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-cd          %{name}-%{version}
 mkdir -p    build
 cd          build
 
@@ -77,8 +74,7 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
 
 #---------------------------------------------------------------------------
 %install
-cd          %{name}-%{version}
-cd          build
+cd build
 
 %if %{with lfs_stage1a}
 %use_lfs_tools

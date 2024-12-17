@@ -20,18 +20,12 @@ would like to use its text mode calculator.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 CC=gcc ./configure --prefix=/usr -G -O3 -r
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_build_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %files

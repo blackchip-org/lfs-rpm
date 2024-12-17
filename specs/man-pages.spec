@@ -12,21 +12,15 @@ A large collection of manual pages from the Linux Documentation Project (LDP).
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n man-pages-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 rm -v man3/crypt*
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make prefix=/usr DESTDIR=%{buildroot} install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

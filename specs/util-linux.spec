@@ -19,9 +19,8 @@ program.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 mkdir -pv %{buildroot}/var/lib/hwclock
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime    \
             --libdir=/usr/lib     \
@@ -38,7 +37,8 @@ mkdir -pv %{buildroot}/var/lib/hwclock
             --without-python      \
             --disable-makeinstall-chown \
             --disable-makeinstall-setuid \
-            --docdir=/usr/share/doc/util-linux-%{version} 
+            --docdir=/usr/share/doc/util-linux-%{version}
+%make
 
 %else
 sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
@@ -61,17 +61,21 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
             --disable-makeinstall-chown \
             --disable-makeinstall-setuid \
             --docdir=/usr/share/doc/util-linux-%{version}
+%make
 
 %endif
-%make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
+%if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
+%discard_docs
+
+%else
+%make DESTDIR=%{buildroot} install
+
+%endif
 
 #---------------------------------------------------------------------------
 %files

@@ -23,9 +23,8 @@ programs.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr                         \
             --host=%{lfs_tgt}                     \
             --build=$(./build-aux/config.guess)
@@ -37,21 +36,19 @@ programs.
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
 chmod -v 0755 %{buildroot}/usr/lib/preloadable_libintl.so
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

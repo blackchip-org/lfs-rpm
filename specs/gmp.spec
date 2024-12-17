@@ -23,26 +23,25 @@ Install the gmp package if you need a fast arbitrary precision library.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr    \
             --enable-cxx     \
             --disable-static \
             --docdir=/usr/share/doc/gmp-%{version}
 %make
 %make html
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install install-html
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 %make check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

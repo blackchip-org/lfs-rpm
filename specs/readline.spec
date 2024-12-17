@@ -20,8 +20,6 @@ performing csh-like history expansion on previous commands
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i '/MV.*old/d' Makefile.in
 sed -i '/{OLDSUFF}/c:' support/shlib-install
 
@@ -32,15 +30,16 @@ sed -i 's/-Wl,-rpath,[^ ]*//' support/shobj-conf
             --with-curses    \
             --docdir=/usr/share/doc/readline-%{version}
 %make SHLIB_LIBS="-lncursesw"
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} SHLIB_LIBS="-lncursesw" install
 install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%{version}
-%lfs_install_end
+%remove_info_dir
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

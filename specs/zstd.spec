@@ -16,18 +16,12 @@ real-time compression scenarios at zlib-level compression ratio.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %make prefix=/usr
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make prefix=%{buildroot}/usr install
 rm -f %{buildroot}/usr/lib/libzstd.a
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
@@ -43,5 +37,5 @@ rm -f %{buildroot}/usr/lib/libzstd.a
 /usr/lib/pkgconfig/libzstd.pc
 /usr/share/man/man1/*
 
-%defattr(755,root,root,755) 
+%defattr(755,root,root,755)
 /usr/lib/libzstd.so.%{version}

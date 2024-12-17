@@ -14,14 +14,10 @@ be run by bash without modification.
 
 #---------------------------------------------------------------------------
 %prep
-rm -rf      %{name}-%{version}
-tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.gz
-cd          %{name}-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 ./configure --prefix=/usr                      \
@@ -42,8 +38,6 @@ cd %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %install
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install

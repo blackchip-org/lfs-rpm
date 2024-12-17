@@ -17,14 +17,10 @@ decompiler infocmp, clear, tput, tset, and a termcap conversion tool captoinfo.
 
 #---------------------------------------------------------------------------
 %prep
-rm -rf      %{name}-%{version}
-tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.gz
-cd          %{name}-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 sed -i s/mawk// configure
@@ -63,8 +59,6 @@ popd
 
 #---------------------------------------------------------------------------
 %install
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} TIC_PATH=$(pwd)/build/progs/tic install

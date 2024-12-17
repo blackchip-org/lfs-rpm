@@ -2,7 +2,7 @@ Name:           expect
 Version:        5.45.4
 Release:        1%{?dist}
 Summary:        A program-script interaction and testing utility
-License:        Public Domain 
+License:        Public Domain
 
 Source0:        https://prdownloads.sourceforge.net/expect/expect%{version}.tar.gz
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/expect-%{version}-gcc14-1.patch
@@ -18,30 +18,25 @@ This package contains expect and some scripts that use it.
 %prep
 %setup -q -n %{name}%{version}
 
-# patch macro has fuzz=0 which fail, manually patch 
+# patch macro has fuzz=0 which fail, manually patch
 patch -Np1 -i %{PATCH0}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
 ./configure --prefix=/usr           \
             --with-tcl=/usr/lib     \
             --enable-shared         \
             --mandir=/usr/share/man \
             --with-tclinclude=/usr/include
-%make 
-%lfs_build_end
+%make
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 ln -svf expect%{version}/libexpect%{version}.so %{buildroot}/usr/lib
-%lfs_build_end
 
 #---------------------------------------------------------------------------
-%check 
+%check
 make test
 
 #---------------------------------------------------------------------------
@@ -68,10 +63,10 @@ make test
 /usr/bin/weather
 /usr/bin/xkibitz
 /usr/bin/xpstat
-/usr/include/* 
+/usr/include/*
 /usr/lib/expect5.45.4/pkgIndex.tcl
 /usr/lib/libexpect5.45.4.so
-/usr/share/man/man{1,3}/* 
+/usr/share/man/man{1,3}/*
 
-%defattr(755,root,root,755) 
+%defattr(755,root,root,755)
 /usr/lib/expect5.45.4/libexpect5.45.4.so

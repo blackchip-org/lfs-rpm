@@ -8,9 +8,9 @@ License:        TCL
 Source0:        https://downloads.sourceforge.net/tcl/tcl%{version}-src.tar.gz
 
 %global         tdbc_version    1.1.7
-%global         itcl_version    4.2.4 
-%global         sqlite_version  3.44.2 
-%global         thread_version  2.8.9 
+%global         itcl_version    4.2.4
+%global         sqlite_version  3.44.2
+%global         thread_version  2.8.9
 
 %description
 The Tcl (Tool Command Language) provides a powerful platform for creating
@@ -26,14 +26,12 @@ command languages for applications.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 SRCDIR=$(pwd)
 cd unix
 ./configure --prefix=/usr           \
             --mandir=/usr/share/man \
-            --disable-rpath 
-%make 
+            --disable-rpath
+%make
 
 sed -e "s|$SRCDIR/unix|/usr/lib|" \
     -e "s|$SRCDIR|/usr/include|"  \
@@ -51,21 +49,16 @@ sed -e "s|$SRCDIR/unix/pkgs/itcl%{itcl_version}|/usr/lib/itcl%{itcl_version}|" \
     -i pkgs/itcl%{itcl_version}/itclConfig.sh
 
 unset SRCDIR
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
-cd unix 
+cd unix
 make DESTDIR=%{buildroot} install
 make DESTDIR=%{buildroot} install-private-headers
 ln -sfv tclsh%{version2} %{buildroot}/usr/bin/tclsh
 mv %{buildroot}/usr/share/man/man3/{Thread,Tcl_Thread}.3
 
 find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
-
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
@@ -84,7 +77,7 @@ find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
 /usr/lib/sqlite%{sqlite_version}/libsqlite%{sqlite_version}.so
 /usr/lib/sqlite%{sqlite_version}/pkgIndex.tcl
 /usr/lib/tcl%{version2}
-/usr/lib/tcl8 
+/usr/lib/tcl8
 /usr/lib/tclConfig.sh
 /usr/lib/tclooConfig.sh
 /usr/lib/tdbc%{tdbc_version}/libtdbcstub%{tdbc_version}.a

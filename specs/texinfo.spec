@@ -20,18 +20,28 @@ system is well-integrated with GNU Emacs.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
+%if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr
 %make
-%lfs_build_end
+
+%else
+./configure --prefix=/usr
+%make
+
+%endif
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
+%if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
+%discard_docs
+
+%else
+%make DESTDIR=%{buildroot} install
+
+%endif
 
 #---------------------------------------------------------------------------
 %post

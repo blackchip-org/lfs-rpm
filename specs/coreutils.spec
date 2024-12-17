@@ -12,14 +12,10 @@ GNU fileutils, sh-utils, and textutils packages.
 
 #---------------------------------------------------------------------------
 %prep
-rm -rf      %{name}-%{version}
-tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.xz
-cd          %{name}-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 ./configure --prefix=/usr                     \
@@ -39,8 +35,6 @@ FORCE_UNSAFE_CONFIGURE=1 ./configure \
 
 #---------------------------------------------------------------------------
 %install
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 make DESTDIR=%{buildroot}/%{lfs_dir} install

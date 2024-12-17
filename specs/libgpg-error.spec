@@ -17,9 +17,8 @@ Daemon and possibly more in the future.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr                       \
             --host=%{lfs_tgt}                   \
             --build=$(build-aux/config.guess)   \
@@ -31,20 +30,18 @@ Daemon and possibly more in the future.
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

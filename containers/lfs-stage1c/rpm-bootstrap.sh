@@ -18,7 +18,7 @@ mkdir -p /build/rpm-bootstrap
 
 cd /build/rpm-bootstrap
 rm -rf elfutils-*
-tar xf $srcdir/$elfutils_source
+tar xf $srcdir/elfutils/$elfutils_source
 cd elfutils-*
 ./configure --prefix=/usr                         \
             --disable-demangler                   \
@@ -28,7 +28,7 @@ make
 make install
 
 cd /build/rpm-bootstrap
-tar xf $srcdir/$cmake_source
+tar xf $srcdir/cmake/$cmake_source
 cd cmake-*
 ./bootstrap -- -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_USE_OPENSSL=OFF
 make
@@ -40,7 +40,7 @@ EOF
 
 cd /build/rpm-bootstrap
 rm -rf rpm-*
-tar xf $srcdir/$rpm_source
+tar xf $srcdir/rpm/$rpm_source
 cd rpm-*
 mkdir -p _build
 cd _build

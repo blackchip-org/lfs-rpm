@@ -14,23 +14,16 @@ needed for rebuilding the glibc package.
 
 #---------------------------------------------------------------------------
 %prep
-rm -rf      linux-%{version}
-tar xf      %{_sourcedir}/linux/linux-%{version}.tar.xz
-cd          linux-%{version}
+%setup -q -n linux-%{version}
 
 #---------------------------------------------------------------------------
 %build
-cd linux-%{version}
-
 %make mrproper
 %make headers
 find usr/include -type f ! -name '*.h' -delete
 
-
 #---------------------------------------------------------------------------
 %install
-cd linux-%{version}
-
 %if %{with lfs_stage1}
 mkdir -p %{buildroot}/%{lfs_dir}/usr
 cp -rv usr/include %{buildroot}/%{lfs_dir}/usr

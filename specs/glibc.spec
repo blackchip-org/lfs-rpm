@@ -26,18 +26,14 @@ these two libraries, a Linux system will not function.
 
 #---------------------------------------------------------------------------
 %prep
-rm -rf      %{name}-%{version}
-tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.xz
-cd          %{name}-%{version}
+%setup -q
 
 %if %{without %lfs_stage1}
-patch   %{_sourcedir}/%{name}/glibc-%{version}-fhs-1.patch \
-        -p1
+%patch 0 -p1
 %endif
 
 #---------------------------------------------------------------------------
 %build
-cd      %{name}-%{version}
 mkdir    build
 cd       build
 
@@ -66,8 +62,7 @@ echo "rootsbindir=/usr/sbin" > configparms
 
 #---------------------------------------------------------------------------
 %install
-cd      %{name}-%{version}
-cd      build
+cd build
 
 %if %{with lfs_stage1}
 %use_lfs_tools
@@ -141,12 +136,17 @@ mkdir -p %{buildroot}/usr/lib/locale
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f ISO-8859-1 en_US
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f UTF-8 en_US.UTF-8
+%remove_info_dir
 
 %endif
 
 #---------------------------------------------------------------------------
 %check
 make check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

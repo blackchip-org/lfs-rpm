@@ -111,6 +111,7 @@ lfs-build() {
             echo -e "\n----- building $stage:$package"
             ( set -e -x -o pipefail
             podman exec lfs-$stage rpmbuild \
+                --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
                 $rpmbuild_flags \
                 $rpmbuild_pkg_flags \
                 lfs-rpm/${spec} 2>&1 \

@@ -24,22 +24,21 @@ development.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr \
             --docdir=/usr/share/doc/flex-%{version} \
             --disable-static
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 make DESTDIR=%{buildroot} install
 ln -sv flex   %{buildroot}/usr/bin/lex
 ln -sv flex.1 %{buildroot}/usr/share/man/man1/lex.1
-%lfs_install_end
+%remove_info_dir
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

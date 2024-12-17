@@ -15,14 +15,10 @@ command line.
 
 #---------------------------------------------------------------------------
 %prep
-rm -rf      %{name}-%{version}
-tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.xz
-cd          %{name}-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 ./configure --prefix=/usr     \
@@ -39,8 +35,6 @@ make html
 
 #---------------------------------------------------------------------------
 %install
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install

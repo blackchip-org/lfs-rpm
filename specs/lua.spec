@@ -21,9 +21,8 @@ configuration, scripting, and rapid prototyping.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make INSTALL_TOP=/usr \
      CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar rcu" \
@@ -34,13 +33,11 @@ configuration, scripting, and rapid prototyping.
 %make INSTALL_TOP=/usr "CFLAGS=-O2 -Wall -Wextra -DLUA_COMPAT_5_3 -fPIC"
 
 %endif
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make INSTALL_BIN=%{buildroot}/%{lfs_dir}/usr/bin \
      INSTALL_LIB=%{buildroot}/%{lfs_dir}/usr/lib \
      INSTALL_INC=%{buildroot}/%{lfs_dir}/usr/include \
@@ -49,6 +46,7 @@ configuration, scripting, and rapid prototyping.
      INSTALL_CMOD=%{buildroot}/%{lfs_dir}/usr/lib/lua/5.4 \
      install
 rm %{buildroot}/%{lfs_dir}/usr/bin/*
+%discard_docs
 
 %else
 %make INSTALL_BIN=%{buildroot}/usr/bin \
@@ -60,7 +58,6 @@ rm %{buildroot}/%{lfs_dir}/usr/bin/*
      install
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

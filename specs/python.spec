@@ -30,9 +30,8 @@ with the "python3-" prefix.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr   \
             --enable-shared \
             --without-ensurepip
@@ -45,19 +44,22 @@ with the "python3-" prefix.
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
+%if %{with lfs_stage1}
+%use_lfs_tools
+make DESTDIR=%{buildroot} install
+%discard_docs
 
+%else
 make DESTDIR=%{buildroot} install
 
+%endif
 mkdir -p %{buildroot}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.python
 @python_version %{python_version}
 EOF
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

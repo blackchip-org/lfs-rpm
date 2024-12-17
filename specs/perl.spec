@@ -34,12 +34,10 @@ the Perl decomposition into packages.
 %prep
 %setup -q
 
-
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 unset LC_ALL
 
 sh Configure -des                                                       \
@@ -75,14 +73,18 @@ sh Configure -des                                                    \
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
+%if %{with_lfs_stage1}
+%use_lfs_tools
+make DESTDIR=%{buildroot} install
+%discard_docs
 
+%else
 make DESTDIR=%{buildroot} install
 
+%endif
 mkdir -p %{buildroot}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.perl
 @perl_version %{perl_version}
@@ -92,8 +94,6 @@ find \
     %{buildroot}/usr/lib/perl5/%{perl_version} \
     -name "*.so" \
     -exec chmod 755 {} \;
-
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

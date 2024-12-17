@@ -6,7 +6,7 @@ License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/dejagnu/dejagnu-%{version}.tar.gz
 
-%description 
+%description
 DejaGnu is an Expect/Tcl based framework for testing other programs. DejaGnu
 has several purposes: to make it easy to write tests for any program; to allow
 you to write tests which will be portable to any host or target where a program
@@ -15,42 +15,41 @@ easier to integrate the testing into software development).
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q 
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 mkdir -v build
 cd       build
 
 ../configure --prefix=/usr
-%make 
+%make
 makeinfo --html --no-split -o doc/dejagnu.html ../doc/dejagnu.texi
 makeinfo --plaintext       -o doc/dejagnu.txt  ../doc/dejagnu.texi
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
-cd build 
+cd build
 %make DESTDIR=%{buildroot} install
 install -v -dm755  %{buildroot}/usr/share/doc/dejagnu-%{version}
 install -v -m644   doc/dejagnu.{html,txt} %{buildroot}/usr/share/doc/dejagnu-%{version}
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
-%check 
-cd build 
+%check
+cd build
 make check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
 /usr/bin/dejagnu
 /usr/bin/runtest
-/usr/include/* 
+/usr/include/*
 /usr/share/%{name}
 /usr/share/doc/%{name}-%{version}
-/usr/share/info/* 
-/usr/share/man/man1/* 
+/usr/share/info/*
+/usr/share/man/man1/*

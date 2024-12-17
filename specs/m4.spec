@@ -17,15 +17,10 @@ Install m4 if you need a macro processor.
 
 #---------------------------------------------------------------------------
 %prep
-rm -rf      %{name}-%{version}
-tar xf      %{_sourcedir}/%{name}/%{name}-%{version}.tar.xz
-cd          %{name}-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-cd %{name}-%{version}
-
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 ./configure --prefix=/usr     \
@@ -40,8 +35,6 @@ cd %{name}-%{version}
 
 #---------------------------------------------------------------------------
 %install
-cd %{name}-%{version}
-
 %if %{with lfs_stage1}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
@@ -49,8 +42,13 @@ cd %{name}-%{version}
 
 %else
 %make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

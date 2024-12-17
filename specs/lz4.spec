@@ -18,19 +18,11 @@ reaching RAM speed limits on multi-core systems.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %make BUILD_STATIC=no PREFIX=/usr
-
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} BUILD_STATIC=no PREFIX=/usr install
-
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

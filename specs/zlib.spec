@@ -12,39 +12,36 @@ is used by many different programs.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n zlib-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
-./configure --prefix=/usr
-
 %if %{with lfs_stage1}
+%use_lfs_tools
+./configure --prefix=/usr
 %make CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar" \
      RANLIB="%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib" \
      CHOST=%{lfs_tgt}
 
 %else
+./configure --prefix=/usr
 %make
 
 %endif
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
 rm -f %{buildroot}/usr/lib/libz.a
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
