@@ -84,4 +84,5 @@ specs/libgpg-error.spec
 specs/libgcrypt.spec
 specs/rpm.spec
 specs/linux.spec
+specs/linux-headers.spec
 specs/cpio.spec

@@ -17,21 +17,15 @@ which is largely compatible with the SGI IRIX tool of the same name.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr     \
             --disable-static  \
             --sysconfdir=/etc \
             --docdir=/usr/share/doc/attr-%{version}
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

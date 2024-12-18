@@ -23,8 +23,6 @@ used for managing group accounts.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i 's/groups$(EXEEXT) //' src/Makefile.in
 find man -name Makefile.in -exec sed -i 's/groups\.1 / /'   {} \;
 find man -name Makefile.in -exec sed -i 's/getspnam\.3 / /' {} \;
@@ -41,15 +39,11 @@ sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD YESCRYPT:' \
             --without-libbsd    \
             --with-group-name-max-length=32
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} exec_prefix=/usr install
 %make -C man DESTDIR=%{buildroot} install-man
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %post

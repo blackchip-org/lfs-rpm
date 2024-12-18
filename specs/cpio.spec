@@ -25,23 +25,20 @@ byte-order.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-
 # Both the tar package and this package have a rmt command. For now, take
 # the one found in tar
 rm %{buildroot}/usr/libexec/rmt
+%remove_info_dir
 
-%lfs_install_end
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

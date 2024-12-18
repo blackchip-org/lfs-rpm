@@ -19,8 +19,6 @@ is based on the GMP multiple-precision library.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -e 's/+01,234,567/+1,234,567 /' \
     -e 's/13.10Pd/13Pd/'            \
     -i tests/tsprintf.c
@@ -31,18 +29,19 @@ sed -e 's/+01,234,567/+1,234,567 /' \
             --docdir=/usr/share/doc/mpfr-%{version}
 %make
 %make html
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install install-html
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 %make check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

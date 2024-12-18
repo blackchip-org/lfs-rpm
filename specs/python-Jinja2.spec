@@ -22,17 +22,11 @@ useful for templating environments.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 pip3 wheel -w dist  --no-cache-dir --no-build-isolation --no-deps $PWD
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 pip3 install --ignore-installed --no-deps --root=%{buildroot} --no-index --no-user --find-links=dist Jinja2
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

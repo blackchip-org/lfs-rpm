@@ -15,6 +15,7 @@ lfs_install_dir=/var/lib/libvirt/images
 
 lfs_version_1=$(echo $lfs_version | cut -f1 -d.)
 lfs_dist=.lfs${lfs_version_1}
+lfs_pod_dist=.pod${lfs_version_1}
 
 if [ -e local.env ] ; then
     . ./local.env

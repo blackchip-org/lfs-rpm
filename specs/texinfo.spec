@@ -40,6 +40,7 @@ system is well-integrated with GNU Emacs.
 
 %else
 %make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
 

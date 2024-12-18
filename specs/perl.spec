@@ -76,7 +76,7 @@ sh Configure -des                                                    \
 
 #---------------------------------------------------------------------------
 %install
-%if %{with_lfs_stage1}
+%if %{with lfs_stage1}
 %use_lfs_tools
 make DESTDIR=%{buildroot} install
 %discard_docs

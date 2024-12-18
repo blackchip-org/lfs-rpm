@@ -41,22 +41,16 @@ supplied by glibc's libcrypt ('encrypt', 'encrypt_r', 'setkey', 'setkey_r', and
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr                \
             --enable-hashes=strong,glibc \
             --enable-obsolete-api=no     \
             --disable-static             \
             --disable-failure-tokens
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make prefix=%{buildroot}/usr install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

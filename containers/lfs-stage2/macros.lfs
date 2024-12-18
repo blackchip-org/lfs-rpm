@@ -10,7 +10,7 @@
 %update_info_dir \
     if [ -e /usr/bin/install-info ] ; then \
         pushd /usr/share/info \
-            rm -vf dir \
+            rm -f dir \
             for f in * \
                 do install-info $f dir 2>/dev/null \
             done \

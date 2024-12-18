@@ -20,17 +20,11 @@ waiting for the build system to actually start compiling code.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 pip3 wheel -w dist --no-build-isolation --no-deps $PWD
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 pip3 install --root %{buildroot} --no-index --find-links dist meson
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

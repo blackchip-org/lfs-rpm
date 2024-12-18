@@ -19,20 +19,14 @@ font files.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i '/RESIZECONS_PROGS=/s/yes/no/' configure
 sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
 ./configure --prefix=/usr --disable-vlock
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

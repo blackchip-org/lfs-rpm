@@ -18,22 +18,16 @@ fast as possible.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 python3 configure.py --bootstrap
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 install -m 755 -d %{buildroot}/usr/bin
 install -m 755 -d %{buildroot}/usr/share/bash-completion
 
 install -vm755 ninja %{buildroot}/usr/bin
 install -vDm644 misc/bash-completion %{buildroot}/usr/share/bash-completion/completions/ninja
 install -vDm644 misc/zsh-completion  %{buildroot}/usr/share/zsh/site-functions/_ninja
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

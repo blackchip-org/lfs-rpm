@@ -26,26 +26,25 @@ required for the generation of the scripts, not their use.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -e 's/SECONDS|/&SHLVL|/'               \
     -e '/BASH_ARGV=/a\        /^SHLVL=/ d' \
     -i.orig tests/local.at
 
 ./configure --prefix=/usr
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 make check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

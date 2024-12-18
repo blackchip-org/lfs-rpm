@@ -47,12 +47,17 @@ programs.
 %else
 %make DESTDIR=%{buildroot} install
 chmod -v 0755 %{buildroot}/usr/lib/preloadable_libintl.so
+%remove_info_dir
 
 %endif
 
 #---------------------------------------------------------------------------
 %check
 make check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

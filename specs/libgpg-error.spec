@@ -40,8 +40,13 @@ Daemon and possibly more in the future.
 
 %else
 %make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

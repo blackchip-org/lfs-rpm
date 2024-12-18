@@ -45,12 +45,17 @@ sed -i 's/extras//' Makefile.in
 %else
 make DESTDIR=%{buildroot} LN='ln -f' install
 ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
+%remove_info_dir
 
 %endif
 
 #---------------------------------------------------------------------------
 %check
 %make check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

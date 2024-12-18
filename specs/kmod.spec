@@ -18,8 +18,6 @@ and unloaded modules.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr          \
             --sysconfdir=/etc      \
             --with-openssl         \
@@ -27,12 +25,9 @@ and unloaded modules.
             --with-zstd            \
             --with-zlib
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 
 mkdir -p %{buildroot}/usr/{,s}bin
@@ -41,7 +36,6 @@ for target in depmod insmod modinfo modprobe rmmod; do
 done
 
 ln -sfv kmod %{buildroot}/usr/bin/lsmod
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

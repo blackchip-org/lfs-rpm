@@ -23,22 +23,21 @@ for tuning the algorithm employed by gperf.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr --docdir=/usr/share/doc/gperf-%{version}
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 make -j1 check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

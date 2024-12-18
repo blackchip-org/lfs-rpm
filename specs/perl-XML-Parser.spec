@@ -22,19 +22,13 @@ at XML::Parser creation time.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 perl Makefile.PL
 make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 rm %{buildroot}/usr/lib/perl5/%{perl_version}/core_perl/perllocal.pod
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

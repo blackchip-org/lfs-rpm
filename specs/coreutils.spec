@@ -51,8 +51,13 @@ mkdir %{buildroot}/usr/share/man/man8
 mv -v %{buildroot}/usr/bin/chroot %{buildroot}/usr/sbin
 mv -v %{buildroot}/usr/share/man/man1/chroot.1 %{buildroot}/usr/share/man/man8/chroot.8
 sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
+%remove_info_dir
 
 %endif
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

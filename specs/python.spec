@@ -12,18 +12,6 @@ Python is an accessible, high-level, dynamically typed, interpreted programming
 language, designed with an emphasis on code readibility. It includes an
 extensive standard library, and has a vast ecosystem of third-party libraries.
 
-The python36 package provides the "python3.6" executable: the reference
-interpreter for the Python language, version 3. The package also installs the
-"python3" executable which is user configurable using the "alternatives
---config python3" command. For the unversioned "python" command, see manual
-page "unversioned-python".
-
-The python36-devel package contains files for dovelopment of Python application
-and the python36-debug is helpful for debugging.
-
-Packages containing additional libraries for Python 3.6 are generally named
-with the "python3-" prefix.
-
 #---------------------------------------------------------------------------
 %prep
 %setup -q -n Python-%{version}

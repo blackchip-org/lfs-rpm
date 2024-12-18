@@ -48,12 +48,17 @@ ln -s bash %{buildroot}/%{lfs_dir}/usr/bin/sh
 %else
 %make DESTDIR=%{buildroot} install
 ln -s bash %{buildroot}/usr/bin/sh
+%remove_info_dir
 
 %endif
 
 #---------------------------------------------------------------------------
 %check
 make tests
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

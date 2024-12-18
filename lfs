@@ -93,7 +93,10 @@ lfs-build() {
             echo "$prog: error: $spec: file not found"
             continue
         fi
+
         package=$(basename "$spec" .spec)
+        package_version=$(rpmspec -qv $spec | sed 's/.src//')
+
         if [ "$package" == "libstdc++" ]; then
             rpmbuild_pkg_flags="--with lfs_gcc_libstdcpp_only"
         elif [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
@@ -120,7 +123,7 @@ lfs-build() {
                 $method \
                 $rpm_flags \
                 $rpm_pkg_flags \
-                rpmbuild/RPMS/$lfs_arch/${package}-*.rpm  2>&1 \
+                rpmbuild/RPMS/$lfs_arch/${package_version}.*.rpm  2>&1 \
                 | tee --append build/logs/${stage}/${package}.log
             )
             echo "$stage:$package" > build/logs/last-success

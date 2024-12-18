@@ -22,17 +22,12 @@ vim-common package is installed.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
 ./configure --prefix=/usr
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 
 ln -sv vim %{buildroot}/usr/bin/vi
@@ -58,7 +53,6 @@ endif
 
 " End /etc/vimrc
 EOF
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

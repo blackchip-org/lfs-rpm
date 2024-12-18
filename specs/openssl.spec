@@ -17,26 +17,20 @@ which provide various cryptographic algorithms and protocols.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./config --prefix=/usr         \
          --openssldir=/etc/ssl \
          --libdir=lib          \
          shared                \
          zlib-dynamic
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
 %make DESTDIR=%{buildroot} MANSUFFIX=ssl install
 mv -v %{buildroot}/usr/share/doc/openssl \
       %{buildroot}/usr/share/doc/openssl-%{version}
 cp -vfr doc/* %{buildroot}/usr/share/doc/openssl-%{version}
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

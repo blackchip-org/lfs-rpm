@@ -21,17 +21,11 @@ Python 3 version.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 pip3 wheel -w dist --no-cache-dir --no-build-isolation --no-deps $PWD
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 pip3 install --ignore-installed --root %{buildroot} --no-index --find-links=dist wheel
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

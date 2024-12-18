@@ -20,21 +20,15 @@ is an example of the kind of structures for which you may register handlers.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr    \
             --disable-static \
             --docdir=/usr/share/doc/expat-%{version}
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 install -v -m644 -t %{buildroot}/usr/share/doc/expat-%{version} doc/*.{html,css}
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

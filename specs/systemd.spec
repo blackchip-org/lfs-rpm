@@ -27,8 +27,6 @@ resolution.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i -e 's/GROUP="render"/GROUP="video"/' \
        -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
 
@@ -56,12 +54,9 @@ meson setup \
       -D docdir=/usr/share/doc/systemd-%{version} \
       ..
 ninja
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_build_begin
-
 cd build
 DESTDIR=%{buildroot} ninja install
 
@@ -69,7 +64,6 @@ mkdir -p %{buildroot}/usr/share/man
 tar -xf %{SOURCE1} \
     --no-same-owner --strip-components=1   \
     -C %{buildroot}/usr/share/man
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %post

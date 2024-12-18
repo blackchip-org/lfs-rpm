@@ -20,22 +20,21 @@ use its ability to automatically generate GNU standard Makefiles.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr --docdir=/usr/share/doc/automake-%{version}
-%make
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 mv %{buildroot}/usr/share/aclocal/README %{buildroot}/usr/share/doc/automake-%{version}
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 %make check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

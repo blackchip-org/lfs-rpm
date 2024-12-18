@@ -19,18 +19,13 @@ elfcompress (to compress or decompress ELF sections).
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr                \
             --disable-debuginfod         \
             --enable-libdebuginfod=dummy
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 
@@ -42,7 +37,6 @@ install -vm644 -t %{buildroot}/usr/lib/pkgconfig config/libelf.pc
 rm %{buildroot}/usr/lib/*.a
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

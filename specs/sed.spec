@@ -44,8 +44,13 @@ make html
 %make DESTDIR=%{buildroot} install
 install -d -m755           %{buildroot}/usr/share/doc/sed-4.9
 install -m644 doc/sed.html %{buildroot}/usr/share/doc/sed-4.9
+%remove_info_dir
 
 %endif
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

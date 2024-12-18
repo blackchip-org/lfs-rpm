@@ -16,18 +16,12 @@ libcap is a library for getting and setting POSIX.1e (formerly POSIX 6) draft
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i '/install -m.*STA/d' libcap/Makefile
 %make prefix=/usr lib=lib
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make prefix=%{buildroot}/usr lib=lib install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

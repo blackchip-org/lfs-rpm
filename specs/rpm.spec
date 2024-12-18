@@ -19,8 +19,6 @@ the package like its version, a description, etc.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 mkdir -p _build
 cd _build
 
@@ -41,15 +39,11 @@ cmake \
     -DWITH_READLINE=OFF \
     ..
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 cd _build
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

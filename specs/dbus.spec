@@ -17,8 +17,6 @@ messaging facility.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr                        \
             --sysconfdir=/etc                    \
             --localstatedir=/var                 \
@@ -30,17 +28,13 @@ messaging facility.
             --docdir=/usr/share/doc/dbus-%{version}  \
             --with-system-socket=/run/dbus/system_bus_socket
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 
 mkdir -p                %{buildroot}/var/lib
 ln -sfv /etc/machine-id %{buildroot}/var/lib/dbus
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

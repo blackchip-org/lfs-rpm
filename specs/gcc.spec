@@ -164,6 +164,7 @@ ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/%{version}/liblto_plugin.so \
         %{buildroot}/usr/lib/bfd-plugins/
 mkdir -pv %{buildroot}/usr/share/gdb/auto-load/usr/lib
 mv -v %{buildroot}/usr/lib/*gdb.py %{buildroot}/usr/share/gdb/auto-load/usr/lib
+%remove_info_dir
 
 %endif
 
@@ -172,6 +173,10 @@ mv -v %{buildroot}/usr/lib/*gdb.py %{buildroot}/usr/share/gdb/auto-load/usr/lib
 cd build
 ulimit -s 32768
 %make -k check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

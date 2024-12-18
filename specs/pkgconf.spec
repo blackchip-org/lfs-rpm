@@ -17,8 +17,6 @@ handles .pc files in a similar manner as pkg-config.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr         \
             --disable-static      \
             --docdir=/usr/share/doc/%{name}-%{version}
@@ -28,14 +26,10 @@ mkdir -p         %{buildroot}/usr/bin
 mkdir -p         %{buildroot}/usr/share/man/man1
 ln -sv pkgconf   %{buildroot}/usr/bin/pkg-config
 ln -sv pkgconf.1 %{buildroot}/usr/share/man/man1/pkg-config.1
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

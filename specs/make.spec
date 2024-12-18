@@ -41,8 +41,13 @@ for make in the program's makefile.
 
 %else
 %make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

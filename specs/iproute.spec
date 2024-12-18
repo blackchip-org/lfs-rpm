@@ -17,20 +17,14 @@ kernel.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i /ARPD/d Makefile
 rm -fv man/man8/arpd.8
 
 %make NETNS_RUN_DIR=/run/netns
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} SBINDIR=/usr/sbin install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

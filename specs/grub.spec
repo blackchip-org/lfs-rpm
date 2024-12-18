@@ -19,8 +19,6 @@ turn, initializes the rest of the operating system (e.g. GNU).
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 unset {C,CPP,CXX,LD}FLAGS
 echo depends bli part_gpt > grub-core/extra_deps.lst
 ./configure --prefix=/usr          \
@@ -28,19 +26,20 @@ echo depends bli part_gpt > grub-core/extra_deps.lst
             --disable-efiemu       \
             --disable-werror
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_build_begin
-
 unset {C,CPP,CXX,LD}FLAGS
 %make DESTDIR=%{buildroot} install
 
 mkdir -p %{buildroot}/usr/share/bash-completion/completions
 mv -v    %{buildroot}/etc/bash_completion.d/grub \
          %{buildroot}/usr/share/bash-completion/completions
-%lfs_build_end
+%remove_info_dir
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

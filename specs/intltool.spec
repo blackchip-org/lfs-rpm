@@ -17,20 +17,14 @@ files.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i 's:\\\${:\\\$\\{:' intltool-update.in
 ./configure --prefix=/usr
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 install -v -Dm644 doc/I18N-HOWTO %{buildroot}/usr/share/doc/intltool-%{version}/I18N-HOWTO
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

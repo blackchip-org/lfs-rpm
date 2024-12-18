@@ -33,22 +33,16 @@ names.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr                           \
             --docdir=/usr/share/doc/procps-ng-%{version} \
             --disable-static                        \
             --disable-kill                          \
             --with-systemd
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check

@@ -17,8 +17,6 @@ system: memory allocation, process allocation, device input and output, etc.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %make mrproper
 %make defconfig
 cat <<EOF >.config.sed
@@ -39,12 +37,8 @@ cat .config
 
 %make
 
-%lfs_build_end
-
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make INSTALL_MOD_PATH=%{buildroot}/usr modules_install
 install -m 755 -d %{buildroot}/boot
 install -m 644 arch/x86/boot/bzImage %{buildroot}/boot/vmlinuz-%{version}%{dist}.%{lfs_arch}
@@ -62,8 +56,6 @@ install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
 EOF
 
 rm %{buildroot}/usr/lib/modules/%{version}/build
-
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

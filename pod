@@ -24,6 +24,8 @@ pod-init() {
 }
 
 pod-build() {
+    package=$(basename "$1" .spec)
+
     set -x
 
     podman stop -t 0    lfs-pod || true
@@ -77,7 +79,9 @@ pod-build() {
 
     podman exec \
         lfs-pod \
-        rpmbuild -ba --nocheck lfs-rpm/$1
+        rpmbuild -ba --nocheck \
+            --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
+            lfs-rpm/$1
 
 }
 
@@ -89,7 +93,7 @@ case $1 in
         shift
         specs=$(cat $1)
         for arg in $specs; do
-            echo -e "\n----- building $arg"
+            echo -e "\n----- building pod:$arg"
             pod-build $arg
         done
         ;;

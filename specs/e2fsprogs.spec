@@ -6,7 +6,7 @@ License:        GPLv2
 
 Source0:        https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v%{version}/e2fsprogs-%{version}.tar.gz
 
-%description 
+%description
 The e2fsprogs package contains a number of utilities for creating, checking,
 modifying, and correcting any inconsistencies in second, third and fourth
 extended (ext2/ext3/ext4) file systems. E2fsprogs contains e2fsck (used to
@@ -20,13 +20,11 @@ You should install the e2fsprogs package if you need to manage the performance
 of an ext2, ext3, or ext4 file system.
 
 #---------------------------------------------------------------------------
-%prep 
-%setup -q 
+%prep
+%setup -q
 
 #---------------------------------------------------------------------------
-%build 
-%lfs_build_begin
-
+%build
 mkdir -v build
 cd       build
 
@@ -37,31 +35,28 @@ cd       build
              --disable-libuuid       \
              --disable-uuidd         \
              --disable-fsck
-%make 
-%lfs_build_end
+%make
 
 #---------------------------------------------------------------------------
-%install 
-%lfs_install_begin
+%install
 
-cd build 
-%make DESTDIR=%{buildroot} install 
+cd build
+%make DESTDIR=%{buildroot} install
 rm -fv %{buildroot}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
-%lfs_install_end
 
 #---------------------------------------------------------------------------
-%check 
-%make check 
+%check
+%make check
 
 #---------------------------------------------------------------------------
-%files 
+%files
 %config(noreplace) /etc/e2scrub.conf
 %config(noreplace) /etc/mke2fs.conf
 /usr/bin/chattr
 /usr/bin/compile_et
 /usr/bin/lsattr
 /usr/bin/mk_cmds
-/usr/include/*.h 
+/usr/include/*.h
 /usr/include/{e2p,et,ext2fs,ss}
 /usr/lib/e2fsprogs/e2scrub_fail
 /usr/lib/e2initrd_helper

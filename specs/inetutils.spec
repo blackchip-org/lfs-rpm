@@ -30,8 +30,6 @@ are original versions, written from scratch.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i 's/def HAVE_TERMCAP_TGETENT/ 1/' telnet/telnet.c
 
 ./configure --prefix=/usr        \
@@ -45,20 +43,21 @@ sed -i 's/def HAVE_TERMCAP_TGETENT/ 1/' telnet/telnet.c
             --disable-rsh        \
             --disable-servers
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 mkdir %{buildroot}/usr/sbin
 mv -v %{buildroot}/usr/{,s}bin/ifconfig
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 %make check
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

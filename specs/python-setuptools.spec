@@ -20,17 +20,11 @@ execute the software that requires pkg_resources.py.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 pip3 wheel -w dist --no-cache-dir --no-build-isolation --no-deps $PWD
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 pip3 install --ignore-installed --root %{buildroot} --no-index --find-links=dist setuptools
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
