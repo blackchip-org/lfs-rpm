@@ -1,0 +1,2 @@
+specs/libsolv.spec
+specs/libdnf.spec

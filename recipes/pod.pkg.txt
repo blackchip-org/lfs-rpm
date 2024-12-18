@@ -14,11 +14,14 @@ specs/findutils.spec
 specs/gawk.spec
 specs/gettext.spec
 specs/gcc.spec
+specs/bison.spec
+specs/expat.spec
+specs/python.spec
 specs/glibc.spec
 specs/gmp.spec
 specs/grep.spec
 specs/gzip.spec
-spesc/less.spec
+specs/less.spec
 specs/libcap.spec
 specs/libgcrypt.spec
 specs/libgpg-error.spec

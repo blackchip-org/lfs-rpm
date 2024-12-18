@@ -12,6 +12,9 @@ Source0:        https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch
 %endif
 
+BuildRequires:  bison
+BuildRequires:  python
+
 Provides:       rtld(GNU_HASH)
 
 

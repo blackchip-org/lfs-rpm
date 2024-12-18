@@ -7,6 +7,9 @@ License:        Python
 
 Source0:        https://www.python.org/ftp/python/%{version}/Python-%{version}.tar.xz
 
+BuildRequires:  expat
+BuildRequires:  openssl
+
 %description
 Python is an accessible, high-level, dynamically typed, interpreted programming
 language, designed with an emphasis on code readibility. It includes an

@@ -6,6 +6,11 @@ License:        MIT
 
 Source0:        https://pypi.org/packages/source/s/setuptools/setuptools-%{version}.tar.gz
 
+Requires:       python-wheel
+
+BuildRequires:  python
+BuildRequires:  python-wheel
+
 %description
 Setuptools is a collection of enhancements to the Python distutils that allow
 you to more easily build and distribute Python packages, especially ones that

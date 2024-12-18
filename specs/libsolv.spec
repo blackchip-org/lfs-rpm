@@ -1,12 +1,14 @@
-Name:		libsolv
-Version:	0.7.21
-Release:	1%{?dist}
-Summary:	Dependency solver using a satisfiability algorithm
-License:    BSD
+Name:		    libsolv
+Version:	    0.7.21
+Release:	    1%{?dist}
+Summary:	    Dependency solver using a satisfiability algorithm
+License:        BSD
 
-Source0:	https://github.com/openSUSE/libsolv/archive/refs/tags/%{version}.tar.gz
+Source0:	    https://github.com/openSUSE/libsolv/archive/refs/tags/%{version}.tar.gz
 
-%global     cmake_version 3.30
+BuildRequires:  cmake
+
+%global         cmake_version 3.30
 
 %description
 This is libsolv, a free package dependency solver using a satisfiability
@@ -29,8 +31,6 @@ repository storage to minimize memory usage.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 mkdir build
 cd build
 cmake \
@@ -38,18 +38,13 @@ cmake \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     ..
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 cd build
 make DESTDIR=%{buildroot} install
 mv %{buildroot}/usr/share/cmake \
    %{buildroot}/usr/share/cmake-%{cmake_version}
-
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

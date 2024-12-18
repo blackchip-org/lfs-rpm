@@ -23,8 +23,19 @@ pod-init() {
     podman build --tag lfs-pod containers/lfs-pod
 }
 
+timestamp() {
+    date +"%Y-%m-%d %H:%m:%S"
+}
+
 pod-build() {
+    spec=$1
     package=$(basename "$1" .spec)
+
+    ./lfs download $spec
+
+    echo "pod:$package" > build/logs/last-started
+    echo "[$(timestamp)] start pod:$package" >> build/logs/build.log
+    echo -e "\n----- building pod:$spec"
 
     set -x
 
@@ -33,6 +44,7 @@ pod-build() {
 
     mkdir -p        build/pod/rpms/x86_64
     mkdir -p        build/pod/srpms
+    mkdir -p        build/logs/pod/
 
     podman create \
         --name      lfs-pod \
@@ -74,14 +86,21 @@ pod-build() {
         podman exec \
             --user root \
             lfs-pod \
-            rpm -i --force --nodeps /build/lfs-rpm/build/deps/*.rpm
+            rpm -i --verbose --force --nodeps /build/lfs-rpm/build/deps/*.rpm
     fi
 
-    podman exec \
-        lfs-pod \
-        rpmbuild -ba --nocheck \
-            --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
-            lfs-rpm/$1
+    (
+        set -e -o pipefail
+        podman exec \
+            lfs-pod \
+            rpmbuild -ba --nocheck \
+                --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
+                lfs-rpm/$1 | \
+                tee build/logs/pod/${package}.log
+    )
+
+    echo "pod:$package" > build/logs/last-success
+    echo "[$(timestamp)] done  pod:$package" >> build/logs/build.log
 
 }
 
@@ -91,10 +110,13 @@ case $1 in
         ;;
     build)
         shift
+        echo "" >> build/logs/build.log
         specs=$(cat $1)
         for arg in $specs; do
-            echo -e "\n----- building pod:$arg"
-            pod-build $arg
+            package_version=$(rpmspec -qv $arg | sed 's/.src//')
+            if ! ls build/pod/rpms/x86_64/${package_version}.*.rpm ; then
+                pod-build $arg
+            fi
         done
         ;;
     rpm)
@@ -105,6 +127,9 @@ case $1 in
         ;;
     shell)
         exec podman exec -it lfs-pod /bin/bash
+        ;;
+    root)
+        exec podman exec --user root -it lfs-pod /bin/bash
         ;;
     *)
         echo "$prog: error: invalid command" 1>&2

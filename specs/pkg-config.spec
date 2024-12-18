@@ -6,6 +6,8 @@ License:        GPLv2+
 
 Source0:        https://pkgconfig.freedesktop.org/releases/pkg-config-%{version}.tar.gz
 
+BuildRequires:  glib
+
 %description
 pkg-config is a helper tool used when compiling applications and libraries. It
 helps you insert the correct compiler options on the command line so an
@@ -27,6 +29,9 @@ location of documentation tools, for instance.
             --build=$(build-aux/config.guess)   \
             --with-internal-glib
 
+%else
+./configure --prefix=/usr
+
 %endif
 
 %make
@@ -38,8 +43,10 @@ location of documentation tools, for instance.
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 %discard_docs
 
-%endif
+%else
+%make DESTDIR=%{buildroot} install
 
+%endif
 
 #---------------------------------------------------------------------------
 %files

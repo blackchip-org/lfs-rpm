@@ -6,6 +6,9 @@ License:        ASL
 
 Source0:        https://github.com/mesonbuild/meson/releases/download/%{version}/meson-%{version}.tar.gz
 
+BuildRequires:  python
+BuildRequires:  python-setuptools
+
 %description
 Meson is an open source build system meant to be both extremely fast, and, even
 more importantly, as user friendly as possible.

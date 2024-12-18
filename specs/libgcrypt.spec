@@ -38,8 +38,13 @@ Privacy Guard. This is a development version.
 
 %else
 %make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
+
+#---------------------------------------------------------------------------
+%post
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

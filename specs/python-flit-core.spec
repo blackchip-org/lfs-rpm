@@ -6,6 +6,8 @@ License:        BSD-3-Clause
 
 Source0:        https://pypi.org/packages/source/f/flit-core/flit_core-%{version}.tar.gz
 
+BuildRequires:  python
+
 %description
 Flit is a simple way to put Python packages and modules on PyPI.
 

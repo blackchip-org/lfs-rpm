@@ -1,12 +1,14 @@
-Name:       glib
-Version:    2.83.0
-Release:    1%{?dist}
-Summary:    Low-level core library
-License:    LGPLv2
+Name:           glib
+Version:        2.83.0
+Release:        1%{?dist}
+Summary:        Low-level core library
+License:        LGPLv2
 
-%global     version2        2.83
+%global         version2 2.83
 
-Source0:    https://download.gnome.org/sources/glib/%{version2}/glib-%{version}.tar.xz
+Source0:        https://download.gnome.org/sources/glib/%{version2}/glib-%{version}.tar.xz
+
+BuildRequires:  meson
 
 %description
 GLib is the low-level core library that forms the basis for projects such
@@ -20,20 +22,12 @@ threads, dynamic loading, and an object system.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 meson setup --prefix=/usr _build
 meson compile -C _build
 
-%lfs_build_end
-
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 DESTDIR=%{buildroot} meson install -C _build
-
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

@@ -6,6 +6,9 @@ License:        MIT
 
 Source0:        https://pypi.org/packages/source/w/wheel/wheel-%{version}.tar.gz
 
+BuildRequires:  python
+BuildRequires:  python-flit-core
+
 %description
 A built-package format for Python.
 
