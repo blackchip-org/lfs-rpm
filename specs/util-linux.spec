@@ -7,6 +7,8 @@ License:        GPLv2 and GPLv2+ and LGPLv2+ and BSD with advertising and Public
 
 Source0:        https://www.kernel.org/pub/linux/utils/util-linux/v%{version2}/util-linux-%{version}.tar.xz
 
+BuildRequires:  systemd
+
 %description
 The util-linux package contains a large variety of low-level system
 utilities that are necessary for a Linux system to function. Among

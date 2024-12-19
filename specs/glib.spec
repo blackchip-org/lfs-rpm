@@ -8,7 +8,11 @@ License:        LGPLv2
 
 Source0:        https://download.gnome.org/sources/glib/%{version2}/glib-%{version}.tar.xz
 
+BuildRequires:  libffi
 BuildRequires:  meson
+BuildRequires:  ninja
+BuildRequires:  pcre2
+BuildRequires:  pkg-config
 
 %description
 GLib is the low-level core library that forms the basis for projects such

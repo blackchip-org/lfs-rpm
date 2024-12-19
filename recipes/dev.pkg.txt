@@ -7,5 +7,10 @@ specs/python-wheel.spec
 specs/python-setuptools.spec
 specs/cmake.spec
 specs/meson.spec
-specs/glib.spec
+specs/pcre2.spec
 specs/pkg-config.spec
+specs/libffi.spec
+specs/ninja.spec
+specs/glib.spec
+specs/check.spec
+specs/swig.spec

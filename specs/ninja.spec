@@ -6,6 +6,8 @@ License:        ASL
 
 Source0:        https://github.com/ninja-build/ninja/archive/v%{version}/ninja-%{version}.tar.gz
 
+BuildRequires:  python
+
 %description
 Ninja is a small build system with a focus on speed. It differs from other
 build systems in two major respects: it is designed to have its input files

@@ -6,7 +6,8 @@ License:        GPLv2+
 
 Source0:        https://pkgconfig.freedesktop.org/releases/pkg-config-%{version}.tar.gz
 
-BuildRequires:  glib
+#FIXME: See below
+#BuildRequires:  glib
 
 %description
 pkg-config is a helper tool used when compiling applications and libraries. It
@@ -24,13 +25,18 @@ location of documentation tools, for instance.
 %build
 %if %{with lfs_stage1}
 %use_lfs_tools
-./configure --prefix=/usr \
-            --host=%{lfs_tgt}                   \
-            --build=$(build-aux/config.guess)   \
-            --with-internal-glib
+./configure \
+    --prefix=/usr \
+    --host=%{lfs_tgt}                   \
+    --build=$(build-aux/config.guess)   \
+    --with-internal-glib
 
 %else
-./configure --prefix=/usr
+#FIXME: pkg-config depends on glib and glib depends on pkg-config. Find
+#a way to allow pkg-config to use the installed glib.
+./configure \
+    --prefix=/usr \
+    --with-internal-glib
 
 %endif
 
@@ -46,6 +52,9 @@ location of documentation tools, for instance.
 %else
 %make DESTDIR=%{buildroot} install
 
+# Let's remove this 'arch' specific binary for now until it becomes useful.
+rm -f %{buildroot}/usr/bin/x86_64-unknown-linux-gnu-pkg-config
+
 %endif
 
 #---------------------------------------------------------------------------
@@ -54,5 +63,10 @@ location of documentation tools, for instance.
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/share/aclocal/*
 
-%endif
+%else
+/usr/bin/pkg-config
+/usr/share/aclocal/pkg.m4
+/usr/share/doc/pkg-config/pkg-config-guide.html
+/usr/share/man/man1/pkg-config.1.gz
 
+%endif

@@ -7,12 +7,27 @@ License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
 
+Suggests:       %{name}-doc = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Recommends:     %{name}-man = %{version}
+
 %description
 The Readline library provides a set of functions that allow users to edit
 command lines. Both Emacs and vi editing modes are available. The Readline
 library includes additional functions for maintaining a list of
 previously-entered command lines for recalling or editing those lines, and for
 performing csh-like history expansion on previous commands
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -38,7 +53,7 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 %remove_info_dir
 
 #---------------------------------------------------------------------------
-%post
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -47,13 +62,15 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 /usr/include/readline
 /usr/lib/libhistory.so
 /usr/lib/libhistory.so.8
+%shlib /usr/lib/libhistory.so.%{version2}
 /usr/lib/libreadline.so
 /usr/lib/libreadline.so.8
+%shlib /usr/lib/libreadline.so.%{version2}
 /usr/lib/pkgconfig/history.pc
 /usr/lib/pkgconfig/readline.pc
-/usr/share/info/*
+
+%files man
 /usr/share/man/man3/*
 
-%defattr(755,root,root,755)
-/usr/lib/libhistory.so.%{version2}
-/usr/lib/libreadline.so.%{version2}
+%files doc
+/usr/share/info/*

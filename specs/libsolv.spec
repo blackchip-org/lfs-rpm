@@ -1,5 +1,5 @@
 Name:		    libsolv
-Version:	    0.7.21
+Version:	    0.7.31
 Release:	    1%{?dist}
 Summary:	    Dependency solver using a satisfiability algorithm
 License:        BSD

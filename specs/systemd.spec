@@ -7,6 +7,11 @@ License:        LGPLv2+ and MIT and GPLv2+
 Source0:        https://github.com/systemd/systemd/archive/v%{version}/systemd-%{version}.tar.gz
 Source1:        https://anduin.linuxfromscratch.org/LFS/systemd-man-pages-%{version}.tar.xz
 
+BuildRequires:  gperf
+BuildRequires:  meson
+BuildRequires:  pkg-config
+BuildRequires:  ninja
+
 %description
 systemd is a system and service manager that runs as PID 1 and starts the rest
 of the system. It provides aggressive parallelization capabilities, uses socket

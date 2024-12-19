@@ -1,10 +1,22 @@
 Name:           dnf
-Version:        4.22.0
+Version:        5.2.8.1
 Release:        1%{?dist}
 Summary:        Dandified YUM (DNF) is the next upcoming major version of YUM.
 License:        GPLv2
 
-Source0:        https://github.com/rpm-software-management/dnf/archive/refs/tags/%{version}.tar.gz
+Source0:        https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
+
+BuildRequires:  cmake
+BuildRequires:  fmt
+BuildRequires:  json-c
+BuildRequires:  librepo
+BuildRequires:  libsolv
+BuildRequires:  libxml2
+BuildRequires:  pkg-config
+BuildRequires:  swig
+BuildRequires:  sqlite
+BuildRequires:  toml11
+BuildRequires:  zchunk
 
 %description
 Dandified YUM (DNF) is the next upcoming major version of YUM. It does package
@@ -14,31 +26,27 @@ comps data it uses libcomps.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q
+%setup -q -n dnf5-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 mkdir build
 cd build
 cmake \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     -DPYTHON_DESIRED="3" \
-    -DWITH_MAN=0 \
+    -DWITH_MAN=1 \
+    -DWITH_MODULEMD=0 \
+    -DWITH_RUBY=0 \
+    -DWITH_SYSTEMD=OFF \
     ..
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 cd build
-make DESTDIR=%{buildroot} install
-
-%lfs_install_end
+%make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files

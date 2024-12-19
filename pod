@@ -37,7 +37,7 @@ pod-build() {
     echo "[$(timestamp)] start pod:$package" >> build/logs/build.log
     echo -e "\n----- building pod:$spec"
 
-    set -x
+    echo "creating container"
 
     podman stop -t 0    lfs-pod || true
     podman rm -f        lfs-pod || true
@@ -59,11 +59,13 @@ pod-build() {
 
     podman start lfs-pod
 
+    echo "building repository"
     createrepo_c build/pod/rpms/x86_64
 
     rm -rf  build/deps
     mkdir   build/deps
 
+    echo "finding dependencies"
     reqs=$(rpmspec -q --buildrequires $1)
     deps=$(dnf repoquery \
         --repofrompath pod,build/pod/rpms/x86_64 \
@@ -79,16 +81,23 @@ pod-build() {
             --repofrompath pod,build/pod/rpms/x86_64 \
             --disablerepo='*' \
             --enablerepo=pod \
-            --downloaddir build/deps\
+            --downloaddir build/deps \
             --refresh \
+            --resolve \
             $reqs $deps
 
+        echo -e "\ndependencies for $package are:"
+        ls -1 build/deps
+        echo
+
+        echo "installing dependencies"
         podman exec \
             --user root \
             lfs-pod \
-            rpm -i --verbose --force --nodeps /build/lfs-rpm/build/deps/*.rpm
+            rpm -i --verbose --force /build/lfs-rpm/build/deps/*.rpm
     fi
 
+    echo "building $package"
     (
         set -e -o pipefail
         podman exec \
@@ -111,10 +120,10 @@ case $1 in
     build)
         shift
         echo "" >> build/logs/build.log
-        specs=$(cat $1)
+        specs=$(grep -v -e '^#' $1)
         for arg in $specs; do
-            package_version=$(rpmspec -qv $arg | sed 's/.src//')
-            if ! ls build/pod/rpms/x86_64/${package_version}.*.rpm ; then
+            package_version=$(rpmspec -qv $arg | head -1 | sed 's/.src//')
+            if [ ! -e "build/pod/rpms/x86_64/${package_version}${lfs_pod_dist}.${lfs_arch}.rpm" ] ; then
                 pod-build $arg
             fi
         done

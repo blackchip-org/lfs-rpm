@@ -39,6 +39,8 @@ rpm
 sed
 tar
 texinfo
+# Dependency loop between util-linux and systemd
+util-linux
 xz
 zlib
 zstd

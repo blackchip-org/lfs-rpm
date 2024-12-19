@@ -32,6 +32,10 @@ mv -v %{buildroot}/usr/share/doc/openssl \
       %{buildroot}/usr/share/doc/openssl-%{version}
 cp -vfr doc/* %{buildroot}/usr/share/doc/openssl-%{version}
 
+# FIXME: For now, we are going to remove tsget as this adds a dependency to
+# perl(WWW::Curl::Easy)
+rm %{buildroot}/etc/ssl/misc/tsget*
+
 #---------------------------------------------------------------------------
 %check
 %make test
@@ -41,8 +45,8 @@ cp -vfr doc/* %{buildroot}/usr/share/doc/openssl-%{version}
 %config(noreplace) /etc/ssl/ct_log_list.cnf
 /etc/ssl/ct_log_list.cnf.dist
 /etc/ssl/misc/CA.pl
-/etc/ssl/misc/tsget
-/etc/ssl/misc/tsget.pl
+#/etc/ssl/misc/tsget
+#/etc/ssl/misc/tsget.pl
 %config(noreplace)/etc/ssl/openssl.cnf
 /etc/ssl/openssl.cnf.dist
 /usr/bin/c_rehash

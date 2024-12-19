@@ -8,6 +8,8 @@ License:        MIT
 
 Source0:        https://github.com/json-c/json-c/archive/refs/tags/json-c-%{version}-%{date}.tar.gz
 
+BuildRequires:  cmake
+
 %description
 JSON-C implements a reference counting object model that allows you to easily
 construct JSON objects in C, output them as JSON formatted strings and parse
@@ -20,25 +22,17 @@ to conform to RFC 8259.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 mkdir   json-c-build
 cd      json-c-build
 cmake   -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_INSTALL_LIBDIR=/usr/lib \
         ..
 
-%lfs_build_begin
-
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 cd json-c-build
 make DESTDIR=%{buildroot} install
 rm %{buildroot}/usr/lib/libjson-c.a
-
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files

@@ -19,9 +19,24 @@ Source2:        https://ftp.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
 Source3:        https://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
 %endif
 
+Suggests:       %{name}-doc = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Recommends:     %{name}-man = %{version}
+
 %description
 The gcc package contains the GNU Compiler Collection version 8. You'll need
 this package in order to compile C code.
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -175,7 +190,7 @@ ulimit -s 32768
 %make -k check
 
 #---------------------------------------------------------------------------
-%post
+%posttrans
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -290,9 +305,7 @@ ulimit -s 32768
 /usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/plugin/gengtype
 /usr/share/gcc-%{version}
 /usr/share/gdb/auto-load/usr/lib/libstdc++.so.6.0.33-gdb.py
-/usr/share/info/*
 /usr/share/locale/*/LC_MESSAGES/*.mo
-/usr/share/man/man{1,7}/*
 
 %defattr(755,root,root,755)
 /usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcc1plugin.so.0.0.0
@@ -309,5 +322,11 @@ ulimit -s 32768
 /usr/lib/libstdc++.so.6.0.33
 /usr/lib/libtsan.so.2.0.0
 /usr/lib/libubsan.so.1.0.0
+
+%files man
+/usr/share/man/man{1,7}/*
+
+%files doc
+/usr/share/info/*
 
 %endif

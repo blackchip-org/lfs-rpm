@@ -6,6 +6,9 @@ License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/bash/bash-%{version}.tar.gz
 
+Provides:       /bin/sh
+Provides:       /bin/bash
+
 %description
 The GNU Bourne Again shell (Bash) is a shell or command language interpreter
 that is compatible with the Bourne shell (sh). Bash incorporates useful

@@ -3,8 +3,11 @@
 %_build_id_links    none
 
 %make               make -j%{getenv:lfs_nproc}
+%shlib              %attr(755,root,root)
 
-%remove_info_dir rm -f %{buildroot}/usr/share/info/dir
+%remove_info_dir \
+    rm -f %{buildroot}/usr/share/info/dir
+
 %update_info_dir \
     if [ -e /usr/bin/install-info ] ; then \
         pushd /usr/share/info 2&>/dev/null \
@@ -13,5 +16,6 @@
                 do install-info $f dir 2>/dev/null \
             done \
         popd 2&>/dev/null \
+        rm /run/rpm-state/update-info-dir \
     fi
 

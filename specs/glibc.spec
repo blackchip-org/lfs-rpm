@@ -14,9 +14,11 @@ Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glib
 
 BuildRequires:  bison
 BuildRequires:  python
-
 Provides:       rtld(GNU_HASH)
+Suggests:       %{name}-doc = %{version}
 
+%package doc
+Summary:        Documentation for %{name}
 
 %description
 The glibc package contains standard libraries which are used by multiple
@@ -26,6 +28,8 @@ between programs. This particular package contains the most important sets of
 shared libraries: the standard C library and the standard math library. Without
 these two libraries, a Linux system will not function.
 
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -82,7 +86,6 @@ case $(uname -m) in
     ;;
 esac
 rm -rf %{buildroot}/%{lfs_dir}/var
-%discard_docs
 
 %else
 case $(uname -m) in
@@ -139,16 +142,17 @@ mkdir -p %{buildroot}/usr/lib/locale
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f ISO-8859-1 en_US
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f UTF-8 en_US.UTF-8
-%remove_info_dir
 
 %endif
+
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 make check
 
 #---------------------------------------------------------------------------
-%post
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -239,7 +243,6 @@ make check
 /usr/sbin/zic
 /usr/share/i18n/charmaps/*
 /usr/share/i18n/locales/*
-/usr/share/info/libc*
 /usr/share/locale/*/LC_MESSAGES/libc.mo
 /usr/share/locale/locale.alias
 /var/lib/nss_db/Makefile
@@ -266,3 +269,6 @@ make check
 /usr/lib/libutil.so.1
 
 %endif
+
+%files doc
+/usr/share/info/libc*

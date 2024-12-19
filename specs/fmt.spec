@@ -1,22 +1,16 @@
-Name:           libdnf
-Version:        0.73.4
+Name:           fmt
+Version:        11.0.2
 Release:        1%{?dist}
-Summary:        High level package manager
-License:        GPLv2
+Summary:        Fast and safe alternative to C stdio and C++ iostreams
+License:        {fmt}
 
-Source0:        https://github.com/rpm-software-management/libdnf/archive/refs/tags/%{version}.tar.gz
+Source0:        https://github.com/fmtlib/fmt/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:  check
 BuildRequires:  cmake
-BuildRequires:  glib
-BuildRequires:  json-c
-BuildRequires:  libsolv
-BuildRequires:  pkg-config
 
 %description
-This library provides a high level package-manager. It's core library of dnf,
-PackageKit and rpm-ostree. It's replacement for deprecated hawkey library which
-it contains inside and uses librepo under the hood.
+{fmt} is an open-source formatting library providing a fast and safe
+alternative to C stdio and C++ iostreams.
 
 #---------------------------------------------------------------------------
 %prep
@@ -30,6 +24,7 @@ cmake \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     -DPYTHON_DESIRED="3" \
+    -DWITH_MAN=0 \
     ..
 %make
 
@@ -37,6 +32,10 @@ cmake \
 %install
 cd build
 make DESTDIR=%{buildroot} install
+rm %{buildroot}/usr/lib/libfmt.a
 
 #---------------------------------------------------------------------------
 %files
+/usr/include/%{name}
+/usr/lib/cmake/%{name}
+/usr/lib/pkgconfig/%{name}.pc

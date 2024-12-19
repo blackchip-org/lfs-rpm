@@ -46,7 +46,19 @@ make DESTDIR=%{buildroot} install
 %else
 make DESTDIR=%{buildroot} install
 
+# Some files get installed that trigger a dependency for /usr/local/bin/python
+# and need to be fixed.
+find %{buildroot} -type f -exec sed -i 's_/usr/local/bin/python_/usr/bin/python_g' {} \;
+
 %endif
+
+# Add symlinks from unverisoned binaries to versioned (python -> python3)
+ln -s python3       %{buildroot}/usr/bin/python
+ln -s pyton3-config %{buildroot}/usr/bin/python-config
+ln -s pydoc3        %{buildroot}/usr/bin/pydoc
+ln -s pip3          %{buildroot}/usr/bin/pip
+ln -s idle3         %{buildroot}/usr/bin/idle
+
 mkdir -p %{buildroot}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.python
 @python_version %{python_version}
@@ -65,16 +77,11 @@ EOF
 %else
 /usr/bin/2to3
 /usr/bin/2to3-%{python_version}
-/usr/bin/idle3
-/usr/bin/idle%{python_version}
-/usr/bin/pip3
-/usr/bin/pip%{python_version}
-/usr/bin/pydoc3
-/usr/bin/pydoc%{python_version}
-/usr/bin/python3
-/usr/bin/python3-config
-/usr/bin/python%{python_version}
-/usr/bin/python%{python_version}-config
+/usr/bin/{idle,idle3,idle%{python_version}}
+/usr/bin/{pip,pip3,pip%{python_version}}
+/usr/bin/{pydoc,pydoc3,pydoc%{python_version}}
+/usr/bin/{python,python3,python%{python_version}}
+/usr/bin/{python-config,python3-config,python%{python_version}-config}
 /usr/include/python%{python_version}
 /usr/lib/libpython%{python_version}.so
 /usr/lib/libpython3.so
