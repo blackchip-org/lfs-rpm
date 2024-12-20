@@ -7,7 +7,7 @@ cd "$(dirname $0)"
 
 source ./env
 
-stages="stage1a stage1b stage1c stage2 image"
+stages="stage1a stage1b stage1c stage2 stage3 image"
 for stage in $stages; do
     images+="lfs-${stage} "
 done
@@ -95,7 +95,7 @@ lfs-build() {
         fi
 
         package=$(basename "$spec" .spec)
-        package_version=$(rpmspec -qv $spec | sed 's/.src//')
+        package_version=$(rpmspec -qv $spec | head -1 | sed 's/.src//')
 
         if [ "$package" == "libstdc++" ]; then
             rpmbuild_pkg_flags="--with lfs_gcc_libstdcpp_only"
@@ -115,6 +115,7 @@ lfs-build() {
             ( set -e -x -o pipefail
             podman exec lfs-$stage rpmbuild \
                 --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
+                --nodeps \
                 $rpmbuild_flags \
                 $rpmbuild_pkg_flags \
                 lfs-rpm/${spec} 2>&1 \
@@ -123,7 +124,7 @@ lfs-build() {
                 $method \
                 $rpm_flags \
                 $rpm_pkg_flags \
-                rpmbuild/RPMS/$lfs_arch/${package_version}.*.rpm  2>&1 \
+                rpmbuild/RPMS/$lfs_arch/${package_version}${lfs_dist}.${lfs_arch}.rpm 2>&1 \
                 | tee --append build/logs/${stage}/${package}.log
             )
             echo "$stage:$package" > build/logs/last-success
@@ -181,7 +182,7 @@ lfs-export() {
             rm -rf build/boot
             podman cp "lfs-$stage:/boot" build/boot
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
-            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-pod
+            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-image
             )
             ;;
         image)
@@ -236,12 +237,12 @@ lfs-install() {
 }
 
 lfs-mkpod() {
-    if [ "$stage" != "stage2" ] ; then
-        echo "$prog: error: only in stage2"
+    if [ "$stage" != "stage3" ] ; then
+        echo "$prog: error: only in stage3"
         exit 1
     fi
     set -x
-    podman exec --user root -t lfs-stage2 bash /build/lfs-rpm/containers/lfs-stage2/mkpod.sh
+    podman exec --user root -t lfs-stage3 bash /build/lfs-rpm/containers/lfs-stage3/mkpod.sh
 }
 
 lfs-build-all() {
@@ -323,7 +324,13 @@ case $1 in
     stage2|2)
         shift
         stage=stage2
-        next_stage=boot
+        next_stage=stage3
+        rpmbuild_flags="-ba $rpm_nocheck"
+        rpm_flags="--nodeps"
+        ;;
+    stage3|3)
+        shift
+        stage=stage3
         rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;

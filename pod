@@ -38,26 +38,11 @@ pod-build() {
     echo -e "\n----- building pod:$spec"
 
     echo "creating container"
-
-    podman stop -t 0    lfs-pod || true
-    podman rm -f        lfs-pod || true
+    pod-create
 
     mkdir -p        build/pod/rpms/x86_64
     mkdir -p        build/pod/srpms
     mkdir -p        build/logs/pod/
-
-    podman create \
-        --name      lfs-pod \
-        --hostname  lfs-pod \
-        --env-file  eval.env \
-        --userns    keep-id \
-        --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
-        --volume    "./build/pod/rpms:/build/rpmbuild/RPMS:z" \
-        --volume    "./build/pod/srpms:/build/rpmbuild/SRPMS:z" \
-        --volume    .:/build/lfs-rpm:z \
-        lfs-pod
-
-    podman start lfs-pod
 
     echo "building repository"
     createrepo_c build/pod/rpms/x86_64
@@ -113,9 +98,29 @@ pod-build() {
 
 }
 
+pod-create() {
+    podman stop -t 0    lfs-pod || true
+    podman rm -f        lfs-pod || true
+
+    podman create \
+        --name      lfs-pod \
+        --hostname  lfs-pod \
+        --env-file  eval.env \
+        --userns    keep-id \
+        --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
+        --volume    "./build/pod/rpms:/build/rpmbuild/RPMS:z" \
+        --volume    "./build/pod/srpms:/build/rpmbuild/SRPMS:z" \
+        --volume    .:/build/lfs-rpm:z \
+        lfs-pod
+    podman start lfs-pod
+}
+
 case $1 in
     init)
         pod-init
+        ;;
+    create)
+        pod-create
         ;;
     build)
         shift

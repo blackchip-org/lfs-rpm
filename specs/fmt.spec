@@ -23,19 +23,20 @@ cd build
 cmake \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
-    -DPYTHON_DESIRED="3" \
-    -DWITH_MAN=0 \
+    -DBUILD_SHARED_LIBS=TRUE \
     ..
 %make
 
 #---------------------------------------------------------------------------
 %install
 cd build
-make DESTDIR=%{buildroot} install
-rm %{buildroot}/usr/lib/libfmt.a
+%make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
 /usr/include/%{name}
 /usr/lib/cmake/%{name}
+/usr/lib/libfmt.so
+/usr/lib/libfmt.so.11
+%shlib /usr/lib/libfmt.so.11.0.2
 /usr/lib/pkgconfig/%{name}.pc

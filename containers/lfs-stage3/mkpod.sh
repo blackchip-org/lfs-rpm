@@ -3,15 +3,18 @@
 rm -rf /build/pod
 mkdir -p /build/pod
 
-rpm -qa $(grep -v '^#' /build/lfs-rpm/containers/lfs-stage2/mkpod.pkg.txt) \
+rpm -qa $(grep -v '^#' /build/lfs-rpm/containers/lfs-pod/mkpod.pkg.txt) \
     > /tmp/pod.pkg.txt
+
+mkdir -p /build/mkpod
+cp /build/lfs-rpm/build/stage{2,3}/rpms/x86_64/*.rpm /build/mkpod
 
 mkdir -p /build/pod/root
 for pkg in $(cat /tmp/pod.pkg.txt); do
     ( cd /build/pod &&
-      rpm2cpio /build/rpmbuild/RPMS/x86_64/${pkg}.rpm | cpio -idmv && \
+      rpm2cpio /build/mkpod/${pkg}.rpm | cpio -idmv && \
       install -m 644 -t /build/pod/root \
-        /build/rpmbuild/RPMS/x86_64/${pkg}.rpm
+        /build/mkpod/${pkg}.rpm
     )
 done
 

@@ -1,0 +1,55 @@
+# basic filesystem layout
+root-fs
+
+# install required by Containerfile
+coreutils
+
+# required by coreutils
+acl
+attr
+glibc
+
+# required for general scripting and interactive login
+bash
+
+# required by bash
+readline
+ncurses
+
+# required to install packages
+rpm
+
+# required by rpm
+popt
+libcap
+zlib
+bzip2
+libgcrypt
+zstd
+xz
+libgpg-error
+
+# required to solve package dependencies
+dnf
+
+# required by dnf
+# FIXME: extract libstdc++ into separate package
+gcc
+fmt
+# for smartcols
+util-linux
+json-c
+libsolv
+toml11
+libxml2
+zchunk
+libpsl
+curl
+pcre2
+glib
+librepo
+sqlite
+swig
+sdbus-c++
+openssl
+libffi
