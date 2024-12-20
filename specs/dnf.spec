@@ -51,6 +51,7 @@ cmake \
     -DWITH_DNF5DAEMON_SERVER=OFF \
     -DWITH_DNF5_PLUGINS=ON \
     -DWITH_PLUGIN_ACTIONS=ON \
+    -DWITH_SYSTEMD=OFF \
     ..
 %make
 
@@ -58,14 +59,16 @@ cmake \
 %install
 cd build
 %make DESTDIR=%{buildroot} install
-ln -s %{buildroot}/usr/bin/dnf dnf5
+ln -s dnf5 %{buildroot}/usr/bin/dnf
 
 #---------------------------------------------------------------------------
 %files
 /etc/bash_completion.d/dnf5
-/etc/dnf/dnf.conf
+%config(noreplace) /etc/dnf/dnf.conf
+%config(noreplace) /etc/dnf/libdnf5-plugins/actions.conf
 /etc/dnf/dnf5-aliases.d/README
 /usr/bin/{dnf,dnf5}
+/usr/bin/dnf-automatic
 /usr/include/dnf5
 /usr/include/libdnf5-cli
 /usr/include/libdnf5
@@ -75,6 +78,15 @@ ln -s %{buildroot}/usr/bin/dnf dnf5
 /usr/lib/libdnf5.so
 %shlib /usr/lib/libdnf5.so.2
 %shlib /usr/lib/libdnf5/plugins/python_plugins_loader.so
+%shlib /usr/lib/dnf5/plugins/automatic_cmd_plugin.so
+%shlib /usr/lib/dnf5/plugins/builddep_cmd_plugin.so
+%shlib /usr/lib/dnf5/plugins/changelog_cmd_plugin.so
+%shlib /usr/lib/dnf5/plugins/config-manager_cmd_plugin.so
+%shlib /usr/lib/dnf5/plugins/copr_cmd_plugin.so
+%shlib /usr/lib/dnf5/plugins/needs_restarting_cmd_plugin.so
+%shlib /usr/lib/dnf5/plugins/repoclosure_cmd_plugin.so
+%shlib /usr/lib/dnf5/plugins/reposync_cmd_plugin.so
+%shlib /usr/lib/libdnf5/plugins/actions.so
 /usr/lib/perl5/%{perl_version}/site_perl/auto/libdnf5*
 /usr/lib/perl5/%{perl_version}/site_perl/libdnf5*
 /usr/lib/pkgconfig/libdnf5-cli.pc
@@ -83,8 +95,14 @@ ln -s %{buildroot}/usr/bin/dnf dnf5
 /usr/lib/python%{python_version}/site-packages/libdnf5_cli-5.2.8.1.dist-info
 /usr/lib/python%{python_version}/site-packages/libdnf5{,_cli}
 /usr/lib/python%{python_version}/site-packages/libdnf_plugins
+/usr/lib/systemd/system/dnf-automatic.service
+/usr/lib/systemd/system/dnf-automatic.timer
+/usr/lib/systemd/system/dnf5-automatic.service
+/usr/lib/systemd/system/dnf5-automatic.timer
 /usr/lib/systemd/system/dnf5-makecache.service
 /usr/lib/systemd/system/dnf5-makecache.timer
-/usr/share/dnf5/aliases.d/compatibility-plugins.conf
 /usr/share/dnf5/aliases.d/compatibility.conf
+/usr/share/dnf5/aliases.d/compatibility-plugins.conf
+/usr/share/dnf5/aliases.d/compatibility-reposync.conf
+/usr/share/dnf5/dnf5-plugins/automatic.conf
 /usr/share/locale/*/LC_MESSAGES/*.mo
