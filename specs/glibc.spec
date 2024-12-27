@@ -86,6 +86,7 @@ case $(uname -m) in
     ;;
 esac
 rm -rf %{buildroot}/%{lfs_dir}/var
+%discard_docs
 
 %else
 case $(uname -m) in
@@ -268,7 +269,8 @@ make check
 /usr/lib/libthread_db.so.1
 /usr/lib/libutil.so.1
 
-%endif
-
 %files doc
 /usr/share/info/libc*
+
+%endif
+

@@ -1,4 +1,3 @@
-%dist           %{getenv:lfs_dist}
 %lfs_version    %{getenv:lfs_version}
 %lfs_arch       %{getenv:lfs_arch}
 

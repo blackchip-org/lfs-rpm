@@ -5,7 +5,7 @@ set -e
 prog="$(basename $0)"
 cd "$(dirname $0)"
 
-source ./env
+source ./pod-env
 
 usage() {
     cat <<EOF
@@ -18,8 +18,9 @@ EOF
 
 pod-init() {
     set -x
-    bash -c "source ./env ; env | grep -e '^lfs_'" > eval.env
 
+    podman stop -t 0 lfs-pod    >/dev/null 2>&1  || true
+    podman rmi --force lfs-pod  >/dev/null 2>&1  || true
     podman build --tag lfs-pod containers/lfs-pod
 }
 
@@ -37,12 +38,12 @@ pod-build() {
     echo "[$(timestamp)] start pod:$package" >> build/logs/build.log
     echo -e "\n----- building pod:$spec"
 
-    echo "creating container"
-    pod-create
-
     mkdir -p        build/pod/rpms/x86_64
     mkdir -p        build/pod/srpms
     mkdir -p        build/logs/pod/
+
+    echo "creating container"
+    pod-create
 
     echo "building repository"
     createrepo_c build/pod/rpms/x86_64
@@ -50,37 +51,11 @@ pod-build() {
     rm -rf  build/deps
     mkdir   build/deps
 
-    echo "finding dependencies"
-    reqs=$(rpmspec -q --buildrequires $1)
-    deps=$(dnf repoquery \
-        --repofrompath pod,build/pod/rpms/x86_64 \
-        --disablerepo='*' \
-        --enablerepo=pod \
-        --refresh \
-        --requires \
-        --resolve \
-        $reqs)
-
-    if [ -n "$reqs" ] ; then
-        dnf download \
-            --repofrompath pod,build/pod/rpms/x86_64 \
-            --disablerepo='*' \
-            --enablerepo=pod \
-            --downloaddir build/deps \
-            --refresh \
-            --resolve \
-            $reqs $deps
-
-        echo -e "\ndependencies for $package are:"
-        ls -1 build/deps
-        echo
-
-        echo "installing dependencies"
-        podman exec \
-            --user root \
-            lfs-pod \
-            rpm -i --verbose --force /build/lfs-rpm/build/deps/*.rpm
-    fi
+    podman exec \
+        --user root \
+        lfs-pod \
+        dnf builddep -y \
+        /build/lfs-rpm/$spec
 
     echo "building $package"
     (
@@ -96,16 +71,19 @@ pod-build() {
     echo "pod:$package" > build/logs/last-success
     echo "[$(timestamp)] done  pod:$package" >> build/logs/build.log
 
+    echo "building repository"
+    createrepo_c build/pod/rpms/x86_64
 }
 
 pod-create() {
-    podman stop -t 0    lfs-pod || true
-    podman rm -f        lfs-pod || true
+    pod-destroy
+
+    bash -c "source ./pod-env ; env | grep -e '^pod_'" > eval-pod.env
 
     podman create \
         --name      lfs-pod \
         --hostname  lfs-pod \
-        --env-file  eval.env \
+        --env-file  eval-pod.env \
         --userns    keep-id \
         --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
         --volume    "./build/pod/rpms:/build/rpmbuild/RPMS:z" \
@@ -115,6 +93,11 @@ pod-create() {
     podman start lfs-pod
 }
 
+pod-destroy() {
+    podman stop -t 0    lfs-pod || true
+    podman rm -f        lfs-pod || true
+}
+
 case $1 in
     init)
         pod-init
@@ -122,13 +105,16 @@ case $1 in
     create)
         pod-create
         ;;
+    destroy)
+        pod-destroy
+        ;;
     build)
         shift
         echo "" >> build/logs/build.log
         specs=$(grep -v -e '^#' $1)
         for arg in $specs; do
             package_version=$(rpmspec -qv $arg | head -1 | sed 's/.src//')
-            if [ ! -e "build/pod/rpms/x86_64/${package_version}${lfs_pod_dist}.${lfs_arch}.rpm" ] ; then
+            if [ ! -e "build/pod/rpms/x86_64/${package_version}${pod_dist}.${pod_arch}.rpm" ] ; then
                 pod-build $arg
             fi
         done

@@ -1,6 +1,4 @@
-%bcond_with     lfs_gcc_libstdcpp_only
-
-Name:           %{!?with_lfs_gcc_libstdcpp_only:gcc}%{?with_lfs_gcc_libstdcpp_only:libstdc++}
+Name:           gcc
 Version:        14.2.0
 Release:        1%{?dist}
 Summary:        Various compilers (C, C++, Objective-C, ...)
@@ -40,12 +38,6 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
-cat <<EOF
-package name:           %{name}
-lfs_stage1:             %{?with_lfs_stage1}
-lfs_gcc_libstdcpp_only: %{?with_lfs_gcc_libstdcpp_only}
-EOF
-
 %setup -q -n gcc-%{version}
 
 %if %{with lfs_stage1}
@@ -71,18 +63,7 @@ esac
 mkdir build
 cd build
 
-%if %{with lfs_gcc_libstdcpp_only}
-%use_lfs_tools
-../libstdc++-v3/configure           \
-    --host=%{lfs_tgt}               \
-    --build=$(../config.guess)      \
-    --prefix=/usr                   \
-    --disable-multilib              \
-    --disable-nls                   \
-    --disable-libstdcxx-pch         \
-    --with-gxx-include-dir=/tools/%{lfs_tgt}/include/c++/%{version}
-
-%elif %{with lfs_stage1a}
+%if %{with lfs_stage1a}
 %use_lfs_tools
 ../configure                              \
     --target=%{lfs_tgt}                   \
@@ -140,7 +121,6 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
              --disable-bootstrap      \
              --disable-fixincludes    \
              --with-system-zlib
-
 %endif
 %make
 
@@ -149,13 +129,7 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
 
 cd build
 
-%if %{with lfs_gcc_libstdcpp_only}
-%use_lfs_tools
-DESTDIR=%{buildroot}/%{lfs_dir} %make install
-rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
-%discard_docs
-
-%elif %{with lfs_stage1a}
+%if %{with lfs_stage1a}
 %use_lfs_tools
 DESTDIR=%{buildroot} %make install
 cd ..
@@ -177,8 +151,11 @@ ln -sv gcc.1 %{buildroot}/usr/share/man/man1/cc.1
 mkdir %{buildroot}/usr/lib/bfd-plugins/
 ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/%{version}/liblto_plugin.so \
         %{buildroot}/usr/lib/bfd-plugins/
+
+rm -v %{buildroot}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
 mkdir -pv %{buildroot}/usr/share/gdb/auto-load/usr/lib
 mv -v %{buildroot}/usr/lib/*gdb.py %{buildroot}/usr/share/gdb/auto-load/usr/lib
+
 %remove_info_dir
 
 %endif
@@ -195,12 +172,7 @@ ulimit -s 32768
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_gcc_libstdcpp_only}
-%{lfs_tools_dir}/%{lfs_tgt}/include/c++/%{version}
-%{lfs_dir}/usr/lib/*
-%{lfs_dir}/usr/share/gcc-%{version}/python
-
-%elif %{with lfs_stage1a}
+%if %{with lfs_stage1a}
 %{lfs_tools_dir}/bin/*
 %{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}
 %{lfs_tools_dir}/lib64/*
@@ -234,7 +206,6 @@ ulimit -s 32768
 /usr/bin/x86_64-pc-linux-gnu-gcc-ar
 /usr/bin/x86_64-pc-linux-gnu-gcc-nm
 /usr/bin/x86_64-pc-linux-gnu-gcc-ranlib
-/usr/include/c++/%{version}
 /usr/lib/bfd-plugins/liblto_plugin.so
 /usr/lib/cpp
 /usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/*.{o,a}
@@ -246,54 +217,29 @@ ulimit -s 32768
 /usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcc1plugin.so.0
 /usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcp1plugin.so
 /usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcp1plugin.so.0
-/usr/lib/libasan.a
-/usr/lib/libasan.so
-/usr/lib/libasan.so.8
-/usr/lib/libasan_preinit.o
 /usr/lib/libatomic.a
 /usr/lib/libatomic.so
 /usr/lib/libatomic.so.1
+%shlib /usr/lib/libatomic.so.1.2.0
 /usr/lib/libcc1.so
 /usr/lib/libcc1.so.0
+%shlib /usr/lib/libcc1.so.0.0.0
 /usr/lib/libgcc_s.so
-/usr/lib/libgcc_s.so.1
+%shlib /usr/lib/libgcc_s.so.1
 /usr/lib/libgomp.a
 /usr/lib/libgomp.so
 /usr/lib/libgomp.so.1
+%shlib /usr/lib/libgomp.so.1.0.0
 /usr/lib/libgomp.spec
-/usr/lib/libhwasan.a
-/usr/lib/libhwasan.so
-/usr/lib/libhwasan.so.0
-/usr/lib/libhwasan_preinit.o
-/usr/lib/libitm.a
-/usr/lib/libitm.so
-/usr/lib/libitm.so.1
-/usr/lib/libitm.spec
-/usr/lib/liblsan.a
-/usr/lib/liblsan.so
-/usr/lib/liblsan.so.0
-/usr/lib/liblsan_preinit.o
 /usr/lib/libquadmath.a
 /usr/lib/libquadmath.so
 /usr/lib/libquadmath.so.0
-/usr/lib/libsanitizer.spec
+%shlib /usr/lib/libquadmath.so.0.0.0
 /usr/lib/libssp.a
 /usr/lib/libssp.so
 /usr/lib/libssp.so.0
+%shlib /usr/lib/libssp.so.0.0.0
 /usr/lib/libssp_nonshared.a
-/usr/lib/libstdc++.a
-/usr/lib/libstdc++.so
-/usr/lib/libstdc++.so.6
-/usr/lib/libstdc++exp.a
-/usr/lib/libstdc++fs.a
-/usr/lib/libsupc++.a
-/usr/lib/libtsan.a
-/usr/lib/libtsan.so
-/usr/lib/libtsan.so.2
-/usr/lib/libtsan_preinit.o
-/usr/lib/libubsan.a
-/usr/lib/libubsan.so
-/usr/lib/libubsan.so.1
 /usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/cc1
 /usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/cc1plus
 /usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/collect2
@@ -303,25 +249,51 @@ ulimit -s 32768
 /usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/lto-wrapper
 /usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/lto1
 /usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/plugin/gengtype
-/usr/share/gcc-%{version}
-/usr/share/gdb/auto-load/usr/lib/libstdc++.so.6.0.33-gdb.py
+%shlib /usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcc1plugin.so.0.0.0
+%shlib /usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcp1plugin.so.0.0.0
 /usr/share/locale/*/LC_MESSAGES/*.mo
+/usr/share/gcc-%{version}
 
-%defattr(755,root,root,755)
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcc1plugin.so.0.0.0
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcp1plugin.so.0.0.0
-/usr/lib/libasan.so.8.0.0
-/usr/lib/libatomic.so.1.2.0
-/usr/lib/libcc1.so.0.0.0
-/usr/lib/libgomp.so.1.0.0
-/usr/lib/libhwasan.so.0.0.0
-/usr/lib/libitm.so.1.0.0
-/usr/lib/liblsan.so.0.0.0
-/usr/lib/libquadmath.so.0.0.0
-/usr/lib/libssp.so.0.0.0
-/usr/lib/libstdc++.so.6.0.33
-/usr/lib/libtsan.so.2.0.0
-/usr/lib/libubsan.so.1.0.0
+# libstdc++
+/usr/include/c++/%{version}
+/usr/lib/libasan.a
+/usr/lib/libasan.so
+/usr/lib/libasan.so.8
+%shlib /usr/lib/libasan.so.8.0.0
+/usr/lib/libasan_preinit.o
+/usr/lib/libhwasan.a
+/usr/lib/libhwasan.so
+/usr/lib/libhwasan.so.0
+%shlib /usr/lib/libhwasan.so.0.0.0
+/usr/lib/libhwasan_preinit.o
+/usr/lib/libitm.a
+/usr/lib/libitm.so
+/usr/lib/libitm.so.1
+%shlib /usr/lib/libitm.so.1.0.0
+/usr/lib/libitm.spec
+/usr/lib/liblsan.a
+/usr/lib/liblsan.so
+/usr/lib/liblsan.so.0
+%shlib /usr/lib/liblsan.so.0.0.0
+/usr/lib/liblsan_preinit.o
+/usr/lib/libsanitizer.spec
+/usr/lib/libstdc++.a
+/usr/lib/libstdc++.so
+/usr/lib/libstdc++.so.6
+%shlib /usr/lib/libstdc++.so.6.0.33
+/usr/lib/libstdc++exp.a
+/usr/lib/libstdc++fs.a
+/usr/lib/libsupc++.a
+/usr/lib/libtsan.a
+/usr/lib/libtsan.so
+/usr/lib/libtsan.so.2
+%shlib /usr/lib/libtsan.so.2.0.0
+/usr/lib/libtsan_preinit.o
+/usr/lib/libubsan.a
+/usr/lib/libubsan.so
+/usr/lib/libubsan.so.1
+%shlib /usr/lib/libubsan.so.1.0.0
+/usr/share/gdb/auto-load/usr/lib/libstdc++.so.6.0.33-gdb.py
 
 %files man
 /usr/share/man/man{1,7}/*

@@ -6,9 +6,31 @@ License:        GPLv2+
 
 Source0:        https://download.savannah.gnu.org/releases/acl/acl-%{version}.tar.xz
 
+Suggests:       %{name}-doc = %{version}
+
 %description
 This package contains the getfacl and setfacl utilities needed for manipulating
 access control lists.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -34,10 +56,15 @@ access control lists.
 /usr/include/sys/*.h
 /usr/lib/libacl.so
 /usr/lib/libacl.so.1
+%shlib /usr/lib/libacl.so.1.1.*
 /usr/lib/pkgconfig/libacl.pc
-/usr/share/doc/acl-%{version}
-/usr/share/locale/*/LC_MESSAGES/*
-/usr/share/man/man{1,3,5}/*
 
-%defattr(755,root,root,755)
-/usr/lib/libacl.so.1.1.*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/doc/%{name}-%{version}
+
+%files man
+/usr/share/man/man*/*
+

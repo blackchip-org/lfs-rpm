@@ -1,3 +1,4 @@
+specs/pkg-config.spec
 specs/bison.spec
 specs/expat.spec
 specs/openssl.spec
@@ -8,7 +9,6 @@ specs/python-setuptools.spec
 specs/cmake.spec
 specs/meson.spec
 specs/pcre2.spec
-specs/pkg-config.spec
 specs/libffi.spec
 specs/ninja.spec
 specs/glib.spec

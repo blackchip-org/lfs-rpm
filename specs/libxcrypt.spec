@@ -6,6 +6,8 @@ License:        LGPLv2+ and BSD and Public Domain
 
 Source0:        https://github.com/besser82/libxcrypt/releases/download/v%{version}/libxcrypt-%{version}.tar.xz
 
+BuildRequires:  pkg-config
+
 %description
 libxcrypt is a modern library for one-way hashing of passwords. It supports
 DES, MD5, SHA-2-256, SHA-2-512, and bcrypt-based password hashes, and provides

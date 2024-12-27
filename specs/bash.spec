@@ -8,12 +8,34 @@ Source0:        https://ftp.gnu.org/gnu/bash/bash-%{version}.tar.gz
 
 Provides:       /bin/sh
 Provides:       /bin/bash
+Suggests:       %{name}-doc = %{version}
 
 %description
 The GNU Bourne Again shell (Bash) is a shell or command language interpreter
 that is compatible with the Bourne shell (sh). Bash incorporates useful
 features from the Korn shell (ksh) and the C shell (csh). Most sh scripts can
 be run by bash without modification.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -60,7 +82,10 @@ ln -s bash %{buildroot}/usr/bin/sh
 make tests
 
 #---------------------------------------------------------------------------
-%post
+%post doc
+%request_info_dir
+
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -79,9 +104,15 @@ make tests
 /usr/include/bash/*
 /usr/lib/bash
 /usr/lib/pkgconfig/bash.pc
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
 /usr/share/doc/%{name}-%{version}
 /usr/share/info/*
-/usr/share/locale/*/LC_MESSAGES/*
-/usr/share/man/man1/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif

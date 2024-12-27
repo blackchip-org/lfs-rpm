@@ -5,7 +5,7 @@ set -e
 prog="$(basename $0)"
 cd "$(dirname $0)"
 
-source ./env
+source ./lfs-env
 
 stages="stage1a stage1b stage1c stage2 stage3 image"
 for stage in $stages; do
@@ -44,7 +44,7 @@ lfs-init() {
     fi
 
     set -x
-    bash -c "source ./env ; env | grep -e '^lfs_'" > eval.env
+    bash -c "source ./env ; env | grep -e '^lfs_'" > eval-lfs.env
 
     podman stop -t 0    lfs-$stage || true
     podman rm -f        lfs-$stage || true
@@ -53,7 +53,7 @@ lfs-init() {
     podman create \
         --name      lfs-$stage \
         --hostname  lfs-$stage \
-        --env-file  eval.env \
+        --env-file  eval-lfs.env \
         --userns    keep-id \
         --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
         --volume    "./build/${stage}/rpms:/build/rpmbuild/RPMS:z" \
@@ -97,9 +97,7 @@ lfs-build() {
         package=$(basename "$spec" .spec)
         package_version=$(rpmspec -qv $spec | head -1 | sed 's/.src//')
 
-        if [ "$package" == "libstdc++" ]; then
-            rpmbuild_pkg_flags="--with lfs_gcc_libstdcpp_only"
-        elif [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
+        if [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
             rpm_pkg_flags="--replacefiles"
         fi
 
@@ -124,7 +122,7 @@ lfs-build() {
                 $method \
                 $rpm_flags \
                 $rpm_pkg_flags \
-                rpmbuild/RPMS/$lfs_arch/${package_version}${lfs_dist}.${lfs_arch}.rpm 2>&1 \
+                rpmbuild/RPMS/$lfs_arch/${package_version}~${stage}${lfs_dist}.${lfs_arch}.rpm 2>&1 \
                 | tee --append build/logs/${stage}/${package}.log
             )
             echo "$stage:$package" > build/logs/last-success

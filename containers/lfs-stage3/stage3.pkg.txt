@@ -1,4 +1,5 @@
 specs/cpio.spec
+specs/libxml2.spec
 specs/libsolv.spec
 specs/json-c.spec
 specs/toml11.spec

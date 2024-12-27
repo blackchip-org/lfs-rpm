@@ -6,6 +6,8 @@ License:        GPLv2+
 
 Source0:        https://github.com/gavinhoward/bc/releases/download/%{version}/bc-%{version}.tar.xz
 
+Suggests:       %{name}-doc = %{version}
+
 %description
 The bc package includes bc and dc. Bc is an arbitrary precision numeric
 processing arithmetic language. Dc is an interactive arbitrary precision stack
@@ -13,6 +15,20 @@ based calculator, which can be used as a text mode calculator.
 
 Install the bc package if you need its number handling capabilities or if you
 would like to use its text mode calculator.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -31,5 +47,9 @@ CC=gcc ./configure --prefix=/usr -G -O3 -r
 %files
 /usr/bin/bc
 /usr/bin/dc
+
+%files lang
 /usr/share/locale/*/bc
-/usr/share/man/man1/*
+
+%files doc
+/usr/share/man/man*/*

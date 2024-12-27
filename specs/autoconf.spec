@@ -6,6 +6,8 @@ License:        GPLv2+ and GFDL
 
 Source0:        https://ftp.gnu.org/gnu/autoconf/autoconf-%{version}.tar.xz
 
+Suggests:       %{name}-doc = %{version}
+
 %description
 GNU's Autoconf is a tool for configuring source code and Makefiles. Using
 Autoconf, programmers can create portable and configurable packages, since the
@@ -19,6 +21,20 @@ installing Autoconf, you will also need to install the GNU m4 package.
 Note that the Autoconf package is not required for the end-user who may be
 configuring software with an Autoconf-generated script; Autoconf is only
 required for the generation of the scripts, not their use.
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -43,7 +59,10 @@ sed -e 's/SECONDS|/&SHLVL|/'               \
 make check
 
 #---------------------------------------------------------------------------
-%post
+%post doc
+%request_info_dir
+
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -56,5 +75,9 @@ make check
 /usr/bin/autoupdate
 /usr/bin/ifnames
 /usr/share/autoconf
+
+%files doc
 /usr/share/info/*
-/usr/share/man/man1/*
+
+%files man
+/usr/share/man/man*/*

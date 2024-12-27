@@ -6,6 +6,10 @@ License:        GPLv3+
 
 Source0:        https://sourceware.org/pub/binutils/releases/%{name}-%{version}.tar.gz
 
+Suggests:       %{name}-doc = %{version}
+
+BuildRequires:  texinfo
+
 %description
 Binutils is a collection of binary utilities, including ar (for creating,
 modifying and extracting from archives), as (a family of GNU assemblers), gprof
@@ -18,6 +22,26 @@ object or archive file), strings (for listing printable strings from files),
 strip (for discarding symbols), and addr2line (for converting addresses to file
 and line).
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -66,7 +90,6 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --enable-64-bit-bfd \
              --with-system-zlib  \
              --enable-new-dtags  \
-             --with-system-zlib  \
              --enable-default-hash-style=gnu
 %make tooldir=/usr
 
@@ -149,23 +172,27 @@ make -k check
 /usr/lib/libbfd.so
 /usr/lib/libctf-nobfd.so
 /usr/lib/libctf-nobfd.so.0
+%shlib /usr/lib/libctf-nobfd.so.0.0.0
 /usr/lib/libctf.so
 /usr/lib/libctf.so.0
+%shlib /usr/lib/libctf.so.0.0.0
 /usr/lib/libgprofng.so
 /usr/lib/libgprofng.so.0
+%shlib /usr/lib/libgprofng.so.0.0.0
 /usr/lib/libopcodes-%{version}.so
 /usr/lib/libopcodes.so
 /usr/lib/libsframe.so
 /usr/lib/libsframe.so.1
-/usr/share/info/*
-/usr/share/locale/*/LC_MESSAGES/*
-/usr/share/man/man1/*
+%shlib /usr/lib/libsframe.so.1.0.0
 
-%defattr(755,root,root,755)
-/usr/lib/libctf-nobfd.so.0.0.0
-/usr/lib/libctf.so.0.0.0
-/usr/lib/libgprofng.so.0.0.0
-/usr/lib/libsframe.so.1.0.0
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

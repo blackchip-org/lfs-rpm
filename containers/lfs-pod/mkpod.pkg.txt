@@ -32,11 +32,8 @@ libgpg-error
 # required to solve package dependencies
 dnf
 
-# required by dnf
-# FIXME: extract libstdc++ into separate package
-gcc
+# required by dnf at build
 fmt
-# for smartcols
 util-linux
 json-c
 libsolv
@@ -53,3 +50,30 @@ swig
 sdbus-c++
 openssl
 libffi
+
+# required by dnf at runtime
+elfutils
+file
+
+# required for general building operations
+binutils
+diffutils
+findutils
+flex
+gawk
+gcc
+grep
+gzip
+libxcrypt
+linux-headers
+make
+m4
+perl
+sed
+tar
+
+# required by gcc
+gmp
+mpc
+mpfr
+

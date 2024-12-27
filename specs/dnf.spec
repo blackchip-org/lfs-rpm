@@ -6,6 +6,9 @@ License:        GPLv2
 
 Source0:        https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
 
+Requires:       elfutils
+Requires:       file
+
 BuildRequires:  cmake
 BuildRequires:  fmt
 BuildRequires:  json-c
@@ -34,6 +37,8 @@ groups and environments.
 #---------------------------------------------------------------------------
 %build
 sed -i 's/ \-Werror//g' CMakeLists.txt
+# Needs systemd
+sed -i '/needs_restarting_plugin/d' dnf5-plugins/CMakeLists.txt
 
 mkdir build
 cd build
@@ -83,7 +88,6 @@ ln -s dnf5 %{buildroot}/usr/bin/dnf
 %shlib /usr/lib/dnf5/plugins/changelog_cmd_plugin.so
 %shlib /usr/lib/dnf5/plugins/config-manager_cmd_plugin.so
 %shlib /usr/lib/dnf5/plugins/copr_cmd_plugin.so
-%shlib /usr/lib/dnf5/plugins/needs_restarting_cmd_plugin.so
 %shlib /usr/lib/dnf5/plugins/repoclosure_cmd_plugin.so
 %shlib /usr/lib/dnf5/plugins/reposync_cmd_plugin.so
 %shlib /usr/lib/libdnf5/plugins/actions.so

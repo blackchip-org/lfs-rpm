@@ -1,9 +1,13 @@
 FROM scratch
 
 ADD lfs-mkpod.tar.gz    /
+
+RUN mkdir -p /etc/yum.repos.d
+
 COPY passwd             /etc/passwd
 COPY group              /etc/group
-COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
+COPY macros.pod         /usr/lib/rpm/macros.d/macros.pod
+COPY pod.repo           /etc/yum.repos.d/pod.repo
 
 RUN install -o 1000 -g 1000 -d /build/rpmbuild && \
     rpm -i --justdb --nodeps /root/*.rpm

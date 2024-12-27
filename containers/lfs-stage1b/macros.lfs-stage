@@ -1,2 +1,3 @@
-%with_lfs_stage1        1 
+%dist                   ~stage1b%{getenv:lfs_dist}
+%with_lfs_stage1        1
 %with_lfs_stage1b       1
