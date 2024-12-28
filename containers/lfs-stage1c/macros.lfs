@@ -3,6 +3,7 @@
 %_build_id_links    none
 
 %make               make -j%{getenv:lfs_nproc}
+%shlib              %attr(755,root,root)
 
 %use_lfs_tools      export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
 %locale_posix       export LC_ALL=POSIX

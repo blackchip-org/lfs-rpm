@@ -46,7 +46,7 @@ Documentation for %{name}
 ./configure --prefix=/usr
 %make
 
-%elseif %{with lfs}
+%elif %{with lfs}
 ./configure --prefix=/usr
 %make
 
