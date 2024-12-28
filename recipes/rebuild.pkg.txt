@@ -10,11 +10,11 @@ specs/automake.spec
 specs/bash.spec
 specs/bc.spec
 specs/binutils.spec
-specs/NULL.spec
 specs/bison.spec
 specs/bzip2.spec
 specs/check.spec
 specs/cmake.spec
+specs/gettext.spec
 specs/coreutils.spec
 specs/cpio.spec
 specs/curl.spec
@@ -33,7 +33,6 @@ specs/fmt.spec
 specs/gawk.spec
 specs/gcc.spec
 specs/gdbm.spec
-specs/gettext.spec
 specs/glibc.spec
 specs/glib.spec
 specs/gmp.spec

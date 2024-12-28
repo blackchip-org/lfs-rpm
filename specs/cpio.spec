@@ -19,6 +19,27 @@ extracting from archives, cpio automatically recognizes which kind of archive
 it is reading and can read archives created on machines with a different
 byte-order.
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
@@ -43,6 +64,12 @@ rm %{buildroot}/usr/libexec/rmt
 #---------------------------------------------------------------------------
 %files
 /usr/bin/cpio
-/usr/share/info/*
-/usr/share/man/man{1,8}/*
+
+%files lang
 /usr/share/locale/*/LC_MESSAGES/%{name}.mo
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*

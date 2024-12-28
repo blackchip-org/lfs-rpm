@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        A file compression utility
 License:        BSD
 
-Source0:        https://www.sourceware.org/pub/bzip2/bzip2-%{version}.tar.gz
+Source:         https://www.sourceware.org/pub/bzip2/bzip2-%{version}.tar.gz
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/bzip2-%{version}-install_docs-1.patch
 
 %description
@@ -16,6 +16,20 @@ decompression than those techniques. Bzip2 is not the fastest compression
 utility, but it does strike a balance between speed and compression capability.
 
 Install bzip2 if you need a compression utility.
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -94,11 +108,13 @@ rm -f %{buildroot}/usr/lib/libbz2.a
 /usr/include/bzlib.h
 /usr/lib/libbz2.so
 /usr/lib/libbz2.so.1.0
-/usr/share/doc/bzip2-%{version}
-/usr/share/man/man1/*
+%shlib /usr/lib/libbz2.so.%{version}
 
-%defattr(755,root,root,755)
-/usr/lib/libbz2.so.%{version}
+%files doc
+/usr/share/doc/%{name}-%{version}
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

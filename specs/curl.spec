@@ -8,10 +8,7 @@ Source0:        https://curl.se/download/curl-%{version}.tar.xz
 
 BuildRequires:  libpsl
 BuildRequires:  openssl
-Suggests:       %{name}-man = %{version}
-
-%package man
-Summary:        Manual pages for %{name}
+Suggests:       %{name}-doc = %{version}
 
 %description
 curl is a tool for transferring data from or to a server using URLs. It
@@ -21,8 +18,12 @@ SMB, SMBS, SMTP, SMTPS, TELNET, TFTP, WS and WSS.
 
 curl is powered by libcurl for all transfer-related features.
 
-%description man
-Manual pages for %{name}
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -49,11 +50,9 @@ rm %{buildroot}/usr/lib/libcurl.a
 /usr/include/%{name}
 /usr/lib/libcurl.so
 /usr/lib/libcurl.so.4
+%shlib /usr/lib/libcurl.so.4.8.0
 /usr/lib/pkgconfig/libcurl.pc
 /usr/share/aclocal/libcurl.m4
 
-%defattr(755,root,root,755)
-/usr/lib/libcurl.so.4.8.0
-
-%files man
+%files doc
 /usr/share/man/man{1,3}/*

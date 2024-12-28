@@ -68,6 +68,7 @@ libxcrypt
 linux-headers
 make
 m4
+patch
 perl
 sed
 tar
