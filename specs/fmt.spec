@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        Fast and safe alternative to C stdio and C++ iostreams
 License:        {fmt}
 
-Source0:        https://github.com/fmtlib/fmt/archive/refs/tags/%{version}.tar.gz
+Source:         https://github.com/fmtlib/fmt/archive/refs/tags/%{version}.tar.gz
 
 BuildRequires:  cmake
 

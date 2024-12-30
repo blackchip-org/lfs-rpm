@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        GNU's bc (a numeric processing language) and dc (a calculator)
 License:        GPLv2+
 
-Source0:        https://github.com/gavinhoward/bc/releases/download/%{version}/bc-%{version}.tar.xz
+Source:         https://github.com/gavinhoward/bc/releases/download/%{version}/bc-%{version}.tar.xz
 
 Suggests:       %{name}-doc = %{version}
 

@@ -4,7 +4,11 @@ Release:        1%{?dist}
 Summary:        General purpose template engine for python
 License:        BSD
 
-Source0:        https://pypi.org/packages/source/J/Jinja2/jinja2-%{version}.tar.gz
+Source:         https://pypi.org/packages/source/J/Jinja2/jinja2-%{version}.tar.gz
+
+Requires:       python-MarkupSafe
+BuildRequires:  python
+BuildRequires:  python-flit-core
 
 %description
 Jinja2 is a template engine written in pure Python. It provides a Django

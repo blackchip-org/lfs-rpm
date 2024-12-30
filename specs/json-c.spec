@@ -40,8 +40,6 @@ rm %{buildroot}/usr/lib/libjson-c.a
 /usr/lib/cmake/json-c
 /usr/lib/libjson-c.so
 /usr/lib/libjson-c.so.5
+%shlib /usr/lib/libjson-c.so.5.4.0
 /usr/lib/pkgconfig/json-c.pc
-
-%defattr(755,root,root,755)
-/usr/lib/libjson-c.so.5.4.0
 

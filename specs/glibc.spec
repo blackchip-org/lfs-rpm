@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
 
-Source0:        https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
 %global         enable_kernel   4.19
 
@@ -13,12 +13,11 @@ Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glib
 %endif
 
 BuildRequires:  bison
+BuildRequires:  gettext
+BuildRequires:  texinfo
 BuildRequires:  python
 Provides:       rtld(GNU_HASH)
 Suggests:       %{name}-doc = %{version}
-
-%package doc
-Summary:        Documentation for %{name}
 
 %description
 The glibc package contains standard libraries which are used by multiple
@@ -27,6 +26,17 @@ make upgrading easier, common system code is kept in one place and shared
 between programs. This particular package contains the most important sets of
 shared libraries: the standard C library and the standard math library. Without
 these two libraries, a Linux system will not function.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+
+%description lang
+Language files for %{name}
 
 %description doc
 Documentation for %{name}
@@ -153,6 +163,9 @@ mkdir -p %{buildroot}/usr/lib/locale
 make check
 
 #---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
 %posttrans doc
 %update_info_dir
 
@@ -205,33 +218,52 @@ make check
 /usr/lib/crtn.o
 /usr/lib/gcrt1.o
 /usr/lib/grcrt1.o
+%shlib /usr/lib/ld-linux-x86-64.so.2
 /usr/lib/libBrokenLocale.a
 /usr/lib/libBrokenLocale.so
+%shlib /usr/lib/libBrokenLocale.so.1
 /usr/lib/libanl.a
 /usr/lib/libanl.so
+%shlib /usr/lib/libanl.so.1
 /usr/lib/libc.a
 /usr/lib/libc.so
+%shlib /usr/lib/libc.so.6
 /usr/lib/libc_malloc_debug.so
+%shlib /usr/lib/libc_malloc_debug.so.0
 /usr/lib/libc_nonshared.a
 /usr/lib/libdl.a
+%shlib /usr/lib/libdl.so.2
 /usr/lib/libg.a
 /usr/lib/libm-%{version}.a
 /usr/lib/libm.a
 /usr/lib/libm.so
+%shlib /usr/lib/libm.so.6
 /usr/lib/libmcheck.a
 /usr/lib/libmemusage.so
 /usr/lib/libmvec.a
 /usr/lib/libmvec.so
+%shlib /usr/lib/libmvec.so.1
+%shlib /usr/lib/libnsl.so.1
 /usr/lib/libnss_compat.so
+%shlib /usr/lib/libnss_compat.so.2
 /usr/lib/libnss_db.so
+%shlib /usr/lib/libnss_db.so.2
+%shlib /usr/lib/libnss_dns.so.2
+%shlib /usr/lib/libnss_files.so.2
 /usr/lib/libnss_hesiod.so
+%shlib /usr/lib/libnss_hesiod.so.2
 /usr/lib/libpcprofile.so
 /usr/lib/libpthread.a
+%shlib /usr/lib/libpthread.so.0
 /usr/lib/libresolv.a
 /usr/lib/libresolv.so
+%shlib /usr/lib/libresolv.so.2
 /usr/lib/librt.a
+%shlib /usr/lib/librt.so.1
 /usr/lib/libthread_db.so
+%shlib /usr/lib/libthread_db.so.1
 /usr/lib/libutil.a
+%shlib /usr/lib/libutil.so.1
 /usr/lib/locale/locale-archive
 /usr/lib/rcrt1.o
 /usr/lib/{audit,gconv}
@@ -244,33 +276,14 @@ make check
 /usr/sbin/zic
 /usr/share/i18n/charmaps/*
 /usr/share/i18n/locales/*
-/usr/share/locale/*/LC_MESSAGES/libc.mo
-/usr/share/locale/locale.alias
 /var/lib/nss_db/Makefile
 
-%defattr(755,root,root,755)
-/usr/lib/ld-linux-x86-64.so.2
-/usr/lib/libanl.so.1
-/usr/lib/libBrokenLocale.so.1
-/usr/lib/libc.so.6
-/usr/lib/libc_malloc_debug.so.0
-/usr/lib/libdl.so.2
-/usr/lib/libm.so.6
-/usr/lib/libmvec.so.1
-/usr/lib/libnsl.so.1
-/usr/lib/libnss_compat.so.2
-/usr/lib/libnss_db.so.2
-/usr/lib/libnss_dns.so.2
-/usr/lib/libnss_files.so.2
-/usr/lib/libnss_hesiod.so.2
-/usr/lib/libpthread.so.0
-/usr/lib/libresolv.so.2
-/usr/lib/librt.so.1
-/usr/lib/libthread_db.so.1
-/usr/lib/libutil.so.1
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/locale/locale.alias
 
 %files doc
-/usr/share/info/libc*
+/usr/share/info/*
 
 %endif
 

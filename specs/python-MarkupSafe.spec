@@ -4,7 +4,10 @@ Release:        1%{?dist}
 Summary:        Implements a XML/HTML/XHTML Markup safe string
 License:        BSD
 
-Source0:        https://pypi.org/packages/source/M/MarkupSafe/MarkupSafe-%{version}.tar.gz
+Source:         https://pypi.org/packages/source/M/MarkupSafe/MarkupSafe-%{version}.tar.gz
+
+BuildRequires:  python
+BuildRequires:  python-setuptools
 
 %description
 A library for safe markup escaping.

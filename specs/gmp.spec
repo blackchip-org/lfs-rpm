@@ -4,12 +4,14 @@ Release:        1%{?dist}
 Summary:        A GNU arbitrary precision library
 License:        LGPLv3+ or GPLv2+
 
-Source0:        https://ftp.gnu.org/gnu/gmp/gmp-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/gmp/gmp-%{version}.tar.xz
 
+BuildRequires:  texinfo
 Suggests:       %{name}-doc = %{version}
 
 %package doc
 Summary:        Documentation for %{name}
+Requires:       texinfo
 
 %description
 The gmp package contains GNU MP, a library for arbitrary precision arithmetic,
@@ -48,6 +50,9 @@ Documentation for %{name}
 %make check
 
 #---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
 %posttrans doc
 %update_info_dir
 

@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        C library for parsing command line parameters
 License:        MIT
 
-Source0:        http://ftp.rpm.org/popt/releases/popt-1.x/popt-%{version}.tar.gz
+Source:         http://ftp.rpm.org/popt/releases/popt-1.x/popt-%{version}.tar.gz
 
 %description
 Popt is a C library for parsing command line parameters. Popt was heavily
@@ -14,6 +14,20 @@ style arrays and automatically set variables based on command line arguments.
 Popt allows command line arguments to be aliased via configuration files and
 includes utility functions for parsing arbitrary strings into argv[] arrays
 using shell-like rules.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -56,11 +70,13 @@ rm %{buildroot}/usr/lib/libpopt.a
 /usr/include/*.h
 /usr/lib/libpopt.so
 /usr/lib/libpopt.so.0
+%shlib /usr/lib/libpopt.so.0.0.2
 /usr/lib/pkgconfig/popt.pc
-/usr/share/locale/*/LC_MESSAGES/popt.mo
-/usr/share/man/man3/*
 
-%defattr(755,root,root,755)
-/usr/lib/libpopt.so.0.0.2
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/man/man3/*
 
 %endif

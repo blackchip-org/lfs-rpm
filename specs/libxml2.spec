@@ -5,7 +5,7 @@ Release:        1%{?dist}
 Summary:        XML C parser and toolkit developed for the GNOME project
 License:        MIT
 
-Source0:        https://download.gnome.org/sources/libxml2/%{version2}/libxml2-%{version}.tar.xz
+Source:         https://download.gnome.org/sources/libxml2/%{version2}/libxml2-%{version}.tar.xz
 
 BuildRequires:  pkg-config
 BuildRequires:  python
@@ -58,15 +58,13 @@ rm -rf %{buildroot}/usr/lib/%{python_version}/__pycache__
 /usr/lib/cmake/%{name}
 /usr/lib/libxml2.so
 /usr/lib/libxml2.so.2
+%shlib /usr/lib/libxml2.so.2.13.5
 /usr/lib/pkgconfig/libxml-2.0.pc
-
-%defattr(755,root,root,755)
-/usr/lib/libxml2.so.2.13.5
 
 %files doc
 /usr/share/doc/%{name}
 /usr/share/gtk-doc/html/%{name}
 
 %files man
-/usr/share/man/man1/*
+/usr/share/man/man*/*
 

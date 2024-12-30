@@ -6,10 +6,13 @@ License:        LGPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/mpc/mpc-%{version}.tar.gz
 
+BuildRequires:  autoconf
+BuildRequires:  texinfo
 Suggests:       %{name}-doc = %{version}
 
 %package doc
 Summary:        Documentation for %{name}
+Requires:       texinfo
 
 %description
 MPC is a C library for the arithmetic of complex numbers with arbitrarily high
@@ -41,6 +44,9 @@ Documentation for %{name}
 %make check
 
 #---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
 %posttrans doc
 %update_info_dir
 

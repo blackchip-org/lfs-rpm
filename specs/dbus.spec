@@ -4,12 +4,24 @@ Release:        1%{?dist}
 Summary:        D-BUS message bus
 License:        (AFL-2.1 OR GPL-2.0-or-later) AND GPL-2.0-or-later
 
-Source0:        https://dbus.freedesktop.org/releases/dbus/dbus-%{version}.tar.xz
+Source:         https://dbus.freedesktop.org/releases/dbus/dbus-%{version}.tar.xz
+
+BuildRequires:  expat
+BuildRequires:  pkg-config
+BuildRequires:  systemd
 
 %description
 D-BUS is a system for sending messages between applications. It is used both
 for the system-wide message bus service, and as a per-user-login-session
 messaging facility.
+
+%package doc
+Summary:        Documentation for %{name}
+
+%description doc
+Documentation for %{name}
+
+# TODO: Build doxygen/xml docs
 
 #---------------------------------------------------------------------------
 %prep
@@ -58,6 +70,7 @@ make check
 /usr/lib/dbus-1.0
 /usr/lib/libdbus-1.so
 /usr/lib/libdbus-1.so.3
+%shlib /usr/lib/libdbus-1.so.3.32.4
 /usr/lib/pkgconfig/dbus-1.pc
 /usr/lib/systemd/system/dbus.service
 /usr/lib/systemd/system/dbus.socket
@@ -69,10 +82,9 @@ make check
 /usr/libexec/dbus-daemon-launch-helper
 /usr/lib/sysusers.d/dbus.conf
 /usr/lib/tmpfiles.d/dbus.conf
-/usr/share/doc/dbus-%{version}
 /usr/share/dbus-1
 /usr/share/xml/dbus-1
 /var/lib/dbus/machine-id
 
-%defattr(755,root,root,755)
-/usr/lib/libdbus-1.so.3.*
+%files doc
+/usr/share/doc/dbus-%{version}

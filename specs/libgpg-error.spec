@@ -4,12 +4,35 @@ Release:        1%{?dist}
 Summary:        Library for error values used by GnuPG components
 License:        LGPLv2+
 
-Source0:        https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-%{version}.tar.bz2
+Source:         https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-%{version}.tar.bz2
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 This is a library that defines common error values for all GnuPG components.
 Among these are GPG, GPGSM, GPGME, GPG-Agent, libgcrypt, pinentry, SmartCard
 Daemon and possibly more in the future.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -45,7 +68,10 @@ Daemon and possibly more in the future.
 %endif
 
 #---------------------------------------------------------------------------
-%post
+%post doc
+%request_info_dir
+
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -68,15 +94,19 @@ Daemon and possibly more in the future.
 /usr/include/*.h
 /usr/lib/libgpg-error.so
 /usr/lib/libgpg-error.so.0
+%shlib /usr/lib/libgpg-error.so.0.37.0
 /usr/lib/pkgconfig/gpg-error.pc
 /usr/share/aclocal/*
 /usr/share/common-lisp/source/gpg-error
-/usr/share/info/*
 /usr/share/libgpg-error
-/usr/share/locale/*/LC_MESSAGES/libgpg-error.mo
-/usr/share/man/man1/*
 
-%defattr(755,root,root,755)
-/usr/lib/libgpg-error.so.0.*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif

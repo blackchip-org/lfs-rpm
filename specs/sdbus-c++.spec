@@ -7,6 +7,7 @@ License:        LGPL-2.1
 Source:         https://github.com/Kistler-Group/sdbus-cpp/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:  cmake
+BuildRequires:  pkg-config
 Suggests:       %{name}-doc = %{version}
 
 %package doc

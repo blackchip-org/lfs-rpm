@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        Ncurses support utilities
 License:        MIT
 
-Source0:        https://invisible-mirror.net/archives/ncurses/ncurses-%{version}.tar.gz
+Source:         https://invisible-mirror.net/archives/ncurses/ncurses-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 The curses library routines are a terminal-independent method of updating
@@ -18,6 +20,20 @@ decompiler infocmp, clear, tput, tset, and a termcap conversion tool captoinfo.
 #---------------------------------------------------------------------------
 %prep
 %setup -q
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
@@ -110,17 +126,22 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 /usr/lib/libform.so
 /usr/lib/libformw.so
 /usr/lib/libformw.so.6
+%shlib /usr/lib/libformw.so.%{version}
 /usr/lib/libmenu.so
 /usr/lib/libmenuw.so
 /usr/lib/libmenuw.so.6
+%shlib /usr/lib/libmenuw.so.%{version}
 /usr/lib/libncurses++w.so
 /usr/lib/libncurses++w.so.6
+%shlib /usr/lib/libncurses++w.so.%{version}
 /usr/lib/libncurses.so
 /usr/lib/libncursesw.so
 /usr/lib/libncursesw.so.6
+%shlib /usr/lib/libncursesw.so.%{version}
 /usr/lib/libpanel.so
 /usr/lib/libpanelw.so
 /usr/lib/libpanelw.so.6
+%shlib /usr/lib/libpanelw.so.%{version}
 /usr/lib/pkgconfig/form.pc
 /usr/lib/pkgconfig/formw.pc
 /usr/lib/pkgconfig/menu.pc
@@ -131,17 +152,14 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 /usr/lib/pkgconfig/panel.pc
 /usr/lib/pkgconfig/panelw.pc
 /usr/lib/terminfo
-/usr/share/doc/%{name}-*
-/usr/share/man/man{1,3,5,7}/*
 /usr/share/tabset/*
 /usr/share/terminfo/*/*
 
-%defattr(755,root,root,755)
-/usr/lib/libformw.so.%{version}
-/usr/lib/libmenuw.so.%{version}
-/usr/lib/libncurses++w.so.%{version}
-/usr/lib/libncursesw.so.%{version}
-/usr/lib/libpanelw.so.%{version}
+%files doc
+/usr/share/doc/%{name}-*
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

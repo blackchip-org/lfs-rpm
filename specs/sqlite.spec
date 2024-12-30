@@ -7,10 +7,7 @@ License:        Public Domain
 
 Source:         https://www.sqlite.org/2024/sqlite-autoconf-%{file_version}.tar.gz
 
-Suggests:       %{name}-man = %{version}
-
-%package man
-Summary:        Manual pages for %{name}
+Suggests:       %{name}-doc = %{version}
 
 %description
 SQLite is a C-language library that implements a small, fast, self-contained,
@@ -19,8 +16,12 @@ database engine in the world. SQLite is built into all mobile phones and most
 computers and comes bundled inside countless other applications that people
 use every day.
 
-%description man
-Manual pages for %{name}
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -44,10 +45,8 @@ rm %{buildroot}/usr/lib/libsqlite3.a
 /usr/include/sqlite3*
 /usr/lib/libsqlite3.so
 /usr/lib/libsqlite3.so.0
+%shlib /usr/lib/libsqlite3.so.0.8.6
 /usr/lib/pkgconfig/sqlite3.pc
 
-%defattr(755,root,root,755)
-/usr/lib/libsqlite3.so.0.8.6
-
-%files man
-/usr/share/man/man1/*.gz
+%files doc
+/usr/share/man/man*/*

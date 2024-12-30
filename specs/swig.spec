@@ -6,6 +6,8 @@ License:        GPLv3+
 
 Source:         https://github.com/swig/swig/archive/refs/tags/v%{version}.tar.gz
 
+BuildRequires:  autoconf
+BuildRequires:  automake
 BuildRequires:  bison
 BuildRequires:  pcre2
 

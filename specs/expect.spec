@@ -4,8 +4,11 @@ Release:        1%{?dist}
 Summary:        A program-script interaction and testing utility
 License:        Public Domain
 
-Source0:        https://prdownloads.sourceforge.net/expect/expect%{version}.tar.gz
+Source:         https://prdownloads.sourceforge.net/expect/expect%{version}.tar.gz
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/expect-%{version}-gcc14-1.patch
+
+BuildRequires:  tcl
+Suggests:       %{name}-doc = %{version}
 
 %description
 Expect is a tcl application for automating and testing interactive applications
@@ -13,6 +16,13 @@ such as telnet, ftp, passwd, fsck, rlogin, tip, etc. Expect makes it easy for a
 script to control another program and interact with it.
 
 This package contains expect and some scripts that use it.
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -66,7 +76,7 @@ make test
 /usr/include/*
 /usr/lib/expect5.45.4/pkgIndex.tcl
 /usr/lib/libexpect5.45.4.so
-/usr/share/man/man{1,3}/*
+%shlib /usr/lib/expect5.45.4/libexpect5.45.4.so
 
-%defattr(755,root,root,755)
-/usr/lib/expect5.45.4/libexpect5.45.4.so
+%files doc
+/usr/share/man/man*/*

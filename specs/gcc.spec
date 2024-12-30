@@ -3,7 +3,7 @@ Version:        14.2.0
 Release:        1%{?dist}
 Summary:        Various compilers (C, C++, Objective-C, ...)
 License:        GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
-Source0:        https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
 
 %global         glibc_version   2.40
 

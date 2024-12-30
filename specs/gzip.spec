@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        The GNU data compression program
 License:        GPLv3+ and GFDL
 
-Source0:        https://ftp.gnu.org/gnu/gzip/gzip-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/gzip/gzip-%{version}.tar.xz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 The gzip package contains the popular GNU gzip data compression program.
@@ -12,6 +14,20 @@ Gzipped files have a .gz extension.
 
 Gzip should be installed on your system, because it is a very commonly used
 data compression program.
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -43,7 +59,10 @@ data compression program.
 %endif
 
 #---------------------------------------------------------------------------
-%post
+%post doc
+%request_info_dir
+
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -66,7 +85,11 @@ data compression program.
 /usr/bin/zless
 /usr/bin/zmore
 /usr/bin/znew
+
+%files doc
 /usr/share/info/*
-/usr/share/man/man1/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif

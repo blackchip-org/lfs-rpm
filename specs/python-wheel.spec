@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        Built-package format for Python
 License:        MIT
 
-Source0:        https://pypi.org/packages/source/w/wheel/wheel-%{version}.tar.gz
+Source:         https://pypi.org/packages/source/w/wheel/wheel-%{version}.tar.gz
 
 BuildRequires:  python
 BuildRequires:  python-flit-core

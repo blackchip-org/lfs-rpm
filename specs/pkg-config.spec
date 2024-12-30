@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        Helper tool used when compiling applications and libraries
 License:        GPLv2+
 
-Source0:        https://pkgconfig.freedesktop.org/releases/pkg-config-%{version}.tar.gz
+Source:         https://pkgconfig.freedesktop.org/releases/pkg-config-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 #FIXME: See below
 #BuildRequires:  glib
@@ -16,6 +18,20 @@ application can use gcc -o test test.c `pkg-config --libs --cflags glib-2.0`
 for instance, rather than hard-coding values on where to find glib (or other
 libraries). It is language-agnostic, so it can be used for defining the
 location of documentation tools, for instance.
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -66,7 +82,11 @@ rm -f %{buildroot}/usr/bin/x86_64-unknown-linux-gnu-pkg-config
 %else
 /usr/bin/pkg-config
 /usr/share/aclocal/pkg.m4
+
+%files doc
 /usr/share/doc/pkg-config/pkg-config-guide.html
-/usr/share/man/man1/pkg-config.1.gz
+
+%files man
+/usr/share/man/man*/*
 
 %endif

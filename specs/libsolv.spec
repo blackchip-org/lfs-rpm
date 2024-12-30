@@ -1,13 +1,14 @@
-Name:		    libsolv
+Name:		      libsolv
 Version:	    0.7.31
 Release:	    1%{?dist}
 Summary:	    Dependency solver using a satisfiability algorithm
 License:        BSD
 
-Source0:	    https://github.com/openSUSE/libsolv/archive/refs/tags/%{version}.tar.gz
+Source: 	    https://github.com/openSUSE/libsolv/archive/refs/tags/%{version}.tar.gz
 
 BuildRequires:  cmake
 BuildRequires:  libxml2
+Suggests:       %{name}-doc = %{version}
 
 %global         cmake_version 3.30
 
@@ -27,6 +28,13 @@ The sat-solver code has been written to aim for the newest packages, record the
 decision tree to provide introspection, and also provides the user with
 suggestions on how to deal with unsolvable problems. It also takes advantage of
 repository storage to minimize memory usage.
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -80,4 +88,6 @@ mv %{buildroot}/usr/share/cmake \
 /usr/lib/pkgconfig/libsolv.pc
 /usr/lib/pkgconfig/libsolvext.pc
 /usr/share/cmake-%{cmake_version}/Modules/FindLibSolv.cmake
-/usr/share/man/man{1,3}/*
+
+%files doc
+/usr/share/man/man*/*

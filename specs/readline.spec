@@ -5,7 +5,7 @@ Release:        1%{?dist}
 Summary:        A library for editing typed command lines
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
+Source:         https://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
 
 Suggests:       %{name}-doc = %{version}
 
@@ -53,6 +53,9 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 %remove_info_dir
 
 #---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
 %posttrans doc
 %update_info_dir
 
@@ -69,8 +72,9 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 /usr/lib/pkgconfig/history.pc
 /usr/lib/pkgconfig/readline.pc
 
-%files man
-/usr/share/man/man3/*
-
 %files doc
 /usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
+

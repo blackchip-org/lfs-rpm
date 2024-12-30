@@ -4,7 +4,7 @@ Release:    1%{?dist}
 Summary:    The Linux kernel API
 License:    GPLv2 and Redistributable, no modification permitted
 
-Source0:    https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{version}.tar.xz
+Source:     https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{version}.tar.xz
 
 %description
 The C header fils that specify the interface between the Linux kernel and

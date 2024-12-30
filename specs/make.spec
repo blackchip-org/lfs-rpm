@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        A GNU tool which simplifies the build process for users
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/make/make-%{version}.tar.gz
+Source:         https://ftp.gnu.org/gnu/make/make-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 A GNU tool for controlling the generation of executables and other non-source
@@ -12,6 +14,27 @@ files of a program from the program's source files. Make allows users to build
 and install packages without any significant knowledge about the details of the
 build process. The details about how the program should be built are provided
 for make in the program's makefile.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -46,7 +69,10 @@ for make in the program's makefile.
 %endif
 
 #---------------------------------------------------------------------------
-%post
+%post doc
+%request_info_dir
+
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -59,8 +85,14 @@ for make in the program's makefile.
 %else
 /usr/bin/make
 /usr/include/*
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
 /usr/share/info/*
-/usr/share/locale/*/LC_MESSAGES/%{name}.mo
-/usr/share/man/man1/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif

@@ -4,14 +4,31 @@ Release:        1%{?dist}
 Summary:        The GRand Unified Bootloader
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
 
+BuildRequires:  bison
+BuildRequires:  python
+Suggests:       %{name}-doc = %{version}
 
 %description
 Briefly, a boot loader is the first software program that runs when a computer
 starts. It is responsible for loading and transferring control to the
 operating system kernel software (such as the Hurd or Linux). The kernel, in
 turn, initializes the rest of the operating system (e.g. GNU).
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+
+%description lang
+Language files for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -38,7 +55,10 @@ mv -v    %{buildroot}/etc/bash_completion.d/grub \
 %remove_info_dir
 
 #---------------------------------------------------------------------------
-%post
+%post doc
+%request_info_dir
+
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -72,5 +92,9 @@ mv -v    %{buildroot}/etc/bash_completion.d/grub \
 /usr/sbin/grub-sparc64-setup
 /usr/share/bash-completion/completions/grub
 /usr/share/grub/grub-mkconfig_lib
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
 /usr/share/info/*
-/usr/share/locale/*/LC_MESSAGES/grub.mo

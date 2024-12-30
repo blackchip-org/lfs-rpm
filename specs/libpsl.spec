@@ -7,10 +7,11 @@ License:        MIT
 Source:         https://github.com/rockdaboot/libpsl/releases/download/%{version}/libpsl-%{version}.tar.gz
 
 BuildRequires:  python
-Suggests:       %{name}-man = %{version}
+Suggests:       %{name}-doc = %{version}
 
-%package man
-Summary:        Manual pages for %{name}
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
 
 %description
 A Public Suffix List is a collection of Top Level Domains (TLDs) suffixes. TLDs
@@ -20,8 +21,8 @@ and .google. Brand TLDs allows users to register their own top level domain
 that exist at the same level as ICANN's gTLDs. Brand TLDs are sometimes
 referred to as Vanity Domains.
 
-%description man
-Manual pages for %{name}
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -46,10 +47,8 @@ rm %{buildroot}/usr/lib/libpsl.a
 /usr/include/libpsl.h
 /usr/lib/libpsl.so
 /usr/lib/libpsl.so.5
+%shlib /usr/lib/libpsl.so.5.3.5
 /usr/lib/pkgconfig/libpsl.pc
 
-%defattr(755,root,root,755)
-/usr/lib/libpsl.so.5.3.5
-
-%files man
-/usr/share/man/man1/*
+%files doc
+/usr/share/man/man*/*

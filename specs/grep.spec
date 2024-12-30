@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        Pattern matching utilities
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 The GNU versions of commonly used grep utilities. Grep searches
@@ -14,6 +16,27 @@ include grep, egrep and fgrep.
 
 GNU grep is needed by many scripts, so it shall be installed on every
 system.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -52,7 +75,10 @@ sed -i "s/echo/#echo/" src/egrep.sh
 make check
 
 #---------------------------------------------------------------------------
-%post
+%post doc
+%request_info_dir
+
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -65,8 +91,14 @@ make check
 /usr/bin/egrep
 /usr/bin/fgrep
 /usr/bin/grep
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
 /usr/share/info/*
-/usr/share/locale/*/LC_MESSAGES/*.mo
-/usr/share/man/man1/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif

@@ -4,8 +4,9 @@ Release:        1%{?dist}
 Summary:        Linux kernel and C library user-space interface documentation
 License:        GPL+ and GPLv2+ and BSD and MIT and Copyright only
 
-Source0:        https://www.kernel.org/pub/linux/docs/man-pages/man-pages-%{version}.tar.xz
+Source:         https://www.kernel.org/pub/linux/docs/man-pages/man-pages-%{version}.tar.xz
 
+Requires:       man-db
 
 %description
 A large collection of manual pages from the Linux Documentation Project (LDP).

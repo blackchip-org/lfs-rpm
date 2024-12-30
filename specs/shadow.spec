@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        Utilities for managing accounts and shadow password files
 License:        BSD and GPLv2+
 
-Source0:        https://github.com/shadow-maint/shadow/releases/download/%{version}/shadow-%{version}.tar.xz
+Source:         https://github.com/shadow-maint/shadow/releases/download/%{version}/shadow-%{version}.tar.xz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 The shadow-utils package includes the necessary programs for converting UNIX
@@ -16,6 +18,20 @@ integrity of password and shadow files. The lastlog command prints out the last
 login times for all users. The useradd, userdel, and usermod commands are used
 for managing user accounts. The groupadd, groupdel, and groupmod commands are
 used for managing group accounts.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -76,6 +92,7 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 /usr/include/shadow
 /usr/lib/libsubid.so
 /usr/lib/libsubid.so.5
+%shlib /usr/lib/libsubid.so.5.0.0
 /usr/sbin/chgpasswd
 /usr/sbin/chpasswd
 /usr/sbin/groupadd
@@ -96,8 +113,10 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 /usr/sbin/usermod
 /usr/sbin/vigr
 /usr/sbin/vipw
-/usr/share/locale/*/LC_MESSAGES/*.mo
-/usr/share/man/man{1,3,5,8}/*
 
-%defattr(755,root,root,755)
-/usr/lib/libsubid.so.5.0.0
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
+
+%files doc
+/usr/share/man/man*/*
+

@@ -4,7 +4,10 @@ Release:        1%{?dist}
 Summary:        Utilities for managing ext2, ext3, and ext4 file systems
 License:        GPLv2
 
-Source0:        https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v%{version}/e2fsprogs-%{version}.tar.gz
+Source:         https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v%{version}/e2fsprogs-%{version}.tar.gz
+
+BuildRequires:  pkg-config
+Suggests:       %{name}-doc = %{version}
 
 %description
 The e2fsprogs package contains a number of utilities for creating, checking,
@@ -18,6 +21,27 @@ system parameters), and most of the other core ext2fs file system utilities.
 
 You should install the e2fsprogs package if you need to manage the performance
 of an ext2, ext3, or ext4 file system.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -62,12 +86,16 @@ rm -fv %{buildroot}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
 /usr/lib/e2initrd_helper
 /usr/lib/libcom_err.so
 /usr/lib/libcom_err.so.2
+%shlib /usr/lib/libcom_err.so.2.1
 /usr/lib/libe2p.so
 /usr/lib/libe2p.so.2
+%shlib /usr/lib/libe2p.so.2.3
 /usr/lib/libext2fs.so
 /usr/lib/libext2fs.so.2
+%shlib /usr/lib/libext2fs.so.2.4
 /usr/lib/libss.so
 /usr/lib/libss.so.2
+%shlib /usr/lib/libss.so.2.0
 /usr/lib/pkgconfig/com_err.pc
 /usr/lib/pkgconfig/e2p.pc
 /usr/lib/pkgconfig/ext2fs.pc
@@ -105,14 +133,14 @@ rm -fv %{buildroot}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
 /usr/sbin/tune2fs
 /usr/share/et/et_c.awk
 /usr/share/et/et_h.awk
-/usr/share/info/libext2fs.info.gz
-/usr/share/locale/*/LC_MESSAGES/*
-/usr/share/man/man{1,3,5,8}/*
 /usr/share/ss/ct_c.awk
 /usr/share/ss/ct_c.sed
 
-%defattr(755,root,root,755)
-/usr/lib/libcom_err.so.2.1
-/usr/lib/libe2p.so.2.3
-/usr/lib/libext2fs.so.2.4
-/usr/lib/libss.so.2.0
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*

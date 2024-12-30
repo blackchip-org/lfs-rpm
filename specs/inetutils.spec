@@ -4,7 +4,8 @@ Release:        1%{?dist}
 Summary:        A collection of common network programs
 License:        GPLv2+
 
-Source0:        https://ftp.gnu.org/gnu/inetutils/inetutils-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/inetutils/inetutils-%{version}.tar.xz
+Suggests:       %{name}-doc = %{version}
 
 %description
 Inetutils is a collection of common network programs. It includes:
@@ -23,6 +24,20 @@ Inetutils is a collection of common network programs. It includes:
 
 Most of them are improved versions of programs originally from BSD. Some others
 are original versions, written from scratch.
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -61,19 +76,19 @@ mv -v %{buildroot}/usr/{,s}bin/ifconfig
 
 #---------------------------------------------------------------------------
 %files
-/usr/share/info/*
-/usr/share/man/man1/*
-
-%defattr(755,root,root,755)
 /usr/bin/dnsdomainname
 /usr/bin/ftp
 /usr/bin/hostname
-/usr/bin/ping
-/usr/bin/ping6
+%attr(4755,root,root) /usr/bin/ping
+%attr(4755,root,root) /usr/bin/ping6
 /usr/bin/talk
 /usr/bin/telnet
 /usr/bin/tftp
-/usr/bin/traceroute
+%attr(4755,root,root) /usr/bin/traceroute
 /usr/sbin/ifconfig
 
+%files doc
+/usr/share/info/*
 
+%files man
+/usr/share/man/man*/*

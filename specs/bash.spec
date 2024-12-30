@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        The GNU Bourne Again shell
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/bash/bash-%{version}.tar.gz
+Source:         https://ftp.gnu.org/gnu/bash/bash-%{version}.tar.gz
 
 Provides:       /bin/sh
 Provides:       /bin/bash

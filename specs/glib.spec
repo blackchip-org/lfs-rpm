@@ -58,16 +58,22 @@ DESTDIR=%{buildroot} meson install -C _build
 /usr/lib/glib-2.0/include/glibconfig.h
 /usr/lib/libgio-2.0.so
 /usr/lib/libgio-2.0.so.0
+%shlib /usr/lib/libgio-2.0.so.0.8300.0
 /usr/lib/libgirepository-2.0.so
 /usr/lib/libgirepository-2.0.so.0
+%shlib /usr/lib/libgirepository-2.0.so.0.8300.0
 /usr/lib/libglib-2.0.so
 /usr/lib/libglib-2.0.so.0
+%shlib /usr/lib/libglib-2.0.so.0.8300.0
 /usr/lib/libgmodule-2.0.so
 /usr/lib/libgmodule-2.0.so.0
+%shlib /usr/lib/libgmodule-2.0.so.0.8300.0
 /usr/lib/libgobject-2.0.so
 /usr/lib/libgobject-2.0.so.0
+%shlib /usr/lib/libgobject-2.0.so.0.8300.0
 /usr/lib/libgthread-2.0.so
 /usr/lib/libgthread-2.0.so.0
+%shlib /usr/lib/libgthread-2.0.so.0.8300.0
 /usr/lib/pkgconfig/gio-2.0.pc
 /usr/lib/pkgconfig/gio-unix-2.0.pc
 /usr/lib/pkgconfig/girepository-2.0.pc
@@ -91,12 +97,3 @@ DESTDIR=%{buildroot} meson install -C _build
 /usr/share/gettext/its/gschema.its
 /usr/share/gettext/its/gschema.loc
 /usr/share/glib-2.0
-/usr/share/locale/*/LC_MESSAGES/glib20.mo
-
-%defattr(755,root,root,755)
-/usr/lib/libgio-2.0.so.0.8300.0
-/usr/lib/libgirepository-2.0.so.0.8300.0
-/usr/lib/libglib-2.0.so.0.8300.0
-/usr/lib/libgmodule-2.0.so.0.8300.0
-/usr/lib/libgobject-2.0.so.0.8300.0
-/usr/lib/libgthread-2.0.so.0.8300.0

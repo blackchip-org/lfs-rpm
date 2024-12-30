@@ -4,7 +4,16 @@ Release:        1%{?dist}
 Summary:        The RPM package management system
 License:        GPLv2+
 
-Source0:        https://ftp.osuosl.org/pub/rpm/releases/rpm-4.19.x/rpm-%{version}.tar.bz2
+Source:         https://ftp.osuosl.org/pub/rpm/releases/rpm-4.19.x/rpm-%{version}.tar.bz2
+
+BuildRequires:  cmake
+BuildRequires:  gettext
+BuildRequires:  pkg-config
+BuildRequires:  python
+BuildRequires:  lua
+BuildRequires:  readline
+BuildRequires:  sqlite
+Suggests:       %{name}-doc = %{version}
 
 %description
 The RPM Package Manager (RPM) is a powerful command line driven
@@ -12,6 +21,27 @@ package management system capable of installing, uninstalling,
 verifying, querying, and updating software packages. Each software
 package consists of an archive of files along with information about
 the package like its version, a description, etc.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -22,6 +52,7 @@ the package like its version, a description, etc.
 mkdir -p _build
 cd _build
 
+%if %{with lfs}
 cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
@@ -38,6 +69,26 @@ cmake \
     -DWITH_SELINUX=OFF \
     -DWITH_READLINE=OFF \
     ..
+
+%else
+cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    -DENABLE_NLS=OFF \
+    -DENABLE_OPENMP=OFF \
+    -DENABLE_SQLITE=ON \
+    -DENABLE_TESTSUITE=OFF \
+    -DRPM_CONFIGDIR=/usr/lib/rpm \
+    -DRPM_VENDOR=lfs \
+    -DWITH_ARCHIVE=OFF \
+    -DWITH_AUDIT=OFF \
+    -DWITH_FAPOLICYD=OFF \
+    -DWITH_INTERNAL_OPENPGP=ON \
+    -DWITH_SELINUX=OFF \
+    -DWITH_READLINE=ON \
+    ..
+
+%endif
 %make
 
 #---------------------------------------------------------------------------
@@ -78,14 +129,20 @@ cd _build
 /usr/lib/rpm-plugins/syslog.so
 /usr/lib/rpm-plugins/systemd_inhibit.so
 /usr/share/dbus-1/system.d/org.rpm.conf
-/usr/share/doc/rpm
-/usr/share/locale/*/LC_MESSAGES/rpm.mo
-/usr/share/man/man{1,8}/*
 
-%defattr(755,root,root,755)
-/usr/lib/librpm.so.10.*
-/usr/lib/librpmbuild.so.10.*
-/usr/lib/librpmio.so.10.*
-/usr/lib/librpmsign.so.10.*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/doc/rpm
+
+%files man
+/usr/share/man/man*/*
+
+
+#/usr/lib/librpm.so.10.*
+#/usr/lib/librpmbuild.so.10.*
+#/usr/lib/librpmio.so.10.*
+#/usr/lib/librpmsign.so.10.*
 
 

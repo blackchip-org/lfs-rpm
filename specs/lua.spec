@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        Powerful light-weight programming language
 License:        MIT
 
-Source0:        http://www.lua.org/ftp/lua-%{version}.tar.gz
+Source:         http://www.lua.org/ftp/lua-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 Lua is a powerful light-weight programming language designed for extending
@@ -14,6 +16,13 @@ powerful data description constructs based on associative arrays and extensible
 semantics. Lua is dynamically typed, interpreted from bytecodes, and has
 automatic memory management with garbage collection, making it ideal for
 configuration, scripting, and rapid prototyping.
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -71,6 +80,8 @@ rm %{buildroot}/%{lfs_dir}/usr/bin/*
 /usr/bin/luac
 /usr/include/*.{h,hpp}
 /usr/lib/liblua.a
+
+%files doc
 /usr/share/man/*
 
 %endif

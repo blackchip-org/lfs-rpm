@@ -4,12 +4,15 @@ Release:        1%{?dist}
 Summary:        A C library for multiple-precision floating-point computations
 License:        LGPLv3+ or GPLv2+
 
-Source0:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/mpfr/mpfr-%{version}.tar.xz
 
+BuildRequires:  autoconf
+BuildRequires:  texinfo
 Suggests:       %{name}-doc = %{version}
 
 %package doc
 Summary:        Documentation for %{name}
+Requires:       texinfo
 
 %description
 The MPFR library is a C library for multiple-precision floating-point
@@ -48,6 +51,9 @@ sed -e 's/+01,234,567/+1,234,567 /' \
 %make check
 
 #---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
 %posttrans doc
 %update_info_dir
 
