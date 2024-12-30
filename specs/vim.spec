@@ -1,11 +1,14 @@
 Name:           vim
 Version:        9.1.0660
-%global         version2    91
 Release:        1%{?dist}
 Summary:        Visual editor improved
 License:        Vim and MIT
 
-Source0:        https://github.com/vim/vim/archive/v%{version}/vim-%{version}.tar.gz
+%global         version2    91
+
+Source:         https://github.com/vim/vim/archive/v%{version}/vim-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 VIM (VIsual editor iMproved) is an updated and improved version of the vi
@@ -15,6 +18,13 @@ multi-level undo, block highlighting and more. The vim-minimal package includes
 a minimal version of VIM, which is installed into /bin/vi for use when only the
 root partition is present. NOTE: The online help is only available when the
 vim-common package is installed.
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -70,9 +80,11 @@ EOF
 /usr/share/icons/hicolor/48x48/apps/gvim.png
 /usr/share/icons/locolor/16x16/apps/gvim.png
 /usr/share/icons/locolor/32x32/apps/gvim.png
-/usr/share/man/*.ISO8859-{1,2,9}/man1/*
-/usr/share/man/*.UTF-8/man1/*
-/usr/share/man/??/man1/*
-/usr/share/man/ru.KOI8-R/man1/*
-/usr/share/man/man1/*
 /usr/share/vim/vim%{version2}
+
+%files doc
+/usr/share/man/*.ISO8859-{1,2,9}/man*/*
+/usr/share/man/*.UTF-8/man*/*
+/usr/share/man/??/man*/*
+/usr/share/man/ru.KOI8-R/man*/*
+/usr/share/man/man*/*

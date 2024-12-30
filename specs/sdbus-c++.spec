@@ -8,6 +8,7 @@ Source:         https://github.com/Kistler-Group/sdbus-cpp/archive/refs/tags/v%{
 
 BuildRequires:  cmake
 BuildRequires:  pkg-config
+BuildRequires:  systemd
 Suggests:       %{name}-doc = %{version}
 
 %package doc

@@ -4,8 +4,9 @@ Release:        1%{?dist}
 Summary:        A GNU file archiving program
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/tar/tar-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/tar/tar-%{version}.tar.xz
 
+Suggests:       %{name}-doc = %{version}
 
 %description
 The GNU tar program saves many files together in one archive and can restore
@@ -17,6 +18,27 @@ ability to perform incremental and full backups.
 
 If you want to use tar for remote backups, you also need to install the rmt
 package on the remote box.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -55,7 +77,10 @@ FORCE_UNSAFE_CONFIGURE=1  \
 make check
 
 #---------------------------------------------------------------------------
-%post
+%post doc
+%request_info_dir
+
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------
@@ -68,9 +93,15 @@ make check
 %else
 /usr/bin/tar
 /usr/libexec/rmt
-/usr/share/info/*
+
+%files lang
 /usr/share/locale/*/LC_MESSAGES/*
-/usr/share/man/man{1,8}/*
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

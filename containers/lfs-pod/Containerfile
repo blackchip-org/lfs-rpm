@@ -12,6 +12,8 @@ COPY pod.repo           /etc/yum.repos.d/pod.repo
 RUN install -o 1000 -g 1000 -d /build/rpmbuild && \
     rpm -i --justdb --nodeps /root/*.rpm
 
+RUN dnf update -y
+
 WORKDIR /build
 
 CMD [ "/usr/bin/tail", "-f", "/dev/null" ]

@@ -6,7 +6,6 @@ License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/bison/bison-%{version}.tar.xz
 
-
 %description
 Bison is a general purpose parser generator that converts a grammar
 description for an LALR(1) context-free grammar into a C program to

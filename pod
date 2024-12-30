@@ -16,12 +16,22 @@ EOF
     exit 2
 }
 
+pod-createrepo() {
+    echo "building repository"
+    mkdir -p        build/pod/rpms/x86_64
+    createrepo_c    build/pod/rpms/x86_64
+}
+
 pod-init() {
     set -x
 
+    pod-createrepo
     podman stop -t 0 lfs-pod    >/dev/null 2>&1  || true
     podman rmi --force lfs-pod  >/dev/null 2>&1  || true
-    podman build --tag lfs-pod containers/lfs-pod
+    podman build \
+        --tag lfs-pod \
+        --volume    "$(pwd)/build/pod/rpms:/build/rpmbuild/RPMS:z" \
+        containers/lfs-pod
 }
 
 timestamp() {
@@ -38,15 +48,13 @@ pod-build() {
     echo "[$(timestamp)] start pod:$package" >> build/logs/build.log
     echo -e "\n----- building pod:$spec"
 
-    mkdir -p        build/pod/rpms/x86_64
     mkdir -p        build/pod/srpms
     mkdir -p        build/logs/pod/
 
+    pod-createrepo
+
     echo "creating container"
     pod-create
-
-    echo "building repository"
-    createrepo_c build/pod/rpms/x86_64
 
     rm -rf  build/deps
     mkdir   build/deps
@@ -58,15 +66,13 @@ pod-build() {
         /build/lfs-rpm/$spec
 
     echo "building $package"
-    (
-        set -e -o pipefail
-        podman exec \
-            lfs-pod \
-            rpmbuild -ba --nocheck \
-                --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
-                lfs-rpm/$1 | \
-                tee build/logs/pod/${package}.log
-    )
+    set -e -o pipefail
+    podman exec \
+        lfs-pod \
+        rpmbuild -ba --nocheck \
+            --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
+            lfs-rpm/$1 | \
+            tee build/logs/pod/${package}.log
 
     echo "pod:$package" > build/logs/last-success
     echo "[$(timestamp)] done  pod:$package" >> build/logs/build.log

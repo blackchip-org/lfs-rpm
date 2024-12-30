@@ -6,6 +6,7 @@ License:        GPLv3+ and GFDL
 
 Source:         https://ftp.gnu.org/gnu/gzip/gzip-%{version}.tar.xz
 
+BuildRequires:  less
 Suggests:       %{name}-doc = %{version}
 
 %description

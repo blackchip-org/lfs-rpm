@@ -19,8 +19,8 @@ BuildRequires:  zchunk
 
 #FIXME: This is being used to cheat and use the pre-installed environment.
 #Remove in the future.
-Provides:       librpm.so.10()(64bit)
-Provides:       librpmio.so.10()(64bit)
+#Provides:       librpm.so.10()(64bit)
+#Provides:       librpmio.so.10()(64bit)
 
 %description
 A library providing C and Python (libcURL like) API for downloading linux
@@ -51,8 +51,6 @@ make DESTDIR=%{buildroot} install
 %files
 /usr/include/%{name}
 /usr/lib/librepo.so
+%shlib /usr/lib/librepo.so.0
 /usr/lib/pkgconfig/librepo.pc
 /usr/lib/python%{python_version}/site-packages/%{name}
-
-%defattr(755,root,root,755)
-/usr/lib/librepo.so.0

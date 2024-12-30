@@ -1,19 +1,44 @@
 Name:           util-linux
 Version:        2.40.2
-%global         version2    2.40
 Release:        1%{?dist}
 Summary:        Collection of basic system utilities
 License:        GPLv2 and GPLv2+ and LGPLv2+ and BSD with advertising and Public Domain
 
-Source0:        https://www.kernel.org/pub/linux/utils/util-linux/v%{version2}/util-linux-%{version}.tar.xz
+%global         version2    2.40
 
+Source:         https://www.kernel.org/pub/linux/utils/util-linux/v%{version2}/util-linux-%{version}.tar.xz
+
+BuildRequires:  autoconf
+BuildRequires:  automake
 BuildRequires:  systemd
+Suggests:       %{name}-doc = %{version}
 
 %description
 The util-linux package contains a large variety of low-level system
 utilities that are necessary for a Linux system to function. Among
 others, util-linux contains the fdisk configuration tool and the login
 program.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -176,14 +201,19 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/include/uuid/uuid.h
 /usr/lib/libblkid.so
 /usr/lib/libblkid.so.1
+%shlib /usr/lib/libblkid.so.1.1.0
 /usr/lib/libfdisk.so
 /usr/lib/libfdisk.so.1
+%shlib /usr/lib/libfdisk.so.1.1.0
 /usr/lib/libmount.so
 /usr/lib/libmount.so.1
+%shlib /usr/lib/libmount.so.1.1.0
 /usr/lib/libsmartcols.so
 /usr/lib/libsmartcols.so.1
+%shlib /usr/lib/libsmartcols.so.1.1.0
 /usr/lib/libuuid.so
 /usr/lib/libuuid.so.1
+%shlib /usr/lib/libuuid.so.1.3.0
 /usr/lib/pkgconfig/blkid.pc
 /usr/lib/pkgconfig/fdisk.pc
 /usr/lib/pkgconfig/mount.pc
@@ -236,15 +266,14 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/sbin/wipefs
 /usr/sbin/zramctl
 /usr/share/bash-completion/completions/*
-/usr/share/doc/util-linux-%{version}
-/usr/share/locale/*/LC_MESSAGES/*.mo
-/usr/share/man/man{1,3,5,8}
 
-%defattr(755,root,root,755)
-/usr/lib/libblkid.so.1.1.0
-/usr/lib/libfdisk.so.1.1.0
-/usr/lib/libmount.so.1.1.0
-/usr/lib/libsmartcols.so.1.1.0
-/usr/lib/libuuid.so.1.3.0
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/doc/util-linux-%{version}
+
+%files man
+/usr/share/man/man{1,3,5,8}
 
 %endif

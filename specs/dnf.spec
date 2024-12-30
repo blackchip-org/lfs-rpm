@@ -8,9 +8,9 @@ Source0:        https://github.com/rpm-software-management/dnf5/archive/refs/tag
 
 Requires:       elfutils
 Requires:       file
-
 BuildRequires:  cmake
 BuildRequires:  fmt
+BuildRequires:  gettext
 BuildRequires:  json-c
 BuildRequires:  librepo
 BuildRequires:  libsolv
@@ -23,12 +23,20 @@ BuildRequires:  swig
 BuildRequires:  sqlite
 BuildRequires:  toml11
 BuildRequires:  zchunk
+Suggests:       %{name}-doc = %{version}
 
 %description
 DNF5 is a command-line package manager that automates the process of
 installing, upgrading, configuring, and removing computer programs in a
 consistent manner. It supports RPM packages, modulemd modules, and comps
 groups and environments.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%description lang
+Language files for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -37,11 +45,14 @@ groups and environments.
 #---------------------------------------------------------------------------
 %build
 sed -i 's/ \-Werror//g' CMakeLists.txt
+
+%if %{with lfs}
 # Needs systemd
 sed -i '/needs_restarting_plugin/d' dnf5-plugins/CMakeLists.txt
 
 mkdir build
 cd build
+
 cmake \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
@@ -56,8 +67,29 @@ cmake \
     -DWITH_DNF5DAEMON_SERVER=OFF \
     -DWITH_DNF5_PLUGINS=ON \
     -DWITH_PLUGIN_ACTIONS=ON \
-    -DWITH_SYSTEMD=OFF \
     ..
+
+%else
+mkdir build
+cd build
+
+cmake \
+    -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    -DPYTHON_DESIRED="3" \
+    -DWITH_MAN=OFF \
+    -DWITH_MODULEMD=0 \
+    -DWITH_RUBY=0 \
+    -DWITH_PERL=1 \
+    -DWITH_SYSTEMD=ON \
+    -DWITH_TESTS=OFF \
+    -DWITH_DNF5DAEMON_CLIENT=OFF \
+    -DWITH_DNF5DAEMON_SERVER=OFF \
+    -DWITH_DNF5_PLUGINS=ON \
+    -DWITH_PLUGIN_ACTIONS=ON \
+    ..
+%endif
+
 %make
 
 #---------------------------------------------------------------------------
@@ -99,14 +131,23 @@ ln -s dnf5 %{buildroot}/usr/bin/dnf
 /usr/lib/python%{python_version}/site-packages/libdnf5_cli-5.2.8.1.dist-info
 /usr/lib/python%{python_version}/site-packages/libdnf5{,_cli}
 /usr/lib/python%{python_version}/site-packages/libdnf_plugins
+/usr/share/dnf5/aliases.d/compatibility.conf
+/usr/share/dnf5/aliases.d/compatibility-plugins.conf
+/usr/share/dnf5/aliases.d/compatibility-reposync.conf
+/usr/share/dnf5/dnf5-plugins/automatic.conf
+
+%if %{without lfs}
 /usr/lib/systemd/system/dnf-automatic.service
 /usr/lib/systemd/system/dnf-automatic.timer
 /usr/lib/systemd/system/dnf5-automatic.service
 /usr/lib/systemd/system/dnf5-automatic.timer
 /usr/lib/systemd/system/dnf5-makecache.service
 /usr/lib/systemd/system/dnf5-makecache.timer
-/usr/share/dnf5/aliases.d/compatibility.conf
-/usr/share/dnf5/aliases.d/compatibility-plugins.conf
-/usr/share/dnf5/aliases.d/compatibility-reposync.conf
-/usr/share/dnf5/dnf5-plugins/automatic.conf
+%shlib /usr/lib/dnf5/plugins/needs_restarting_cmd_plugin.so
+/usr/lib/systemd/system/dnf5-offline-transaction-cleanup.service
+/usr/lib/systemd/system/dnf5-offline-transaction.service
+%endif
+
+%files lang
 /usr/share/locale/*/LC_MESSAGES/*.mo
+

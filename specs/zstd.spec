@@ -4,11 +4,20 @@ Release:        1%{?dist}
 Summary:        Zstd compression library
 License:        BSD and GPLv2
 
-Source0:        https://github.com/facebook/zstd/releases/download/v%{version}/zstd-%{version}.tar.gz
+Source:         https://github.com/facebook/zstd/releases/download/v%{version}/zstd-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 Zstd, short for Zstandard, is a fast lossless compression algorithm, targeting
 real-time compression scenarios at zlib-level compression ratio.
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -34,8 +43,8 @@ rm -f %{buildroot}/usr/lib/libzstd.a
 /usr/include/*.h
 /usr/lib/libzstd.so
 /usr/lib/libzstd.so.1
+%shlib /usr/lib/libzstd.so.%{version}
 /usr/lib/pkgconfig/libzstd.pc
-/usr/share/man/man1/*
 
-%defattr(755,root,root,755)
-/usr/lib/libzstd.so.%{version}
+%files doc
+/usr/share/man/man1/*

@@ -6,6 +6,7 @@ License:        GPLv3+ and GFDL and BSD and MIT
 
 Source:         https://ftp.gnu.org/gnu/groff/groff-%{version}.tar.gz
 
+BuildRequires:  perl
 Suggests:       %{name}-doc = %{version}
 
 %description

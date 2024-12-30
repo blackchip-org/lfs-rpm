@@ -7,6 +7,7 @@ License:        GPL+ and GPLv2 and GPLv2+ and GPLv3+ and LGPLv2+
 Source:         https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-%{version}.tar.xz
 
 BuildRequires:  pkg-config
+BuildRequires:  systemd
 Suggests:       %{name}-doc = %{version}
 
 %description

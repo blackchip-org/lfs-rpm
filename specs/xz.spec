@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        LZMA compression utilities
 License:        GPLv2+ and Public Domain
 
-Source0:        https://github.com/tukaani-project/xz/releases/download/v%{version}/xz-%{version}.tar.xz
+Source:         https://github.com/tukaani-project/xz/releases/download/v%{version}/xz-%{version}.tar.xz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 XZ Utils are an attempt to make LZMA compression easy to use on free (as in
@@ -15,6 +17,27 @@ compression algorithms.
 LZMA is a general purpose compression algorithm designed by Igor Pavlov as part
 of 7-Zip. It provides high compression ratio while keeping the decompression
 speed fast.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -89,13 +112,17 @@ rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
 /usr/include/lzma
 /usr/lib/liblzma.so
 /usr/lib/liblzma.so.5
+%shlib /usr/lib/liblzma.so.%{version}
 /usr/lib/pkgconfig/liblzma.pc
-/usr/share/doc/xz-%{version}
-/usr/share/locale/*/LC_MESSAGES/xz.mo
-/usr/share/man/{de,fr,ko,pt_BR,ro,uk}/man1/*
-/usr/share/man/man1/*
 
-%defattr(755,root,root,755)
-/usr/lib/liblzma.so.%{version}
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/doc/xz-%{version}
+
+%files man
+/usr/share/man/{de,fr,ko,pt_BR,ro,uk}/man*/*
+/usr/share/man/man*/*
 
 %endif

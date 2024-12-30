@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        Feature-rich TOML language library for C++11/14/17/20
 License:        MIT
 
-Source0:        https://github.com/ToruNiina/toml11/archive/refs/tags/v%{version}.tar.gz
+Source:         https://github.com/ToruNiina/toml11/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:  cmake
 

@@ -43,15 +43,11 @@ specs/kbd.spec
 specs/kmod.spec
 specs/less.spec
 specs/libcap.spec
-specs/libdnf.spec
 specs/libffi.spec
 specs/libgcrypt.spec
 specs/libgpg-error.spec
-specs/libpipeline.spec
-specs/libstdc++.spec
-specs/libtool.spec
 specs/linux-headers.spec
-specs/linux.spec
+specs/readline.spec
 specs/lua.spec
 specs/lz4.spec
 specs/m4.spec
@@ -80,7 +76,6 @@ specs/grub.spec
 specs/libpsl.spec
 specs/libxml2.spec
 specs/libsolv.spec
-specs/readline.spec
 specs/root-fs.spec
 specs/sed.spec
 specs/shadow.spec
@@ -90,6 +85,9 @@ specs/systemd.spec
 specs/dbus.spec
 specs/rpm.spec
 specs/sdbus-c++.spec
+specs/libpipeline.spec
+specs/perl-File-HomeDir.spec
+specs/perl-File-Which.spec
 specs/man-db.spec
 specs/procps-ng.spec
 specs/e2fsprogs.spec

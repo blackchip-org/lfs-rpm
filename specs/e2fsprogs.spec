@@ -7,6 +7,8 @@ License:        GPLv2
 Source:         https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v%{version}/e2fsprogs-%{version}.tar.gz
 
 BuildRequires:  pkg-config
+BuildRequires:  systemd
+BuildRequires:  texinfo
 Suggests:       %{name}-doc = %{version}
 
 %description

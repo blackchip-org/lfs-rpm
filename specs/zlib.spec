@@ -4,11 +4,20 @@ Release:        1%{?dist}
 Summary:        The compression and decompression library
 License:        zlib and Boost
 
-Source0:        https://zlib.net/fossils/zlib-%{version}.tar.gz
+Source:         https://zlib.net/fossils/zlib-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 Zlib is a general-purpose, patent-free, lossless data compression library which
 is used by many different programs.
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -53,11 +62,11 @@ rm -f %{buildroot}/usr/lib/libz.a
 %else
 /usr/include/*
 /usr/lib/libz.so{,.1}
+%shlib /usr/lib/libz.so.%{version}
 /usr/lib/pkgconfig/zlib.pc
-/usr/share/man/man3/*
 
-%defattr(755,root,root,755)
-/usr/lib/libz.so.%{version}
+%files doc
+/usr/share/man/man*/*
 
 %endif
 

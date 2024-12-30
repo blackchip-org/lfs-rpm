@@ -8,6 +8,7 @@ License:        LGPLv2
 
 Source0:        https://download.gnome.org/sources/glib/%{version2}/glib-%{version}.tar.xz
 
+BuildRequires:  gettext
 BuildRequires:  libffi
 BuildRequires:  meson
 BuildRequires:  ninja
@@ -19,6 +20,13 @@ GLib is the low-level core library that forms the basis for projects such
 as GTK and GNOME. It provides data structure handling for C, portability
 wrappers, and interfaces for such runtime functionality as an event loop,
 threads, dynamic loading, and an object system.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%description lang
+Language files for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -97,3 +105,6 @@ DESTDIR=%{buildroot} meson install -C _build
 /usr/share/gettext/its/gschema.its
 /usr/share/gettext/its/gschema.loc
 /usr/share/glib-2.0
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*

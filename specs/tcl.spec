@@ -5,12 +5,15 @@ Release:        1%{?dist}
 Summary:        Tool Command Language, pronounced tickle
 License:        TCL
 
-Source0:        https://downloads.sourceforge.net/tcl/tcl%{version}-src.tar.gz
+Source:         https://downloads.sourceforge.net/tcl/tcl%{version}-src.tar.gz
 
 %global         tdbc_version    1.1.7
 %global         itcl_version    4.2.4
 %global         sqlite_version  3.44.2
 %global         thread_version  2.8.9
+
+BuildRequires:  pkg-config
+Suggests:       %{name}-doc = %{version}
 
 %description
 The Tcl (Tool Command Language) provides a powerful platform for creating
@@ -19,6 +22,13 @@ devices, and frameworks. When paired with the Tk toolkit, Tcl provides a
 fastest and powerful way to create cross-platform GUI applications. Tcl can
 also be used for a variety of web-related tasks and for creating powerful
 command languages for applications.
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -72,6 +82,13 @@ find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
 /usr/lib/itcl%{itcl_version}/itclWidget.tcl
 /usr/lib/itcl%{itcl_version}/libitclstub%{itcl_version}.a
 /usr/lib/itcl%{itcl_version}/pkgIndex.tcl
+%shlib /usr/lib/itcl%{itcl_version}/libitcl%{itcl_version}.so
+%shlib /usr/lib/libtcl%{version2}.so
+%shlib /usr/lib/tdbc%{tdbc_version}/libtdbc%{tdbc_version}.so
+%shlib /usr/lib/tdbcmysql%{tdbc_version}/libtdbcmysql%{tdbc_version}.so
+%shlib /usr/lib/tdbcodbc%{tdbc_version}/libtdbcodbc%{tdbc_version}.so
+%shlib /usr/lib/tdbcpostgres%{tdbc_version}/libtdbcpostgres%{tdbc_version}.so
+%shlib /usr/lib/thread%{thread_version}/libthread%{thread_version}.so
 /usr/lib/libtclstub%{version2}.a
 /usr/lib/pkgconfig/tcl.pc
 /usr/lib/sqlite%{sqlite_version}/libsqlite%{sqlite_version}.so
@@ -92,13 +109,7 @@ find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
 /usr/lib/tdbcpostgres%{tdbc_version}/tdbcpostgres.tcl
 /usr/lib/thread%{thread_version}/pkgIndex.tcl
 /usr/lib/thread%{thread_version}/ttrace.tcl
-/usr/share/man/man{1,3,n}/*
 
-%defattr(755,root,root,755)
-/usr/lib/itcl%{itcl_version}/libitcl%{itcl_version}.so
-/usr/lib/libtcl%{version2}.so
-/usr/lib/tdbc%{tdbc_version}/libtdbc%{tdbc_version}.so
-/usr/lib/tdbcmysql%{tdbc_version}/libtdbcmysql%{tdbc_version}.so
-/usr/lib/tdbcodbc%{tdbc_version}/libtdbcodbc%{tdbc_version}.so
-/usr/lib/tdbcpostgres%{tdbc_version}/libtdbcpostgres%{tdbc_version}.so
-/usr/lib/thread%{thread_version}/libthread%{thread_version}.so
+%files doc
+/usr/share/man/man*/*
+

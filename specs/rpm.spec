@@ -7,6 +7,7 @@ License:        GPLv2+
 Source:         https://ftp.osuosl.org/pub/rpm/releases/rpm-4.19.x/rpm-%{version}.tar.bz2
 
 BuildRequires:  cmake
+BuildRequires:  dbus
 BuildRequires:  gettext
 BuildRequires:  pkg-config
 BuildRequires:  python
@@ -115,12 +116,16 @@ cd _build
 /usr/lib/cmake/rpm
 /usr/lib/librpm.so
 /usr/lib/librpm.so.10
+%shlib /usr/lib/librpm.so.10.0.2
 /usr/lib/librpmbuild.so
 /usr/lib/librpmbuild.so.10
+%shlib /usr/lib/librpmbuild.so.10.0.2
 /usr/lib/librpmio.so
 /usr/lib/librpmio.so.10
+%shlib /usr/lib/librpmio.so.10.0.2
 /usr/lib/librpmsign.so
 /usr/lib/librpmsign.so.10
+%shlib /usr/lib/librpmsign.so.10.0.2
 /usr/lib/pkgconfig/rpm.pc
 /usr/lib/python%{python_version}/site-packages/*
 /usr/lib/rpm
@@ -139,10 +144,5 @@ cd _build
 %files man
 /usr/share/man/man*/*
 
-
-#/usr/lib/librpm.so.10.*
-#/usr/lib/librpmbuild.so.10.*
-#/usr/lib/librpmio.so.10.*
-#/usr/lib/librpmsign.so.10.*
 
 

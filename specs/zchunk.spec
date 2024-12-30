@@ -8,9 +8,7 @@ Source:         https://github.com/zchunk/zchunk/archive/refs/tags/%{version}.ta
 
 BuildRequires:  meson
 BuildRequires:  ninja
-
-%package man
-Summary:        Manual pages for %{name}
+Suggests:       %{name}-doc = %{version}
 
 %description
 zchunk is a compressed file format that splits the file into independent
@@ -22,8 +20,12 @@ to download only the changed chunks, your client must be zchunk-aware).
 zchunk files are protected with strong checksums to verify that the file you
 downloaded is, in fact, the file you wanted.
 
-%description man
-Manual pages for %{name}
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -50,10 +52,8 @@ DESTDIR=%{buildroot} ninja install
 /usr/include/zck.h
 /usr/lib/libzck.so
 /usr/lib/libzck.so.1
+%shlib /usr/lib/libzck.so.1.5.1
 /usr/lib/pkgconfig/zck.pc
 
-%defattr(755,root,root,755)
-/usr/lib/libzck.so.1.5.1
-
-%files man
-/usr/share/man/man1/*.gz
+%files doc
+/usr/share/man/man*/*.gz

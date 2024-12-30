@@ -300,21 +300,23 @@ we don't need. Set to *%{nil}* to disable.
 - `%make`: We use this macro in all the spec files when using the make
 command. This adds the *-j* flag which controls the number of parallel
 processes to use.
-- `%lfs_build_begin`: Used at the top of each *%build* scriptlet. For stage1a
-and stage1b, this adds the LFS tools directory to the front of the path to
-ensure those tools are used when available. For other stages, this is currently
-empty.
-- `%lfs_build_end`: Used at the bottom of each *%build* scriptlet. Empty for
-now but reserved for future use.
-- `%lfs_install_begin`: Used at the top of each *%install* scriptlet. Also
-adds the tools directory like in the build scriptlet.
-- `%lfs_install_end`: All packages built in stage1 are temporary so there
-is no need to keep the documentation around and these are removed. For stage2,
-we want to keep the documentation so those commands are not necessary. But, when
-info pages are generated, the */usr/share/info/dir* file usually gets updated.
-We cannot do this at build or install time because multiple RPMs cannot "own"
-the same file. This macro deletes this file and the *%update_info_dir* macro
-should instead be used in the *%post* scriptlet.
+- `%shlib`: This sets the permissions to 755 for shared library files.
+- `%use_lfs_tools`: This is used in stage1a and stage1b to add the LFS toos
+directory to the front of the search path to ensure those tools are used
+when available.
+- `%discard_docs`: When building the temporary tooset, it isn't necessary
+to keep any generated documentation. This macro removes those files and
+that helps keep the build images a bit smaller.
+- `%remove_info_dir`: When info documentation pages are generated, the
+`/usr/share/info/dir` file usually gets updated. This cannot be done at
+build or install time because multiple RPMs cannot "own" the same file.
+This macro deletes this file and then the following two macros are then used:
+- `%request_info_dir`: This macro should be placed in the `%post` scriptlet
+to place a request to regenerate the info dir file. Then use the following
+macro:
+- `%update_info_dir`: This macro should be placed in the `%posttrans` scriptlet
+to rengenerate the info dir file. If multiple packages are installed that have
+info files, the actual regeneration only occurs once.
 
 When using Fedora in stage1a and stage1b, there are two other macros
 provided in */usr/lib/rpm/redhat/macros* that are changed. Sed scripts
@@ -377,6 +379,49 @@ and completed.
 - `last-success`: Name of the last package that was built successfully
 - `<stage>/<package>.log`: Standard output and standard error capture of
 *rpmbuild* and *rpm* for that package.
+
+## And beyond...
+
+To build packages beyond the initial set required to boot the operating
+system, it is helpful to start using dependency tracking and resolution provided
+by `rpm` and `dnf`. Stage 3 continues onward to build the packages necessary to
+get a minimal `dnf` version 5 executable:
+
+    ./lfs 2 export
+    ./lfs 3 init
+    ./lfs 3 build
+
+The stage 3 container now has a little over 100 packages installed at this
+point. Each step along the way has been adding more and more packages to
+satisfy dependencies for later packages in the build. It is now time to create
+a podman image dedicated to building individual packages instead of an entire
+operating system.
+
+The image is going to be pruned down to basic tools needed for building.
+These can be found in `containers/lfs-pod/mkpod.pkg.txt`. To create this
+image, run:
+
+    ./lfs 3 mkpod
+    ./pod init
+
+The `pod` script is going to be used from now on instead of the `lfs` script.
+Configuration for this environment can be found in `pod-env`. Right now it
+only contains the build arch and the dist tag which is chaging from `lfs12` to
+`pod12`. If you would like to customize the build to use your own dist tag,
+create a `local-pod.env` file and add to it *pod_dist* with the name of your
+choosing.
+
+Builds in this environment are going to now require the use of
+`BuildRequires` directives in the spec files to load dependencies that are
+not found in `mkpod.pkg.txt`. The `pod` script now creates a brand new
+podman container for each build and the results of those builds are added
+to a dnf repository which can be used for later build requirements.
+
+A full rebuild of all packages included in stage 3 can be done with:
+
+    ./pod build recipes/rebuild.pkg.txt
+
+
 
 ## Final Notes
 
