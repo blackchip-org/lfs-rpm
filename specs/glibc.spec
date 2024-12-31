@@ -71,7 +71,6 @@ echo "rootsbindir=/usr/sbin" > configparms
              --disable-werror                         \
              --enable-kernel=%{enable_kernel}         \
              --enable-stack-protector=strong          \
-             --disable-nscd                           \
              libc_cv_slibdir=/usr/lib
 
 %endif
@@ -272,6 +271,7 @@ make check
 /usr/libexec/getconf
 /usr/sbin/iconvconfig
 /usr/sbin/ldconfig
+/usr/sbin/nscd
 /usr/sbin/sln
 /usr/sbin/zic
 /usr/share/i18n/charmaps/*

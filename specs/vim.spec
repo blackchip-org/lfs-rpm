@@ -33,6 +33,10 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
+
+# Remove reference to csh for now
+rm runtime/tools/vim132
+
 ./configure --prefix=/usr
 %make
 

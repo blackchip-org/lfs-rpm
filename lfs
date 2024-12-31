@@ -11,6 +11,7 @@ stages="stage1a stage1b stage1c stage2 stage3 image"
 for stage in $stages; do
     images+="lfs-${stage} "
 done
+images+="lfs-pod"
 
 usage() {
     cat <<EOF
@@ -223,6 +224,7 @@ lfs-mkimage() {
     sudo mkdir -p /run/lfs
     sudo mount "$lfs_root_img" /run/lfs
     sudo tar xf build/image/lfs-image.tar.gz -C /run/lfs
+    sudo cp -r containers/lfs-image/root-fs/* /run/lfs
     sudo cp -r containers/lfs-image/overlay/* /run/lfs
     sudo umount /run/lfs
 }

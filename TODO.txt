@@ -1,6 +1,0 @@
-cpio added for pod creation, update docs
-start of dnf spec files in wip, use or remove
-
-create checklist for updating lfs:
-- which packages to check manually for updates
-

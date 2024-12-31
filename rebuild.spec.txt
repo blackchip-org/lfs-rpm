@@ -104,3 +104,4 @@ specs/zstd.spec
 specs/gzip.spec
 specs/librepo.spec
 specs/dnf.spec
+specs/linux.spec

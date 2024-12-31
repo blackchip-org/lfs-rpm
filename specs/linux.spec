@@ -6,6 +6,9 @@ License:        GPLv2 and Redistributable, no modification permitted
 
 Source:         https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{version}.tar.xz
 
+BuildRequires:  bc
+BuildRequires:  bison
+
 %description
 The kernel package contains the Linux kernel (vmlinuz), the core of any Linux
 operating system. The kernel handles the basic functions of the operating

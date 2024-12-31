@@ -399,36 +399,80 @@ operating system.
 
 The image is going to be pruned down to basic tools needed for building.
 These can be found in `containers/lfs-pod/mkpod.pkg.txt`. To create this
-image, run:
+image, first run:
 
-    ./lfs 3 mkpod
-    ./pod init
+### `./lfs 3 mkpod`
+
+This creates a tarball to be used as the base filesystem for the general
+build container. The list of packages included are found in
+`containers/lfs-pod/mkpod.pkg.txt`. Going forward, rpm spec files must use
+`BuildRequires` for packages not found in `mkpod.pkg.txt`.
+
+### `./pod init`
 
 The `pod` script is going to be used from now on instead of the `lfs` script.
+This creates a new podman image using the tarball created above but does
+not yet start a container.
+
 Configuration for this environment can be found in `pod-env`. Right now it
 only contains the build arch and the dist tag which is chaging from `lfs12` to
 `pod12`. If you would like to customize the build to use your own dist tag,
 create a `local-pod.env` file and add to it *pod_dist* with the name of your
 choosing.
 
-Builds in this environment are going to now require the use of
-`BuildRequires` directives in the spec files to load dependencies that are
-not found in `mkpod.pkg.txt`. The `pod` script now creates a brand new
-podman container for each build and the results of those builds are added
-to a dnf repository which can be used for later build requirements.
+### `./pod rpm <specfile>`
 
-A full rebuild of all packages included in stage 3 can be done with:
+Creates or recreates a new container and builds the rpm for the given spec
+file. The results of the build are found in `build/pod` and this directory is
+also a dnf repository available to the container. Subsequent builds can use
+`BuildRequires` to automtically install packages found here.
 
-    ./pod build recipes/rebuild.pkg.txt
+### `./pod build <packages.spec.txt>`
 
+This calls `./pod rpm` for each spe file found in *packages.spec.txt*. To
+rebuild all spec files in the build container in the proper order, use:
 
+    ./pod build rebuild.spec.txt
+
+### `./pod export <image.pkg.txt>`
+
+Export a filesystem to be used for a bootable image using the list of
+packages found in *image.pkg.txt*. The build container is used as the base
+for this filesystem so any additional package required to boot msut be
+found in the package list. An example of a working set can be found in
+`pod-image.pkg.txt`. Add additional packages to this list as desired.
+
+After the image is exported, the image can be booted using `./lfs mkimage`
+and `./lfs install`.
+
+### `./pod {shell,root}`
+
+In the event of a build failure, the container will still be running and
+this command can be used to login and investigate.
+
+### `./pod create`
+
+Create and start a build container.
+
+### `./pod destroy`
+
+Destroys a running build container.
+
+## Booting Beyond
+
+Below is an example, and a working set, of commands to execute to boot an
+image with packages built with the podman build container:
+
+    ./lfs 2 export
+    ./pod init
+    ./pod build rebuild.spec.txt
+    ./pod export pod-image.pkg.txt
+    ./lfs mkimage
+    ./lfs install
+
+Now create the virtual machine as described above.
 
 ## Final Notes
-
-I plan on playing around with this build a bit more in the future. It was
-a fun exercise but there is plenty of room for improvement with the current
-build. And I would like to explore building some packages in the BLFS
-series.
 
 I have subscribed to the LFS announcement mailing list and will try to keep this
 up-to-date as new versions of LFS are published. No guarantee on when that

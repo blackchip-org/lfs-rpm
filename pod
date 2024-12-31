@@ -10,16 +10,26 @@ source ./pod-env
 usage() {
     cat <<EOF
 
-Usage: $prog [specfile...]
+Usage: $prog <command> [args...]
+
+EOF
+    exit 2
+}
+
+usage-export() {
+    cat <<EOF
+
+Usage: $prog export <package_list.txt>
 
 EOF
     exit 2
 }
 
 pod-createrepo() {
-    echo "building repository"
+    echo -n "creating repository... "
     mkdir -p        build/pod/rpms/x86_64
-    createrepo_c    build/pod/rpms/x86_64
+    createrepo_c -q build/pod/rpms/x86_64
+    echo "done."
 }
 
 pod-init() {
@@ -29,7 +39,7 @@ pod-init() {
     podman stop -t 0 lfs-pod    >/dev/null 2>&1  || true
     podman rmi --force lfs-pod  >/dev/null 2>&1  || true
     podman build \
-        --tag lfs-pod \
+        --tag       lfs-pod \
         --volume    "$(pwd)/build/pod/rpms:/build/rpmbuild/RPMS:z" \
         containers/lfs-pod
 }
@@ -52,8 +62,6 @@ pod-build() {
     mkdir -p        build/logs/pod/
 
     pod-createrepo
-
-    echo "creating container"
     pod-create
 
     rm -rf  build/deps
@@ -81,9 +89,37 @@ pod-build() {
     createrepo_c build/pod/rpms/x86_64
 }
 
+pod-export() {
+    if [ -z $1 ] ; then
+        echo "error: missing argument"
+        usage-export
+    fi
+
+    packages=$(cat $1)
+
+    pod-createrepo
+    pod-init
+    pod-create
+
+    podman exec --user root lfs-pod \
+        dnf install -y $packages
+    image="build/image/lfs-image.tar.gz"
+    echo -n "exporting ${image}... "
+    podman exec --user root -t lfs-pod \
+        tar -C / -c -z -f /build/lfs-rpm/$image \
+            --exclude='./build' \
+            --exclude='./tmp/*' \
+            --exclude './dev/*' \
+            --exclude './proc/*' \
+            --exclude './sys/*' \
+            .
+    echo "done."
+}
+
 pod-create() {
     pod-destroy
 
+    echo "creating container"
     bash -c "source ./pod-env ; env | grep -e '^pod_'" > eval-pod.env
 
     podman create \
@@ -124,6 +160,10 @@ case $1 in
                 pod-build $arg
             fi
         done
+        ;;
+    export)
+        shift
+        pod-export $1
         ;;
     rpm)
         shift
