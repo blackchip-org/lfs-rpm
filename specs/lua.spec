@@ -35,7 +35,8 @@ Documentation for %{name}
 %build
 %if %{with lfs_stage1}
 %use_lfs_tools
-%make INSTALL_TOP=/usr \
+%make \
+     INSTALL_TOP=/usr \
      CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar rcu" \
      RANLIB="%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib" \
@@ -43,8 +44,10 @@ Documentation for %{name}
 
 %else
 sed -i 's|/usr/local|/usr|g' src/luaconf.h
-%make INSTALL_TOP=/usr linux-readline
-
+%make \
+     INSTALL_TOP=/usr \
+     "CFLAGS=-O2 -Wall -Wextra -DLUA_COMPAT_5_3 -DLUA_USE_LINUX -DLUA_USE_READLINE -fPIC" \
+     "LDFLAGS=-Wl,-E -ldl -lreadline"
 %endif
 
 #---------------------------------------------------------------------------
