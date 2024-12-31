@@ -164,8 +164,8 @@ The full procedure to build LFS without `build-all` is:
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs boot init
-    ./lfs boot export
+    ./lfs image init
+    ./lfs image export
     ./lfs mkimage
 
 
@@ -281,7 +281,6 @@ under the *build* directory except for the sources, all exports under
 ### `./lfs dist-clean`
 
 The same as `./lfs clean` but also removes the sources directory.
-
 
 ## RPM Notes
 
@@ -470,7 +469,8 @@ image with packages built with the podman build container:
     ./lfs mkimage
     ./lfs install
 
-Now create the virtual machine as described above.
+Now create the virtual machine as described above. This image no longer has
+a *lfs* user installed by default and the root password is now set to *root*.
 
 ## Final Notes
 

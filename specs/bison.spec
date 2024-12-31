@@ -48,31 +48,14 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
-%if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr \
             --docdir=/usr/share/doc/bison-3.8.2
 %make
-
-%else
-./configure --prefix=/usr \
-            --docdir=/usr/share/doc/bison-3.8.2
-%make
-
-%endif
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-%make DESTDIR=%{buildroot} install
-%discard_docs
-
-%else
 %make DESTDIR=%{buildroot} install
 %remove_info_dir
-
-%endif
 
 #---------------------------------------------------------------------------
 %check
