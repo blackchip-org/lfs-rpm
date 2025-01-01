@@ -46,7 +46,7 @@ Language files for %{name}
 %build
 sed -i 's/ \-Werror//g' CMakeLists.txt
 
-%if %{with lfs}
+%if %{with lfs_stage3}
 # Needs systemd
 sed -i '/needs_restarting_plugin/d' dnf5-plugins/CMakeLists.txt
 
@@ -131,18 +131,18 @@ ln -s dnf5 %{buildroot}/usr/bin/dnf
 /usr/lib/python%{python_version}/site-packages/libdnf5_cli-5.2.8.1.dist-info
 /usr/lib/python%{python_version}/site-packages/libdnf5{,_cli}
 /usr/lib/python%{python_version}/site-packages/libdnf_plugins
-/usr/share/dnf5/aliases.d/compatibility.conf
-/usr/share/dnf5/aliases.d/compatibility-plugins.conf
-/usr/share/dnf5/aliases.d/compatibility-reposync.conf
-/usr/share/dnf5/dnf5-plugins/automatic.conf
-
-%if %{without lfs}
 /usr/lib/systemd/system/dnf-automatic.service
 /usr/lib/systemd/system/dnf-automatic.timer
 /usr/lib/systemd/system/dnf5-automatic.service
 /usr/lib/systemd/system/dnf5-automatic.timer
 /usr/lib/systemd/system/dnf5-makecache.service
 /usr/lib/systemd/system/dnf5-makecache.timer
+/usr/share/dnf5/aliases.d/compatibility.conf
+/usr/share/dnf5/aliases.d/compatibility-plugins.conf
+/usr/share/dnf5/aliases.d/compatibility-reposync.conf
+/usr/share/dnf5/dnf5-plugins/automatic.conf
+
+%if !%{with lfs_stage3}
 %shlib /usr/lib/dnf5/plugins/needs_restarting_cmd_plugin.so
 /usr/lib/systemd/system/dnf5-offline-transaction-cleanup.service
 /usr/lib/systemd/system/dnf5-offline-transaction.service

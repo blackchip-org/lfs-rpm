@@ -62,6 +62,7 @@ sed -i -e 's/GROUP="render"/GROUP="video"/' \
 mkdir -p build
 cd       build
 
+%if %{with lfs_stage2}
 meson setup \
       --prefix=/usr                  \
       --buildtype=release            \
@@ -82,6 +83,28 @@ meson setup \
       -D ukify=disabled              \
       -D docdir=/usr/share/doc/systemd-%{version} \
       ..
+
+%else
+meson setup \
+      --prefix=/usr                  \
+      --buildtype=release            \
+      -D default-dnssec=no           \
+      -D firstboot=false             \
+      -D install-tests=false         \
+      -D ldconfig=false              \
+      -D sysusers=false              \
+      -D homed=disabled              \
+      -D userdb=false                \
+      -D mode=release                \
+      -D pamconfdir=no               \
+      -D dev-kvm-mode=0660           \
+      -D nobody-group=nogroup        \
+      -D sysupdate=disabled          \
+      -D ukify=disabled              \
+      -D docdir=/usr/share/doc/systemd-%{version} \
+      ..
+%endif
+
 ninja
 
 #---------------------------------------------------------------------------
@@ -107,7 +130,6 @@ systemctl disable systemd-sysupdate{,-reboot}
 %config(noreplace) /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
 %config(noreplace) /etc/systemd/coredump.conf
 %config(noreplace) /etc/systemd/journald.conf
-%config(noreplace) /etc/systemd/journal-upload.conf
 %config(noreplace) /etc/systemd/logind.conf
 %config(noreplace) /etc/systemd/networkd.conf
 %config(noreplace) /etc/systemd/oomd.conf
@@ -124,7 +146,6 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/bin/busctl
 /usr/bin/coredumpctl
 /usr/bin/hostnamectl
-/usr/bin/importctl
 /usr/bin/journalctl
 /usr/bin/kernel-install
 /usr/bin/localectl
@@ -217,6 +238,12 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/share/systemd/kbd-model-map
 /usr/share/systemd/language-fallback-map
 /usr/share/zsh/site-functions/*
+
+%if !%{with lfs_stage2}
+%config(noreplace) /etc/systemd/journal-upload.conf
+/usr/bin/importctl
+/usr/lib/rpm/macros.d/macros.systemd
+%endif
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*

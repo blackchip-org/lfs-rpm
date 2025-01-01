@@ -53,7 +53,7 @@ Documentation for %{name}
 mkdir -p _build
 cd _build
 
-%if %{with lfs}
+%if %{with lfs_stage2}
 cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
