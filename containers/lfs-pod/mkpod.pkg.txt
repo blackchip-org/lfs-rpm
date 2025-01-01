@@ -77,6 +77,3 @@ tar
 gmp
 mpc
 mpfr
-
-# required to change passwords
-shadow

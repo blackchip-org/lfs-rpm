@@ -103,7 +103,7 @@ pod-export() {
 
     podman exec --user root lfs-pod \
         dnf install -y $packages
-    image="build/image/lfs-image.tar.gz"
+    image="build/pod/lfs-pod.tar.gz"
     echo -n "exporting ${image}... "
     podman exec --user root -t lfs-pod \
         tar -C / -c -z -f /build/lfs-rpm/$image \

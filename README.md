@@ -72,19 +72,19 @@ configuration, and *make -j8*:
 real	118m7.072s
 ```
 
-Once done, the root filesystem can be found at *build/boot/boot.tar.gz* and
-the kernel at *build/boot*.
+Once done, the root filesystem can be found at `build/stage2/lfs-stage2.tar.gz`
+and the kernel at `build/boot/vmlinuz`
 
 If the build fails for some reason, you can continue the build using the
 manual procedure below. Running this command will start everything from
 the beginning which is usually what you don't want.
 
-### Run `./lfs mkimage`
+### Run `./lfs mkimage build/stage2/lfs-stage2.tar.gz`
 
 The tarball now has to be converted to a filesystem image. This requires root
 privileges as it is necessary to temporarily mount the image to copy in the
 filesystem. Run this command and enter in your password if prompted. The root
-filesystem image will now be at *build/lfs-${lfs_version}-root.img*
+filesystem image will now be at `build/lfs-12.2-root.img`
 
 ### Run `./lfs install`
 
@@ -93,15 +93,15 @@ and the kernel. By default, it won't have access to files in your home
 directory. Running install will copy those files to */var/lib/libvirt/images*
 as:
 
-- lfs-12.2-root-img
-- lfs-12.2-vmlinuz
+- `lfs-12.2-root-img`
+- `lfs-12.2-vmlinuz`
 
 Now create a virtual machine using the following steps:
 
 - Start virt-manager
 - Select File -> New Virtual Machine
 - Select "Import existing disk image"
-- For "Provide the existing storage path" and select "lfs-12.2-root.img"
+- For "Provide the existing storage path" and select `lfs-12.2-root.img`
 - For "Choose the operating system your are installing", select "Generic Linux 2022"
 - Click on "Forward"
 - Adjust memory and CPUs as needed and click on "Forward"
@@ -110,21 +110,20 @@ Now create a virtual machine using the following steps:
 - Click on "Finish"
 - On the left sidebar, select "Boot Options" and then open "Direct kernel boot"
 - Click on "Enable direct kernel boot"
-- For "Kernel path" select "lfs-12.2-vmlinuz"
+- For "Kernel path" select `lfs-12.2-vmlinuz`
 - Leave "Initrd path" blank
-- For "Kernel args" enter in "root=/dev/vda rw"
+- For "Kernel args" enter in `root=/dev/vda rw`
 - Click on "Apply"
 - On the left sidebar, select "Video Virtio"
 - Change Model from "Virtio" to "VGA"
 - Click on "Apply"
 - In the top left-hand corner, select "Begin Installation"
 
-The operating system should now boot. Login with user "lfs", password "lfs".
-The root password is also "lfs". Verify network connectivity with
-"ping 8.8.8.8"
+The operating system should now boot. Login as root and there is no password.
+Verify network connectivity with `ping 8.8.8.8`.
 
-If the boot hangs after a bunch of pci and pci_bus messages, change the video settings
-under "Video Virtio" from "Virtio" to "VGA".
+If the boot hangs after a bunch of pci and pci_bus messages, change the video
+settings under "Video Virtio" from "Virtio" to "VGA".
 
 ## Build Process
 
@@ -139,9 +138,6 @@ in the [LFS](https://www.linuxfromscratch.org/) book. Those stages are:
 The chapter breaks provide natural "save points" in the build process. Each
 stage is built in a separate podman container and the results of the build are
 exported for use in the next stage.
-
-There is an additional stage named "boot" that loads in the results from
-stage2 and applies any necessary configurations for the initial boot.
 
 The full procedure to build LFS without `build-all` is:
 
@@ -164,10 +160,8 @@ The full procedure to build LFS without `build-all` is:
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs image init
-    ./lfs image export
     ./lfs mkimage
-
+    ./lfs install
 
 ## The `lfs` script
 
@@ -183,8 +177,8 @@ example, to create a container for the first stage, use:
 
     ./lfs 1a init
 
-Contexts are found in the *containers* directory. Each context has a
-*\<stage\>.pkg.txt* file that contains a list of spec files to build relative
+Contexts are found in the `containers` directory. Each context has a
+`<stage>.pkg.txt` file that contains a list of spec files to build relative
 to the repository root.
 
 This command always attempts to remove the existing podman container. If work
@@ -194,17 +188,16 @@ confirmation from you.
 
 ### `./lfs <stage> build`
 
-This command builds all packages, in order, found in *\<stage\>.pkg.txt* and
+This command builds all packages, in order, found in `<stage>.pkg.txt` and
 then uses RPM to install. In the event that the build fails, this command can
 be reissued and it will skip packages that have already been installed. All
-RPMs during the LFS build are installed using the *--nodeps* flag. The LFS book
-already shows the correct dependency ordering and declaring these dependencies
-is an exercise for another day.
+RPMs during the LFS build are installed using the `--nodeps` flag. Automatic
+dependency handling will be used after the base system is setup.
 
 Temporary packages are built with the *-bb* flag to only build RPMs while the
 packages in stage2 are built with *-ba* to create RPMs and SRPMs. These
-can be found in the *build/\<stage\>/{rpms,srpms}* directories which are
-bind mounted in the containers at */build/rpmbuild/{RPMS,SRPMS}*. All
+can be found in the `build/<stage>/{rpms,srpms}` directories which are
+bind mounted in the containers at `/build/rpmbuild/{RPMS,SRPMS}`. All
 packages are built with the *x86_64* arch even if they qualify as a *noarch*
 package.
 
@@ -212,7 +205,7 @@ package.
 
 Once the build completes, issue this command to export the build results for
 use in the next stage. A tarball will be created in the build directory under
-*build/\<stage\>/lfs-\<stage\>.tar.gz* and in the container context for the
+`build/<stage>/lfs-<stage>.tar.gz` and in the container context for the
 next stage.
 
 ### `./lfs <stage> {start,stop}`
@@ -231,8 +224,8 @@ used to easily stop the containers and then to start them up at a later time.
 Login to the container as the unprivileged user lfs (using *shell*) or as the
 root user (using *root*). In stage1a and stage1b you can *sudo* to root as the
 lfs user but in stage1c and stage2 that command is not available and you must
-use the *./lfs \<stage\> root* command. The repository root is bind mounted at
-*/build/lfs-rpm* and the sources directory at */build/rpmbuild/SOURCES*.
+use the `./lfs <stage> root` command. The repository root is bind mounted at
+`/build/lfs-rpm` and the sources directory at `/build/rpmbuild/SOURCES`.
 
 ### `./lfs <stage> rpm [specfile...]`
 
@@ -243,7 +236,7 @@ is useful during development when iterating on a specific package without
 needing to run *build*.
 
 By default, *%check* scriptlets are skipped when building RPMs. Prefix this
-command with *with_check=1* to run any provided tests. This shouldn't be
+command with `with_check=1` to run any provided tests. This shouldn't be
 done with the general build command as quite a few packages work fine with
 a few test failures.
 
@@ -260,8 +253,8 @@ downloaded.
 A handful of environmental variables are injected into each container. This
 command shows you the current values of those variables. When debugging the
 *lfs* script, it can sometimes be useful to inject these variables into your
-current shell with *source ./env*. These variables can be overridden by
-placing changes in a *env.local* file. Variables of note:
+current shell with `source ./lfs-env`. These variables can be overridden by
+placing changes in a `local-lfs.env` file. Variables of note:
 
 - `lfs_version`: Defines which version of LFS is being built. This is used in
 URLs for downloading LFS specific patches and in the dist variable for
@@ -274,9 +267,9 @@ is usually set to the number of processors on your machine.
 
 ### `./lfs clean`
 
-This resets everyting to start a build from scratch again. It deletes everything
-under the *build* directory except for the sources, all exports under
-*containers* and removes any podman images or containers.
+This resets everything to start a build from scratch again. It deletes
+everything under the *build* directory except for the sources, all exports
+under *containers* and removes any podman images or containers.
 
 ### `./lfs dist-clean`
 
@@ -286,12 +279,12 @@ The same as `./lfs clean` but also removes the sources directory.
 
 In stage1a and stage1b, the *rpm* and *rpmbuild* commands provided by the
 Fedora image are used. Some macros are installed under
-*/usr/lib/rpm/macros.d/macros.lfs* to assist with the build:
+`/usr/lib/rpm/macros.d/macros.lfs` to assist with the build:
 
-- `%dist`: Fedora uses a dists tag such as *fc38* and Red Hat Enterprise
-Linux uses dist tags such as *el8*. This build uses *lfs12*.
+- `%dist`: Fedora uses a dist tag such as *fc41* and Red Hat Enterprise
+Linux uses dist tags such as *el9*. This build uses *lfs12*.
 - `%_build_id_links`: By default, Fedora wants to generate files in
-*/usr/lib/.build-id* for debugging purposes. This isn't necessary for an LFS
+`/usr/lib/.build-id` for debugging purposes. This isn't necessary for an LFS
 build and just adds clutter to the build. This setting is set to *none* to
 disable this feature.
 - `%debug_package`: Fedora also wants to generate debuginfo packages which
@@ -300,10 +293,10 @@ we don't need. Set to *%{nil}* to disable.
 command. This adds the *-j* flag which controls the number of parallel
 processes to use.
 - `%shlib`: This sets the permissions to 755 for shared library files.
-- `%use_lfs_tools`: This is used in stage1a and stage1b to add the LFS toos
+- `%use_lfs_tools`: This is used in stage1a and stage1b to add the LFS tools
 directory to the front of the search path to ensure those tools are used
 when available.
-- `%discard_docs`: When building the temporary tooset, it isn't necessary
+- `%discard_docs`: When building the temporary toolset, it isn't necessary
 to keep any generated documentation. This macro removes those files and
 that helps keep the build images a bit smaller.
 - `%remove_info_dir`: When info documentation pages are generated, the
@@ -314,11 +307,11 @@ This macro deletes this file and then the following two macros are then used:
 to place a request to regenerate the info dir file. Then use the following
 macro:
 - `%update_info_dir`: This macro should be placed in the `%posttrans` scriptlet
-to rengenerate the info dir file. If multiple packages are installed that have
+to regenerate the info dir file. If multiple packages are installed that have
 info files, the actual regeneration only occurs once.
 
 When using Fedora in stage1a and stage1b, there are two other macros
-provided in */usr/lib/rpm/redhat/macros* that are changed. Sed scripts
+provided in `/usr/lib/rpm/redhat/macros` that are changed. Sed scripts
 in the Containerfile make these modifications:
 
 - `%source_date_epoch_from_changelog`: The specfiles are not using changelogs
@@ -327,13 +320,13 @@ and by setting this to zero, it removes a warning about not having a changelog.
 Fedora wants you to use when building packages but this causes a build
 failure somewhere. This is disabled to prevent this from happening.
 
-Another macro file, */usr/lib/rpm/macros.d/macros.lfs-stage* is added with
-stage specific information. It has a *%with_\<stage\> 1* macro used to
-identify if a specific stage is being used and *%with_stage1* to identify
+Another macro file, `/usr/lib/rpm/macros.d/macros.lfs-stage` is added with
+stage specific information. It has a `%with_<stage> 1` macro used to
+identify if a specific stage is being used and `%with_stage1` to identify
 when in stage1. Quite a few packages need to be built twice, once as a
 temporary tool and once as the final package. The same specfile is used
 but differences in the builds are separated with conditionals using the
-*%with_stage1* macro. Some packages are built three or four times and use
+`%with_stage1` macro. Some packages are built three or four times and use
 the additional *with* macros as necessary.
 
 The RPM database is used during the build to track which packages have been
@@ -345,9 +338,9 @@ exports.
 ### `./lfs 1c bootstrap`
 
 At stage1c the host Fedora system is left behind and from that point forward
-the build relies only on the tools built up to that point. To continue, the
-*rpm* and *rpmbuild* commands have to also be available. In stage1b,
-additional packages are built for this purpose:
+the build relies only on the tools built so far. To continue, the *rpm* and
+*rpmbuild* commands have to also be available. In stage1b, additional packages
+are built for this purpose:
 
 - lua
 - pkg-config
@@ -357,7 +350,7 @@ additional packages are built for this purpose:
 - zlib
 - bzip2
 
-The only packages after this that are necessary is *elfutils*, *rpm* to build
+The only packages after this that are necessary are *elfutils*, *rpm* to build
 RPM itself and *cmake* which is needed to build *rpm*. As you can tell, RPM
 uses cmake as its build system. I tried to cross-compile cmake in stage1b but
 I really just didn't have the patience to figure that out. cmake gives me a
@@ -413,9 +406,9 @@ This creates a new podman image using the tarball created above but does
 not yet start a container.
 
 Configuration for this environment can be found in `pod-env`. Right now it
-only contains the build arch and the dist tag which is changing from `lfs12` to
-`pod12`. If you would like to customize the build to use your own dist tag,
-create a `local-pod.env` file and add to it *pod_dist* with the name of your
+only contains the build arch and the dist tag which is now `pod12`. If you
+would like to customize the build to use your own dist tag, create a
+`local-pod.env` file and add to it *pod_dist* with the name of your
 choosing.
 
 ### `./pod rpm <specfile>`
@@ -423,7 +416,7 @@ choosing.
 Creates or recreates a new container and builds the rpm for the given spec
 file. The results of the build are found in `build/pod` and this directory is
 also a dnf repository available to the container. Subsequent builds can use
-`BuildRequires` to automtically install packages found here.
+`BuildRequires` to automatically install packages found here.
 
 ### `./pod build <packages.spec.txt>`
 
@@ -440,21 +433,17 @@ for this filesystem so any additional package required to boot must be
 found in the package list. An example of a working set can be found in
 `pod-image.pkg.txt`. Add additional packages to this list as desired.
 
-After the image is exported, the image can be booted using `./lfs mkimage`
-and `./lfs install`.
+After the image is exported, the image can be booted using
+`./lfs mkimage build/pod/lfs-pod.tar.gz` and `./lfs install`.
 
 ### `./pod {shell,root}`
 
 In the event of a build failure, the container will still be running and
 this command can be used to login and investigate.
 
-### `./pod create`
+### `./pod {create,destroy}`
 
-Create and start a build container.
-
-### `./pod destroy`
-
-Destroys a running build container.
+Create and start or destroy a build container.
 
 ## Booting Beyond
 
@@ -463,13 +452,13 @@ image with packages built with the podman build container:
 
     ./lfs 2 export
     ./pod init
-    ./pod build rebuild.spec.txt
-    ./pod export pod-image.pkg.txt
-    ./lfs mkimage
+    ./pod build   rebuild.spec.txt
+    ./pod export  pod-image.pkg.txt
+    ./lfs mkimage build/pod/lfs-pod.tar.gz
     ./lfs install
 
-Now create the virtual machine as described above. This image no longer has
-a *lfs* user installed by default and the root password is now set to *root*.
+Now create the virtual machine as described above and login into the root
+account which has no password.
 
 ## Final Notes
 

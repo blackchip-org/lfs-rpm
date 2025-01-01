@@ -7,7 +7,7 @@ cd "$(dirname $0)"
 
 source ./lfs-env
 
-stages="stage1a stage1b stage1c stage2 stage3 image"
+stages="stage1a stage1b stage1c stage2 stage3"
 for stage in $stages; do
     images+="lfs-${stage} "
 done
@@ -22,9 +22,18 @@ EOF
     exit 2
 }
 
+usage-mkimage() {
+        cat <<EOF
+
+Usage: $prog mkimage <image.tar.gz>
+
+EOF
+    exit 2
+}
+
 assert-stage() {
     if [ -z "$stage" ] ; then
-        echo "$prog: error: stage name should preceed command"
+        echo "$prog: error: stage name should precede command"
         exit 1
     fi
 }
@@ -40,8 +49,6 @@ lfs-env() {
 lfs-init() {
     if [ "$stage" == "stage1a" ] ; then
         build_arg="--build-arg lfs_host_image=${lfs_host_image}"
-    elif [ "$stage" == "image" ] ; then
-        build_arg="--build-arg lfs_init_user=${lfs_init_user}"
     fi
 
     set -x
@@ -181,20 +188,6 @@ lfs-export() {
             rm -rf build/boot
             podman cp "lfs-$stage:/boot" build/boot
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
-            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-image
-            )
-            ;;
-        image)
-            (
-            set -x
-            podman exec --user root -t lfs-$stage \
-                tar -C / -c -z -f /build/lfs-rpm/build/${stage}/lfs-$stage.tar.gz \
-                --exclude='./build' \
-                --exclude='./tmp/*' \
-                --exclude './dev/*' \
-                --exclude './proc/*' \
-                --exclude './sys/*' \
-                .
             )
             ;;
         *)
@@ -217,15 +210,20 @@ lfs-bootstrap() {
 }
 
 lfs-mkimage() {
+    export=$1
+
+    if [ -z $export ] ; then
+        usage-mkimage
+    fi
+
     set -x
     rm -f "$lfs_root_img"
     truncate -s $lfs_root_size "$lfs_root_img"
     sudo mkfs -t ext4 "$lfs_root_img"
     sudo mkdir -p /run/lfs
     sudo mount "$lfs_root_img" /run/lfs
-    sudo tar xf build/image/lfs-image.tar.gz -C /run/lfs
-    sudo cp -r containers/lfs-image/root-fs/* /run/lfs
-    sudo cp -r containers/lfs-image/overlay/* /run/lfs
+    sudo tar xf $export -C /run/lfs
+    sudo cp -r fs/* /run/lfs
     sudo umount /run/lfs
 }
 
@@ -264,9 +262,6 @@ lfs-build-all() {
     ./lfs 2 init
     ./lfs 2 build
     ./lfs 2 export
-
-    ./lfs image init
-    ./lfs image export
 }
 
 lfs-clean() {
@@ -354,7 +349,7 @@ case $1 in
     export)     assert-stage && lfs-export ;;
     bootstrap)  assert-stage && lfs-bootstrap ;;
     mkpod)      assert-stage && lfs-mkpod ;;
-    mkimage)    lfs-mkimage ;;
+    mkimage)    lfs-mkimage $2 ;;
     install)    lfs-install ;;
     clean)      lfs-clean ;;
     dist-clean) lfs-dist-clean ;;
