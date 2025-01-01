@@ -396,9 +396,8 @@ satisfy dependencies for later packages in the build. It is now time to create
 a podman image dedicated to building individual packages instead of an entire
 operating system.
 
-The image is going to be pruned down to basic tools needed for building.
-These can be found in `containers/lfs-pod/mkpod.pkg.txt`. To create this
-image, first run:
+The image is going to be pruned down to basic tools needed for building. To
+create this image, first run:
 
 ### `./lfs 3 mkpod`
 
@@ -414,7 +413,7 @@ This creates a new podman image using the tarball created above but does
 not yet start a container.
 
 Configuration for this environment can be found in `pod-env`. Right now it
-only contains the build arch and the dist tag which is chaging from `lfs12` to
+only contains the build arch and the dist tag which is changing from `lfs12` to
 `pod12`. If you would like to customize the build to use your own dist tag,
 create a `local-pod.env` file and add to it *pod_dist* with the name of your
 choosing.
@@ -428,16 +427,16 @@ also a dnf repository available to the container. Subsequent builds can use
 
 ### `./pod build <packages.spec.txt>`
 
-This calls `./pod rpm` for each spe file found in *packages.spec.txt*. To
-rebuild all spec files in the build container in the proper order, use:
+This calls `./pod rpm` for each spec file found in *packages.spec.txt*. To
+rebuild all spec files up to stage 3 in the proper order, use:
 
     ./pod build rebuild.spec.txt
 
 ### `./pod export <image.pkg.txt>`
 
-Export a filesystem to be used for a bootable image using the list of
+Export a filesystem for a bootable image using the list of
 packages found in *image.pkg.txt*. The build container is used as the base
-for this filesystem so any additional package required to boot msut be
+for this filesystem so any additional package required to boot must be
 found in the package list. An example of a working set can be found in
 `pod-image.pkg.txt`. Add additional packages to this list as desired.
 
