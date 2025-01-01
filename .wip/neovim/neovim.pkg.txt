@@ -1,7 +1,0 @@
-specs/libtool.spec
-specs/libuv.spec
-specs/luv.spec
-specs/libvterm.spec
-specs/lua-lpeg.spec
-specs/msgpack.spec
-specs/neovim.spec

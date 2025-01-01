@@ -8,7 +8,7 @@ Source:         https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
 %global         enable_kernel   4.19
 
-%if %{without %lfs_stage1}
+%if !%{with %lfs_stage1}
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch
 %endif
 
@@ -45,7 +45,7 @@ Documentation for %{name}
 %prep
 %setup -q
 
-%if %{without %lfs_stage1}
+%if !%{with %lfs_stage1}
 %patch 0 -p1
 %endif
 

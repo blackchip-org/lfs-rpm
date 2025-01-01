@@ -35,7 +35,7 @@ Documentation for %{name}
 %prep
 %setup -q
 
-%if %{without lfs_stage1}
+%if !%{with lfs_stage1}
 %patch 0 -p1
 %endif
 
