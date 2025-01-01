@@ -379,7 +379,6 @@ system, it is helpful to start using dependency tracking and resolution provided
 by `rpm` and `dnf`. Stage 3 continues onward to build the packages necessary to
 get a minimal `dnf` version 5 executable:
 
-    ./lfs 2 export
     ./lfs 3 init
     ./lfs 3 build
 
