@@ -1,0 +1,12 @@
+FROM scratch
+
+ADD lfs-stage2.tar.gz /
+
+COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
+COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
+
+RUN install -o 1000 -g 1000 -d /build/rpmbuild
+
+WORKDIR /build
+
+CMD [ "/usr/bin/tail", "-f", "/dev/null" ]

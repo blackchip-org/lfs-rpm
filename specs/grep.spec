@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        Pattern matching utilities
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 The GNU versions of commonly used grep utilities. Grep searches
@@ -15,43 +17,69 @@ include grep, egrep and fgrep.
 GNU grep is needed by many scripts, so it shall be installed on every
 system.
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(./build-aux/config.guess)
 
-%else 
+%else
 sed -i "s/echo/#echo/" src/egrep.sh
 ./configure --prefix=/usr
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
-%else 
+%else
 %make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
 make check
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -59,12 +87,18 @@ make check
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/grep.mo
 
-%else 
+%else
 /usr/bin/egrep
 /usr/bin/fgrep
 /usr/bin/grep
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
 /usr/share/info/*
-/usr/share/locale/*/LC_MESSAGES/*.mo
-/usr/share/man/man1/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif

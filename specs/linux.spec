@@ -4,7 +4,10 @@ Release:        1%{?dist}
 Summary:        The Linux kernel
 License:        GPLv2 and Redistributable, no modification permitted
 
-Source0:        https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{version}.tar.xz
+Source:         https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{version}.tar.xz
+
+BuildRequires:  bc
+BuildRequires:  bison
 
 %description
 The kernel package contains the Linux kernel (vmlinuz), the core of any Linux
@@ -17,17 +20,8 @@ system: memory allocation, process allocation, device input and output, etc.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %make mrproper
-
-%if %{with lfs_stage1}
-%make headers
-find usr/include -type f ! -name '*.h' -delete
-
-%else
 %make defconfig
-
 cat <<EOF >.config.sed
 # Settings recommeded in the LFS book
 s/CONFIG_WERROR=y/CONFIG_WERROR=n/
@@ -46,18 +40,8 @@ cat .config
 
 %make
 
-%endif
-%lfs_build_end
-
 #---------------------------------------------------------------------------
 %install
-%lfs_build_begin
-
-%if %{with lfs_stage1}
-mkdir -p %{buildroot}/%{lfs_dir}/usr
-cp -rv usr/include %{buildroot}/%{lfs_dir}/usr
-
-%else
 %make INSTALL_MOD_PATH=%{buildroot}/usr modules_install
 install -m 755 -d %{buildroot}/boot
 install -m 644 arch/x86/boot/bzImage %{buildroot}/boot/vmlinuz-%{version}%{dist}.%{lfs_arch}
@@ -76,15 +60,8 @@ EOF
 
 rm %{buildroot}/usr/lib/modules/%{version}/build
 
-%endif
-%lfs_build_end
-
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/include/*
-
-%else
 /boot/System.map-%{version}
 /boot/System.map
 /boot/config-%{version}
@@ -94,4 +71,4 @@ rm %{buildroot}/usr/lib/modules/%{version}/build
 /etc/modprobe.d
 /usr/lib/modules/%{version}
 
-%endif
+

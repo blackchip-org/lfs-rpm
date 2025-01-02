@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        GNU libraries and utilities for producing multi-lingual messages
 License:        GPLv3+ and LGPLv2+
 
-Source0:        https://ftp.gnu.org/pub/gnu/gettext/gettext-%{version}.tar.gz
+Source:         https://ftp.gnu.org/pub/gnu/gettext/gettext-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 The GNU gettext package provides a set of tools and documentation for producing
@@ -17,15 +19,35 @@ an easy to use library and tools for creating, using, and modifying natural
 language catalogs and is a powerful and simple method for internationalizing
 programs.
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr                         \
             --host=%{lfs_tgt}                     \
             --build=$(./build-aux/config.guess)
@@ -37,25 +59,31 @@ programs.
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
 chmod -v 0755 %{buildroot}/usr/lib/preloadable_libintl.so
+%remove_info_dir
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
 make check
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -97,26 +125,30 @@ make check
 /usr/lib/gettext
 /usr/lib/libasprintf.so
 /usr/lib/libasprintf.so.0
+%shlib /usr/lib/libasprintf.so.0.0.0
 /usr/lib/libgettextlib.so
-/usr/lib/libgettextlib-0.*.so
+%shlib /usr/lib/libgettextlib-0.22.5.so
 /usr/lib/libgettextpo.so
 /usr/lib/libgettextpo.so.0
+%shlib /usr/lib/libgettextpo.so.0.5.10
 /usr/lib/libgettextsrc.so
-/usr/lib/libgettextsrc-0.*.so
+%shlib /usr/lib/libgettextsrc-0.22.5.so
 /usr/lib/libtextstyle.so
 /usr/lib/libtextstyle.so.0
-/usr/lib/preloadable_libintl.so
+%shlib /usr/lib/libtextstyle.so.0.2.1
+%shlib /usr/lib/preloadable_libintl.so
 /usr/share/aclocal/*.m4
-/usr/share/doc/%{name}-%{version}
 /usr/share/%{name}-%{version}
 /usr/share/%{name}
-/usr/share/info/*
-/usr/share/locale/*/LC_MESSAGES/*.mo
-/usr/share/man/man{1,3}/*
 
-%defattr(755,root,root,755)
-/usr/lib/libasprintf.so.0.0.0
-/usr/lib/libgettextpo.so.0.*
-/usr/lib/libtextstyle.so.0.*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
+
+%files doc
+/usr/share/doc/%{name}-%{version}
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif

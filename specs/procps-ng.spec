@@ -4,7 +4,11 @@ Release:        1%{?dist}
 Summary:        System and process monitoring utilities
 License:        GPL+ and GPLv2 and GPLv2+ and GPLv3+ and LGPLv2+
 
-Source0:        https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-%{version}.tar.xz
+Source:         https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-%{version}.tar.xz
+
+BuildRequires:  pkg-config
+BuildRequires:  systemd
+Suggests:       %{name}-doc = %{version}
 
 %description
 The procps package contains a set of system utilities that provide system
@@ -27,28 +31,43 @@ traps, and CPU activity. The pwdx command reports the current working directory
 of a process or processes. The pidwait command waits for processes of specified
 names.
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr                           \
             --docdir=/usr/share/doc/procps-ng-%{version} \
             --disable-static                        \
             --disable-kill                          \
             --with-systemd
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
@@ -74,12 +93,17 @@ names.
 /usr/include/libproc2
 /usr/lib/libproc2.so
 /usr/lib/libproc2.so.0
+%shlib /usr/lib/libproc2.so.0.0.1
 /usr/lib/pkgconfig/libproc2.pc
 /usr/sbin/sysctl
-/usr/share/doc/procps-ng-%{version}
-/usr/share/locale/*/LC_MESSAGES/*.mo
-/usr/share/man/{??,pt_BR}/man{1,3,5,8}/*
-/usr/share/man/man{1,3,5,8}/*
 
-%defattr(755,root,root,755)
-/usr/lib/libproc2.so.0.0.1
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
+
+%files doc
+/usr/share/doc/procps-ng-%{version}
+
+%files man
+/usr/share/man/{??,pt_BR}/man*/*
+/usr/share/man/man*/*
+

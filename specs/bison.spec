@@ -21,29 +21,53 @@ development.
 If your system will be used for C development, you should install
 Bison.
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr \
             --docdir=/usr/share/doc/bison-3.8.2
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 make check
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
+
 
 #---------------------------------------------------------------------------
 %files
@@ -52,13 +76,17 @@ make check
 /usr/lib/liby.a
 /usr/share/aclocal/*
 /usr/share/%{name}
+
+%files lang
 /usr/share/locale/*/LC_MESSAGES/*.mo
 
-%if %{without lfs_stage1}
+%files doc
 /usr/share/doc/%{name}-%{version}
 /usr/share/info/*
-/usr/share/man/man1/*
-%endif
+
+%files man
+/usr/share/man/man*/*
+
 
 
 

@@ -1,3 +1,4 @@
+specs/root-fs.spec
 specs/man-pages.spec
 specs/iana-etc.spec
 specs/glibc.spec
@@ -64,6 +65,7 @@ specs/gzip.spec
 specs/iproute.spec
 specs/kbd.spec
 specs/libpipeline.spec
+specs/make.spec
 specs/patch.spec
 specs/tar.spec
 specs/texinfo.spec
@@ -82,3 +84,4 @@ specs/libgpg-error.spec
 specs/libgcrypt.spec
 specs/rpm.spec
 specs/linux.spec
+specs/linux-headers.spec

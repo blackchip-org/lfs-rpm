@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        A file compression utility
 License:        BSD
 
-Source0:        https://www.sourceware.org/pub/bzip2/bzip2-%{version}.tar.gz
+Source:         https://www.sourceware.org/pub/bzip2/bzip2-%{version}.tar.gz
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/bzip2-%{version}-install_docs-1.patch
 
 %description
@@ -17,26 +17,39 @@ utility, but it does strike a balance between speed and compression capability.
 
 Install bzip2 if you need a compression utility.
 
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
-%if %{without lfs_stage1}
-%patch 0 -p1 
-%endif 
+%if !%{with lfs_stage1}
+%patch 0 -p1
+%endif
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make -f Makefile-libbz2_so
 %make clean
 %make CC=%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc \
      AR=%{lfs_tools_dir}/bin/%{lfs_tgt}-ar \
      RANLIB=%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib
 
-%else 
+%else
 sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
 sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
 %make -f Makefile-libbz2_so
@@ -44,13 +57,11 @@ sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
 %make
 
 %endif
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 mkdir -p %{buildroot}/%{lfs_dir}/usr/{bin,lib}
 %make PREFIX=%{buildroot}/%{lfs_dir}/usr install
 mkdir -p %{buildroot}/%{lfs_dir}/usr/{bin,lib}
@@ -61,8 +72,9 @@ for i in /usr/bin/{bzcat,bunzip2,bzcmp,bzegrep,bzfgrep,bzless}; do
     ln -sfv bzip2 %{buildroot}/%{lfs_dir}/$i
 done
 rm -rf %{buildroot}/lfs/usr/man
+%discard_docs
 
-%else 
+%else
 make PREFIX=%{buildroot}/usr install
 cp -av libbz2.so.* %{buildroot}/usr/lib
 ln -sv libbz2.so.%{version} %{buildroot}/usr/lib/libbz2.so
@@ -73,7 +85,6 @@ done
 rm -f %{buildroot}/usr/lib/libbz2.a
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
@@ -82,7 +93,7 @@ rm -f %{buildroot}/usr/lib/libbz2.a
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*
 
-%else 
+%else
 /usr/bin/bunzip2
 /usr/bin/bzcat
 /usr/bin/bzcmp
@@ -97,11 +108,13 @@ rm -f %{buildroot}/usr/lib/libbz2.a
 /usr/include/bzlib.h
 /usr/lib/libbz2.so
 /usr/lib/libbz2.so.1.0
-/usr/share/doc/bzip2-%{version}
-/usr/share/man/man1/*
+%shlib /usr/lib/libbz2.so.%{version}
 
-%defattr(755,root,root,755) 
-/usr/lib/libbz2.so.%{version}
+%files doc
+/usr/share/doc/%{name}-%{version}
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

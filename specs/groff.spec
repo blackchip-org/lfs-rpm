@@ -4,7 +4,10 @@ Release:        1%{?dist}
 Summary:        Groff formatting system
 License:        GPLv3+ and GFDL and BSD and MIT
 
-Source0:        https://ftp.gnu.org/gnu/groff/groff-%{version}.tar.gz
+Source:         https://ftp.gnu.org/gnu/groff/groff-%{version}.tar.gz
+
+BuildRequires:  perl
+Suggests:       %{name}-doc = %{version}
 
 %description
 groff (GNU roff) is a typesetting system that reads plain text input files that
@@ -20,28 +23,44 @@ of several best-selling software engineering texts. groff is capable of
 producing typographically sophisticated documents while consuming minimal
 system resources.
 
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 PAGE=letter ./configure --prefix=/usr
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 %make check
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -89,5 +108,9 @@ PAGE=letter ./configure --prefix=/usr
 /usr/share/groff/current
 /usr/share/groff/site-tmac/man.local
 /usr/share/groff/site-tmac/mdoc.local
+
+%files doc
 /usr/share/info/*
-/usr/share/man/man{1,5,7}/*
+
+%files man
+/usr/share/man/man*/*

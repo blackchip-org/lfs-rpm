@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        The GNU version of the AWK text processing utility
 License:        GPLv3+ and GPLv2+ and LGPLv2+ and BSD
 
-Source0:        https://ftp.gnu.org/gnu/gawk/gawk-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/gawk/gawk-%{version}.tar.xz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 The gawk package contains the GNU version of AWK text processing utility. AWK
@@ -15,17 +17,37 @@ The gawk utility can be used to do quick and easy text pattern matching,
 extracting or reformatting. It is considered to be a standard Linux tool for
 text processing.
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i 's/extras//' Makefile.in
 
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
@@ -35,25 +57,31 @@ sed -i 's/extras//' Makefile.in
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
 %else
 make DESTDIR=%{buildroot} LN='ln -f' install
 ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
+%remove_info_dir
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
 %make check
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -71,24 +99,30 @@ ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
 /usr/bin/gawk-%{version}
 /usr/bin/gawkbug
 /usr/include/*.h
-/usr/lib/gawk/filefuncs.so
-/usr/lib/gawk/fnmatch.so
-/usr/lib/gawk/fork.so
-/usr/lib/gawk/inplace.so
-/usr/lib/gawk/intdiv.so
-/usr/lib/gawk/ordchr.so
-/usr/lib/gawk/readdir.so
-/usr/lib/gawk/readfile.so
-/usr/lib/gawk/revoutput.so
-/usr/lib/gawk/revtwoway.so
-/usr/lib/gawk/rwarray.so
-/usr/lib/gawk/time.so
+%shlib /usr/lib/gawk/filefuncs.so
+%shlib /usr/lib/gawk/fnmatch.so
+%shlib /usr/lib/gawk/fork.so
+%shlib /usr/lib/gawk/inplace.so
+%shlib /usr/lib/gawk/intdiv.so
+%shlib /usr/lib/gawk/ordchr.so
+%shlib /usr/lib/gawk/readdir.so
+%shlib /usr/lib/gawk/readfile.so
+%shlib /usr/lib/gawk/revoutput.so
+%shlib /usr/lib/gawk/revtwoway.so
+%shlib /usr/lib/gawk/rwarray.so
+%shlib /usr/lib/gawk/time.so
 /usr/libexec/awk/grcat
 /usr/libexec/awk/pwcat
 /usr/share/awk
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
 /usr/share/info/*
-/usr/share/locale/*/LC_MESSAGES/gawk.mo
-/usr/share/man/man{1,3}/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

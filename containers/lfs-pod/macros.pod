@@ -1,0 +1,26 @@
+%dist           %{getenv:pod_dist}
+
+%_build_id_links    none
+
+%make               make -j$(nproc)
+%shlib              %attr(755,root,root)
+
+%remove_info_dir \
+    rm -f %{buildroot}/usr/share/info/dir
+
+%request_info_dir \
+    mkdir -p /run/rpm-state \
+    touch /run/rpm-state/update-info-dir
+
+%update_info_dir \
+    if [ -e /run/rpm-state/update-info-dir ] ; then \
+        pushd /usr/share/info 2&>/dev/null \
+            rm -f dir \
+            for f in * \
+                do install-info $f dir 2>/dev/null \
+            done \
+        popd 2&>/dev/null \
+        rm /run/rpm-state/update-info-dir \
+    fi
+
+

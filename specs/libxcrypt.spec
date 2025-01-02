@@ -4,7 +4,10 @@ Release:        1%{?dist}
 Summary:        Extended crypt library for DES, MD5, Blowfish and others
 License:        LGPLv2+ and BSD and Public Domain
 
-Source0:        https://github.com/besser82/libxcrypt/releases/download/v%{version}/libxcrypt-%{version}.tar.xz
+Source:         https://github.com/besser82/libxcrypt/releases/download/v%{version}/libxcrypt-%{version}.tar.xz
+
+BuildRequires:  pkg-config
+Suggests:       %{name}-doc = %{version}
 
 %description
 libxcrypt is a modern library for one-way hashing of passwords. It supports
@@ -35,28 +38,29 @@ work with glibc's libcrypt. Also, programs that use certain legacy APIs
 supplied by glibc's libcrypt ('encrypt', 'encrypt_r', 'setkey', 'setkey_r', and
 'fcrypt') cannot be compiled against libxcrypt.
 
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr                \
             --enable-hashes=strong,glibc \
             --enable-obsolete-api=no     \
             --disable-static             \
             --disable-failure-tokens
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make prefix=%{buildroot}/usr install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
@@ -67,9 +71,10 @@ supplied by glibc's libcrypt ('encrypt', 'encrypt_r', 'setkey', 'setkey_r', and
 /usr/include/*.h
 /usr/lib/libcrypt.so
 /usr/lib/libcrypt.so.2
+%shlib /usr/lib/libcrypt.so.2.0.0
 /usr/lib/pkgconfig/libcrypt.pc
 /usr/lib/pkgconfig/libxcrypt.pc
-/usr/share/man/man{3,5}/*
 
-%defattr(755,root,root,755)
-/usr/lib/libcrypt.so.2.0.0
+%files doc
+/usr/share/man/man*/*
+

@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        GNU gperf is a perfect hash function generator
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/gperf/gperf-%{version}.tar.gz
+Source:         https://ftp.gnu.org/gnu/gperf/gperf-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 GNU gperf is a perfect hash function generator. For a given list of strings, it
@@ -17,32 +19,52 @@ GNU gperf is highly customizable. There are options for generating C or C++
 code, for emitting switch statements or nested ifs instead of a hash table, and
 for tuning the algorithm employed by gperf.
 
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr --docdir=/usr/share/doc/gperf-%{version}
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 make -j1 check
 
 #---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
+
+#---------------------------------------------------------------------------
 %files
 /usr/bin/gperf
 /usr/share/doc/gperf-%{version}
-/usr/share/info/*.info.gz
-/usr/share/man/man1/*
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*

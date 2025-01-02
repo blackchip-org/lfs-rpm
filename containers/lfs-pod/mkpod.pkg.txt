@@ -1,0 +1,79 @@
+# basic filesystem layout
+root-fs
+
+# install required by Containerfile
+coreutils
+
+# required by coreutils
+acl
+attr
+glibc
+
+# required for general scripting and interactive login
+bash
+
+# required by bash
+readline
+ncurses
+
+# required to install packages
+rpm
+
+# required by rpm
+popt
+libcap
+zlib
+bzip2
+libgcrypt
+zstd
+xz
+libgpg-error
+
+# required to solve package dependencies
+dnf
+
+# required by dnf at build
+fmt
+util-linux
+json-c
+libsolv
+toml11
+libxml2
+zchunk
+libpsl
+curl
+pcre2
+glib
+librepo
+sqlite
+swig
+sdbus-c++
+openssl
+libffi
+
+# required by dnf at runtime
+elfutils
+file
+
+# required for general building operations
+binutils
+diffutils
+findutils
+flex
+gawk
+gcc
+grep
+gzip
+libxcrypt
+linux-headers
+make
+m4
+patch
+perl
+sed
+tar
+
+# required by gcc
+gmp
+mpc
+mpfr

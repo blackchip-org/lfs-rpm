@@ -4,47 +4,53 @@ Release:        1%{?dist}
 Summary:        The compression and decompression library
 License:        zlib and Boost
 
-Source0:        https://zlib.net/fossils/zlib-%{version}.tar.gz
+Source:         https://zlib.net/fossils/zlib-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 Zlib is a general-purpose, patent-free, lossless data compression library which
 is used by many different programs.
 
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n zlib-%{version}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
-./configure --prefix=/usr
-
 %if %{with lfs_stage1}
+%use_lfs_tools
+./configure --prefix=/usr
 %make CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar" \
      RANLIB="%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib" \
      CHOST=%{lfs_tgt}
 
 %else
+./configure --prefix=/usr
 %make
 
 %endif
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
 rm -f %{buildroot}/usr/lib/libz.a
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
@@ -56,11 +62,11 @@ rm -f %{buildroot}/usr/lib/libz.a
 %else
 /usr/include/*
 /usr/lib/libz.so{,.1}
+%shlib /usr/lib/libz.so.%{version}
 /usr/lib/pkgconfig/zlib.pc
-/usr/share/man/man3/*
 
-%defattr(755,root,root,755)
-/usr/lib/libz.so.%{version}
+%files doc
+/usr/share/man/man*/*
 
 %endif
 

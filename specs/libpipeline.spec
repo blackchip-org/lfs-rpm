@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        A pipeline manipulation library
 License:        GPLv3+
 
-Source0:        https://download.savannah.gnu.org/releases/libpipeline/libpipeline-%{version}.tar.gz
+Source:         https://download.savannah.gnu.org/releases/libpipeline/libpipeline-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 libpipeline is a C library for setting up and running pipelines of processes,
@@ -13,24 +15,25 @@ error-prone and insecure. This alleviates programmers of the need to
 laboriously construct pipelines using lower-level primitives such as fork(2)
 and execve(2).
 
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
@@ -41,8 +44,8 @@ make check
 /usr/include/pipeline.h
 /usr/lib/libpipeline.so
 /usr/lib/libpipeline.so.1
+%shlib /usr/lib/libpipeline.so.1.5.7
 /usr/lib/pkgconfig/libpipeline.pc
-/usr/share/man/man3/*
 
-%defattr(755,root,root,755)
-/usr/lib/libpipeline.so.1.5.7
+%files doc
+/usr/share/man/man*/*

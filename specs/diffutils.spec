@@ -18,43 +18,68 @@ used to merge two files interactively.
 
 Install diffutils if you need to compare text files.
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
-
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(./build-aux/config.guess)
 
-%else 
+%else
 ./configure --prefix=/usr
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
-%else 
+%else
 make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
 %make check
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -67,9 +92,15 @@ make DESTDIR=%{buildroot} install
 /usr/bin/diff
 /usr/bin/diff3
 /usr/bin/sdiff
-/usr/share/info/diffutils.info.gz
+
+%files lang
 /usr/share/locale/*/LC_MESSAGES/*
-/usr/share/man/man1/*
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

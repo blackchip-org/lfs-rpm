@@ -4,11 +4,27 @@ Release:        1%{?dist}
 Summary:        A general-purpose cryptography library
 License:        LGPLv2+
 
-Source0:        https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-%{version}.tar.bz2
+Source:         https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-%{version}.tar.bz2
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 Libgcrypt is a general purpose crypto library based on the code use in GNU
 Privacy Guard. This is a development version.
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -16,9 +32,8 @@ Privacy Guard. This is a development version.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr                         \
             --host=%{lfs_tgt}                     \
             --build=$(build-aux/config.guess)     \
@@ -29,20 +44,26 @@ Privacy Guard. This is a development version.
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
-%lfs_install_end
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -61,13 +82,15 @@ Privacy Guard. This is a development version.
 /usr/include/*.h
 /usr/lib/libgcrypt.so
 /usr/lib/libgcrypt.so.20
+%shlib /usr/lib/libgcrypt.so.20.5.0
 /usr/lib/pkgconfig/libgcrypt.pc
 /usr/share/aclocal/*
-/usr/share/info/*
-/usr/share/man/man1/*
 
-%defattr(755,root,root,755)
-/usr/lib/libgcrypt.so.20.*
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

@@ -5,7 +5,16 @@ Release:        1%{?dist}
 Summary:        A library for editing typed command lines
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
+Source:         https://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Recommends:     %{name}-man = %{version}
 
 %description
 The Readline library provides a set of functions that allow users to edit
@@ -14,14 +23,18 @@ library includes additional functions for maintaining a list of
 previously-entered command lines for recalling or editing those lines, and for
 performing csh-like history expansion on previous commands
 
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i '/MV.*old/d' Makefile.in
 sed -i '/{OLDSUFF}/c:' support/shlib-install
 
@@ -32,15 +45,19 @@ sed -i 's/-Wl,-rpath,[^ ]*//' support/shobj-conf
             --with-curses    \
             --docdir=/usr/share/doc/readline-%{version}
 %make SHLIB_LIBS="-lncursesw"
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} SHLIB_LIBS="-lncursesw" install
 install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%{version}
-%lfs_install_end
+%remove_info_dir
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -48,13 +65,16 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 /usr/include/readline
 /usr/lib/libhistory.so
 /usr/lib/libhistory.so.8
+%shlib /usr/lib/libhistory.so.%{version2}
 /usr/lib/libreadline.so
 /usr/lib/libreadline.so.8
+%shlib /usr/lib/libreadline.so.%{version2}
 /usr/lib/pkgconfig/history.pc
 /usr/lib/pkgconfig/readline.pc
-/usr/share/info/*
-/usr/share/man/man3/*
 
-%defattr(755,root,root,755)
-/usr/lib/libhistory.so.%{version2}
-/usr/lib/libreadline.so.%{version2}
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
+

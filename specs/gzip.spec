@@ -4,7 +4,10 @@ Release:        1%{?dist}
 Summary:        The GNU data compression program
 License:        GPLv3+ and GFDL
 
-Source0:        https://ftp.gnu.org/gnu/gzip/gzip-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/gzip/gzip-%{version}.tar.xz
+
+BuildRequires:  less
+Suggests:       %{name}-doc = %{version}
 
 %description
 The gzip package contains the popular GNU gzip data compression program.
@@ -13,15 +16,28 @@ Gzipped files have a .gz extension.
 Gzip should be installed on your system, because it is a very commonly used
 data compression program.
 
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr --host=%{lfs_tgt}
 
 %else
@@ -29,20 +45,26 @@ data compression program.
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
-%lfs_install_end
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -64,7 +86,11 @@ data compression program.
 /usr/bin/zless
 /usr/bin/zmore
 /usr/bin/znew
+
+%files doc
 /usr/share/info/*
-/usr/share/man/man1/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif

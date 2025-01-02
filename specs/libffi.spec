@@ -5,7 +5,9 @@ Release:        1%{?dist}
 Summary:        A portable foreign function interface library
 License:        MIT
 
-Source0:        https://github.com/libffi/libffi/releases/download/v%{version}/libffi-%{version}.tar.gz
+Source:         https://github.com/libffi/libffi/releases/download/v%{version}/libffi-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 Compilers for high level languages generate code that follow certain
@@ -32,39 +34,57 @@ lowest, machine dependent layer of a fully featured foreign function interface.
 A layer must exist above `libffi' that handles type conversions for values
 passed between the two languages.
 
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr          \
             --disable-static       \
             --with-gcc-arch=native
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
-%lfs_install_end 
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 %make check
 
 #---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
+
+#---------------------------------------------------------------------------
 %files
 /usr/include/*
 /usr/lib/libffi.so
 /usr/lib/libffi.so.8
+%shlib /usr/lib/libffi.so.%{so_version}
 /usr/lib/pkgconfig/libffi.pc
-/usr/share/info/*
-/usr/share/man/man3/*
 
-%defattr(755,root,root,755)
-/usr/lib/libffi.so.%{so_version}
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*

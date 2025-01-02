@@ -4,7 +4,10 @@ Release:        1%{?dist}
 Summary:        Linux kernel module management utilities
 License:        GPLv2+
 
-Source0:        https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-%{version}.tar.xz
+Source:         https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-%{version}.tar.xz
+
+BuildRequires:  pkg-config
+Suggests:       %{name}-doc = %{version}
 
 %description
 The kmod package provides various programs needed for automatic loading and
@@ -12,14 +15,19 @@ unloading of modules under 2.6, 3.x, and later kernels, as well as other module
 management programs. Device drivers and filesystems are two examples of loaded
 and unloaded modules.
 
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr          \
             --sysconfdir=/etc      \
             --with-openssl         \
@@ -27,12 +35,9 @@ and unloaded modules.
             --with-zstd            \
             --with-zlib
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 
 mkdir -p %{buildroot}/usr/{,s}bin
@@ -41,7 +46,6 @@ for target in depmod insmod modinfo modprobe rmmod; do
 done
 
 ln -sfv kmod %{buildroot}/usr/bin/lsmod
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
@@ -50,6 +54,7 @@ ln -sfv kmod %{buildroot}/usr/bin/lsmod
 /usr/include/*.h
 /usr/lib/libkmod.so
 /usr/lib/libkmod.so.2
+%shlib /usr/lib/libkmod.so.2.4.1
 /usr/lib/pkgconfig/libkmod.pc
 /usr/sbin/depmod
 /usr/sbin/insmod
@@ -57,7 +62,6 @@ ln -sfv kmod %{buildroot}/usr/bin/lsmod
 /usr/sbin/modprobe
 /usr/sbin/rmmod
 /usr/share/bash-completion/completions/kmod
-/usr/share/man/man{5,8}/*
 
-%defattr(755,root,root,755)
-/usr/lib/libkmod.so.2.*
+%files doc
+/usr/share/man/man*/*

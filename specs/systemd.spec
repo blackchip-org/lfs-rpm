@@ -7,6 +7,14 @@ License:        LGPLv2+ and MIT and GPLv2+
 Source0:        https://github.com/systemd/systemd/archive/v%{version}/systemd-%{version}.tar.gz
 Source1:        https://anduin.linuxfromscratch.org/LFS/systemd-man-pages-%{version}.tar.xz
 
+BuildRequires:  gettext
+BuildRequires:  gperf
+BuildRequires:  meson
+BuildRequires:  pkg-config
+BuildRequires:  python-Jinja2
+BuildRequires:  ninja
+Suggests:       %{name}-doc = %{version}
+
 %description
 systemd is a system and service manager that runs as PID 1 and starts the rest
 of the system. It provides aggressive parallelization capabilities, uses socket
@@ -21,23 +29,43 @@ runtime directories and settings, and daemons to manage simple network
 configuration, network time synchronization, log forwarding, and name
 resolution.
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i -e 's/GROUP="render"/GROUP="video"/' \
        -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in
 
 mkdir -p build
 cd       build
 
+%if %{with lfs_stage2}
 meson setup \
-      --prefix=/usr                 \
-      --buildtype=release           \
+      --prefix=/usr                  \
+      --buildtype=release            \
       -D default-dnssec=no           \
       -D firstboot=false             \
       -D install-tests=false         \
@@ -55,13 +83,32 @@ meson setup \
       -D ukify=disabled              \
       -D docdir=/usr/share/doc/systemd-%{version} \
       ..
+
+%else
+meson setup \
+      --prefix=/usr                  \
+      --buildtype=release            \
+      -D default-dnssec=no           \
+      -D firstboot=false             \
+      -D install-tests=false         \
+      -D ldconfig=false              \
+      -D sysusers=false              \
+      -D homed=disabled              \
+      -D userdb=false                \
+      -D mode=release                \
+      -D pamconfdir=no               \
+      -D dev-kvm-mode=0660           \
+      -D nobody-group=nogroup        \
+      -D sysupdate=disabled          \
+      -D ukify=disabled              \
+      -D docdir=/usr/share/doc/systemd-%{version} \
+      ..
+%endif
+
 ninja
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_build_begin
-
 cd build
 DESTDIR=%{buildroot} ninja install
 
@@ -69,7 +116,6 @@ mkdir -p %{buildroot}/usr/share/man
 tar -xf %{SOURCE1} \
     --no-same-owner --strip-components=1   \
     -C %{buildroot}/usr/share/man
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %post
@@ -157,8 +203,10 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/lib/libnss_systemd.so.2
 /usr/lib/libsystemd.so
 /usr/lib/libsystemd.so.0
+%shlib /usr/lib/libsystemd.so.0.39.0
 /usr/lib/libudev.so
 /usr/lib/libudev.so.1
+%shlib/usr/lib/libudev.so.1.7.9
 /usr/lib/modprobe.d/README
 /usr/lib/modprobe.d/systemd.conf
 /usr/lib/pkgconfig/libsystemd.pc
@@ -181,10 +229,7 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/sbin/telinit
 /usr/share/bash-completion/completions/*
 /usr/share/dbus-1
-/usr/share/doc/systemd-%{version}
 /usr/share/factory/etc/*
-/usr/share/locale/*/LC_MESSAGES/systemd.mo
-/usr/share/man/man{1,3,5,7,8}/*
 /usr/share/mime/packages/io.systemd.xml
 /usr/share/pkgconfig/systemd.pc
 /usr/share/pkgconfig/udev.pc
@@ -194,6 +239,17 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/share/systemd/language-fallback-map
 /usr/share/zsh/site-functions/*
 
-%defattr(755,root,root,755)
-/usr/lib/libsystemd.so.0.*
-/usr/lib/libudev.so.1.*
+%if !%{with lfs_stage2}
+%config(noreplace) /etc/systemd/journal-upload.conf
+/usr/bin/importctl
+/usr/lib/rpm/macros.d/macros.systemd
+%endif
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/doc/systemd-%{version}
+
+%files man
+/usr/share/man/man*/*

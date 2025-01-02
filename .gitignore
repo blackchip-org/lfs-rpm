@@ -2,5 +2,5 @@ build
 *.log
 *.tar.gz
 *~
-eval.env
-local.env
+eval-*.env
+local-*.env

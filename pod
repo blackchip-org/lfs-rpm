@@ -1,0 +1,185 @@
+#!/bin/bash
+
+set -e
+
+prog="$(basename $0)"
+cd "$(dirname $0)"
+
+source ./pod-env
+
+usage() {
+    cat <<EOF
+
+Usage: $prog <command> [args...]
+
+EOF
+    exit 2
+}
+
+usage-export() {
+    cat <<EOF
+
+Usage: $prog export <package_list.txt>
+
+EOF
+    exit 2
+}
+
+pod-createrepo() {
+    echo -n "creating repository... "
+    mkdir -p        build/pod/rpms/x86_64
+    createrepo_c -q build/pod/rpms/x86_64
+    echo "done."
+}
+
+pod-init() {
+    set -x
+
+    pod-createrepo
+    podman stop -t 0 lfs-pod    >/dev/null 2>&1  || true
+    podman rmi --force lfs-pod  >/dev/null 2>&1  || true
+    podman build \
+        --tag       lfs-pod \
+        --volume    "$(pwd)/build/pod/rpms:/build/rpmbuild/RPMS:z" \
+        containers/lfs-pod
+}
+
+timestamp() {
+    date +"%Y-%m-%d %H:%m:%S"
+}
+
+pod-build() {
+    spec=$1
+    package=$(basename "$1" .spec)
+
+    ./lfs download $spec
+
+    echo "pod:$package" > build/logs/last-started
+    echo "[$(timestamp)] start pod:$package" >> build/logs/build.log
+    echo -e "\n----- building pod:$spec"
+
+    mkdir -p        build/pod/srpms
+    mkdir -p        build/logs/pod/
+
+    pod-createrepo
+    pod-create
+
+    rm -rf  build/deps
+    mkdir   build/deps
+
+    podman exec \
+        --user root \
+        lfs-pod \
+        dnf builddep -y \
+        /build/lfs-rpm/$spec
+
+    echo "building $package"
+    set -e -o pipefail
+    podman exec \
+        lfs-pod \
+        rpmbuild -ba --nocheck \
+            --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
+            lfs-rpm/$1 | \
+            tee build/logs/pod/${package}.log
+
+    echo "pod:$package" > build/logs/last-success
+    echo "[$(timestamp)] done  pod:$package" >> build/logs/build.log
+
+    echo "building repository"
+    createrepo_c build/pod/rpms/x86_64
+}
+
+pod-export() {
+    if [ -z $1 ] ; then
+        echo "error: missing argument"
+        usage-export
+    fi
+
+    packages=$(cat $1)
+
+    pod-createrepo
+    pod-init
+    pod-create
+
+    podman exec --user root lfs-pod \
+        dnf install -y $packages
+    image="build/pod/lfs-pod.tar.gz"
+    echo -n "exporting ${image}... "
+    podman exec --user root -t lfs-pod \
+        tar -C / -c -z -f /build/lfs-rpm/$image \
+            --exclude='./build' \
+            --exclude='./tmp/*' \
+            --exclude './dev/*' \
+            --exclude './proc/*' \
+            --exclude './sys/*' \
+            .
+    echo "done."
+}
+
+pod-create() {
+    pod-destroy
+
+    echo "creating container"
+    bash -c "source ./pod-env ; env | grep -e '^pod_'" > eval-pod.env
+
+    podman create \
+        --name      lfs-pod \
+        --hostname  lfs-pod \
+        --env-file  eval-pod.env \
+        --userns    keep-id \
+        --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
+        --volume    "./build/pod/rpms:/build/rpmbuild/RPMS:z" \
+        --volume    "./build/pod/srpms:/build/rpmbuild/SRPMS:z" \
+        --volume    .:/build/lfs-rpm:z \
+        lfs-pod
+    podman start lfs-pod
+}
+
+pod-destroy() {
+    podman stop -t 0    lfs-pod || true
+    podman rm -f        lfs-pod || true
+}
+
+case $1 in
+    init)
+        pod-init
+        ;;
+    create)
+        pod-create
+        ;;
+    destroy)
+        pod-destroy
+        ;;
+    build)
+        shift
+        echo "" >> build/logs/build.log
+        specs=$(grep -v -e '^#' $1)
+        for arg in $specs; do
+            package_version=$(rpmspec -qv $arg | head -1 | sed 's/.src//')
+            if [ ! -e "build/pod/rpms/x86_64/${package_version}${pod_dist}.${pod_arch}.rpm" ] ; then
+                pod-build $arg
+            fi
+        done
+        ;;
+    export)
+        shift
+        pod-export $1
+        ;;
+    rpm)
+        shift
+        for arg in $@ ; do
+            pod-build $arg
+        done
+        ;;
+    shell)
+        exec podman exec -it lfs-pod /bin/bash
+        ;;
+    root)
+        exec podman exec --user root -it lfs-pod /bin/bash
+        ;;
+    *)
+        echo "$prog: error: invalid command" 1>&2
+        usage
+        ;;
+esac
+

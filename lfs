@@ -5,12 +5,13 @@ set -e
 prog="$(basename $0)"
 cd "$(dirname $0)"
 
-source ./env
+source ./lfs-env
 
-stages="stage1a stage1b stage1c stage2 final"
+stages="stage1a stage1b stage1c stage2 stage3"
 for stage in $stages; do
     images+="lfs-${stage} "
 done
+images+="lfs-pod"
 
 usage() {
     cat <<EOF
@@ -21,9 +22,18 @@ EOF
     exit 2
 }
 
+usage-mkimage() {
+        cat <<EOF
+
+Usage: $prog mkimage <image.tar.gz>
+
+EOF
+    exit 2
+}
+
 assert-stage() {
     if [ -z "$stage" ] ; then
-        echo "$prog: error: stage name should preceed command"
+        echo "$prog: error: stage name should precede command"
         exit 1
     fi
 }
@@ -39,12 +49,10 @@ lfs-env() {
 lfs-init() {
     if [ "$stage" == "stage1a" ] ; then
         build_arg="--build-arg lfs_host_image=${lfs_host_image}"
-    elif [ "$stage" == "final" ] ; then
-        build_arg="--build-arg lfs_init_user=${lfs_init_user}"
     fi
 
     set -x
-    bash -c "source ./env ; env | grep -e '^lfs_'" > eval.env
+    bash -c "source ./env ; env | grep -e '^lfs_'" > eval-lfs.env
 
     podman stop -t 0    lfs-$stage || true
     podman rm -f        lfs-$stage || true
@@ -53,7 +61,7 @@ lfs-init() {
     podman create \
         --name      lfs-$stage \
         --hostname  lfs-$stage \
-        --env-file  eval.env \
+        --env-file  eval-lfs.env \
         --userns    keep-id \
         --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
         --volume    "./build/${stage}/rpms:/build/rpmbuild/RPMS:z" \
@@ -64,9 +72,11 @@ lfs-init() {
 }
 
 lfs-spectool() {
+    name=$(basename ${1%.*})
     (
     set -x
-    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources $1
+    mkdir -p build/sources/$name
+    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources/$name $1
     )
 }
 
@@ -91,15 +101,16 @@ lfs-build() {
             echo "$prog: error: $spec: file not found"
             continue
         fi
+
         package=$(basename "$spec" .spec)
-        if [ "$package" == "libstdc++" ]; then
-            rpmbuild_pkg_flags="--with lfs_gcc_libstdcpp_only"
-        elif [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
+        package_version=$(rpmspec -qv $spec | head -1 | sed 's/.src//')
+
+        if [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
             rpm_pkg_flags="--replacefiles"
         fi
 
         if [ "$method" == "--reinstall" ] ; then
-            rpm_pkg_flags="$rpm_pkg_flags --replacefiles"
+            rpm_pkg_flags="$rpm_pkg_flags --replacefiles --force"
         fi
 
         if [ ! -z "$*" ] || ! podman exec lfs-$stage rpm -q $package ; then
@@ -109,6 +120,8 @@ lfs-build() {
             echo -e "\n----- building $stage:$package"
             ( set -e -x -o pipefail
             podman exec lfs-$stage rpmbuild \
+                --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
+                --nodeps \
                 $rpmbuild_flags \
                 $rpmbuild_pkg_flags \
                 lfs-rpm/${spec} 2>&1 \
@@ -117,7 +130,7 @@ lfs-build() {
                 $method \
                 $rpm_flags \
                 $rpm_pkg_flags \
-                rpmbuild/RPMS/$lfs_arch/${package}-*.rpm  2>&1 \
+                rpmbuild/RPMS/$lfs_arch/${package_version}~${stage}${lfs_dist}.${lfs_arch}.rpm 2>&1 \
                 | tee --append build/logs/${stage}/${package}.log
             )
             echo "$stage:$package" > build/logs/last-success
@@ -177,19 +190,6 @@ lfs-export() {
             cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
-        final)
-            (
-            set -x
-            podman exec --user root -t lfs-$stage \
-                tar -C / -c -z -f /build/lfs-rpm/build/${stage}/lfs-$stage.tar.gz \
-                --exclude='./build' \
-                --exclude='./tmp/*' \
-                --exclude './dev/*' \
-                --exclude './proc/*' \
-                --exclude './sys/*' \
-                .
-            )
-            ;;
         *)
             echo "export not defined for $stage"
             exit 1
@@ -210,14 +210,20 @@ lfs-bootstrap() {
 }
 
 lfs-mkimage() {
+    export=$1
+
+    if [ -z $export ] ; then
+        usage-mkimage
+    fi
+
     set -x
     rm -f "$lfs_root_img"
     truncate -s $lfs_root_size "$lfs_root_img"
     sudo mkfs -t ext4 "$lfs_root_img"
     sudo mkdir -p /run/lfs
     sudo mount "$lfs_root_img" /run/lfs
-    sudo tar xf build/final/lfs-final.tar.gz -C /run/lfs
-    sudo cp -r containers/lfs-final/overlay/* /run/lfs
+    sudo tar xf $export -C /run/lfs
+    sudo cp -r fs/* /run/lfs
     sudo umount /run/lfs
 }
 
@@ -226,6 +232,15 @@ lfs-install() {
     sudo mkdir -p ${lfs_install_dir}
     sudo cp ${lfs_root_img} ${lfs_install_dir}
     sudo cp build/boot/vmlinuz ${lfs_install_dir}/lfs-${lfs_version}-vmlinuz
+}
+
+lfs-mkpod() {
+    if [ "$stage" != "stage3" ] ; then
+        echo "$prog: error: only in stage3"
+        exit 1
+    fi
+    set -x
+    podman exec --user root -t lfs-stage3 bash /build/lfs-rpm/containers/lfs-stage3/mkpod.sh
 }
 
 lfs-build-all() {
@@ -247,9 +262,6 @@ lfs-build-all() {
     ./lfs 2 init
     ./lfs 2 build
     ./lfs 2 export
-
-    ./lfs final init
-    ./lfs final export
 }
 
 lfs-clean() {
@@ -267,7 +279,7 @@ lfs-clean() {
 
 lfs-dist-clean() {
     set -x
-    lfs-reset
+    lfs-clean
     rm -rf build
 }
 
@@ -307,13 +319,19 @@ case $1 in
     stage2|2)
         shift
         stage=stage2
-        next_stage=final
+        next_stage=stage3
         rpmbuild_flags="-ba $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;
-    final)
+    stage3|3)
         shift
-        stage=final
+        stage=stage3
+        rpmbuild_flags="-ba $rpm_nocheck"
+        rpm_flags="--nodeps"
+        ;;
+    image)
+        shift
+        stage=image
         ;;
 esac
 
@@ -330,7 +348,8 @@ case $1 in
     root)       assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)     assert-stage && lfs-export ;;
     bootstrap)  assert-stage && lfs-bootstrap ;;
-    mkimage)    lfs-mkimage ;;
+    mkpod)      assert-stage && lfs-mkpod ;;
+    mkimage)    lfs-mkimage $2 ;;
     install)    lfs-install ;;
     clean)      lfs-clean ;;
     dist-clean) lfs-dist-clean ;;

@@ -4,12 +4,22 @@ Release:        1%{?dist}
 Summary:        Advanced IP routing and network device configuration tools
 License:        GPLv2+ and Public Domain
 
-Source0: https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-%{version}.tar.xz
+Source:         https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-%{version}.tar.xz
+
+BuildRequires:  bison
+Suggests:       %{name}-doc = %{version}
 
 %description
 The iproute package contains networking utilities (ip and rtmon, for example)
 which are designed to use the advanced networking capabilities of the Linux
 kernel.
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -17,20 +27,14 @@ kernel.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 sed -i /ARPD/d Makefile
 rm -fv man/man8/arpd.8
 
 %make NETNS_RUN_DIR=/run/netns
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} SBINDIR=/usr/sbin install
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %files
@@ -59,4 +63,6 @@ rm -fv man/man8/arpd.8
 /usr/share/iproute2/rt_realms
 /usr/share/iproute2/rt_scopes
 /usr/share/iproute2/rt_tables
-/usr/share/man/man{3,7,8}/*
+
+%files doc
+/usr/share/man/man*/*

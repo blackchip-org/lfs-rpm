@@ -15,11 +15,8 @@ The Iana-Etc package provides data for network services and protocols.
 
 #---------------------------------------------------------------------------
 %install
-%lfs_build_begin
-
 install services    -D %{buildroot}/etc/services
 install protocols   -D %{buildroot}/etc/protocols
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %files

@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        The GNU Portable Library Tool
 License:        GPLv2+ and LGPLv2+ and GFDL
 
-Source0:        https://ftp.gnu.org/gnu/libtool/libtool-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/libtool/libtool-%{version}.tar.xz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 GNU Libtool is a set of shell scripts which automatically configure UNIX and
@@ -21,29 +23,45 @@ Portable Library Tool (libtool) and the GNU Libtool Dynamic Module Loader
 (ltdl) into a package built using the GNU Autotools (including GNU Autoconf and
 GNU Automake).
 
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install
 rm -fv %{buildroot}/usr/lib/libltdl.a
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 %make -k check
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -53,10 +71,13 @@ rm -fv %{buildroot}/usr/lib/libltdl.a
 /usr/include/*.h
 /usr/lib/libltdl.so
 /usr/lib/libltdl.so.7
+%shlib /usr/lib/libltdl.so.7.3.2
 /usr/share/aclocal/*
-/usr/share/info/*
 /usr/share/libtool
-/usr/share/man/man1/*
 
-%defattr(755,root,root,755)
-/usr/lib/libltdl.so.7.3.2
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
+

@@ -4,7 +4,9 @@ Release:        1%{?dist}
 Summary:        A GNU file archiving program
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/tar/tar-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/tar/tar-%{version}.tar.xz
+
+Suggests:       %{name}-doc = %{version}
 
 %description
 The GNU tar program saves many files together in one archive and can restore
@@ -17,43 +19,69 @@ ability to perform incremental and full backups.
 If you want to use tar for remote backups, you also need to install the rmt
 package on the remote box.
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
 
-%else 
+%else
 FORCE_UNSAFE_CONFIGURE=1  \
 ./configure --prefix=/usr
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
 
-%else 
+%else
 %make DESTDIR=%{buildroot} install
+%remove_info_dir
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
 make check
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -62,12 +90,18 @@ make check
 %{lfs_dir}/usr/libexec/*
 %{lfs_dir}/usr/share/locale/*/LC_MESSAGES/tar.mo
 
-%else 
+%else
 /usr/bin/tar
 /usr/libexec/rmt
-/usr/share/info/*
+
+%files lang
 /usr/share/locale/*/LC_MESSAGES/*
-/usr/share/man/man{1,8}/*
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

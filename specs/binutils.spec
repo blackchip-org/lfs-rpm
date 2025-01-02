@@ -4,7 +4,11 @@ Release:        1%{?dist}
 Summary:        A GNU collection of binary utilities
 License:        GPLv3+
 
-Source0:        https://sourceware.org/pub/binutils/releases/binutils-%{version}.tar.xz
+Source0:        https://sourceware.org/pub/binutils/releases/%{name}-%{version}.tar.gz
+
+Suggests:       %{name}-doc = %{version}
+
+BuildRequires:  texinfo
 
 %description
 Binutils is a collection of binary utilities, including ar (for creating,
@@ -18,18 +22,38 @@ object or archive file), strings (for listing printable strings from files),
 strip (for discarding symbols), and addr2line (for converting addresses to file
 and line).
 
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
-mkdir build
-cd build
+mkdir -p    build
+cd          build
 
 %if %{with lfs_stage1a}
+%use_lfs_tools
 ../configure --prefix=%{lfs_tools_dir}  \
              --with-sysroot=%{lfs_dir}  \
              --target=%{lfs_tgt}        \
@@ -41,6 +65,7 @@ cd build
 %make
 
 %elif %{with lfs_stage1b}
+%use_lfs_tools
 sed '6009s/$add_dir//' -i ../ltmain.sh
 ../configure --prefix=/usr              \
              --build=$(../config.guess) \
@@ -65,24 +90,25 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --enable-64-bit-bfd \
              --with-system-zlib  \
              --enable-new-dtags  \
-             --with-system-zlib  \
              --enable-default-hash-style=gnu
 %make tooldir=/usr
 
 %endif
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
 cd build
 
 %if %{with lfs_stage1a}
+%use_lfs_tools
 DESTDIR=%{buildroot} %make install
+%discard_docs
 
 %elif %{with lfs_stage1b}
+%use_lfs_tools
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
+%discard_docs
 
 %else
 %make tooldir=/usr DESTDIR=%{buildroot} install
@@ -90,7 +116,6 @@ rm -fv %{buildroot}/usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
 rm -rf %{buildroot}/usr/share/info/dir
 
 %endif
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
@@ -147,23 +172,27 @@ make -k check
 /usr/lib/libbfd.so
 /usr/lib/libctf-nobfd.so
 /usr/lib/libctf-nobfd.so.0
+%shlib /usr/lib/libctf-nobfd.so.0.0.0
 /usr/lib/libctf.so
 /usr/lib/libctf.so.0
+%shlib /usr/lib/libctf.so.0.0.0
 /usr/lib/libgprofng.so
 /usr/lib/libgprofng.so.0
+%shlib /usr/lib/libgprofng.so.0.0.0
 /usr/lib/libopcodes-%{version}.so
 /usr/lib/libopcodes.so
 /usr/lib/libsframe.so
 /usr/lib/libsframe.so.1
-/usr/share/info/*
-/usr/share/locale/*/LC_MESSAGES/*
-/usr/share/man/man1/*
+%shlib /usr/lib/libsframe.so.1.0.0
 
-%defattr(755,root,root,755)
-/usr/lib/libctf-nobfd.so.0.0.0
-/usr/lib/libctf.so.0.0.0
-/usr/lib/libgprofng.so.0.0.0
-/usr/lib/libsframe.so.1.0.0
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

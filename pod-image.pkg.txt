@@ -1,0 +1,17 @@
+dbus
+iana-etc
+inetutils
+iproute
+kbd
+kmod
+less
+linux
+ncurses
+openssl
+procps-ng
+psmisc
+readline
+shadow
+util-linux
+vim
+

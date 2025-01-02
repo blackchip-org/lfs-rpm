@@ -4,11 +4,36 @@ Release:        1%{?dist}
 Summary:        A set of basic GNU tools commonly used in shell scripts
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/coreutils/coreutils-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/coreutils/coreutils-%{version}.tar.xz
+
+BuildRequires:  autoconf
+BuildRequires:  automake
+BuildRequires:  gettext
 
 %description
 These are the GNU core utilities. This package is the combination of the old
 GNU fileutils, sh-utils, and textutils packages.
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+Recommends:     %{name}-man = %{version}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -16,15 +41,14 @@ GNU fileutils, sh-utils, and textutils packages.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 ./configure --prefix=/usr                     \
             --host=%{lfs_tgt}                 \
             --build=$(build-aux/config.guess) \
             --enable-install-program=hostname \
-            --enable-no-install-program=kill,uptime 
-            
+            --enable-no-install-program=kill,uptime
+
 %else
 autoreconf -fiv
 FORCE_UNSAFE_CONFIGURE=1 ./configure \
@@ -33,16 +57,15 @@ FORCE_UNSAFE_CONFIGURE=1 ./configure \
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 make DESTDIR=%{buildroot}/%{lfs_dir} install
 mkdir -p %{buildroot}/%{lfs_dir}/usr/sbin
 mv -v %{buildroot}/%{lfs_dir}/usr/bin/chroot %{buildroot}/%{lfs_dir}/usr/sbin
+%discard_docs
 
 %else
 make DESTDIR=%{buildroot} install
@@ -53,9 +76,16 @@ mkdir %{buildroot}/usr/share/man/man8
 mv -v %{buildroot}/usr/bin/chroot %{buildroot}/usr/sbin
 mv -v %{buildroot}/usr/share/man/man1/chroot.1 %{buildroot}/usr/share/man/man8/chroot.8
 sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
+%remove_info_dir
 
 %endif
-%lfs_install_end
+
+#---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -169,11 +199,17 @@ sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 /usr/bin/who
 /usr/bin/whoami
 /usr/bin/yes
-/usr/libexec/coreutils/libstdbuf.so
+%shlib /usr/libexec/coreutils/libstdbuf.so
 /usr/sbin/chroot
-/usr/share/info/coreutils.info.gz
-/usr/share/locale/*/LC_{MESSAGES,TIME}/coreutils.mo
-/usr/share/man/man{1,8}/*
+
+%files lang
+/usr/share/locale/*/LC_{MESSAGES,TIME}/*
+
+%files doc
+/usr/share/info/*
+
+%files man
+/usr/share/man/man*/*
 
 %endif
 

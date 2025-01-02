@@ -6,10 +6,21 @@ License:        LGPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/mpc/mpc-%{version}.tar.gz
 
+BuildRequires:  autoconf
+BuildRequires:  texinfo
+Suggests:       %{name}-doc = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+Requires:       texinfo
+
 %description
 MPC is a C library for the arithmetic of complex numbers with arbitrarily high
 precision and correct rounding of the result. It is built upon and follows the
 same principles as Mpfr.
+
+%description doc
+Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
@@ -17,33 +28,35 @@ same principles as Mpfr.
 
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 ./configure --prefix=/usr    \
             --disable-static \
             --docdir=/usr/share/doc/mpc-%{version}
 %make
 %make html
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
 %make DESTDIR=%{buildroot} install install-html
-%lfs_install_end
+%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
 %make check
 
 #---------------------------------------------------------------------------
+%post doc
+%request_info_dir
+
+%posttrans doc
+%update_info_dir
+
+#---------------------------------------------------------------------------
 %files
 /usr/include/*.h
 /usr/lib/libmpc.so
 /usr/lib/libmpc.so.3
+%shlib /usr/lib/libmpc.so.3.3.1
+
+%files doc
 /usr/share/doc/mpc-%{version}
 /usr/share/info/*
-
-%defattr(755,root,root,755)
-/usr/lib/libmpc.so.3.3.1

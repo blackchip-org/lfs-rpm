@@ -1,17 +1,25 @@
 Name:           perl
-Version:        5.40.0 
+Version:        5.40.0
 %global         perl_version 5.40
+%global         smash_version 5.00400
+
 Release:        1%{?dist}
 Summary:        Practical Extraction and Report Language
 License:        GPL+ or Artistic
 
 Source0:        https://www.cpan.org/src/5.0/perl-%{version}.tar.xz
 
-# If yes, this calls a perl script to find this information but perl isn't 
+Requires:       libxcrypt
+Provides:       perl = %smash_version
+Provides:       perl = 1:%{version}
+
+# If yes, this calls a perl script to find this information but perl isn't
 # installed yet
 %if %{with lfs_stage1}
 AutoReqProv:    no
-%endif 
+%else
+AutoReq:        no
+%endif
 
 %description
 Perl is a high-level programming language with roots in C, sed, awk and shell
@@ -28,16 +36,21 @@ instead. E.g. to handle Perl scripts with /usr/bin/perl interpreter, install
 perl-interpreter package. See perl-interpreter description for more details on
 the Perl decomposition into packages.
 
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%description doc
+Documentation for %{name}
+
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
-
 #---------------------------------------------------------------------------
 %build
-%lfs_build_begin
-
 %if %{with lfs_stage1}
+%use_lfs_tools
 unset LC_ALL
 
 sh Configure -des                                                       \
@@ -73,14 +86,17 @@ sh Configure -des                                                    \
 
 %endif
 %make
-%lfs_build_end
 
 #---------------------------------------------------------------------------
 %install
-%lfs_install_begin
-
+%if %{with lfs_stage1}
+%use_lfs_tools
 make DESTDIR=%{buildroot} install
 
+%else
+make DESTDIR=%{buildroot} install
+
+%endif
 mkdir -p %{buildroot}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.perl
 @perl_version %{perl_version}
@@ -90,8 +106,6 @@ find \
     %{buildroot}/usr/lib/perl5/%{perl_version} \
     -name "*.so" \
     -exec chmod 755 {} \;
-
-%lfs_install_end
 
 #---------------------------------------------------------------------------
 %check
@@ -138,6 +152,8 @@ find \
 /usr/bin/zipdetails
 /usr/lib/perl5/%{perl_version}
 /usr/lib/rpm/macros.d/macros.perl
-/usr/share/man/man{1,3}/*
 
 %endif
+
+%files doc
+/usr/share/man/man*/*
