@@ -449,7 +449,7 @@ Create and start or destroy a build container.
 Below is an example, and a working set, of commands to execute to boot an
 image with packages built with the podman build container:
 
-    ./lfs 2 export
+    ./lfs 3 export
     ./pod init
     ./pod build   rebuild.spec.txt
     ./pod export  pod-image.pkg.txt
