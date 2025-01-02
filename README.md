@@ -160,7 +160,7 @@ The full procedure to build LFS without `build-all` is:
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs mkimage
+    ./lfs mkimage build/stage2/lfs-stage2.tar.gz
     ./lfs install
 
 ## The `lfs` script
