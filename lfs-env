@@ -1,6 +1,6 @@
 set -a
 
-lfs_host_image=fedora:40
+lfs_host_image=fedora:41
 lfs_version=12.2
 lfs_nproc=$(nproc)
 lfs_arch=x86_64
