@@ -283,6 +283,11 @@ lfs-dist-clean() {
     rm -rf build
 }
 
+if ! [[ -x $(command -v rpmbuild) ]]; then
+	echo rpmbuild is not installed
+	exit 1
+fi
+
 mkdir -p build/{sources,logs}
 
 for mkstage in $stages; do
