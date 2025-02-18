@@ -103,7 +103,7 @@ lfs-build() {
         fi
 
         package=$(basename "$spec" .spec)
-        package_version=$(rpmspec -qv $spec | head -1 | sed 's/.src//')
+        package_version=$(rpmspec --undefine dist --qf '%{NAME}-%{VERSION}-%{RELEASE}\n' -qv $spec | head -1 | sed 's/.src//')
 
         if [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
             rpm_pkg_flags="--replacefiles"
@@ -282,6 +282,11 @@ lfs-dist-clean() {
     lfs-clean
     rm -rf build
 }
+
+if ! [[ -x $(command -v rpmbuild) ]]; then
+	echo rpmbuild is not installed
+	exit 1
+fi
 
 mkdir -p build/{sources,logs}
 
