@@ -79,7 +79,7 @@ If the build fails for some reason, you can continue the build using the
 manual procedure below. Running this command will start everything from
 the beginning which is usually what you don't want.
 
-### Run `./lfs mkimage build/stage2/lfs-stage2.tar.gz`
+### Run `./lfs mkimage`
 
 The tarball now has to be converted to a filesystem image. This requires root
 privileges as it is necessary to temporarily mount the image to copy in the
@@ -93,7 +93,7 @@ and the kernel. By default, it won't have access to files in your home
 directory. Running install will copy those files to */var/lib/libvirt/images*
 as:
 
-- `lfs-12.3-root-img`
+- `lfs-12.3-root.img`
 - `lfs-12.3-vmlinuz`
 
 Now create a virtual machine using the following steps:
@@ -160,7 +160,7 @@ The full procedure to build LFS without `build-all` is:
     ./lfs 2 build
     ./lfs 2 export
 
-    ./lfs mkimage build/stage2/lfs-stage2.tar.gz
+    ./lfs mkimage
     ./lfs install
 
 ## The `lfs` script
@@ -451,9 +451,9 @@ image with packages built with the podman build container:
 
     ./lfs 3 export
     ./pod init
-    ./pod build   rebuild.spec.txt
-    ./pod export  pod-image.pkg.txt
-    ./lfs mkimage build/pod/lfs-pod.tar.gz
+    ./pod build rebuild.spec.txt
+    ./pod export pod-image.pkg.txt
+    ./lfs mkimage-pod
     ./lfs install
 
 Now create the virtual machine as described above and login into the root

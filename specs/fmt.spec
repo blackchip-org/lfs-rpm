@@ -40,5 +40,5 @@ cd build
 /usr/lib/cmake/%{name}
 /usr/lib/libfmt.so
 /usr/lib/libfmt.so.11
-%shlib /usr/lib/libfmt.so.11.0.2
+%shlib /usr/lib/libfmt.so.%{version}
 /usr/lib/pkgconfig/%{name}.pc

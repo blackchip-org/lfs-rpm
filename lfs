@@ -22,15 +22,6 @@ EOF
     exit 2
 }
 
-usage-mkimage() {
-        cat <<EOF
-
-Usage: $prog mkimage <image.tar.gz>
-
-EOF
-    exit 2
-}
-
 assert-stage() {
     if [ -z "$stage" ] ; then
         echo "$prog: error: stage name should precede command"
@@ -227,6 +218,14 @@ lfs-mkimage() {
     sudo umount /run/lfs
 }
 
+lfs-mkimage-stage2() {
+    lfs-mkimage build/stage2/lfs-stage2.tar.gz
+}
+
+lfs-mkimage-pod() {
+    lfs-mkimage build/pod/lfs-pod.tar.gz
+}
+
 lfs-install() {
     set -x
     sudo mkdir -p ${lfs_install_dir}
@@ -342,23 +341,24 @@ esac
 
 
 case $1 in
-    env)        lfs-env ;;
-    download)   shift ; lfs-download "$@" ;;
-    init)       assert-stage && lfs-init ;;
-    start)      assert-stage && podman start lfs-$stage ;;
-    stop)       assert-stage && podman stop --timeout 0 lfs-$stage ;;
-    build)      assert-stage && lfs-build --install ;;
-    rpm)        assert-stage && shift ; lfs-build --reinstall "$@" ;;
-    shell)      assert-stage && exec podman exec -it lfs-$stage /bin/bash ;;
-    root)       assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
-    export)     assert-stage && lfs-export ;;
-    bootstrap)  assert-stage && lfs-bootstrap ;;
-    mkpod)      assert-stage && lfs-mkpod ;;
-    mkimage)    lfs-mkimage $2 ;;
-    install)    lfs-install ;;
-    clean)      lfs-clean ;;
-    dist-clean) lfs-dist-clean ;;
-    build-all)  lfs-build-all ;;
+    env)            lfs-env ;;
+    download)       shift ; lfs-download "$@" ;;
+    init)           assert-stage && lfs-init ;;
+    start)          assert-stage && podman start lfs-$stage ;;
+    stop)           assert-stage && podman stop --timeout 0 lfs-$stage ;;
+    build)          assert-stage && lfs-build --install ;;
+    rpm)            assert-stage && shift ; lfs-build --reinstall "$@" ;;
+    shell)          assert-stage && exec podman exec -it lfs-$stage /bin/bash ;;
+    root)           assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
+    export)         assert-stage && lfs-export ;;
+    bootstrap)      assert-stage && lfs-bootstrap ;;
+    mkpod)          assert-stage && lfs-mkpod ;;
+    mkimage)        lfs-mkimage-stage2 ;;
+    mkimage-pod)    lfs-mkimage-pod ;;
+    install)        lfs-install ;;
+    clean)          lfs-clean ;;
+    dist-clean)     lfs-dist-clean ;;
+    build-all)      lfs-build-all ;;
     *)
         echo "$prog: error: invalid command" 1>&2
         usage

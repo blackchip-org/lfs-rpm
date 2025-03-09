@@ -49,7 +49,7 @@ rm %{buildroot}/usr/lib/libsqlite3.a
 /usr/include/sqlite3*
 /usr/lib/libsqlite3.so
 /usr/lib/libsqlite3.so.0
-%shlib /usr/lib/libsqlite3.so.0.8.6
+%shlib /usr/lib/libsqlite3.so.%{version}
 /usr/lib/pkgconfig/sqlite3.pc
 
 %files doc

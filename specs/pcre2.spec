@@ -58,11 +58,11 @@ Documentation for %{name}
 /usr/lib/libpcre2-8.a
 /usr/lib/libpcre2-8.so
 /usr/lib/libpcre2-8.so.0
-%shlib /usr/lib/libpcre2-8.so.0.13.0
+%shlib /usr/lib/libpcre2-8.so.0.14.0
 /usr/lib/libpcre2-posix.a
 /usr/lib/libpcre2-posix.so
 /usr/lib/libpcre2-posix.so.3
-%shlib /usr/lib/libpcre2-posix.so.3.0.5
+%shlib /usr/lib/libpcre2-posix.so.3.0.6
 /usr/lib/pkgconfig/libpcre2-8.pc
 /usr/lib/pkgconfig/libpcre2-posix.pc
 
