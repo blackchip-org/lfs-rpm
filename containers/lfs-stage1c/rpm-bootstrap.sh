@@ -2,9 +2,9 @@
 
 set -e -x
 
-elfutils_version=0.191
-cmake_version=3.30.2
-cmake_version2=3.30
+elfutils_version=0.192
+cmake_version=3.31.6
+cmake_version2=3.31
 rpm_version=4.19.1.1
 
 elfutils_source=elfutils-${elfutils_version}.tar.bz2

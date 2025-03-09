@@ -1,5 +1,5 @@
 Name:           sdbus-c++
-Version:        1.6.0
+Version:        2.1.0
 Release:        1%{?dist}
 Summary:        Library for Linux designed to provide expressive, easy-to-use API in modern C++.
 License:        LGPL-2.1

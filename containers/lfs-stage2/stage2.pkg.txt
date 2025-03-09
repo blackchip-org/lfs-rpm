@@ -45,7 +45,6 @@ specs/intltool.spec
 specs/autoconf.spec
 specs/automake.spec
 specs/openssl.spec
-specs/kmod.spec
 specs/elfutils.spec
 specs/libffi.spec
 specs/python.spec
@@ -54,6 +53,7 @@ specs/python-wheel.spec
 specs/python-setuptools.spec
 specs/ninja.spec
 specs/meson.spec
+specs/kmod.spec
 specs/coreutils.spec
 specs/check.spec
 specs/diffutils.spec

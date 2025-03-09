@@ -1,5 +1,5 @@
 Name:           man-pages
-Version:        6.9.1
+Version:        6.12
 Release:        1%{?dist}
 Summary:        Linux kernel and C library user-space interface documentation
 License:        GPL+ and GPLv2+ and BSD and MIT and Copyright only
@@ -21,10 +21,14 @@ rm -v man3/crypt*
 
 #---------------------------------------------------------------------------
 %install
-%make prefix=/usr DESTDIR=%{buildroot} install
+%make -R GIT=false prefix=/usr DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
+/usr/bin/diffman-git
+/usr/bin/mansect
+/usr/bin/pdfman
+/usr/bin/sortman
 /usr/share/man/man{1,2,3,4,5,6,7,8}/*
 /usr/share/man/man{2,3}type/*
 /usr/share/man/man{2,3}const/*

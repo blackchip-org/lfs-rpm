@@ -1,5 +1,5 @@
 Name:           elfutils
-Version:        0.191
+Version:        0.192
 Release:        1%{?dist}
 Summary:        A collection of utilities and DSOs to handle ELF files and DWARF data
 License:        GPLv2+
@@ -98,6 +98,7 @@ rm %{buildroot}/usr/lib/*.a
 /usr/lib/pkgconfig/libelf.pc
 /usr/lib/pkgconfig/libdebuginfod.pc
 /usr/lib/pkgconfig/libdw.pc
+/usr/share/fish/vendor_conf.d/debuginfod.fish
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*

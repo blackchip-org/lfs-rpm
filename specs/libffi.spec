@@ -1,5 +1,5 @@
 Name:           libffi
-Version:        3.4.6
+Version:        3.4.7
 %global         so_version  8.1.4
 Release:        1%{?dist}
 Summary:        A portable foreign function interface library

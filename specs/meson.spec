@@ -1,5 +1,5 @@
 Name:           meson
-Version:        1.4.0
+Version:        1.7.0
 Release:        1%{?dist}
 Summary:        Meson is an open source build system designed to be both extremely fast and as user friendly as possible.
 License:        ASL

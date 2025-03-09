@@ -1,5 +1,5 @@
 Name:           kbd
-Version:        2.6.4
+Version:        2.7.1
 Release:        1%{?dist}
 Summary:        Tools for configuring the console (keyboard, virtual terminals, etc.)
 License:        GPLv2+

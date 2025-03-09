@@ -1,8 +1,10 @@
+# extra
+
 Name:		      libsolv
 Version:	    0.7.31
 Release:	    1%{?dist}
 Summary:	    Dependency solver using a satisfiability algorithm
-License:        BSD
+License:      BSD
 
 Source: 	    https://github.com/openSUSE/libsolv/archive/refs/tags/%{version}.tar.gz
 

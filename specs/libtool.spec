@@ -1,5 +1,5 @@
 Name:           libtool
-Version:        2.4.7
+Version:        2.5.4
 Release:        1%{?dist}
 Summary:        The GNU Portable Library Tool
 License:        GPLv2+ and LGPLv2+ and GFDL
@@ -71,7 +71,7 @@ rm -fv %{buildroot}/usr/lib/libltdl.a
 /usr/include/*.h
 /usr/lib/libltdl.so
 /usr/lib/libltdl.so.7
-%shlib /usr/lib/libltdl.so.7.3.2
+%shlib /usr/lib/libltdl.so.7.3.3
 /usr/share/aclocal/*
 /usr/share/libtool
 

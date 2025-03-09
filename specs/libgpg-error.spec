@@ -1,5 +1,7 @@
+# extra
+
 Name:           libgpg-error
-Version:        1.50
+Version:        1.51
 Release:        1%{?dist}
 Summary:        Library for error values used by GnuPG components
 License:        LGPLv2+
@@ -94,7 +96,7 @@ Documentation for %{name}
 /usr/include/*.h
 /usr/lib/libgpg-error.so
 /usr/lib/libgpg-error.so.0
-%shlib /usr/lib/libgpg-error.so.0.37.0
+%shlib /usr/lib/libgpg-error.so.0.38.0
 /usr/lib/pkgconfig/gpg-error.pc
 /usr/share/aclocal/*
 /usr/share/common-lisp/source/gpg-error

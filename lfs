@@ -52,7 +52,7 @@ lfs-init() {
     fi
 
     set -x
-    bash -c "source ./env ; env | grep -e '^lfs_'" > eval-lfs.env
+    bash -c "source ./lfs-env ; env | grep -e '^lfs_'" > eval-lfs.env
 
     podman stop -t 0    lfs-$stage || true
     podman rm -f        lfs-$stage || true

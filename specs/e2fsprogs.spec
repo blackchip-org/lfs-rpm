@@ -1,5 +1,5 @@
 Name:           e2fsprogs
-Version:        1.47.0
+Version:        1.47.2
 Release:        1%{?dist}
 Summary:        Utilities for managing ext2, ext3, and ext4 file systems
 License:        GPLv2
@@ -84,7 +84,6 @@ rm -fv %{buildroot}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
 /usr/bin/mk_cmds
 /usr/include/*.h
 /usr/include/{e2p,et,ext2fs,ss}
-/usr/lib/e2fsprogs/e2scrub_fail
 /usr/lib/e2initrd_helper
 /usr/lib/libcom_err.so
 /usr/lib/libcom_err.so.2
@@ -107,7 +106,9 @@ rm -fv %{buildroot}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
 /usr/lib/systemd/system/e2scrub_all.timer
 /usr/lib/systemd/system/e2scrub_fail@.service
 /usr/lib/systemd/system/e2scrub_reap.service
+/usr/lib/udev/rules.d/64-ext4.rules
 /usr/lib/udev/rules.d/96-e2scrub.rules
+/usr/libexec/e2fsprogs/e2scrub_fail
 /usr/sbin/badblocks
 /usr/sbin/debugfs
 /usr/sbin/dumpe2fs

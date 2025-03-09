@@ -1,11 +1,13 @@
 Name:           kmod
-Version:        31
+Version:        34
 Release:        1%{?dist}
 Summary:        Linux kernel module management utilities
 License:        GPLv2+
 
 Source:         https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-%{version}.tar.xz
 
+BuildRequires:  meson
+BuildRequires:  ninja
 BuildRequires:  pkg-config
 Suggests:       %{name}-doc = %{version}
 
@@ -15,53 +17,44 @@ unloading of modules under 2.6, 3.x, and later kernels, as well as other module
 management programs. Device drivers and filesystems are two examples of loaded
 and unloaded modules.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
-
-%description doc
-Documentation for %{name}
-
 #---------------------------------------------------------------------------
 %prep
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-./configure --prefix=/usr          \
-            --sysconfdir=/etc      \
-            --with-openssl         \
-            --with-xz              \
-            --with-zstd            \
-            --with-zlib
-%make
+mkdir -p build
+cd build
+
+# man pages requires scdoc
+
+meson setup --prefix=/usr           \
+            --sbindir=/usr/sbin     \
+            --buildtype=release     \
+            -D manpages=false
+ninja
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-
-mkdir -p %{buildroot}/usr/{,s}bin
-for target in depmod insmod modinfo modprobe rmmod; do
-  ln -sfv ../bin/kmod %{buildroot}/usr/sbin/$target
-done
-
-ln -sfv kmod %{buildroot}/usr/bin/lsmod
+cd build
+DESTDIR=%{buildroot} ninja install
 
 #---------------------------------------------------------------------------
 %files
 /usr/bin/kmod
-/usr/bin/lsmod
 /usr/include/*.h
 /usr/lib/libkmod.so
 /usr/lib/libkmod.so.2
-%shlib /usr/lib/libkmod.so.2.4.1
+%shlib /usr/lib/libkmod.so.2.5.1
 /usr/lib/pkgconfig/libkmod.pc
 /usr/sbin/depmod
 /usr/sbin/insmod
+/usr/sbin/lsmod
 /usr/sbin/modinfo
 /usr/sbin/modprobe
 /usr/sbin/rmmod
-/usr/share/bash-completion/completions/kmod
+/usr/share/bash-completion/completions/{insmod,kmod,lsmod,rmmod}
+/usr/share/fish/vendor_functions.d/{insmod,lsmod,rmmod}.fish
+/usr/share/pkgconfig/kmod.pc
+/usr/share/zsh/site-functions/_{insmod,lsmod,rmmod}
 
-%files doc
-/usr/share/man/man*/*

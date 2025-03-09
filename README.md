@@ -2,7 +2,7 @@
 
 A [Linux from Scratch](https://www.linuxfromscratch.org/) (LFS) build using
 [podman](https://podman.io/) and the [RPM](https://rpm.org/) package
-manager. These build steps follow LFS version 12.2-systemd.
+manager. These build steps follow LFS version 12.3-systemd.
 
 Before you read any further, have you built [Linux from
 Scratch](https://www.linuxfromscratch.org/) yourself? If not, I highly
@@ -84,7 +84,7 @@ the beginning which is usually what you don't want.
 The tarball now has to be converted to a filesystem image. This requires root
 privileges as it is necessary to temporarily mount the image to copy in the
 filesystem. Run this command and enter in your password if prompted. The root
-filesystem image will now be at `build/lfs-12.2-root.img`
+filesystem image will now be at `build/lfs-12.3-root.img`
 
 ### Run `./lfs install`
 
@@ -93,15 +93,15 @@ and the kernel. By default, it won't have access to files in your home
 directory. Running install will copy those files to */var/lib/libvirt/images*
 as:
 
-- `lfs-12.2-root-img`
-- `lfs-12.2-vmlinuz`
+- `lfs-12.3-root-img`
+- `lfs-12.3-vmlinuz`
 
 Now create a virtual machine using the following steps:
 
 - Start virt-manager
 - Select File -> New Virtual Machine
 - Select "Import existing disk image"
-- For "Provide the existing storage path" and select `lfs-12.2-root.img`
+- For "Provide the existing storage path" and select `lfs-12.3-root.img`
 - For "Choose the operating system your are installing", select "Generic Linux 2022"
 - Click on "Forward"
 - Adjust memory and CPUs as needed and click on "Forward"
@@ -110,7 +110,7 @@ Now create a virtual machine using the following steps:
 - Click on "Finish"
 - On the left sidebar, select "Boot Options" and then open "Direct kernel boot"
 - Click on "Enable direct kernel boot"
-- For "Kernel path" select `lfs-12.2-vmlinuz`
+- For "Kernel path" select `lfs-12.3-vmlinuz`
 - Leave "Initrd path" blank
 - For "Kernel args" enter in `root=/dev/vda rw`
 - Click on "Apply"
@@ -282,7 +282,7 @@ Fedora image are used. Some macros are installed under
 `/usr/lib/rpm/macros.d/macros.lfs` to assist with the build:
 
 - `%dist`: Fedora uses a dist tag such as *fc41* and Red Hat Enterprise
-Linux uses dist tags such as *el9*. This build uses *lfs12*.
+Linux uses dist tags such as *el9*. This build uses *lfs12_3*.
 - `%_build_id_links`: By default, Fedora wants to generate files in
 `/usr/lib/.build-id` for debugging purposes. This isn't necessary for an LFS
 build and just adds clutter to the build. This setting is set to *none* to
@@ -405,7 +405,7 @@ This creates a new podman image using the tarball created above but does
 not yet start a container.
 
 Configuration for this environment can be found in `pod-env`. Right now it
-only contains the build arch and the dist tag which is now `pod12`. If you
+only contains the build arch and the dist tag which is now `pod12_3`. If you
 would like to customize the build to use your own dist tag, create a
 `local-pod.env` file and add to it *pod_dist* with the name of your
 choosing.

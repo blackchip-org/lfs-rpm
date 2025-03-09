@@ -1,5 +1,5 @@
 Name:           systemd
-Version:        256.4
+Version:        257.3
 Release:        1%{?dist}
 Summary:        System and Service Manager
 License:        LGPLv2+ and MIT and GPLv2+
@@ -127,6 +127,7 @@ systemctl disable systemd-sysupdate{,-reboot}
 %files
 /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
 /etc/init.d/README
+/etc/profile.d/70-systemd-shell-extra.sh
 %config(noreplace) /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
 %config(noreplace) /etc/systemd/coredump.conf
 %config(noreplace) /etc/systemd/journald.conf
@@ -203,10 +204,11 @@ systemctl disable systemd-sysupdate{,-reboot}
 /usr/lib/libnss_systemd.so.2
 /usr/lib/libsystemd.so
 /usr/lib/libsystemd.so.0
-%shlib /usr/lib/libsystemd.so.0.39.0
+%shlib /usr/lib/libsystemd.so.0.40.0
 /usr/lib/libudev.so
 /usr/lib/libudev.so.1
-%shlib/usr/lib/libudev.so.1.7.9
+%shlib/usr/lib/libudev.so.1.7.10
+/usr/lib/kernel/uki.conf
 /usr/lib/modprobe.d/README
 /usr/lib/modprobe.d/systemd.conf
 /usr/lib/pkgconfig/libsystemd.pc

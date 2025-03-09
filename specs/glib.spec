@@ -1,10 +1,12 @@
+# extra
+
 Name:           glib
-Version:        2.83.0
+Version:        2.84.0
 Release:        1%{?dist}
 Summary:        Low-level core library
 License:        LGPLv2
 
-%global         version2 2.83
+%global         version2 2.84
 
 Source0:        https://download.gnome.org/sources/glib/%{version2}/glib-%{version}.tar.xz
 

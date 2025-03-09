@@ -1,5 +1,5 @@
 Name:           dbus
-Version:        1.14.10
+Version:        1.16.0
 Release:        1%{?dist}
 Summary:        D-BUS message bus
 License:        (AFL-2.1 OR GPL-2.0-or-later) AND GPL-2.0-or-later
@@ -7,6 +7,8 @@ License:        (AFL-2.1 OR GPL-2.0-or-later) AND GPL-2.0-or-later
 Source:         https://dbus.freedesktop.org/releases/dbus/dbus-%{version}.tar.xz
 
 BuildRequires:  expat
+BuildRequires:  meson
+BuildRequires:  ninja
 BuildRequires:  pkg-config
 BuildRequires:  systemd
 
@@ -29,21 +31,19 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
-./configure --prefix=/usr                        \
-            --sysconfdir=/etc                    \
-            --localstatedir=/var                 \
-            --runstatedir=/run                   \
-            --enable-user-session                \
-            --disable-static                     \
-            --disable-doxygen-docs               \
-            --disable-xml-docs                   \
-            --docdir=/usr/share/doc/dbus-%{version}  \
-            --with-system-socket=/run/dbus/system_bus_socket
-%make
+mkdir build
+cd build
+
+meson setup --prefix=/usr \
+            --buildtype=release \
+            --wrap-mode=nofallback \
+            ..
+ninja
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+cd build
+DESTDIR=%{buildroot} ninja install
 
 mkdir -p                %{buildroot}/var/lib
 ln -sfv /etc/machine-id %{buildroot}/var/lib/dbus
@@ -70,7 +70,7 @@ make check
 /usr/lib/dbus-1.0
 /usr/lib/libdbus-1.so
 /usr/lib/libdbus-1.so.3
-%shlib /usr/lib/libdbus-1.so.3.32.4
+%shlib /usr/lib/libdbus-1.so.3.38.3
 /usr/lib/pkgconfig/dbus-1.pc
 /usr/lib/systemd/system/dbus.service
 /usr/lib/systemd/system/dbus.socket
@@ -87,4 +87,4 @@ make check
 /var/lib/dbus/machine-id
 
 %files doc
-/usr/share/doc/dbus-%{version}
+/usr/share/doc/dbus

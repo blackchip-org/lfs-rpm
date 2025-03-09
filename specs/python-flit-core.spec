@@ -1,5 +1,5 @@
 Name:           python-flit-core
-Version:        3.9.0
+Version:        3.11.0
 Release:        1%{?dist}
 Summary:        Simplified packaging of Python modules
 License:        BSD-3-Clause

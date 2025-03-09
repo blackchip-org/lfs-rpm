@@ -1,12 +1,12 @@
 Name:           glibc
-Version:        2.40
+Version:        2.41
 Release:        1%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
 
 Source:         https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
 
-%global         enable_kernel   4.19
+%global         enable_kernel   5.4
 
 %if !%{with %lfs_stage1}
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch

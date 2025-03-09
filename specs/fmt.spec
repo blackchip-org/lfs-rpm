@@ -1,5 +1,7 @@
+# extra
+
 Name:           fmt
-Version:        11.0.2
+Version:        11.1.4
 Release:        1%{?dist}
 Summary:        Fast and safe alternative to C stdio and C++ iostreams
 License:        {fmt}

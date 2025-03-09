@@ -1,5 +1,5 @@
 Name:           dnf
-Version:        5.2.8.1
+Version:        5.2.11.0
 Release:        1%{?dist}
 Summary:        Command-line package manager
 License:        GPLv2

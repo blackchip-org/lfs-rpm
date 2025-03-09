@@ -1,5 +1,7 @@
+# extra
+
 Name:           libxml2
-Version:        2.13.5
+Version:        2.13.6
 %global         version2 2.13
 Release:        1%{?dist}
 Summary:        XML C parser and toolkit developed for the GNOME project

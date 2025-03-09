@@ -1,5 +1,5 @@
 Name:           bc
-Version:        6.7.6
+Version:        7.0.3
 Release:        1%{?dist}
 Summary:        GNU's bc (a numeric processing language) and dc (a calculator)
 License:        GPLv2+

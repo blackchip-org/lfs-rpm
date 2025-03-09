@@ -9,6 +9,7 @@
 %lfs_tgt            %{getenv:lfs_tgt}
 
 %make               make -j%{getenv:lfs_nproc}
+%shlib              %attr(755,root,root)
 
 %use_lfs_tools      export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
 %discard_docs    \

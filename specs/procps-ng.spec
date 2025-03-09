@@ -1,5 +1,5 @@
 Name:           procps-ng
-Version:        4.0.3
+Version:        4.0.5
 Release:        1%{?dist}
 Summary:        System and process monitoring utilities
 License:        GPL+ and GPLv2 and GPLv2+ and GPLv3+ and LGPLv2+
@@ -76,6 +76,7 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %files
 /usr/bin/free
+/usr/bin/hugetop
 /usr/bin/pgrep
 /usr/bin/pidof
 /usr/bin/pidwait
@@ -92,8 +93,8 @@ Documentation for %{name}
 /usr/bin/watch
 /usr/include/libproc2
 /usr/lib/libproc2.so
-/usr/lib/libproc2.so.0
-%shlib /usr/lib/libproc2.so.0.0.1
+/usr/lib/libproc2.so.1
+%shlib /usr/lib/libproc2.so.1.0.0
 /usr/lib/pkgconfig/libproc2.pc
 /usr/sbin/sysctl
 
@@ -104,6 +105,6 @@ Documentation for %{name}
 /usr/share/doc/procps-ng-%{version}
 
 %files man
-/usr/share/man/{??,pt_BR}/man*/*
+/usr/share/man/{??,pt_BR,zh_CN}/man*/*
 /usr/share/man/man*/*
 

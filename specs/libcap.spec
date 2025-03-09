@@ -1,5 +1,5 @@
 Name:           libcap
-Version:        2.70
+Version:        2.73
 Release:        1%{?dist}
 Summary:        Library for getting and setting POSIX.1e capabilities
 License:        BSD or GPLv2
