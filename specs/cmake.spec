@@ -1,4 +1,4 @@
-# extra
+# extra, update version2
 
 Name:           cmake
 Version:        3.31.6
@@ -8,7 +8,7 @@ License:        BSD and MIT and zlib
 
 Source:         https://github.com/Kitware/CMake/releases/download/v%{version}/cmake-%{version}.tar.gz
 
-%global         version2    3.30
+%global         version2    3.31
 BuildRequires:  openssl
 
 %description

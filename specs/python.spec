@@ -9,6 +9,8 @@ Source:         https://www.python.org/ftp/python/%{version}/Python-%{version}.t
 
 BuildRequires:  expat
 BuildRequires:  openssl
+# Python test fails with 3.49
+BuildRequires:  sqlite = 3.48.0
 Suggests:       %{name}-doc = %{version}
 
 %description

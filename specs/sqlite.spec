@@ -1,13 +1,13 @@
 # extra
+# Python test fails with 3.49
 
 Name:           sqlite
-Version:        3.49.1
-%global         file_version 3490100
+Version:        3.48.0
+%global         file_version 3480000
+%global         year    2025
 Release:        1%{?dist}
 Summary:        A small, fast, self-contained, high-reliability, full-featured, SQL database engine
 License:        Public Domain
-
-%global         year    2025
 
 Source:         https://www.sqlite.org/%{year}/sqlite-autoconf-%{file_version}.tar.gz
 
@@ -49,7 +49,7 @@ rm %{buildroot}/usr/lib/libsqlite3.a
 /usr/include/sqlite3*
 /usr/lib/libsqlite3.so
 /usr/lib/libsqlite3.so.0
-%shlib /usr/lib/libsqlite3.so.%{version}
+%shlib /usr/lib/libsqlite3.so.0.8.6
 /usr/lib/pkgconfig/sqlite3.pc
 
 %files doc

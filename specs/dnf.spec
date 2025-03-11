@@ -47,8 +47,13 @@ Language files for %{name}
 sed -i 's/ \-Werror//g' CMakeLists.txt
 
 %if %{with lfs_stage3}
-# Needs systemd
+
+# Using systemd in the pod build image pulls in way too many packages and
+# that needs to be as light as possible. While the build has a flag to turn
+# off systemd support, it doesn't seem like it is always checked. Make some
+# changes here to get it to compile.
 sed -i '/needs_restarting_plugin/d' dnf5-plugins/CMakeLists.txt
+sed -i 's/sdbus::ObjectPath/std::string/g' dnf5/commands/offline/offline.cpp
 
 mkdir build
 cd build
@@ -56,11 +61,11 @@ cd build
 cmake \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
-    -DPYTHON_DESIRED="3" \
+    -DPYTHON3=OFF \
     -DWITH_MAN=OFF \
     -DWITH_MODULEMD=0 \
     -DWITH_RUBY=0 \
-    -DWITH_PERL=0 \
+    -DWITH_PERL5=0 \
     -DWITH_SYSTEMD=OFF \
     -DWITH_TESTS=OFF \
     -DWITH_DNF5DAEMON_CLIENT=OFF \
@@ -77,17 +82,18 @@ cd build
 cmake \
     -DCMAKE_INSTALL_PREFIX:PATH=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
-    -DPYTHON_DESIRED="3" \
+    -DPYTHON3=ON \
     -DWITH_MAN=OFF \
     -DWITH_MODULEMD=0 \
     -DWITH_RUBY=0 \
-    -DWITH_PERL=1 \
+    -DWITH_PERL5=1 \
     -DWITH_SYSTEMD=ON \
     -DWITH_TESTS=OFF \
     -DWITH_DNF5DAEMON_CLIENT=OFF \
     -DWITH_DNF5DAEMON_SERVER=OFF \
     -DWITH_DNF5_PLUGINS=ON \
     -DWITH_PLUGIN_ACTIONS=ON \
+    -DWITH_PLUGIN_APPSTREAM=OFF \
     ..
 %endif
 
@@ -104,6 +110,7 @@ ln -s dnf5 %{buildroot}/usr/bin/dnf
 /etc/bash_completion.d/dnf5
 %config(noreplace) /etc/dnf/dnf.conf
 %config(noreplace) /etc/dnf/libdnf5-plugins/actions.conf
+%config(noreplace) /etc/dnf/libdnf5-plugins/expired-pgp-keys.conf
 /etc/dnf/dnf5-aliases.d/README
 /usr/bin/{dnf,dnf5}
 /usr/bin/dnf-automatic
@@ -121,17 +128,16 @@ ln -s dnf5 %{buildroot}/usr/bin/dnf
 %shlib /usr/lib/dnf5/plugins/changelog_cmd_plugin.so
 %shlib /usr/lib/dnf5/plugins/config-manager_cmd_plugin.so
 %shlib /usr/lib/dnf5/plugins/copr_cmd_plugin.so
+%shlib /usr/lib/libdnf5/plugins/expired-pgp-keys.so
 %shlib /usr/lib/dnf5/plugins/repoclosure_cmd_plugin.so
 %shlib /usr/lib/dnf5/plugins/reposync_cmd_plugin.so
 %shlib /usr/lib/libdnf5/plugins/actions.so
-/usr/lib/perl5/%{perl_version}/site_perl/auto/libdnf5*
-/usr/lib/perl5/%{perl_version}/site_perl/libdnf5*
-/usr/lib/pkgconfig/libdnf5-cli.pc
-/usr/lib/pkgconfig/libdnf5.pc
-/usr/lib/python%{python_version}/site-packages/libdnf5-5.2.8.1.dist-info
-/usr/lib/python%{python_version}/site-packages/libdnf5_cli-5.2.8.1.dist-info
+/usr/lib/python%{python_version}/site-packages/libdnf5-%{version}.dist-info
+/usr/lib/python%{python_version}/site-packages/libdnf5_cli-%{version}.dist-info
 /usr/lib/python%{python_version}/site-packages/libdnf5{,_cli}
 /usr/lib/python%{python_version}/site-packages/libdnf_plugins
+/usr/lib/pkgconfig/libdnf5-cli.pc
+/usr/lib/pkgconfig/libdnf5.pc
 /usr/lib/systemd/system/dnf-automatic.service
 /usr/lib/systemd/system/dnf-automatic.timer
 /usr/lib/systemd/system/dnf5-automatic.service
@@ -145,8 +151,11 @@ ln -s dnf5 %{buildroot}/usr/bin/dnf
 
 %if !%{with lfs_stage3}
 %shlib /usr/lib/dnf5/plugins/needs_restarting_cmd_plugin.so
+/usr/lib/perl5/%{perl_version}/site_perl/auto/libdnf5*
+/usr/lib/perl5/%{perl_version}/site_perl/libdnf5*
 /usr/lib/systemd/system/dnf5-offline-transaction-cleanup.service
 /usr/lib/systemd/system/dnf5-offline-transaction.service
+
 %endif
 
 %files lang
