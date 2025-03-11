@@ -1,5 +1,5 @@
 Name:           man-db
-Version:        2.12.0
+Version:        2.13.0
 Release:        1%{?dist}
 Summary:        Tools for searching and reading man pages
 License:        GPLv2+ and GPLv3+
@@ -77,9 +77,9 @@ Documentation for %{name}
 /usr/bin/manpath
 /usr/bin/whatis
 /usr/lib/man-db/libman.so
-%shlib /usr/lib/man-db/libman-2.12.0.so
+%shlib /usr/lib/man-db/libman-%{version}.so
 /usr/lib/man-db/libmandb.so
-%shlib /usr/lib/man-db/libmandb-2.12.0.so
+%shlib /usr/lib/man-db/libmandb-%{version}.so
 /usr/lib/systemd/system/man-db.service
 /usr/lib/systemd/system/man-db.timer
 /usr/lib/tmpfiles.d/man-db.conf

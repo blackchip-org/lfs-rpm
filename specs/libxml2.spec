@@ -1,5 +1,7 @@
+# extra
+
 Name:           libxml2
-Version:        2.13.5
+Version:        2.13.6
 %global         version2 2.13
 Release:        1%{?dist}
 Summary:        XML C parser and toolkit developed for the GNOME project
@@ -58,7 +60,7 @@ rm -rf %{buildroot}/usr/lib/%{python_version}/__pycache__
 /usr/lib/cmake/%{name}
 /usr/lib/libxml2.so
 /usr/lib/libxml2.so.2
-%shlib /usr/lib/libxml2.so.2.13.5
+%shlib /usr/lib/libxml2.so.2.13.6
 /usr/lib/pkgconfig/libxml-2.0.pc
 
 %files doc

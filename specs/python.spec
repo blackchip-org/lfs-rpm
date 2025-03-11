@@ -1,6 +1,6 @@
 Name:           python
-Version:        3.12.5
-%global         python_version 3.12
+Version:        3.13.2
+%global         python_version 3.13
 Release:        1%{?dist}
 Summary:        Interpreter of the Python programming language
 License:        Python
@@ -9,6 +9,8 @@ Source:         https://www.python.org/ftp/python/%{version}/Python-%{version}.t
 
 BuildRequires:  expat
 BuildRequires:  openssl
+# Python test fails with 3.49
+BuildRequires:  sqlite = 3.48.0
 Suggests:       %{name}-doc = %{version}
 
 %description
@@ -83,8 +85,6 @@ EOF
 /usr/lib/rpm/macros.d/macros.python
 
 %else
-/usr/bin/2to3
-/usr/bin/2to3-%{python_version}
 /usr/bin/{idle,idle3,idle%{python_version}}
 /usr/bin/{pip,pip3,pip%{python_version}}
 /usr/bin/{pydoc,pydoc3,pydoc%{python_version}}

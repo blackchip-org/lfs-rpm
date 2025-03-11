@@ -1,5 +1,5 @@
 Name:           shadow
-Version:        4.16.0
+Version:        4.17.3
 Release:        1%{?dist}
 Summary:        Utilities for managing accounts and shadow password files
 License:        BSD and GPLv2+

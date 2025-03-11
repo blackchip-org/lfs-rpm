@@ -4,7 +4,6 @@ specs/libsolv.spec
 specs/json-c.spec
 specs/toml11.spec
 specs/fmt.spec
-specs/libxml2.spec
 specs/zchunk.spec
 specs/libpsl.spec
 specs/curl.spec

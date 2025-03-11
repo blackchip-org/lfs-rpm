@@ -1,10 +1,10 @@
 Name:           python-MarkupSafe
-Version:        2.1.5
+Version:        3.0.2
 Release:        1%{?dist}
 Summary:        Implements a XML/HTML/XHTML Markup safe string
 License:        BSD
 
-Source:         https://pypi.org/packages/source/M/MarkupSafe/MarkupSafe-%{version}.tar.gz
+Source:         https://pypi.org/packages/source/M/MarkupSafe/markupsafe-%{version}.tar.gz
 
 BuildRequires:  python
 BuildRequires:  python-setuptools
@@ -14,7 +14,7 @@ A library for safe markup escaping.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n MarkupSafe-%{version}
+%setup -q -n markupsafe-%{version}
 
 #---------------------------------------------------------------------------
 %build
@@ -26,5 +26,5 @@ pip3 install --ignore-installed --root=%{buildroot} --no-index --no-user --find-
 
 #---------------------------------------------------------------------------
 %files
-/usr/lib/python%{python_version}/site-packages/MarkupSafe-%{version}.dist-info
+/usr/lib/python%{python_version}/site-packages/markupsafe-%{version}.dist-info
 /usr/lib/python%{python_version}/site-packages/markupsafe

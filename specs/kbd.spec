@@ -1,5 +1,5 @@
 Name:           kbd
-Version:        2.6.4
+Version:        2.7.1
 Release:        1%{?dist}
 Summary:        Tools for configuring the console (keyboard, virtual terminals, etc.)
 License:        GPLv2+
@@ -8,6 +8,7 @@ Source:         https://www.kernel.org/pub/linux/utils/kbd/kbd-%{version}.tar.xz
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/kbd-%{version}-backspace-1.patch
 
 BuildRequires:  autoconf
+BuildRequires:  pkg-config
 Suggests:       %{name}-doc = %{version}
 
 %description

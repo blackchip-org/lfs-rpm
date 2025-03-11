@@ -1,10 +1,11 @@
 Name:           coreutils
-Version:        9.5
+Version:        9.6
 Release:        1%{?dist}
 Summary:        A set of basic GNU tools commonly used in shell scripts
 License:        GPLv3+
 
 Source:         https://ftp.gnu.org/gnu/coreutils/coreutils-%{version}.tar.xz
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/coreutils-%{version}-i18n-1.patch
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -39,6 +40,10 @@ Documentation for %{name}
 %prep
 %setup -q
 
+%if !%{with lfs_stage1}
+%patch 0 -p 1
+%endif
+
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
@@ -50,7 +55,8 @@ Documentation for %{name}
             --enable-no-install-program=kill,uptime
 
 %else
-autoreconf -fiv
+autoreconf -fv
+automake -af
 FORCE_UNSAFE_CONFIGURE=1 ./configure \
             --prefix=/usr            \
             --enable-no-install-program=kill,uptime

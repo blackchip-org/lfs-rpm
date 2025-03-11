@@ -40,7 +40,6 @@ specs/intltool.spec
 specs/iproute.spec
 specs/json-c.spec
 specs/kbd.spec
-specs/kmod.spec
 specs/less.spec
 specs/libcap.spec
 specs/libffi.spec
@@ -62,6 +61,7 @@ specs/pcre2.spec
 specs/pkgconf.spec
 specs/popt.spec
 specs/psmisc.spec
+specs/sqlite.spec
 specs/python.spec
 specs/python-flit-core.spec
 specs/python-Jinja2.spec
@@ -70,6 +70,7 @@ specs/python-setuptools.spec
 specs/python-MarkupSafe.spec
 specs/meson.spec
 specs/ninja.spec
+specs/kmod.spec
 specs/glib.spec
 specs/glibc.spec
 specs/grub.spec
@@ -79,7 +80,6 @@ specs/libsolv.spec
 specs/root-fs.spec
 specs/sed.spec
 specs/shadow.spec
-specs/sqlite.spec
 specs/swig.spec
 specs/systemd.spec
 specs/dbus.spec

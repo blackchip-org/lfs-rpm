@@ -1,5 +1,7 @@
+# extra
+
 Name:           curl
-Version:        8.11.1
+Version:        8.12.1
 Release:        1%{?dist}
 Summary:        Tool for transferring data from or to a server using URLs
 License:        curl

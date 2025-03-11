@@ -1,5 +1,5 @@
 Name:           diffutils
-Version:        3.10
+Version:        3.11
 Release:        1%{?dist}
 Summary:        A GNU collection of diff utilities
 License:        GPLv3+

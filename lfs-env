@@ -1,7 +1,7 @@
 set -a
 
 lfs_host_image=fedora:41
-lfs_version=12.2
+lfs_version=12.3
 lfs_nproc=$(nproc)
 lfs_arch=x86_64
 lfs_root_size=10G
@@ -14,7 +14,7 @@ lfs_root_img=build/lfs-${lfs_version}-root.img
 lfs_install_dir=/var/lib/libvirt/images
 
 lfs_version_1=$(echo $lfs_version | cut -f1 -d.)
-lfs_dist=.lfs${lfs_version_1}
+lfs_dist=.lfs$(echo $lfs_version | sed s/\\./_/)
 
 if [ -e local-lfs.env ] ; then
     . ./local-lfs.env

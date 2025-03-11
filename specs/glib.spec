@@ -1,10 +1,13 @@
+# extra
+
 Name:           glib
-Version:        2.83.0
+Version:        2.84.0
 Release:        1%{?dist}
 Summary:        Low-level core library
 License:        LGPLv2
 
-%global         version2 2.83
+%global         version2    2.84
+%global         so_version  0.8400.0
 
 Source0:        https://download.gnome.org/sources/glib/%{version2}/glib-%{version}.tar.xz
 
@@ -66,22 +69,22 @@ DESTDIR=%{buildroot} meson install -C _build
 /usr/lib/glib-2.0/include/glibconfig.h
 /usr/lib/libgio-2.0.so
 /usr/lib/libgio-2.0.so.0
-%shlib /usr/lib/libgio-2.0.so.0.8300.0
+%shlib /usr/lib/libgio-2.0.so.%{so_version}
 /usr/lib/libgirepository-2.0.so
 /usr/lib/libgirepository-2.0.so.0
-%shlib /usr/lib/libgirepository-2.0.so.0.8300.0
+%shlib /usr/lib/libgirepository-2.0.so.%{so_version}
 /usr/lib/libglib-2.0.so
 /usr/lib/libglib-2.0.so.0
-%shlib /usr/lib/libglib-2.0.so.0.8300.0
+%shlib /usr/lib/libglib-2.0.so.%{so_version}
 /usr/lib/libgmodule-2.0.so
 /usr/lib/libgmodule-2.0.so.0
-%shlib /usr/lib/libgmodule-2.0.so.0.8300.0
+%shlib /usr/lib/libgmodule-2.0.so.%{so_version}
 /usr/lib/libgobject-2.0.so
 /usr/lib/libgobject-2.0.so.0
-%shlib /usr/lib/libgobject-2.0.so.0.8300.0
+%shlib /usr/lib/libgobject-2.0.so.%{so_version}
 /usr/lib/libgthread-2.0.so
 /usr/lib/libgthread-2.0.so.0
-%shlib /usr/lib/libgthread-2.0.so.0.8300.0
+%shlib /usr/lib/libgthread-2.0.so.%{so_version}
 /usr/lib/pkgconfig/gio-2.0.pc
 /usr/lib/pkgconfig/gio-unix-2.0.pc
 /usr/lib/pkgconfig/girepository-2.0.pc
@@ -92,6 +95,7 @@ DESTDIR=%{buildroot} meson install -C _build
 /usr/lib/pkgconfig/gobject-2.0.pc
 /usr/lib/pkgconfig/gthread-2.0.pc
 /usr/libexec/gio-launch-desktop
+/usr/libexec/installed-tests/glib
 /usr/share/aclocal/glib-2.0.m4
 /usr/share/aclocal/glib-gettext.m4
 /usr/share/aclocal/gsettings.m4
@@ -100,8 +104,8 @@ DESTDIR=%{buildroot} meson install -C _build
 /usr/share/bash-completion/completions/gio
 /usr/share/bash-completion/completions/gresource
 /usr/share/bash-completion/completions/gsettings
-/usr/share/gdb/auto-load/usr/lib/libglib-2.0.so.0.8300.0-gdb.py
-/usr/share/gdb/auto-load/usr/lib/libgobject-2.0.so.0.8300.0-gdb.py
+/usr/share/gdb/auto-load/usr/lib/libglib-2.0.so.%{so_version}-gdb.py
+/usr/share/gdb/auto-load/usr/lib/libgobject-2.0.so.%{so_version}-gdb.py
 /usr/share/gettext/its/gschema.its
 /usr/share/gettext/its/gschema.loc
 /usr/share/glib-2.0

@@ -1,5 +1,5 @@
 Name:           iproute
-Version:        6.7.0
+Version:        6.13.0
 Release:        1%{?dist}
 Summary:        Advanced IP routing and network device configuration tools
 License:        GPLv2+ and Public Domain

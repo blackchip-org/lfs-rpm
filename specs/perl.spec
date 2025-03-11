@@ -1,7 +1,7 @@
 Name:           perl
-Version:        5.40.0
-%global         perl_version 5.40
-%global         smash_version 5.00400
+Version:        5.40.1
+%global         perl_version 5.41
+%global         smash_version 5.00401
 
 Release:        1%{?dist}
 Summary:        Practical Extraction and Report Language

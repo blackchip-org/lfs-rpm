@@ -1,11 +1,15 @@
+# extra
+# Python test fails with 3.49
+
 Name:           sqlite
-Version:        3.47.2
-%global         file_version 3470200
+Version:        3.48.0
+%global         file_version 3480000
+%global         year    2025
 Release:        1%{?dist}
 Summary:        A small, fast, self-contained, high-reliability, full-featured, SQL database engine
 License:        Public Domain
 
-Source:         https://www.sqlite.org/2024/sqlite-autoconf-%{file_version}.tar.gz
+Source:         https://www.sqlite.org/%{year}/sqlite-autoconf-%{file_version}.tar.gz
 
 Suggests:       %{name}-doc = %{version}
 

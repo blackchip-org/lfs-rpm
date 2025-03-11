@@ -1,5 +1,5 @@
 Name:           util-linux
-Version:        2.40.2
+Version:        2.40.4
 Release:        1%{?dist}
 Summary:        Collection of basic system utilities
 License:        GPLv2 and GPLv2+ and LGPLv2+ and BSD with advertising and Public Domain

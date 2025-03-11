@@ -1,5 +1,5 @@
 Name:           python-setuptools
-Version:        69.1.0
+Version:        75.8.1
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python 3 packages
 License:        MIT

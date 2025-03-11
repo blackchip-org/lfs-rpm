@@ -1,5 +1,5 @@
 Name:           vim
-Version:        9.1.0660
+Version:        9.1.1166
 Release:        1%{?dist}
 Summary:        Visual editor improved
 License:        Vim and MIT

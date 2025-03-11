@@ -1,5 +1,5 @@
 Name:           libpipeline
-Version:        1.5.7
+Version:        1.5.8
 Release:        1%{?dist}
 Summary:        A pipeline manipulation library
 License:        GPLv3+
@@ -44,7 +44,7 @@ make check
 /usr/include/pipeline.h
 /usr/lib/libpipeline.so
 /usr/lib/libpipeline.so.1
-%shlib /usr/lib/libpipeline.so.1.5.7
+%shlib /usr/lib/libpipeline.so.1.5.8
 /usr/lib/pkgconfig/libpipeline.pc
 
 %files doc

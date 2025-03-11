@@ -1,5 +1,5 @@
 Name:           zstd
-Version:        1.5.6
+Version:        1.5.7
 Release:        1%{?dist}
 Summary:        Zstd compression library
 License:        BSD and GPLv2
@@ -29,11 +29,26 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %install
-%make prefix=%{buildroot}/usr install
+%if %{with lfs_stage1b}
+%make DESTDIR=%{buildroot}/%{lfs_dir} prefix=/usr install
+rm -f %{buildroot}/%{lfs_dir}/usr/lib/libzstd.a
+%discard_docs
+
+%else
+%make DESTDIR=%{buildroot} prefix=/usr install
 rm -f %{buildroot}/usr/lib/libzstd.a
+
+%endif
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs_stage1b}
+%{lfs_dir}/usr/bin/*
+%{lfs_dir}/usr/include/*
+%{lfs_dir}/usr/lib/*.so*
+%{lfs_dir}/usr/lib/pkgconfig/*
+
+%else
 /usr/bin/unzstd
 /usr/bin/zstd
 /usr/bin/zstdcat
@@ -48,3 +63,5 @@ rm -f %{buildroot}/usr/lib/libzstd.a
 
 %files doc
 /usr/share/man/man1/*
+
+%endif

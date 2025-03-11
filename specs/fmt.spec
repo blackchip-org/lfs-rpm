@@ -1,5 +1,7 @@
+# extra
+
 Name:           fmt
-Version:        11.0.2
+Version:        11.1.4
 Release:        1%{?dist}
 Summary:        Fast and safe alternative to C stdio and C++ iostreams
 License:        {fmt}
@@ -38,5 +40,5 @@ cd build
 /usr/lib/cmake/%{name}
 /usr/lib/libfmt.so
 /usr/lib/libfmt.so.11
-%shlib /usr/lib/libfmt.so.11.0.2
+%shlib /usr/lib/libfmt.so.%{version}
 /usr/lib/pkgconfig/%{name}.pc

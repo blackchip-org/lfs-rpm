@@ -1,5 +1,5 @@
 Name:           binutils
-Version:        2.43.1
+Version:        2.44
 Release:        1%{?dist}
 Summary:        A GNU collection of binary utilities
 License:        GPLv3+
@@ -144,7 +144,6 @@ make -k check
 /usr/bin/ar
 /usr/bin/as
 /usr/bin/c++filt
-/usr/bin/dwp
 /usr/bin/elfedit
 /usr/bin/gp-archive
 /usr/bin/gp-collect-app
@@ -153,9 +152,13 @@ make -k check
 /usr/bin/gp-display-text
 /usr/bin/gprof
 /usr/bin/gprofng
+/usr/bin/gprofng-archive
+/usr/bin/gprofng-collect-app
+/usr/bin/gprofng-display-html
+/usr/bin/gprofng-display-src
+/usr/bin/gprofng-display-text
 /usr/bin/ld
 /usr/bin/ld.bfd
-/usr/bin/ld.gold
 /usr/bin/nm
 /usr/bin/objcopy
 /usr/bin/objdump
@@ -190,6 +193,7 @@ make -k check
 
 %files doc
 /usr/share/info/*
+/usr/share/doc/gprofng
 
 %files man
 /usr/share/man/man*/*

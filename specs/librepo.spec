@@ -1,3 +1,5 @@
+# extra
+
 Name:           librepo
 Version:        1.19.0
 Release:        1%{?dist}
@@ -16,11 +18,6 @@ BuildRequires:  openssl
 BuildRequires:  pkg-config
 BuildRequires:  python
 BuildRequires:  zchunk
-
-#FIXME: This is being used to cheat and use the pre-installed environment.
-#Remove in the future.
-#Provides:       librpm.so.10()(64bit)
-#Provides:       librpmio.so.10()(64bit)
 
 %description
 A library providing C and Python (libcURL like) API for downloading linux

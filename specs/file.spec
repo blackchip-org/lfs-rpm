@@ -1,5 +1,5 @@
 Name:           file
-Version:        5.45
+Version:        5.46
 Release:        1%{?dist}
 Summary:        A utility for determining file types
 License:        BSD

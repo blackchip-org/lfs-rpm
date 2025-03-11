@@ -1,5 +1,5 @@
 Name:           texinfo
-Version:        7.1
+Version:        7.2
 Release:        1%{?dist}
 Summary:        Programs for reading, writing, and converting info pages
 License:        GPLv3+
@@ -85,9 +85,26 @@ Documentation for %{name}
 /usr/bin/texi2dvi
 /usr/bin/texi2pdf
 /usr/bin/texindex
-%shlib /usr/lib/texinfo/MiscXS.so
-%shlib /usr/lib/texinfo/Parsetexi.so
-%shlib /usr/lib/texinfo/XSParagraph.so
+%shlib /usr/lib/texi2any/ConvertXS.so
+%shlib /usr/lib/texi2any/DocumentXS.so
+%shlib /usr/lib/texi2any/IndicesXS.so
+%shlib /usr/lib/texi2any/MiscXS.so
+%shlib /usr/lib/texi2any/Parsetexi.so
+%shlib /usr/lib/texi2any/StructuringTransfoXS.so
+%shlib /usr/lib/texi2any/XSParagraph.so
+/usr/lib/texi2any/libtexinfo-convert.so
+/usr/lib/texi2any/libtexinfo-convert.so.0
+%shlib /usr/lib/texi2any/libtexinfo-convert.so.0.0.0
+/usr/lib/texi2any/libtexinfo-convertxs.so
+/usr/lib/texi2any/libtexinfo-convertxs.so.0
+%shlib /usr/lib/texi2any/libtexinfo-convertxs.so.0.0.0
+/usr/lib/texi2any/libtexinfo.so
+/usr/lib/texi2any/libtexinfo.so.0
+%shlib /usr/lib/texi2any/libtexinfo.so.0.0.0
+/usr/lib/texi2any/libtexinfoxs.so
+/usr/lib/texi2any/libtexinfoxs.so.0
+%shlib /usr/lib/texi2any/libtexinfoxs.so.0.0.0
+/usr/share/texi2any
 /usr/share/texinfo
 
 %files lang

@@ -1,5 +1,5 @@
 Name:           tcl
-Version:        8.6.14
+Version:        8.6.16
 %global         version2    8.6
 Release:        1%{?dist}
 Summary:        Tool Command Language, pronounced tickle
@@ -7,10 +7,10 @@ License:        TCL
 
 Source:         https://downloads.sourceforge.net/tcl/tcl%{version}-src.tar.gz
 
-%global         tdbc_version    1.1.7
-%global         itcl_version    4.2.4
-%global         sqlite_version  3.44.2
-%global         thread_version  2.8.9
+%global         tdbc_version    1.1.10
+%global         itcl_version    4.3.2
+%global         sqlite_version  3.47.2
+%global         thread_version  2.8.11
 
 BuildRequires:  pkg-config
 Suggests:       %{name}-doc = %{version}
