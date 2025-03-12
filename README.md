@@ -69,7 +69,7 @@ an Intel i7-7700 CPU, SSD hard drive, 16 GiB of memory, default podman
 configuration, and *make -j8*:
 
 ```
-real	118m7.072s
+real	131m27.156s
 ```
 
 Once done, the root filesystem can be found at `build/stage2/lfs-stage2.tar.gz`
