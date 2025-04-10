@@ -1,7 +1,7 @@
 # extra
 
 Name:           rpm
-Version:        4.19.1.1
+Version:        4.20.1
 Release:        1%{?dist}
 Summary:        The RPM package management system
 License:        GPLv2+
@@ -55,7 +55,47 @@ Documentation for %{name}
 mkdir -p _build
 cd _build
 
-%if %{with lfs_stage2}
+%if %{with lfs_stage1b}
+cat > x86_64-lfs-linux-gnu.cmake <<EOF
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSROOT %{lfs_dir})
+
+set(CMAKE_C_COMPILER %{lfs_tools_dir}/bin/x86_64-lfs-linux-gnu-gcc)
+set(CMAKE_CXX_COMPILER %{lfs_tools_dir}/bin/x86_64-lfs-linux-gnu-g++)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+set(ENV{PKG_CONFIG_PATH} %{lfs_dir}/usr/lib/pkgconfig)
+unset(GETTEXT_MSGMERGE_EXECUTABLE)
+EOF
+
+cmake --toolchain x86_64-lfs-linux-gnu.cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    -DENABLE_NLS=OFF \
+    -DENABLE_OPENMP=OFF \
+    -DENABLE_SQLITE=OFF \
+    -DENABLE_TESTSUITE=OFF \
+    -DENABLE_PYTHON=OFF \
+    -DRPM_CONFIGDIR=/usr/lib/rpm \
+    -DRPM_VENDOR=lfs \
+    -DWITH_ACL=OFF \
+    -DWITH_AUDIT=OFF \
+    -DWITH_CAP=OFF \
+    -DWITH_DBUS=OFF \
+    -DWITH_FAPOLICYD=OFF \
+    -DWITH_LIBDW=OFF \
+    -DWITH_LIBELF=OFF \
+    -DWITH_READLINE=OFF \
+    -DWITH_SELINUX=OFF \
+    -DWITH_SEQUOIA=OFF \
+    -DWITH_ZSTD=OFF \
+    ..
+
+%elif %{with lfs_stage2}
 cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
@@ -97,10 +137,24 @@ cmake \
 #---------------------------------------------------------------------------
 %install
 cd _build
+
+%if %{with lfs_stage1b}
+%make DESTDIR=%{buildroot}/%{lfs_dir} install
+%discard_docs
+
+%else
 %make DESTDIR=%{buildroot} install
+
+%endif
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs_stage1b}
+%{lfs_dir}/usr/bin/*
+%{lfs_dir}/usr/include/rpm
+%{lfs_dir}/usr/lib/*
+
+%else
 /usr/bin/gendiff
 /usr/bin/rpm
 /usr/bin/rpm2cpio
@@ -146,5 +200,6 @@ cd _build
 %files man
 /usr/share/man/man*/*
 
+%endif
 
 

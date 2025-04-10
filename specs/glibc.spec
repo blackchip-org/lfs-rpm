@@ -181,7 +181,7 @@ make check
 %{lfs_dir}/usr/sbin/*
 %{lfs_dir}/usr/share/i18n/charmaps/*
 %{lfs_dir}/usr/share/i18n/locales/*
-%{lfs_dir}/usr/share/locale/locale.alias
+# %%{lfs_dir}/usr/share/locale/locale.alias
 
 %else
 /etc/ld.so.cache

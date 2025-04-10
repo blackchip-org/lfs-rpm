@@ -15,7 +15,9 @@
 %discard_docs    \
     rm -rf %{buildroot}/lfs/tools/share/{doc,info,man} \
     rm -rf %{buildroot}/lfs/usr/share/{doc,info,man} \
-    rm -rf %{buildroot}/usr/share/info/dir
+    rm -rf %{buildroot}/usr/share/info/dir \
+    rm -rf %{buildroot}/lfs/usr/share/locale \
+    rm -rf %{buildroot}/usr/share/locale
 
 %remove_info_dir rm -f %{buildroot}/usr/share/info/dir
 %update_info_dir \

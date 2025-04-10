@@ -87,7 +87,7 @@ make check
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/libexec/*
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/findutils.mo
+# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/findutils.mo
 
 %else
 /usr/bin/find

@@ -99,7 +99,7 @@ sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/sbin/*
 %{lfs_dir}/usr/libexec/coreutils
-%{lfs_dir}/usr/share/locale/*/LC_{MESSAGES,TIME}/coreutils.mo
+# %%{lfs_dir}/usr/share/locale/*/LC_{MESSAGES,TIME}/coreutils.mo
 
 %else
 /usr/bin/[

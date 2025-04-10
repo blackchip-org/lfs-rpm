@@ -91,7 +91,7 @@ ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
 %{lfs_dir}/usr/lib/gawk
 %{lfs_dir}/usr/libexec/awk
 %{lfs_dir}/usr/share/awk
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/gawk.mo
+# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/gawk.mo
 
 %else
 /usr/bin/awk

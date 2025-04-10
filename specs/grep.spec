@@ -85,7 +85,7 @@ make check
 %files
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/grep.mo
+# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/grep.mo
 
 %else
 /usr/bin/egrep

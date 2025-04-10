@@ -83,7 +83,7 @@ install -m644 doc/sed.html %{buildroot}/usr/share/doc/sed-4.9
 %files
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/sed.mo
+# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/sed.mo
 
 %else
 /usr/bin/sed

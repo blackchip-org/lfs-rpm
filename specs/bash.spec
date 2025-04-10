@@ -95,7 +95,7 @@ make tests
 %{lfs_dir}/usr/include/bash
 %{lfs_dir}/usr/lib/bash
 %{lfs_dir}/usr/lib/pkgconfig/bash.pc
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/bash.mo
+# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/bash.mo
 
 %else
 /usr/bin/bash

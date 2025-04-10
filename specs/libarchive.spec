@@ -45,15 +45,46 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
+%if %{with lfs_stage1b}
+%use_lfs_tools
+
+mkdir -p _build
+cd _build
+
+cat > x86_64-lfs-linux-gnu.cmake <<EOF
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSROOT %{lfs_dir})
+
+set(CMAKE_C_COMPILER %{lfs_tools_dir}/bin/x86_64-lfs-linux-gnu-gcc)
+set(CMAKE_CXX_COMPILER %{lfs_tools_dir}/bin/x86_64-lfs-linux-gnu-g++)
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+set(ENV{PKG_CONFIG_PATH} %{lfs_dir}/usr/lib/pkgconfig)
+EOF
+
+cmake --toolchain x86_64-lfs-linux-gnu.cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    ..
+%{make}
+
+%else
 ./configure
 %{make}
+%endif
+
 
 #---------------------------------------------------------------------------
 %install
 %if %{with lfs_stage1b}
-%make DESTDIR=%{buildroot}/%{lfs_dir} prefix=/usr install
+%use_lfs_tools
+cd _build
+%make DESTDIR=%{buildroot}/%{lfs_dir} install
 rm %{buildroot}/%{lfs_dir}/usr/lib/*.a
-
 %discard_docs
 
 %else

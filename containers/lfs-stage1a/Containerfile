@@ -8,6 +8,7 @@ RUN dnf install -y \
     diffutils \
     gcc \
     g++ \
+    gettext \
     less \
     nano \
     patch \

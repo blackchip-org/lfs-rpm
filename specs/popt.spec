@@ -66,7 +66,7 @@ rm %{buildroot}/usr/lib/libpopt.a
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/popt.mo
+# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/popt.mo
 
 %else
 /usr/include/*.h

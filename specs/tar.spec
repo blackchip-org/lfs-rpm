@@ -88,7 +88,7 @@ make check
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/libexec/*
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/tar.mo
+# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/tar.mo
 
 %else
 /usr/bin/tar

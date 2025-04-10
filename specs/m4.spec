@@ -79,7 +79,7 @@ Documentation for %{name}
 %files
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/m4
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/m4.mo
+# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/m4.mo
 
 %else
 /usr/bin/m4
