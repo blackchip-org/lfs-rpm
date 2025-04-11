@@ -96,6 +96,7 @@ case $(uname -m) in
 esac
 rm -rf %{buildroot}/%{lfs_dir}/var
 %discard_docs
+%discard_locales
 
 %else
 case $(uname -m) in
@@ -152,10 +153,9 @@ mkdir -p %{buildroot}/usr/lib/locale
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f ISO-8859-1 en_US
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f UTF-8 en_US.UTF-8
+%remove_info_dir
 
 %endif
-
-%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
@@ -181,7 +181,6 @@ make check
 %{lfs_dir}/usr/sbin/*
 %{lfs_dir}/usr/share/i18n/charmaps/*
 %{lfs_dir}/usr/share/i18n/locales/*
-# %%{lfs_dir}/usr/share/locale/locale.alias
 
 %else
 /etc/ld.so.cache

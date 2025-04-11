@@ -188,18 +188,6 @@ lfs-export() {
     esac
 }
 
-lfs-bootstrap() {
-    if [ "$stage" == "stage1c" ] ; then
-        lfs-spectool specs/cmake.spec
-        lfs-spectool specs/elfutils.spec
-        lfs-spectool specs/rpm.spec
-        podman exec --user root -t lfs-stage1c lfs-rpm/containers/lfs-stage1c/rpm-bootstrap.sh
-    else
-        echo "$prog: error: no bootstrap for this stage"
-        exit 1
-    fi
-}
-
 lfs-mkimage() {
     export=$1
 
@@ -254,7 +242,6 @@ lfs-build-all() {
     ./lfs 1b export
 
     ./lfs 1c init
-    ./lfs 1c bootstrap
     ./lfs 1c build
     ./lfs 1c export
 
@@ -325,7 +312,11 @@ case $1 in
         stage=stage2
         next_stage=stage3
         rpmbuild_flags="-ba $rpm_nocheck"
-        rpm_flags="--nodeps"
+        # The --noplugins flag seems to be required starting with rpm 4.20
+        # when running in podman? Error occurred when isntalling the dbus
+        # package.
+        # https://github.com/rpm-software-management/rpm/issues/3187
+        rpm_flags="--nodeps --noplugins"
         ;;
     stage3|3)
         shift
@@ -351,7 +342,6 @@ case $1 in
     shell)          assert-stage && exec podman exec -it lfs-$stage /bin/bash ;;
     root)           assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)         assert-stage && lfs-export ;;
-    bootstrap)      assert-stage && lfs-bootstrap ;;
     mkpod)          assert-stage && lfs-mkpod ;;
     mkimage)        lfs-mkimage-stage2 ;;
     mkimage-pod)    lfs-mkimage-pod ;;

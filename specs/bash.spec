@@ -69,6 +69,7 @@ Documentation for %{name}
 mkdir -p %{buildroot}/%{lfs_dir}/bin
 ln -s bash %{buildroot}/%{lfs_dir}/usr/bin/sh
 %discard_docs
+%discard_locales
 
 %else
 %make DESTDIR=%{buildroot} install
@@ -95,7 +96,6 @@ make tests
 %{lfs_dir}/usr/include/bash
 %{lfs_dir}/usr/lib/bash
 %{lfs_dir}/usr/lib/pkgconfig/bash.pc
-# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/bash.mo
 
 %else
 /usr/bin/bash

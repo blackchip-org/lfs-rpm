@@ -152,7 +152,6 @@ The full procedure to build LFS without `build-all` is:
     ./lfs 1b export
 
     ./lfs 1c init
-    ./lfs 1c bootstrap
     ./lfs 1c build
     ./lfs 1c export
 
@@ -334,32 +333,6 @@ built and installed for that stage, not for packages which already exist on the
 system. When the container for stage1a is created, the contents of the existing
 RPM database are deleted. Subsequent stages do not keep the database between
 exports.
-
-### `./lfs 1c bootstrap`
-
-At stage1c the host Fedora system is left behind and from that point forward
-the build relies only on the tools built so far. To continue, the *rpm* and
-*rpmbuild* commands have to also be available. In stage1b, additional packages
-are built for this purpose:
-
-- lua
-- pkg-config
-- libgpg-error
-- libgcrypt
-- gettext
-- zlib
-- bzip2
-
-The only packages after this that are necessary are *elfutils*, *rpm* to build
-RPM itself and *cmake* which is needed to build *rpm*. As you can tell, RPM
-uses cmake as its build system. I tried to cross-compile cmake in stage1b but
-I really just didn't have the patience to figure that out. cmake gives me a
-headache.
-
-I chose the other option which is to build those final packages in stage1c
-and install directly to the filesystem. This command does that final
-bootstrapping for RPM and this needs to be executed after the stage1b export
-and before the stage1c build.
 
 ## Logs
 

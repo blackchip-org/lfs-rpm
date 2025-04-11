@@ -64,6 +64,7 @@ Documentation for %{name}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 %discard_docs
+%discard_locales
 
 %else
 make DESTDIR=%{buildroot} install
@@ -87,7 +88,6 @@ make check
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/libexec/*
-# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/findutils.mo
 
 %else
 /usr/bin/find

@@ -82,6 +82,8 @@ specs/lua.spec
 specs/popt.spec
 specs/libgpg-error.spec
 specs/libgcrypt.spec
+specs/cmake.spec
+specs/libarchive.spec
 specs/rpm.spec
 specs/linux.spec
 specs/linux-headers.spec

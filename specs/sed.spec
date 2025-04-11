@@ -63,6 +63,7 @@ make html
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 %discard_docs
+%discard_locales
 
 %else
 %make DESTDIR=%{buildroot} install
@@ -83,7 +84,6 @@ install -m644 doc/sed.html %{buildroot}/usr/share/doc/sed-4.9
 %files
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
-# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/sed.mo
 
 %else
 /usr/bin/sed

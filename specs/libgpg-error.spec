@@ -62,6 +62,7 @@ Documentation for %{name}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 %discard_docs
+%discard_locales
 
 %else
 %make DESTDIR=%{buildroot} install
@@ -86,7 +87,6 @@ Documentation for %{name}
 %{lfs_dir}/usr/share/aclocal/*
 %{lfs_dir}/usr/share/common-lisp/source/gpg-error
 %{lfs_dir}/usr/share/libgpg-error
-# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/libgpg-error.mo
 
 %else
 /usr/bin/gpg-error

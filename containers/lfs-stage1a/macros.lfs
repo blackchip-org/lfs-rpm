@@ -12,20 +12,14 @@
 %shlib              %attr(755,root,root)
 
 %use_lfs_tools      export PATH=%{getenv:lfs_tools_dir}/bin:${PATH}
+
 %discard_docs    \
     rm -rf %{buildroot}/lfs/tools/share/{doc,info,man} \
-    rm -rf %{buildroot}/lfs/usr/share/{doc,info,man} \
-    rm -rf %{buildroot}/usr/share/info/dir \
-    rm -rf %{buildroot}/lfs/usr/share/locale \
-    rm -rf %{buildroot}/usr/share/locale
+    rm -rf %{buildroot}/lfs/usr/share/{doc,info,man}
 
-%remove_info_dir rm -f %{buildroot}/usr/share/info/dir
-%update_info_dir \
-    if [ -e /usr/bin/install-info ] ; then \
-        pushd /usr/share/info 2&>/dev/null \
-            rm -f dir \
-            for f in * \
-                do install-info $f dir 2>/dev/null \
-            done \
-        popd 2&>/dev/null \
-    fi
+%discard_locales \
+    rm -rf %{buildroot}/lfs/tools/share/locale \
+    rm -rf %{buildroot}/lfs/usr/share/locale
+
+%request_info_dir   %{nil}
+%update_info_dir    %{nil}

@@ -110,6 +110,7 @@ cmake \
     -DWITH_FAPOLICYD=OFF \
     -DWITH_INTERNAL_OPENPGP=ON \
     -DWITH_SELINUX=OFF \
+    -DWITH_SEQUOIA=OFF \
     -DWITH_READLINE=OFF \
     ..
 
@@ -141,6 +142,7 @@ cd _build
 %if %{with lfs_stage1b}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 %discard_docs
+%discard_locales
 
 %else
 %make DESTDIR=%{buildroot} install
@@ -157,6 +159,7 @@ cd _build
 %else
 /usr/bin/gendiff
 /usr/bin/rpm
+/usr/bin/rpm2archive
 /usr/bin/rpm2cpio
 /usr/bin/rpmbuild
 /usr/bin/rpmdb
@@ -172,16 +175,16 @@ cd _build
 /usr/lib/cmake/rpm
 /usr/lib/librpm.so
 /usr/lib/librpm.so.10
-%shlib /usr/lib/librpm.so.10.0.2
+%shlib /usr/lib/librpm.so.10.2.1
 /usr/lib/librpmbuild.so
 /usr/lib/librpmbuild.so.10
-%shlib /usr/lib/librpmbuild.so.10.0.2
+%shlib /usr/lib/librpmbuild.so.10.2.1
 /usr/lib/librpmio.so
 /usr/lib/librpmio.so.10
-%shlib /usr/lib/librpmio.so.10.0.2
+%shlib /usr/lib/librpmio.so.10.2.1
 /usr/lib/librpmsign.so
 /usr/lib/librpmsign.so.10
-%shlib /usr/lib/librpmsign.so.10.0.2
+%shlib /usr/lib/librpmsign.so.10.2.1
 /usr/lib/pkgconfig/rpm.pc
 /usr/lib/python%{python_version}/site-packages/*
 /usr/lib/rpm
@@ -189,6 +192,7 @@ cd _build
 /usr/lib/rpm-plugins/prioreset.so
 /usr/lib/rpm-plugins/syslog.so
 /usr/lib/rpm-plugins/systemd_inhibit.so
+/usr/lib/rpm-plugins/unshare.so
 /usr/share/dbus-1/system.d/org.rpm.conf
 
 %files lang

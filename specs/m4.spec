@@ -61,6 +61,7 @@ Documentation for %{name}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 %discard_docs
+%discard_locales
 
 %else
 %make DESTDIR=%{buildroot} install
@@ -79,7 +80,6 @@ Documentation for %{name}
 %files
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/m4
-# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/m4.mo
 
 %else
 /usr/bin/m4

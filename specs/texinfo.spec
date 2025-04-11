@@ -42,37 +42,26 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr
-%make
-
-%elif %{with lfs}
-./configure --prefix=/usr
-%make
 
 %else
 ./configure --prefix=/usr       \
             --with-external-libintl
 %endif
 
+%make
+
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-%make DESTDIR=%{buildroot} install
-
-%else
 %make DESTDIR=%{buildroot} install
 %remove_info_dir
 
-%endif
-
 #---------------------------------------------------------------------------
 %post doc
-%{?request_info_dir}
+%request_info_dir
 
 %posttrans doc
-%{?update_info_dir}
+%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

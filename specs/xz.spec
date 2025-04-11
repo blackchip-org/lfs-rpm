@@ -68,6 +68,7 @@ Documentation for %{name}
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
 %discard_docs
+%discard_locales
 
 %else
 %make DESTDIR=%{buildroot} install
@@ -82,7 +83,6 @@ rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
 %{lfs_dir}/usr/include/lzma
 %{lfs_dir}/usr/lib/*.so*
 %{lfs_dir}/usr/lib/pkgconfig/liblzma.pc
-# %%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/xz.mo
 
 %else
 /usr/bin/lzcat

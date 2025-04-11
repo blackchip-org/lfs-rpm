@@ -106,7 +106,16 @@ rm %{buildroot}/usr/lib/*.a
 %{lfs_dir}/usr/lib/pkgconfig/*
 
 %else
-%files
+/usr/bin/bsdcat
+/usr/bin/bsdcpio
+/usr/bin/bsdtar
+/usr/bin/bsdunzip
+/usr/include/archive.h
+/usr/include/archive_entry.h
+/usr/lib/libarchive.so
+/usr/lib/libarchive.so.13
+/usr/lib/libarchive.so.13.7.7
+/usr/lib/pkgconfig/libarchive.pc
 
 %files doc
 /usr/share/man/man*/*
