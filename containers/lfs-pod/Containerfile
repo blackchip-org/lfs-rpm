@@ -16,8 +16,12 @@ COPY pod.repo           /etc/yum.repos.d/pod.repo
 RUN install -o 1000 -g 1000 -d /build/rpmbuild && \
     rpm -i --justdb --nodeps --noplugins /root/*.rpm
 
+# FIXME: See issue above, disabling the offending plugin for now
+RUN rm /usr/lib/rpm-plugins/unshare.so
+
 RUN dnf update -y
 RUN rm -rf /root/*.rpm
+
 
 WORKDIR /build
 

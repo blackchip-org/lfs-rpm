@@ -122,6 +122,30 @@ cmake \
     -DWITH_ZSTD=OFF \
     ..
 
+%elif %{with lfs_stage2}
+cmake \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    -DENABLE_NLS=OFF \
+    -DENABLE_OPENMP=OFF \
+    -DENABLE_SQLITE=OFF \
+    -DENABLE_TESTSUITE=OFF \
+    -DENABLE_PYTHON=OFF \
+    -DRPM_CONFIGDIR=/usr/lib/rpm \
+    -DRPM_VENDOR=lfs \
+    -DWITH_ACL=OFF \
+    -DWITH_ARCHIVE=OFF \
+    -DWITH_AUDIT=OFF \
+    -DWITH_CAP=OFF \
+    -DWITH_DBUS=OFF \
+    -DWITH_FAPOLICYD=OFF \
+    -DWITH_INTERNAL_OPENPGP=ON \
+    -DWITH_SELINUX=OFF \
+    -DWITH_SEQUOIA=OFF \
+    -DWITH_READLINE=ON \
+    -DWITH_ZSTD=OFF \
+    ..
+
 %else
 cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
@@ -137,6 +161,7 @@ cmake \
     -DWITH_FAPOLICYD=OFF \
     -DWITH_INTERNAL_OPENPGP=ON \
     -DWITH_SELINUX=OFF \
+    -DWITH_SEQUOIA=OFF \
     -DWITH_READLINE=ON \
     ..
 
@@ -157,8 +182,18 @@ cd _build
 %discard_docs
 %discard_locales
 
+%elif %{with lfs_stage2}
+%make DESTDIR=%{buildroot} install
+rm -rf %{buildroot}/usr/share/{doc,info,man}
+rm -rf %{buildroot}/usr/share/locale
+
 %else
 %make DESTDIR=%{buildroot} install
+
+# This plugin seems to be causing problems when installing d-bus inside
+# the podman container. Remove it for now.
+# https://github.com/rpm-software-management/rpm/issues/3187
+rm %{buildroot}/usr/lib/rpm-plugins/unshare.so
 
 %endif
 
@@ -170,6 +205,11 @@ cd _build
 %{lfs_dir}/usr/lib/*
 
 %elif %{with lfs_stage1c}
+/usr/bin/*
+/usr/include/rpm
+/usr/lib/*
+
+%elif %{with lfs_stage2}
 /usr/bin/*
 /usr/include/rpm
 /usr/lib/*
@@ -210,7 +250,8 @@ cd _build
 %shlib /usr/lib/rpm-plugins/prioreset.so
 %shlib /usr/lib/rpm-plugins/syslog.so
 %shlib /usr/lib/rpm-plugins/systemd_inhibit.so
-%shlib /usr/lib/rpm-plugins/unshare.so
+
+# %%shlib /usr/lib/rpm-plugins/unshare.so
 /usr/share/dbus-1/system.d/org.rpm.conf
 
 %files lang

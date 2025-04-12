@@ -121,7 +121,8 @@ tar -xf %{SOURCE1} \
 %post
 systemd-machine-id-setup
 systemctl preset-all
-systemctl disable systemd-sysupdate{,-reboot}
+# TODO: This failed because these units do not exist. Why?
+# systemctl disable systemd-sysupdate{,-reboot}
 
 #---------------------------------------------------------------------------
 %files
