@@ -298,6 +298,8 @@ when available.
 - `%discard_docs`: When building the temporary toolset, it isn't necessary
 to keep any generated documentation. This macro removes those files and
 that helps keep the build images a bit smaller.
+- `%discard_locales%`: Also used when building the temporary toolset but
+for discarding additional locale files.
 - `%remove_info_dir`: When info documentation pages are generated, the
 `/usr/share/info/dir` file usually gets updated. This cannot be done at
 build or install time because multiple RPMs cannot "own" the same file.

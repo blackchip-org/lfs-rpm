@@ -45,7 +45,7 @@ specs/intltool.spec
 specs/autoconf.spec
 specs/automake.spec
 specs/openssl.spec
-specs/elfutils.spec
+# specs/elfutils.spec
 specs/libffi.spec
 specs/python.spec
 specs/python-flit-core.spec

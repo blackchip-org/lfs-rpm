@@ -1,12 +1,16 @@
 # extra
 
+%global         version_2   4.20
+%global         version     %{version_2}.1
+%global         so_version  10.2.1
+
 Name:           rpm
-Version:        4.20.1
+Version:        %{version}
 Release:        1%{?dist}
 Summary:        The RPM package management system
 License:        GPLv2+
 
-Source:         https://ftp.osuosl.org/pub/rpm/releases/rpm-4.19.x/rpm-%{version}.tar.bz2
+Source:         https://ftp.osuosl.org/pub/rpm/releases/rpm-%{version_2}.x/rpm-%{version}.tar.bz2
 
 BuildRequires:  cmake
 BuildRequires:  dbus
@@ -69,7 +73,6 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
 set(ENV{PKG_CONFIG_PATH} %{lfs_dir}/usr/lib/pkgconfig)
-unset(GETTEXT_MSGMERGE_EXECUTABLE)
 EOF
 
 cmake --toolchain x86_64-lfs-linux-gnu.cmake \
@@ -95,7 +98,7 @@ cmake --toolchain x86_64-lfs-linux-gnu.cmake \
     -DWITH_ZSTD=OFF \
     ..
 
-%elif %{with lfs_stage2}
+%elif %{with lfs_stage1c}
 cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
@@ -103,15 +106,20 @@ cmake \
     -DENABLE_OPENMP=OFF \
     -DENABLE_SQLITE=OFF \
     -DENABLE_TESTSUITE=OFF \
+    -DENABLE_PYTHON=OFF \
     -DRPM_CONFIGDIR=/usr/lib/rpm \
     -DRPM_VENDOR=lfs \
+    -DWITH_ACL=OFF \
     -DWITH_ARCHIVE=OFF \
     -DWITH_AUDIT=OFF \
+    -DWITH_CAP=OFF \
+    -DWITH_DBUS=OFF \
     -DWITH_FAPOLICYD=OFF \
     -DWITH_INTERNAL_OPENPGP=ON \
     -DWITH_SELINUX=OFF \
     -DWITH_SEQUOIA=OFF \
     -DWITH_READLINE=OFF \
+    -DWITH_ZSTD=OFF \
     ..
 
 %else
@@ -144,6 +152,11 @@ cd _build
 %discard_docs
 %discard_locales
 
+%elif %{with lfs_stage1c}
+%make DESTDIR=%{buildroot} install
+%discard_docs
+%discard_locales
+
 %else
 %make DESTDIR=%{buildroot} install
 
@@ -155,6 +168,11 @@ cd _build
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/rpm
 %{lfs_dir}/usr/lib/*
+
+%elif %{with lfs_stage1c}
+/usr/bin/*
+/usr/include/rpm
+/usr/lib/*
 
 %else
 /usr/bin/gendiff
@@ -175,24 +193,24 @@ cd _build
 /usr/lib/cmake/rpm
 /usr/lib/librpm.so
 /usr/lib/librpm.so.10
-%shlib /usr/lib/librpm.so.10.2.1
+%shlib /usr/lib/librpm.so.%{so_version}
 /usr/lib/librpmbuild.so
 /usr/lib/librpmbuild.so.10
-%shlib /usr/lib/librpmbuild.so.10.2.1
+%shlib /usr/lib/librpmbuild.so.%{so_version}
 /usr/lib/librpmio.so
 /usr/lib/librpmio.so.10
-%shlib /usr/lib/librpmio.so.10.2.1
+%shlib /usr/lib/librpmio.so.%{so_version}
 /usr/lib/librpmsign.so
 /usr/lib/librpmsign.so.10
-%shlib /usr/lib/librpmsign.so.10.2.1
+%shlib /usr/lib/librpmsign.so.%{so_version}
 /usr/lib/pkgconfig/rpm.pc
 /usr/lib/python%{python_version}/site-packages/*
 /usr/lib/rpm
-/usr/lib/rpm-plugins/dbus_announce.so
-/usr/lib/rpm-plugins/prioreset.so
-/usr/lib/rpm-plugins/syslog.so
-/usr/lib/rpm-plugins/systemd_inhibit.so
-/usr/lib/rpm-plugins/unshare.so
+%shlib /usr/lib/rpm-plugins/dbus_announce.so
+%shlib /usr/lib/rpm-plugins/prioreset.so
+%shlib /usr/lib/rpm-plugins/syslog.so
+%shlib /usr/lib/rpm-plugins/systemd_inhibit.so
+%shlib /usr/lib/rpm-plugins/unshare.so
 /usr/share/dbus-1/system.d/org.rpm.conf
 
 %files lang

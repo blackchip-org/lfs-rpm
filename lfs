@@ -313,7 +313,7 @@ case $1 in
         next_stage=stage3
         rpmbuild_flags="-ba $rpm_nocheck"
         # The --noplugins flag seems to be required starting with rpm 4.20
-        # when running in podman? Error occurred when isntalling the dbus
+        # when running in podman? Error occurred when installing the dbus
         # package.
         # https://github.com/rpm-software-management/rpm/issues/3187
         rpm_flags="--nodeps --noplugins"

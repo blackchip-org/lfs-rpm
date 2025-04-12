@@ -1,3 +1,6 @@
+specs/elfutils.spec
+specs/cmake.spec
+specs/rpm.spec
 specs/bison.spec
 specs/perl.spec
 specs/python.spec

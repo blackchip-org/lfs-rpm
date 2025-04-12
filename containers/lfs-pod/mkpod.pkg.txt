@@ -28,6 +28,9 @@ libgcrypt
 zstd
 xz
 libgpg-error
+libarchive
+expat
+lz4
 
 # required to solve package dependencies
 dnf
