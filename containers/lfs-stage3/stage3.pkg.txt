@@ -14,3 +14,4 @@ specs/sqlite.spec
 specs/swig.spec
 specs/sdbus-c++.spec
 specs/dnf.spec
+specs/elfutils.spec
