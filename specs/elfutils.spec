@@ -42,17 +42,11 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
-
-%else
 %make DESTDIR=%{buildroot} install
 install -d %{buildroot}/usr/lib/pkgconfig
 install -vm644 -t %{buildroot}/usr/lib/pkgconfig config/libelf.pc
 
 rm %{buildroot}/usr/lib/*.a
-
-%endif
 
 #---------------------------------------------------------------------------
 %check
@@ -105,4 +99,3 @@ rm %{buildroot}/usr/lib/*.a
 
 %files doc
 /usr/share/man/man*/*
-

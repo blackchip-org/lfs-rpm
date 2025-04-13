@@ -1,5 +1,5 @@
 Name:           expat
-Version:        2.6.4
+Version:        2.7.1
 Release:        1%{?dist}
 Summary:        An XML parser library
 License:        MIT
@@ -56,7 +56,7 @@ install -v -m644 -t %{buildroot}/usr/share/doc/expat-%{version} doc/*.{html,css}
 /usr/lib/cmake/expat-%{version}
 /usr/lib/libexpat.so
 /usr/lib/libexpat.so.1
-%shlib /usr/lib/libexpat.so.1.10.0
+%shlib /usr/lib/libexpat.so.1.10.2
 /usr/lib/pkgconfig/expat.pc
 
 %files doc

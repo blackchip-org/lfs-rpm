@@ -50,7 +50,6 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 unset LC_ALL
 
 sh Configure -des                                                       \
@@ -89,14 +88,8 @@ sh Configure -des                                                    \
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
 make DESTDIR=%{buildroot} install
 
-%else
-make DESTDIR=%{buildroot} install
-
-%endif
 mkdir -p %{buildroot}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.perl
 @perl_version %{perl_version}

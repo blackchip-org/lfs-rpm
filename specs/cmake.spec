@@ -37,12 +37,24 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
+%if %{with lfs_stage1}
+./bootstrap \
+    --verbose \
+    --parallel=$(nproc) \
+    -- \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_DOC_PREFIX=/usr/share/doc \
+    -DCMAKE_USE_OPENSSL=OFF
+
+%else
 ./bootstrap \
     --verbose \
     --parallel=$(nproc) \
     -- \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_DOC_PREFIX=/usr/share/doc
+
+%endif
 %make
 
 #---------------------------------------------------------------------------

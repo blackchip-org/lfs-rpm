@@ -6,8 +6,10 @@ RUN dnf install -y \
     bison \
     cmake \
     diffutils \
+    flex \
     gcc \
     g++ \
+    gettext \
     less \
     nano \
     patch \

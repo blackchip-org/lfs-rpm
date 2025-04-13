@@ -46,8 +46,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
-%if %{with lfs_stage1}
-%use_lfs_tools
+%if %{with lfs_stage1c}
 mkdir -pv %{buildroot}/var/lib/hwclock
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime    \
             --libdir=/usr/lib     \
@@ -94,19 +93,15 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
 %make DESTDIR=%{buildroot} install
+
+%if %{with lfs_stage1c}
 %discard_docs
-
-%else
-%make DESTDIR=%{buildroot} install
-
 %endif
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
+%if %{with lfs_stage1c}
 /bin/*
 /sbin/*
 /usr/bin/*

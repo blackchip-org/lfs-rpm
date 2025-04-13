@@ -65,6 +65,7 @@ FORCE_UNSAFE_CONFIGURE=1  \
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 %discard_docs
+%discard_locales
 
 %else
 %make DESTDIR=%{buildroot} install
@@ -88,7 +89,6 @@ make check
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/libexec/*
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/tar.mo
 
 %else
 /usr/bin/tar

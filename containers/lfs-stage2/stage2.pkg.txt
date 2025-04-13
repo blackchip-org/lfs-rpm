@@ -45,7 +45,7 @@ specs/intltool.spec
 specs/autoconf.spec
 specs/automake.spec
 specs/openssl.spec
-specs/elfutils.spec
+#specs/elfutils.spec
 specs/libffi.spec
 specs/python.spec
 specs/python-flit-core.spec
@@ -82,6 +82,8 @@ specs/lua.spec
 specs/popt.spec
 specs/libgpg-error.spec
 specs/libgcrypt.spec
+specs/cmake.spec
+specs/libarchive.spec
 specs/rpm.spec
 specs/linux.spec
 specs/linux-headers.spec

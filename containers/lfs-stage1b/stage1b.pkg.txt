@@ -24,3 +24,5 @@ specs/libgcrypt.spec
 specs/gettext.spec
 specs/zlib.spec
 specs/bzip2.spec
+specs/libarchive.spec
+specs/rpm.spec

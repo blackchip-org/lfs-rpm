@@ -72,6 +72,7 @@ make DESTDIR=%{buildroot}/%{lfs_dir} install
 mkdir -p %{buildroot}/%{lfs_dir}/usr/sbin
 mv -v %{buildroot}/%{lfs_dir}/usr/bin/chroot %{buildroot}/%{lfs_dir}/usr/sbin
 %discard_docs
+%discard_locales
 
 %else
 make DESTDIR=%{buildroot} install
@@ -99,7 +100,6 @@ sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/sbin/*
 %{lfs_dir}/usr/libexec/coreutils
-%{lfs_dir}/usr/share/locale/*/LC_{MESSAGES,TIME}/coreutils.mo
 
 %else
 /usr/bin/[

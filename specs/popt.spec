@@ -54,6 +54,7 @@ Documentation for %{name}
 %use_lfs_tools
 make DESTDIR=%{buildroot}/%{lfs_dir} install
 %discard_docs
+%discard_locales
 
 %else
 make DESTDIR=%{buildroot} install
@@ -66,7 +67,6 @@ rm %{buildroot}/usr/lib/libpopt.a
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/popt.mo
 
 %else
 /usr/include/*.h

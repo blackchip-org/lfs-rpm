@@ -63,6 +63,7 @@ Documentation for %{name}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
 %discard_docs
+%discard_locales
 
 %else
 make DESTDIR=%{buildroot} install
@@ -85,7 +86,6 @@ make DESTDIR=%{buildroot} install
 %files
 %if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/share/locale/*/LC_MESSAGES/diffutils.mo
 
 %else
 /usr/bin/cmp

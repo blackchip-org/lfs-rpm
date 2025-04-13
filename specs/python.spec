@@ -31,8 +31,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
-%if %{with lfs_stage1}
-%use_lfs_tools
+%if %{with lfs_stage1c}
 ./configure --prefix=/usr   \
             --enable-shared \
             --without-ensurepip
@@ -49,7 +48,6 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %install
 %if %{with lfs_stage1}
-%use_lfs_tools
 make DESTDIR=%{buildroot} install
 %discard_docs
 
@@ -76,7 +74,7 @@ EOF
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
+%if %{with lfs_stage1c}
 /usr/bin/*
 /usr/include/python%{python_version}
 /usr/lib/*.so*
