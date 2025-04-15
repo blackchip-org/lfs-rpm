@@ -1,10 +1,11 @@
 %lfs_version    %{getenv:lfs_version}
 %lfs_arch       %{getenv:lfs_arch}
+%lfs_nproc      %{getenv:lfs_nproc}
 
 %_build_id_links    none
 %debug_package      %{nil}
 
-%lfs                1
+%with_lfs           1
 
 %make               make -j%{getenv:lfs_nproc}
 %shlib              %attr(755,root,root)

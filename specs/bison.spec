@@ -1,10 +1,18 @@
-Name:           bison
-Version:        3.8.2
-Release:        1%{?dist}
+# lfs
+
+%global name        bison
+%global version     3.8.2
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A GNU general-purpose parser generator
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/bison/bison-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 %description
 Bison is a general purpose parser generator that converts a grammar
@@ -44,6 +52,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -56,6 +65,12 @@ Documentation for %{name}
 %install
 %make DESTDIR=%{buildroot} install
 %remove_info_dir
+
+%if %{with lfs}
+%discard_docs
+%discard_locales
+rm -rf %{buildroot}/usr/share/aclocal
+%endif
 
 #---------------------------------------------------------------------------
 %check
@@ -71,6 +86,12 @@ make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+/usr/lib/*
+/usr/share/%{name}
+
+%else
 /usr/bin/bison
 /usr/bin/yacc
 /usr/lib/liby.a
@@ -87,6 +108,6 @@ make check
 %files man
 /usr/share/man/man*/*
 
-
+%endif
 
 

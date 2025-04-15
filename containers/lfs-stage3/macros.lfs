@@ -4,6 +4,8 @@
 %_build_id_links    none
 %debug_package      %{nil}
 
+%with_lfs           1
+
 %make               make -j%{getenv:lfs_nproc}
 %shlib              %attr(755,root,root)
 

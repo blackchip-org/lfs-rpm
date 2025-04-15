@@ -1,10 +1,19 @@
-Name:           elfutils
-Version:        0.192
-Release:        1%{?dist}
+# lfs
+
+%global name        elfutils
+%global version     0.192
+%global release     1
+%global so_version  1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A collection of utilities and DSOs to handle ELF files and DWARF data
 License:        GPLv2+
 
-Source:         https://sourceware.org/ftp/elfutils/%{version}/elfutils-%{version}.tar.bz2
+Source0:        https://sourceware.org/ftp/%{name}/%{version}/%{name}-%{version}.tar.bz2
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -31,6 +40,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -48,12 +58,26 @@ install -vm644 -t %{buildroot}/usr/lib/pkgconfig config/libelf.pc
 
 rm %{buildroot}/usr/lib/*.a
 
+%if %{with lfs}
+rm -rf %{buildroot}/usr/etc
+rm -rf %{buildroot}/usr/share
+%endif
+
 #---------------------------------------------------------------------------
 %check
 %make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+/usr/include/*
+/usr/lib/lib{asm,debuginfod,dw,elf}.so
+/usr/lib/lib{asm,debuginfod,dw,elf}.so.%{so_version}
+%shlib /usr/lib/lib{asm,debuginfod,dw,elf}-%{version}.so
+/usr/lib/pkgconfig/*
+
+%else
 /usr/bin/debuginfod-find
 /usr/bin/eu-addr2line
 /usr/bin/eu-ar
@@ -99,3 +123,5 @@ rm %{buildroot}/usr/lib/*.a
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

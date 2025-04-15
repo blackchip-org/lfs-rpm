@@ -1,13 +1,20 @@
-Name:           perl
-Version:        5.40.1
-%global         perl_version 5.41
-%global         smash_version 5.00401
+# lfs
 
-Release:        1%{?dist}
+%global name            perl
+%global perl_version    5.40
+%global version         %{perl_version}.1
+%global smash_version   5.00401
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Practical Extraction and Report Language
 License:        GPL+ or Artistic
 
-Source0:        https://www.cpan.org/src/5.0/perl-%{version}.tar.xz
+Source0:        https://www.cpan.org/src/5.0/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Requires:       libxcrypt
 Provides:       perl = %smash_version
@@ -18,7 +25,8 @@ Provides:       perl = 1:%{version}
 %if %{with lfs_stage1}
 AutoReqProv:    no
 %else
-AutoReq:        no
+# FIXME: Is this needed?
+# AutoReq:        no
 %endif
 
 %description
@@ -45,6 +53,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -100,6 +109,10 @@ find \
     -name "*.so" \
     -exec chmod 755 {} \;
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 #---------------------------------------------------------------------------
 %check
 %make test
@@ -146,7 +159,7 @@ find \
 /usr/lib/perl5/%{perl_version}
 /usr/lib/rpm/macros.d/macros.perl
 
-%endif
-
 %files doc
 /usr/share/man/man*/*
+
+%endif

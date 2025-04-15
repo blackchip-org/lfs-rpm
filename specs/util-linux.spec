@@ -1,12 +1,19 @@
-Name:           util-linux
-Version:        2.40.4
-Release:        1%{?dist}
+# lfs
+
+%global name        util-linux
+%global version_2   2.40
+%global version     %{version_2}.4
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Collection of basic system utilities
 License:        GPLv2 and GPLv2+ and LGPLv2+ and BSD with advertising and Public Domain
 
-%global         version2    2.40
-
-Source:         https://www.kernel.org/pub/linux/utils/util-linux/v%{version2}/util-linux-%{version}.tar.xz
+Source0:        https://www.kernel.org/pub/linux/utils/%{name}/v%{version_2}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -42,11 +49,12 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%if %{with lfs_stage1c}
+%if %{with lfs_stage1}
 mkdir -pv %{buildroot}/var/lib/hwclock
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime    \
             --libdir=/usr/lib     \
@@ -95,13 +103,14 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 %install
 %make DESTDIR=%{buildroot} install
 
-%if %{with lfs_stage1c}
+%if %{with lfs}
 %discard_docs
+%discard_locales
 %endif
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1c}
+%if %{with lfs}
 /bin/*
 /sbin/*
 /usr/bin/*
@@ -109,7 +118,6 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 /usr/lib/*
 /usr/sbin/*
 /usr/share/bash-completion/completions/*
-/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %else
 /usr/bin/cal

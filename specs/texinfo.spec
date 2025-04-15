@@ -1,10 +1,18 @@
-Name:           texinfo
-Version:        7.2
-Release:        1%{?dist}
+# lfs
+
+%global name        texinfo
+%global version     7.2
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Programs for reading, writing, and converting info pages
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/texinfo/texinfo-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  perl-libintl
 
@@ -22,6 +30,7 @@ Requires:       %{name} = %{version}
 %package man
 Summary:        Manual pages for %{name}
 
+
 %package doc
 Summary:        Documentation for %{name}
 Recommends:     %{name}-man = %{version}
@@ -37,6 +46,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -56,6 +66,11 @@ Documentation for %{name}
 %make DESTDIR=%{buildroot} install
 %remove_info_dir
 
+%if %{with lfs}
+%discard_docs
+%discard_locales
+%endif
+
 #---------------------------------------------------------------------------
 %post doc
 %request_info_dir
@@ -65,6 +80,13 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+/usr/lib/texi2any
+/usr/share/texi2any
+/usr/share/%{name}
+
+%else
 /usr/bin/info
 /usr/bin/install-info
 /usr/bin/makeinfo
@@ -104,3 +126,5 @@ Documentation for %{name}
 
 %files man
 /usr/share/man/man*/*
+
+%endif

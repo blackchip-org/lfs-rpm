@@ -17,12 +17,13 @@ specs/binutils.spec
 specs/gcc.spec
 specs/root-fs.spec
 specs/lua.spec
-#specs/pkgconf.spec
+specs/pkgconf.spec
 specs/popt.spec
 specs/libgpg-error.spec
 specs/libgcrypt.spec
 specs/zlib.spec
 specs/bzip2.spec
-#specs/gettext.spec
+specs/gettext.spec
 specs/libarchive.spec
 specs/rpm.spec
+specs/cmake.spec

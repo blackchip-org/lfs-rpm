@@ -1,10 +1,18 @@
-Name:           gettext
-Version:        0.24
-Release:        1%{?dist}
+# lfs
+
+%global name        gettext
+%global version     0.24
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        GNU libraries and utilities for producing multi-lingual messages
 License:        GPLv3+ and LGPLv2+
 
-Source:         https://ftp.gnu.org/pub/gnu/gettext/gettext-%{version}.tar.gz
+Source0:        https://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -42,6 +50,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------

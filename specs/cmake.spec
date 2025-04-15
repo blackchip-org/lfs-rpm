@@ -1,14 +1,20 @@
-# extra, update version2
+# rpm
 
-Name:           cmake
-Version:        3.31.6
-Release:        1%{?dist}
+%global name        cmake
+%global version_2   3.31
+%global version     %{version_2}.6
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Cross-platform make system
 License:        BSD and MIT and zlib
 
-Source:         https://github.com/Kitware/CMake/releases/download/v%{version}/cmake-%{version}.tar.gz
+Source0:        https://github.com/Kitware/CMake/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
-%global         version2    3.31
 BuildRequires:  openssl
 
 %description
@@ -33,23 +39,25 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%if %{with lfs_stage1}
+%if %{with lfs_stage1b}
 ./bootstrap \
     --verbose \
-    --parallel=$(nproc) \
+    --parallel=%{lfs_nproc} \
     -- \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_DOC_PREFIX=/usr/share/doc \
     -DCMAKE_USE_OPENSSL=OFF
+%discard_docs
 
 %else
 ./bootstrap \
     --verbose \
-    --parallel=$(nproc) \
+    --parallel=%{lfs_nproc} \
     -- \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_DOC_PREFIX=/usr/share/doc
@@ -59,18 +67,28 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-mkdir -p %{buildroot}/usr/share
-mv %{buildroot}/usr/doc %{buildroot}/usr/share
+%make DESTDIR=%{buildroot}/%{lfs_dir} install
+rm -rf %{buildroot}/%{lfs_dir}/usr/doc
+
+%if %{with lfs_stage1b}
+rm -rf %{buildroot}/%{lfs_dir}/usr/share/{aclocal,bash-completion,emacs,vim}
+%endif
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs_stage1}
+%{lfs_dir}/usr/bin/*
+%{lfs_dir}/usr/share/cmake-%{version_2}
+
+%else
 /usr/bin/{cmake,ccmake,ctest,cpack}
 /usr/share/aclocal/cmake.m4
 /usr/share/bash-completion/completions/{cmake,cpack,ctest}
-/usr/share/cmake-%{version2}
+/usr/share/cmake-%{version_2}
 /usr/share/emacs/site-lisp/cmake-mode.el
 /usr/share/vim/vimfiles/{indent,syntax}/cmake.vim
 
 %files doc
-/usr/share/doc/cmake-%{version2}
+/usr/share/doc/cmake-%{version_2}
+
+%endif

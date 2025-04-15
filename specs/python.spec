@@ -1,11 +1,20 @@
-Name:           python
-Version:        3.13.2
-%global         python_version 3.13
-Release:        1%{?dist}
+# lfs
+
+%global name            python
+%global source_name     Python
+%global python_version  3.13
+%global version         %{python_version}.2
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Interpreter of the Python programming language
 License:        Python
 
-Source:         https://www.python.org/ftp/python/%{version}/Python-%{version}.tar.xz
+Source0:        https://www.python.org/ftp/%{name}/%{version}/%{source_name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  expat
 BuildRequires:  openssl
@@ -27,11 +36,12 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n Python-%{version}
+%verify_sha256 -f %{SOURCE1}
+%setup -q -n %{source_name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
-%if %{with lfs_stage1c}
+%if %{with lfs_stage1}
 ./configure --prefix=/usr   \
             --enable-shared \
             --without-ensurepip
