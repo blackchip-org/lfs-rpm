@@ -1,10 +1,17 @@
-Name:           xz
-Version:        5.6.4
-Release:        1%{?dist}
+# lfs
+
+%global name        xz
+%global version     5.6.4
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        LZMA compression utilities
 License:        GPLv2+ and Public Domain
 
-Source:         https://github.com/tukaani-project/xz/releases/download/v%{version}/xz-%{version}.tar.xz
+Source:         https://github.com/tukaani-project/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
 
 Suggests:       %{name}-doc = %{version}
 
@@ -41,6 +48,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

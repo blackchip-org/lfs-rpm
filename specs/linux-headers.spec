@@ -1,10 +1,20 @@
-Name:       linux-headers
-Version:    6.10.5
-Release:    1%{?dist}
+# lfs
+
+%global name        linux-headers
+%global source_name linux
+%global version     6.10.5
+%global version_1   6
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:       %{name}
+Version:    %{version}
+Release:    %{release}%{?dist}
 Summary:    The Linux kernel API
 License:    GPLv2 and Redistributable, no modification permitted
 
-Source:     https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{version}.tar.xz
+Source:     https://www.kernel.org/pub/linux/kernel/v%{version_1}.x/linux-%{version}.tar.xz
+Source1:    %{name}.sha256
 
 %description
 The C header fils that specify the interface between the Linux kernel and
@@ -14,7 +24,8 @@ needed for rebuilding the glibc package.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n linux-%{version}
+%verify_sha256 -f %{SOURCE1}
+%setup -q -n %{source_name}-%{version}
 
 #---------------------------------------------------------------------------
 %build

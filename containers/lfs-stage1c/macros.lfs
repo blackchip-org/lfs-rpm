@@ -1,28 +1,19 @@
 %lfs_version    %{getenv:lfs_version}
+%lfs_arch       %{getenv:lfs_arch}
 
 %_build_id_links    none
 %debug_package      %{nil}
 
+%lfs                1
+
 %make               make -j%{getenv:lfs_nproc}
 %shlib              %attr(755,root,root)
+%verify_sha256(f:)  ( cd %_sourcedir && sha256sum -c %{-f*} )
 
 %discard_docs       rm -rf %{buildroot}/usr/share/{doc,info,man}
 %discard_locales    rm -rf %{buildroot}/usr/share/locale
 
-%remove_info_dir \
-    rm -f %{buildroot}/usr/share/info/dir
+%remove_info_dir    rm -f %{buildroot}/usr/share/info/dir
 
-%request_info_dir \
-    mkdir -p /run/rpm-state \
-    touch /run/rpm-state/update-info-dir
-
-%update_info_dir \
-    if [ -e /run/rpm-state/update-info-dir ] ; then \
-        pushd /usr/share/info 2&>/dev/null \
-            rm -f dir \
-            for f in * \
-                do install-info $f dir 2>/dev/null \
-            done \
-        popd 2&>/dev/null \
-        rm /run/rpm-state/update-info-dir \
-    fi
+%request_info_dir   %{nil}
+%update_info_dir    %{nil}

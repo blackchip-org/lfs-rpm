@@ -1,10 +1,18 @@
-Name:           diffutils
-Version:        3.11
-Release:        1%{?dist}
+# lfs
+
+%global name        diffutils
+%global version     3.11
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A GNU collection of diff utilities
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/diffutils/diffutils-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 %description
 Diffutils includes four utilities: diff, cmp, diff3 and sdiff. Diff compares
@@ -41,6 +49,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

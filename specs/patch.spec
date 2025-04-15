@@ -1,10 +1,18 @@
-Name:           patch
-Version:        2.7.6
-Release:        1%{?dist}
+# lfs
+
+%global name        patch
+%global version     2.7.6
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Utility for modifying/upgrading files
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/patch/patch-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -25,6 +33,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

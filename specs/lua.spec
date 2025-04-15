@@ -1,14 +1,19 @@
-# extra
+# rpm
 
-Name:          lua
-Version:       5.4.7
-Release:       1%{?dist}
+%global name        lua
+%global lua_version 5.4
+%global version     %{lua_version}.7
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:          %{name}
+Version:       %{version}
+Release:       %{release}%{?dist}
 Summary:       Powerful light-weight programming language
 License:       MIT
 
-%global        lua_version    5.4
-
-Source:        http://www.lua.org/ftp/lua-%{version}.tar.gz
+Source0:       http://www.lua.org/ftp/%{name}-%{version}.tar.gz
+Source1:       %{name}.sha256
 
 BuildRequires: readline
 Suggests:      %{name}-doc = %{version}
@@ -31,6 +36,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

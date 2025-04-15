@@ -1,10 +1,18 @@
-Name:           file
-Version:        5.46
-Release:        1%{?dist}
+# lfs
+
+%global name        file
+%global version     5.46
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A utility for determining file types
 License:        BSD
 
-Source:         https://astron.com/pub/file/file-%{version}.tar.gz
+Source0:        https://astron.com/pub/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -23,6 +31,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

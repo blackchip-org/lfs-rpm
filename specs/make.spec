@@ -1,10 +1,18 @@
-Name:           make
-Version:        4.4.1
-Release:        1%{?dist}
+# lfs
+
+%global name        make
+%global version     4.4.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A GNU tool which simplifies the build process for users
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/make/make-%{version}.tar.gz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -38,6 +46,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

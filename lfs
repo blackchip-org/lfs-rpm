@@ -54,10 +54,9 @@ lfs-init() {
         --hostname  lfs-$stage \
         --env-file  eval-lfs.env \
         --userns    keep-id \
-        --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
-        --volume    "./build/${stage}/rpms:/build/rpmbuild/RPMS:z" \
-        --volume    "./build/${stage}/srpms:/build/rpmbuild/SRPMS:z" \
-        --volume    .:/build/lfs-rpm:z \
+        --volume    "./build/rpms/${stage}:/rpmbuild/RPMS:z" \
+        --volume    "./build/srpms:/rpmbuild/SRPMS:z" \
+        --volume    .:/mnt:z \
         lfs-$stage
     podman start lfs-$stage
 }
@@ -66,8 +65,8 @@ lfs-spectool() {
     name=$(basename ${1%.*})
     (
     set -x
-    mkdir -p build/sources/$name
-    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C build/sources/$name $1
+    mkdir -p downloads/$name
+    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C downloads/$name $1
     )
 }
 
@@ -79,13 +78,25 @@ lfs-download() {
     done
 }
 
+lfs-checksums() {
+    packages=$(ls sources)
+    checksum_dir="$(pwd)/checksums"
+    mkdir -p "$checksum_dir"
+    for package in $packages ; do
+        echo $package
+        if [ ! -e "$checksum_dir/$package.sha256" ] ; then
+            ( cd downloads/$package && sha256sum * > "$checksum_dir/$package.sha256" || true )
+        fi
+    done
+}
+
 lfs-build() {
     method=$1
     shift
     specs=$*
 
     [ -z "$specs" ] && specs="$(cat containers/lfs-$stage/$stage.pkg.txt)"
-    echo "" >> build/logs/build.log
+    echo "" >> logs/build.log
 
     for spec in $specs; do
         if [ ! -f "$spec" ] ; then
@@ -104,28 +115,41 @@ lfs-build() {
             rpm_pkg_flags="$rpm_pkg_flags --replacefiles --force"
         fi
 
-        if [ ! -z "$*" ] || ! podman exec lfs-$stage rpm -q $package ; then
+        if [ ! -z "$*" ] || ! podman exec lfs-$stage rpm $rpm_db_flags -q $package ; then
             lfs-spectool "$spec"
-            echo "$stage:$package" > build/logs/last-started
-            echo "[$(timestamp)] start $stage:$package" >> build/logs/build.log
+            echo "$stage:$package" > logs/last-started
+            echo "[$(timestamp)] start $stage:$package" >> logs/build.log
             echo -e "\n----- building $stage:$package"
+
+            # make the sources directory by symlinking the needed parts
+            rm -rf build/sources
+            mkdir -p build/sources
+            ( cd build/sources && \
+                downloads=$(ls ../../downloads/$package)
+                for download in $downloads; do
+                    ln -s ../../downloads/${package}/$download .
+                done
+                ln -s ../../checksums/${package}.sha256 .
+            )
+
             ( set -e -x -o pipefail
             podman exec lfs-$stage rpmbuild \
-                --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
+                --define "_topdir /rpmbuild" \
+                --define "_sourcedir /mnt/build/sources" \
                 --nodeps \
                 $rpmbuild_flags \
                 $rpmbuild_pkg_flags \
-                lfs-rpm/${spec} 2>&1 \
-                | tee build/logs/${stage}/${package}.log
+                /mnt/${spec} 2>&1 \
+                | tee logs/${stage}/${package}.log
             podman exec --user root lfs-$stage rpm \
                 $method \
                 $rpm_flags \
                 $rpm_pkg_flags \
-                rpmbuild/RPMS/$lfs_arch/${package_version}~${stage}${lfs_dist}.${lfs_arch}.rpm 2>&1 \
-                | tee --append build/logs/${stage}/${package}.log
+                /rpmbuild/RPMS/$lfs_arch/${package_version}~${stage}${lfs_dist}.${lfs_arch}.rpm 2>&1 \
+                | tee --append logs/${stage}/${package}.log
             )
-            echo "$stage:$package" > build/logs/last-success
-            echo "[$(timestamp)] done  $stage:$package" >> build/logs/build.log
+            echo "$stage:$package" > logs/last-success
+            echo "[$(timestamp)] done  $stage:$package" >> logs/build.log
         fi
     done
 }
@@ -135,22 +159,22 @@ lfs-export() {
         stage1a)
             (
             set -x
-            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /build/lfs-rpm/build/${stage}/lfs-${stage}.tar.gz  .
-            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /mnt/build/containers/lfs-${stage}.tar.gz  .
+            cp build/containers/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
         stage1b)
             (
             set -x
-            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /build/lfs-rpm/build/${stage}/lfs-${stage}.tar.gz --exclude=./tools .
-            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /mnt/build/containers/lfs-${stage}.tar.gz --exclude=./tools .
+            cp build/containers/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
         stage1c)
             (
             set -x
             podman exec --user root -t lfs-$stage \
-                tar -C / -c -z -f /build/lfs-rpm/build/${stage}/lfs-$stage.tar.gz \
+                tar -C / -c -z -f /mnt/build/containers/lfs-$stage.tar.gz \
                 --exclude='./build' \
                 --exclude='./tmp/*' \
                 --exclude './home/*' \
@@ -160,14 +184,14 @@ lfs-export() {
                 --exclude './sys/*' \
                 --exclude './var/lib/rpm/*' \
                 .
-            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            cp build/containers/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
         stage2)
             (
             set -x
             podman exec --user root -t lfs-$stage \
-                tar -C / -c -z -f /build/lfs-rpm/build/${stage}/lfs-$stage.tar.gz \
+                tar -C / -c -z -f /mnt/build/containers/lfs-$stage.tar.gz \
                 --exclude='./build' \
                 --exclude='./tmp/*' \
                 --exclude './home/*' \
@@ -178,7 +202,7 @@ lfs-export() {
                 .
             rm -rf build/boot
             podman cp "lfs-$stage:/boot" build/boot
-            cp build/${stage}/lfs-${stage}.tar.gz containers/lfs-${next_stage}
+            cp build/containers/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
         *)
@@ -252,11 +276,7 @@ lfs-build-all() {
 
 lfs-clean() {
     set -x
-    rm -rf
-    for stage in $stages; do
-        rm -rf "build/${stage}"
-    done
-    rm -rf build/logs
+    rm -rf {build,logs}
     rm -rf containers/*/*.tar.gz
     rm -f eval.env
     podman stop --time 0 --ignore   $images || true
@@ -274,11 +294,14 @@ if ! [[ -x $(command -v rpmbuild) ]]; then
 	exit 1
 fi
 
-mkdir -p build/{sources,logs}
+mkdir -p build/containers
+mkdir -p sources
+mkdir -p logs
 
+mkdir -p build/{rpms,srpms}
 for mkstage in $stages; do
-    mkdir -p build/$mkstage/{rpms,srpms}
-    mkdir -p build/logs/$mkstage
+    mkdir -p build/rpms/$mkstage
+    mkdir -p logs/$mkstage
 done
 
 if [ "$with_check" != "1" ] ; then
@@ -291,14 +314,16 @@ case $1 in
         stage=stage1a
         next_stage=stage1b
         rpmbuild_flags="-bb $rpm_nocheck"
-        rpm_flags="--nodeps"
+        rpm_db_flags="--dbpath=/var/lib/lfs-rpm"
+        rpm_flags="--nodeps $rpm_db_flags"
         ;;
     stage1b|1b)
         shift
         stage=stage1b
         next_stage=stage1c
         rpmbuild_flags="-bb $rpm_nocheck"
-        rpm_flags="--nodeps"
+        rpm_db_flags="--dbpath=/var/lib/lfs-rpm"
+        rpm_flags="--nodeps $rpm_db_flags"
         ;;
     stage1c|1c)
         shift
@@ -311,7 +336,7 @@ case $1 in
         shift
         stage=stage2
         next_stage=stage3
-        rpmbuild_flags="-ba $rpm_nocheck"
+        rpmbuild_flags="-bb $rpm_nocheck"
         # The --noplugins flag seems to be required starting with rpm 4.20
         # when running in podman? Error occurred when installing the dbus
         # package.
@@ -321,7 +346,7 @@ case $1 in
     stage3|3)
         shift
         stage=stage3
-        rpmbuild_flags="-ba $rpm_nocheck"
+        rpmbuild_flags="-bb $rpm_nocheck"
         rpm_flags="--nodeps"
         ;;
     image)
@@ -333,6 +358,7 @@ esac
 
 case $1 in
     env)            lfs-env ;;
+    checksums)      lfs-checksums ;;
     download)       shift ; lfs-download "$@" ;;
     init)           assert-stage && lfs-init ;;
     start)          assert-stage && podman start lfs-$stage ;;

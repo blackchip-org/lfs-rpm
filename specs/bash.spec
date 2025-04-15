@@ -1,10 +1,18 @@
-Name:           bash
-Version:        5.2.37
-Release:        1%{?dist}
+# lfs
+
+%global name        bash
+%global version     5.2.37
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        The GNU Bourne Again shell
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/bash/bash-%{version}.tar.gz
+Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Provides:       /bin/sh
 Provides:       /bin/bash
@@ -39,6 +47,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

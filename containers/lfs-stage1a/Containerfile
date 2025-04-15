@@ -26,12 +26,12 @@ COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
 COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
 COPY sudoers            /etc/sudoers.d/lfs
 
-RUN install -o 1000 -g 1000 -d /build/rpmbuild && \
-    rm -rf /var/lib/rpm/*
+RUN install -o 1000 -g 1000 -d /rpmbuild && \
+    install -d /var/lib/lfs-rpm
 
 RUN sed -i 's/%source_date_epoch_from_changelog 1/%source_date_epoch_from_changelog 0/' /usr/lib/rpm/redhat/macros && \
     sed -i 's/%_auto_set_build_flags 1//' /usr/lib/rpm/redhat/macros
 
-WORKDIR /build
+WORKDIR /rpmbuild
 
 CMD [ "tail", "-f", "/dev/null" ]

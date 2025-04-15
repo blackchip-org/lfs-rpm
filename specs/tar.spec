@@ -1,10 +1,18 @@
+# lfs
+
+%global name        tar
+%global version     1.35
+%global release     1
+
+#---------------------------------------------------------------------------
 Name:           tar
 Version:        1.35
 Release:        1%{?dist}
 Summary:        A GNU file archiving program
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/tar/tar-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/tar/tar-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -42,6 +50,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

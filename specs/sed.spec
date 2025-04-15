@@ -1,10 +1,17 @@
-Name:           sed
-Version:        4.9
-Release:        1%{?dist}
+# lfs
+
+%global name        sed
+%global version     4.9
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A GNU stream text editor
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/sed/sed-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 
 BuildRequires:  texinfo
 Suggests:       %{name}-doc = %{version}
@@ -39,6 +46,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

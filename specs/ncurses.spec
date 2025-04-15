@@ -1,10 +1,17 @@
-Name:           ncurses
-Version:        6.5
-Release:        1%{?dist}
+# lfs
+
+%global name      ncurses
+%global version   6.5
+%global release   1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Ncurses support utilities
 License:        MIT
 
-Source:         https://invisible-mirror.net/archives/ncurses/ncurses-%{version}.tar.gz
+Source:         https://invisible-mirror.net/archives/%{name}/%{name}-%{version}.tar.gz
 
 Suggests:       %{name}-doc = %{version}
 
@@ -19,6 +26,7 @@ decompiler infocmp, clear, tput, tset, and a termcap conversion tool captoinfo.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 %package man
@@ -80,6 +88,7 @@ popd
 %make DESTDIR=%{buildroot}/%{lfs_dir} TIC_PATH=$(pwd)/build/progs/tic install
 echo "INPUT(-lncursesw)" > %{buildroot}/%{lfs_dir}/usr/lib/libncurses.so
 %discard_docs
+
 
 %else
 make DESTDIR=%{buildroot} install

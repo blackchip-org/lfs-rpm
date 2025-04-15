@@ -1,11 +1,19 @@
-Name:           coreutils
-Version:        9.6
-Release:        1%{?dist}
+# lfs
+
+%global name        coreutils
+%global version     9.6
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A set of basic GNU tools commonly used in shell scripts
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/coreutils/coreutils-%{version}.tar.xz
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/coreutils-%{version}-i18n-1.patch
+Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/%{name}-%{version}-i18n-1.patch
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -38,6 +46,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 %if !%{with lfs_stage1}

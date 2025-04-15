@@ -1,12 +1,18 @@
-# extra
+# rpm
 
-Name:           libgcrypt
-Version:        1.11.0
-Release:        1%{?dist}
+%global name        libgcrypt
+%global version     1.11.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A general-purpose cryptography library
 License:        LGPLv2+
 
-Source:         https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-%{version}.tar.bz2
+Source0:        https://www.gnupg.org/ftp/gcrypt/%{name}/%{name}-%{version}.tar.bz2
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -30,6 +36,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

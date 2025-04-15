@@ -1,10 +1,19 @@
-Name:           m4
-Version:        1.4.19
-Release:        1%{?dist}
+# lfs
+
+%global name        m4
+%global version     1.4.19
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        GNU macro processor
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/m4/m4-%{version}.tar.xz
+Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
+
 Suggests:       %{name}-doc = %{version}
 
 %description
@@ -39,6 +48,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

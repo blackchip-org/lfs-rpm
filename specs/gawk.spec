@@ -1,10 +1,18 @@
-Name:           gawk
-Version:        5.3.1
-Release:        1%{?dist}
+# lfs
+
+%global name        gawk
+%global version     5.3.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        The GNU version of the AWK text processing utility
 License:        GPLv3+ and GPLv2+ and LGPLv2+ and BSD
 
-Source:         https://ftp.gnu.org/gnu/gawk/gawk-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -40,6 +48,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

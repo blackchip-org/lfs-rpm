@@ -1,10 +1,18 @@
-Name:           zlib
-Version:        1.3.1
-Release:        1%{?dist}
+# lfs
+
+%global name        zlib
+%global version     1.3.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        The compression and decompression library
 License:        zlib and Boost
 
-Source:         https://zlib.net/fossils/zlib-%{version}.tar.gz
+Source0:        https://zlib.net/fossils/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -21,6 +29,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

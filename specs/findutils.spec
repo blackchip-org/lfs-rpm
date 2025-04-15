@@ -1,10 +1,18 @@
-Name:           findutils
-Version:        4.10.0
-Release:        1%{?dist}
+# lfs
+
+%global name        findutils
+%global version     4.10.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        The GNU versions of find utilities (find and xargs)
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/findutils/findutils-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -41,6 +49,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

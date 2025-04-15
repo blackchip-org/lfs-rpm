@@ -1,15 +1,23 @@
-Name:           glibc
-Version:        2.41
-Release:        1%{?dist}
+# lfs
+
+%global name    glibc
+%global version 2.41
+%global release 1
+
+%global enable_kernel   5.4
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
 
-Source:         https://ftp.gnu.org/gnu/glibc/glibc-%{version}.tar.xz
-
-%global         enable_kernel   5.4
+Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 %if !%{with %lfs_stage1}
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/glibc-%{version}-fhs-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/%{name}-%{version}-fhs-1.patch
 %endif
 
 BuildRequires:  bison
@@ -43,6 +51,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 %if !%{with %lfs_stage1}
@@ -85,7 +94,7 @@ cd build
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/%{lfs_dir}/usr/bin/ldd
 
-case $(uname -m) in
+case %{lfs_arch} in
     i?86)   mkdir -p              %{buildroot}/%{lfs_dir}/lib
             ln -sfv ld-linux.so.2 %{buildroot}/%{lfs_dir}/lib/ld-lsb.so.3
     ;;
@@ -99,7 +108,7 @@ rm -rf %{buildroot}/%{lfs_dir}/var
 %discard_locales
 
 %else
-case $(uname -m) in
+case %{lfs_arch} in
     i?86)   mkdir -p              %{buildroot}/lib
             ln -sfv ld-linux.so.2 %{buildroot}/lib/ld-lsb.so.3
     ;;
@@ -179,8 +188,8 @@ make check
 %{lfs_dir}/usr/lib/*
 %{lfs_dir}/usr/libexec/*
 %{lfs_dir}/usr/sbin/*
-%{lfs_dir}/usr/share/i18n/charmaps/*
-%{lfs_dir}/usr/share/i18n/locales/*
+%{lfs_dir}/usr/share/i18n/charmaps
+%{lfs_dir}/usr/share/i18n/locales
 
 %else
 /etc/ld.so.cache

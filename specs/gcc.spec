@@ -1,20 +1,28 @@
-Name:           gcc
-Version:        14.2.0
-Release:        1%{?dist}
-Summary:        Various compilers (C, C++, Objective-C, ...)
-License:        GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
-Source:         https://ftp.gnu.org/gnu/gcc/gcc-%{version}/gcc-%{version}.tar.xz
+# lfs
 
-%global         glibc_version   2.40
+%global name      gcc
+%global version   14.2.0
+%global release   1
+
+%global glibc_version   2.40
+%global mpfr_version    4.2.1
+%global gmp_version     6.3.0
+%global mpc_version     1.3.1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
+Summary:        Various compilers (C, C++, Objective-C, ...)
+License:        GPLv3+ and GPLv3+ with ewith-glibc-verxceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
+
+Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 %if %{with lfs_stage1}
-%global         mpfr_version    4.2.1
-%global         gmp_version     6.3.0
-%global         mpc_version     1.3.1
-
-Source1:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
-Source2:        https://ftp.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
-Source3:        https://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
+Source2:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
+Source3:        https://ftp.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
+Source4:        https://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
 %endif
 
 Suggests:       %{name}-doc = %{version}
@@ -27,8 +35,11 @@ Summary:        Documentation for %{name}
 Recommends:     %{name}-man = %{version}
 
 %description
-The gcc package contains the GNU Compiler Collection version 8. You'll need
-this package in order to compile C code.
+The GNU Compiler Collection includes front ends for C, C++, Objective-C,
+Fortran, Ada, Go, D and Modula-2 as well as libraries for these languages
+(libstdc++,...). GCC was originally written as the compiler for the GNU
+operating system. The GNU system was developed to be 100% free software, free
+in the sense that it respects the user's freedom.
 
 %description man
 Manual pages for %{name}
@@ -38,12 +49,13 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n gcc-%{version}
 
 %if %{with lfs_stage1}
-tar -xf %{SOURCE1}
 tar -xf %{SOURCE2}
 tar -xf %{SOURCE3}
+tar -xf %{SOURCE4}
 
 mv mpfr-%{mpfr_version}  mpfr
 mv gmp-%{gmp_version}    gmp
@@ -53,7 +65,7 @@ mv mpc-%{mpc_version}    mpc
 #---------------------------------------------------------------------------
 %build
 
-case $(uname -m) in
+case %{lfs_arch} in
   x86_64)
     sed -e '/m64=/s/lib64/lib/' \
         -i.orig gcc/config/i386/t-linux64
@@ -167,7 +179,11 @@ ulimit -s 32768
 %make -k check
 
 #---------------------------------------------------------------------------
-%posttrans
+%post doc
+%request_info_dir
+
+#---------------------------------------------------------------------------
+%posttrans doc
 %update_info_dir
 
 #---------------------------------------------------------------------------

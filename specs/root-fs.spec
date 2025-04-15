@@ -1,6 +1,13 @@
-Name:           root-fs
-Version:        1.0.0
-Release:        1%{?dist}
+# lfs
+
+%global name        root-fs
+%global version     1.0.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Root filesystem
 License:        MIT
 

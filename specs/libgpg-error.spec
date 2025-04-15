@@ -1,12 +1,18 @@
-# extra
+# rpm
 
-Name:           libgpg-error
-Version:        1.51
-Release:        1%{?dist}
+%global name        libgpg-error
+%global version     1.51
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Library for error values used by GnuPG components
 License:        LGPLv2+
 
-Source:         https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-%{version}.tar.bz2
+Source0:        https://www.gnupg.org/ftp/gcrypt/%{name}/%{name}-%{version}.tar.bz2
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -38,6 +44,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

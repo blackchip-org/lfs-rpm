@@ -1,10 +1,18 @@
-Name:           binutils
-Version:        2.44
-Release:        1%{?dist}
+# lfs
+
+%global name        binutils
+%global version     2.44
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A GNU collection of binary utilities
 License:        GPLv3+
 
-Source0:        https://sourceware.org/pub/binutils/releases/%{name}-%{version}.tar.gz
+Source0:        https://sourceware.org/pub/%{name}/releases/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -45,6 +53,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------

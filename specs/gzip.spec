@@ -1,10 +1,18 @@
-Name:           gzip
-Version:        1.13
-Release:        1%{?dist}
+# lfs
+
+%global name        gzip
+%global version     1.13
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        The GNU data compression program
 License:        GPLv3+ and GFDL
 
-Source:         https://ftp.gnu.org/gnu/gzip/gzip-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  less
 Suggests:       %{name}-doc = %{version}
@@ -32,6 +40,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

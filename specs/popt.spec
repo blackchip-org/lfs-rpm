@@ -1,12 +1,18 @@
-# extra
+# rpm
 
-Name:           popt
-Version:        1.19
-Release:        1%{?dist}
+%global name        popt
+%global version     1.19
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        C library for parsing command line parameters
 License:        MIT
 
-Source:         http://ftp.rpm.org/popt/releases/popt-1.x/popt-%{version}.tar.gz
+Source0:        http://ftp.rpm.org/popt/releases/popt-1.x/popt-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 %description
 Popt is a C library for parsing command line parameters. Popt was heavily
@@ -33,6 +39,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------

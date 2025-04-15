@@ -1,10 +1,18 @@
-Name:           libarchive
-Version:        3.7.7
-Release:        1%{?dist}
+# rpm
+
+%global name        libarchive
+%global version     3.7.7
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Multi-format archive and compression library
 License:        BSD
 
-Source:         https://www.libarchive.org/downloads/libarchive-%{version}.tar.gz
+Source0:        https://www.libarchive.org/downloads/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -41,11 +49,12 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%if %{with lfs_stage1b}
+%if %{with lfs_stage1}
 %use_lfs_tools
 
 mkdir -p _build
@@ -70,17 +79,17 @@ cmake --toolchain x86_64-lfs-linux-gnu.cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     ..
-%{make}
+%make
 
 %else
 ./configure
-%{make}
+%make
 %endif
 
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1b}
+%if %{with lfs_stage1}
 %use_lfs_tools
 cd _build
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
@@ -99,7 +108,7 @@ rm %{buildroot}/usr/lib/*.a
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1b}
+%if %{with lfs_stage1}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/*.so*

@@ -1,10 +1,18 @@
-Name:           bzip2
-Version:        1.0.8
-Release:        1%{?dist}
+# lfs
+
+%global name        bzip2
+%global version     1.0.8
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A file compression utility
 License:        BSD
 
-Source:         https://www.sourceware.org/pub/bzip2/bzip2-%{version}.tar.gz
+Source0:        https://www.sourceware.org/pub/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/bzip2-%{version}-install_docs-1.patch
 
 %description
@@ -33,6 +41,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 %if !%{with lfs_stage1}
@@ -64,10 +73,11 @@ sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
 %use_lfs_tools
 mkdir -p %{buildroot}/%{lfs_dir}/usr/{bin,lib}
 %make PREFIX=%{buildroot}/%{lfs_dir}/usr install
-mkdir -p %{buildroot}/%{lfs_dir}/usr/{bin,lib}
-cp -av libbz2.so.* %{buildroot}/%{lfs_dir}/usr/lib
-ln -sv libbz2.so.1.0.8 %{buildroot}/%{lfs_dir}/usr/lib/libbz2.so
-cp -v bzip2-shared %{buildroot}/%{lfs_dir}/usr/bin/bzip2
+
+cp -av libbz2.so.*      %{buildroot}/%{lfs_dir}/usr/lib
+ln -sv libbz2.so.1.0.8  %{buildroot}/%{lfs_dir}/usr/lib/libbz2.so
+cp -v bzip2-shared      %{buildroot}/%{lfs_dir}/usr/bin/bzip2
+
 for i in /usr/bin/{bzcat,bunzip2,bzcmp,bzegrep,bzfgrep,bzless}; do
     ln -sfv bzip2 %{buildroot}/%{lfs_dir}/$i
 done
@@ -76,9 +86,11 @@ rm -rf %{buildroot}/lfs/usr/man
 
 %else
 make PREFIX=%{buildroot}/usr install
-cp -av libbz2.so.* %{buildroot}/usr/lib
+
+cp -av libbz2.so.*          %{buildroot}/usr/lib
 ln -sv libbz2.so.%{version} %{buildroot}/usr/lib/libbz2.so
-cp -v bzip2-shared %{buildroot}/usr/bin/bzip2
+cp -v bzip2-shared          %{buildroot}/usr/bin/bzip2
+
 for i in /usr/bin/{bzcat,bunzip2}; do
   ln -sfv bzip2 %{buildroot}/$i
 done

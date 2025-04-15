@@ -1,16 +1,19 @@
-# extra
+# rpm
 
-%global         version_2   4.20
-%global         version     %{version_2}.1
-%global         so_version  10.2.1
+%global name        rpm
+%global version_2   4.20
+%global version     %{version_2}.1
+%global release     1
 
-Name:           rpm
+#---------------------------------------------------------------------------
+Name:           %{name}
 Version:        %{version}
-Release:        1%{?dist}
+Release:        %{release}%{?dist}
 Summary:        The RPM package management system
 License:        GPLv2+
 
-Source:         https://ftp.osuosl.org/pub/rpm/releases/rpm-%{version_2}.x/rpm-%{version}.tar.bz2
+Source0:        https://ftp.osuosl.org/pub/%{name}/releases/%{name}-%{version_2}.x/%{name}-%{version}.tar.bz2
+Source1:        %{name}.sha256
 
 BuildRequires:  cmake
 BuildRequires:  dbus
@@ -52,6 +55,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -190,7 +194,7 @@ rm -rf %{buildroot}/usr/share/locale
 %else
 %make DESTDIR=%{buildroot} install
 
-# This plugin seems to be causing problems when installing d-bus inside
+# TODO: This plugin seems to be causing problems when installing d-bus inside
 # the podman container. Remove it for now.
 # https://github.com/rpm-software-management/rpm/issues/3187
 rm %{buildroot}/usr/lib/rpm-plugins/unshare.so
