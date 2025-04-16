@@ -1,4 +1,4 @@
-# remove
+# deprecated
 
 Name:           pkg-config
 Version:        0.29.2

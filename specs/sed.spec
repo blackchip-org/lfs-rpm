@@ -11,7 +11,8 @@ Release:        %{release}%{?dist}
 Summary:        A GNU stream text editor
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  texinfo
 Suggests:       %{name}-doc = %{version}
@@ -46,7 +47,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
-%verify_sha256
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------

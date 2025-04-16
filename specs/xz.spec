@@ -11,7 +11,8 @@ Release:        %{release}%{?dist}
 Summary:        LZMA compression utilities
 License:        GPLv2+ and Public Domain
 
-Source:         https://github.com/tukaani-project/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
+Source0:        https://github.com/tukaani-project/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -48,7 +49,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
-%verify_sha256
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------

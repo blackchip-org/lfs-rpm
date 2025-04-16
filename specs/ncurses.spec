@@ -11,7 +11,8 @@ Release:        %{release}%{?dist}
 Summary:        Ncurses support utilities
 License:        MIT
 
-Source:         https://invisible-mirror.net/archives/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://invisible-mirror.net/archives/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -26,7 +27,7 @@ decompiler infocmp, clear, tput, tset, and a termcap conversion tool captoinfo.
 
 #---------------------------------------------------------------------------
 %prep
-%verify_sha256
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 %package man

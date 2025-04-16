@@ -95,7 +95,7 @@ lfs-build() {
     shift
     specs=$*
 
-    [ -z "$specs" ] && specs="$(cat containers/lfs-$stage/$stage.pkg.txt)"
+    [ -z "$specs" ] && specs="$(cat containers/lfs-$stage/$stage.spec.txt | grep -ve '^#')"
     echo "" >> logs/build.log
 
     for spec in $specs; do
@@ -175,6 +175,7 @@ lfs-export() {
             set -x
             podman exec --user root -t lfs-$stage \
                 tar -C / -c -z -f /mnt/build/containers/lfs-$stage.tar.gz \
+                --exclude='./mnt/*' \
                 --exclude='./build' \
                 --exclude='./tmp/*' \
                 --exclude './home/*' \
