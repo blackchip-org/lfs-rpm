@@ -194,29 +194,19 @@ rm -rf %{buildroot}/usr/share/locale
 %else
 %make DESTDIR=%{buildroot} install
 
+%endif
+
 # TODO: This plugin seems to be causing problems when installing d-bus inside
 # the podman container. Remove it for now.
 # https://github.com/rpm-software-management/rpm/issues/3187
-rm %{buildroot}/usr/lib/rpm-plugins/unshare.so
-
-%endif
+rm %{buildroot}/%{?lfs_dir}/usr/lib/rpm-plugins/unshare.so
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1b}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/rpm
-%{lfs_dir}/usr/lib/*
-
-%elif %{with lfs_stage1c}
-/usr/bin/*
-/usr/include/rpm
-/usr/lib/*
-
-%elif %{with lfs_stage2}
-/usr/bin/*
-/usr/include/rpm
-/usr/lib/*
+%if %{with lfs}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/rpm
+%{?lfs_dir}/usr/lib/*
 
 %else
 /usr/bin/gendiff

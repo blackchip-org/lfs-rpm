@@ -53,20 +53,23 @@ Documentation for %{name}
 %if %{with lfs_stage1}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
-%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
 rm -f %{buildroot}/usr/lib/libz.a
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 %endif
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/*.{a,so*}
-%{lfs_dir}/usr/lib/pkgconfig/*
+%if %{with lfs}
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/*.{a,so*}
+%{?lfs_dir}/usr/lib/pkgconfig/*
 
 %else
 /usr/include/*

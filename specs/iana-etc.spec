@@ -1,16 +1,25 @@
-Name:           iana-etc
-Version:        20250123
-Release:        1%{?dist}
+# lfs
+
+%global name        iana-etc
+%global version     20250123
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Data for network services and protocols
 License:        MIT
 
-Source0:        https://github.com/Mic92/iana-etc/releases/download/%{version}/iana-etc-%{version}.tar.gz
+Source0:        https://github.com/Mic92/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 %description
 The Iana-Etc package provides data for network services and protocols.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n iana-etc-%{version}
 
 #---------------------------------------------------------------------------

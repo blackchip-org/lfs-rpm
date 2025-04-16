@@ -164,6 +164,14 @@ mkdir -p %{buildroot}/usr/lib/locale
 %{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f UTF-8 en_US.UTF-8
 %remove_info_dir
 
+%if %{with lfs}
+%discard_docs
+%discard_locales
+
+rm -rf %{buildroot}/%{?lfs_dir}/var/lib/nss_db
+rm -rf %{buildroot}/%{?lfs_dir}/usr/lib/{locale,systemd,tmpfiles.d}
+%endif
+
 %endif
 
 #---------------------------------------------------------------------------
@@ -171,6 +179,17 @@ mkdir -p %{buildroot}/usr/lib/locale
 make check
 
 #---------------------------------------------------------------------------
+%if !%{with lfs_stage1}
+
+%transfiletriggerin -P 2000000 -- /lib /usr/lib
+grep -e "/lib/lib[^/]*\\.so[^/]*$" | xargs chmod -v +x
+/sbin/ldconfig
+
+%transfiletriggerpostun -P 2000000 -- /lib /usr/lib
+/sbin/ldconfig
+
+%endif
+
 %post doc
 %request_info_dir
 
@@ -180,16 +199,20 @@ make check
 #---------------------------------------------------------------------------
 %files
 
-%if %{with lfs_stage1}
-%{lfs_dir}/lib64/*
-%{lfs_dir}/etc/rpc
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/*
-%{lfs_dir}/usr/libexec/*
-%{lfs_dir}/usr/sbin/*
-%{lfs_dir}/usr/share/i18n/charmaps
-%{lfs_dir}/usr/share/i18n/locales
+%if %{with lfs}
+%{?lfs_dir}/lib64/*
+%{?lfs_dir}/etc/*
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/*.{a,o}
+%{?lfs_dir}/usr/lib/lib*.so
+%shlib %{?lfs_dir}/usr/lib/lib*.so.*
+%shlib %{?lfs_dir}/usr/lib/ld-linux-*.so*
+%{?lfs_dir}/usr/lib/{audit,gconv}
+%{?lfs_dir}/usr/libexec/*
+%{?lfs_dir}/usr/sbin/*
+%{?lfs_dir}/usr/share/i18n/charmaps
+%{?lfs_dir}/usr/share/i18n/locales
 
 %else
 /etc/ld.so.cache

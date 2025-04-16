@@ -1,5 +1,4 @@
 specs/root-fs.spec
-specs/man-pages.spec
 specs/iana-etc.spec
 specs/glibc.spec
 specs/zlib.spec
