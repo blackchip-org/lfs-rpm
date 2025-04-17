@@ -79,13 +79,13 @@ lfs-download() {
 }
 
 lfs-checksums() {
-    packages=$(ls sources)
-    checksum_dir="$(pwd)/checksums"
-    mkdir -p "$checksum_dir"
+    packages=$(ls downloads | grep -v root-fs)
+    sources_dir="$(pwd)/sources"
     for package in $packages ; do
         echo $package
-        if [ ! -e "$checksum_dir/$package.sha256" ] ; then
-            ( cd downloads/$package && sha256sum * > "$checksum_dir/$package.sha256" || true )
+        mkdir -p "$sources_dir/$package"
+        if [ ! -e "$sources_dir/$package/$package.sha256" ] ; then
+            ( cd downloads/$package && sha256sum * > "$sources_dir/$package/$package.sha256" || true )
         fi
     done
 }
@@ -129,7 +129,10 @@ lfs-build() {
                 for download in $downloads; do
                     ln -s ../../downloads/${package}/$download .
                 done
-                ln -s ../../checksums/${package}.sha256 .
+                sources=$(ls ../../sources/$package)
+                for source in $sources; do
+                    ln -s ../../sources/${package}/${source} .
+                done
             )
 
             ( set -e -x -o pipefail
@@ -314,7 +317,7 @@ case $1 in
         shift
         stage=stage1a
         next_stage=stage1b
-        rpmbuild_flags="-bb $rpm_nocheck"
+        rpmbuild_flags="-bb $rpm_nocheck $RPMBUILD_FLAGS"
         rpm_db_flags="--dbpath=/var/lib/lfs-rpm"
         rpm_flags="--nodeps $rpm_db_flags"
         ;;
@@ -322,7 +325,7 @@ case $1 in
         shift
         stage=stage1b
         next_stage=stage1c
-        rpmbuild_flags="-bb $rpm_nocheck"
+        rpmbuild_flags="-bb $rpm_nocheck $RPMBUILD_FLAGS"
         rpm_db_flags="--dbpath=/var/lib/lfs-rpm"
         rpm_flags="--nodeps $rpm_db_flags"
         ;;
@@ -330,14 +333,14 @@ case $1 in
         shift
         stage=stage1c
         next_stage=stage2
-        rpmbuild_flags="-bb $rpm_nocheck"
+        rpmbuild_flags="-bb $rpm_nocheck $RPMBUILD_FLAGS"
         rpm_flags="--nodeps"
         ;;
     stage2|2)
         shift
         stage=stage2
         next_stage=stage3
-        rpmbuild_flags="-bb $rpm_nocheck"
+        rpmbuild_flags="-bb $rpm_nocheck $RPMBUILD_FLAGS"
         # The --noplugins flag seems to be required starting with rpm 4.20
         # when running in podman? Error occurred when installing the dbus
         # package.
@@ -348,7 +351,7 @@ case $1 in
     stage3|3)
         shift
         stage=stage3
-        rpmbuild_flags="-bb $rpm_nocheck"
+        rpmbuild_flags="-bb $rpm_nocheck $RPMBUILD_FLAGS"
         rpm_flags="--nodeps"
         ;;
     image)

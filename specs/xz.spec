@@ -72,10 +72,9 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
-rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
+%if %{with lfs}
+%make DESTDIR=%{buildroot}/%{?lfs_dir} install
+rm %{buildroot}/%{?lfs_dir}/usr/lib/liblzma.la
 %discard_docs
 %discard_locales
 
@@ -86,12 +85,12 @@ rm %{buildroot}/%{lfs_dir}/usr/lib/liblzma.la
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/lzma.h
-%{lfs_dir}/usr/include/lzma
-%{lfs_dir}/usr/lib/*.so*
-%{lfs_dir}/usr/lib/pkgconfig/liblzma.pc
+%if %{with lfs}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/lzma.h
+%{?lfs_dir}/usr/include/lzma
+%{?lfs_dir}/usr/lib/*.so*
+%{?lfs_dir}/usr/lib/pkgconfig/liblzma.pc
 
 %else
 /usr/bin/lzcat

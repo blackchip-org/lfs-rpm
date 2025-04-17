@@ -181,12 +181,13 @@ make check
 #---------------------------------------------------------------------------
 %if !%{with lfs_stage1}
 
-%transfiletriggerin -P 2000000 -- /lib /usr/lib
-grep -e "/lib/lib[^/]*\\.so[^/]*$" | xargs chmod -v +x
-/sbin/ldconfig
+# TODO: something along these lines
+# %transfiletriggerin -P 2000000 -- /lib /usr/lib
+# grep -e "/lib/lib[^/]*\\.so[^/]*$" | xargs chmod -v +x
+# /sbin/ldconfig
 
-%transfiletriggerpostun -P 2000000 -- /lib /usr/lib
-/sbin/ldconfig
+# %transfiletriggerpostun -P 2000000 -- /lib /usr/lib
+# /sbin/ldconfig
 
 %endif
 

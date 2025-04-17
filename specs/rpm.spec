@@ -201,6 +201,13 @@ rm -rf %{buildroot}/usr/share/locale
 # https://github.com/rpm-software-management/rpm/issues/3187
 rm %{buildroot}/%{?lfs_dir}/usr/lib/rpm-plugins/unshare.so
 
+# TODO: This seems to be removing execute bits on shared libraries. Remove
+# it for now
+# https://github.com/rpm-software-management/rpm/issues/2496
+rm %{buildroot}/%{?lfs_dir}/usr/lib/rpm/brp-elfperms
+echo -e '#!/bin/bash\nexit 0' > %{buildroot}/%{?lfs_dir}/usr/lib/rpm/brp-elfperms
+chmod 755 %{buildroot}/%{?lfs_dir}/usr/lib/rpm/brp-elfperms
+
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}

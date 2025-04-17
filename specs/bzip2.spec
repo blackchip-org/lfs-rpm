@@ -81,8 +81,6 @@ cp -v bzip2-shared      %{buildroot}/%{lfs_dir}/usr/bin/bzip2
 for i in /usr/bin/{bzcat,bunzip2,bzcmp,bzegrep,bzfgrep,bzless}; do
     ln -sfv bzip2 %{buildroot}/%{lfs_dir}/$i
 done
-rm -rf %{buildroot}/lfs/usr/man
-%discard_docs
 
 %else
 make PREFIX=%{buildroot}/usr install
@@ -98,12 +96,16 @@ rm -f %{buildroot}/usr/lib/libbz2.a
 
 %endif
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/*
+%if %{with lfs}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/*
 
 %else
 /usr/bin/bunzip2

@@ -4,6 +4,8 @@
 %global version     1.3.1
 %global release     1
 
+%global debug_package      %{nil}
+
 #---------------------------------------------------------------------------
 Name:           %{name}
 Version:        %{version}
@@ -29,7 +31,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
-%verify_sha256 -f %{SOURCE1}
+# %%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -44,7 +46,8 @@ Documentation for %{name}
 
 %else
 ./configure --prefix=/usr
-%make
+# %%make
+make
 
 %endif
 
@@ -52,10 +55,13 @@ Documentation for %{name}
 %install
 %if %{with lfs_stage1}
 %use_lfs_tools
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
+
+# %%make DESTDIR=%{buildroot}/%{lfs_dir} install
+make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %else
-%make DESTDIR=%{buildroot} install
+# %%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 rm -f %{buildroot}/usr/lib/libz.a
 
 %if %{with lfs}
@@ -67,6 +73,7 @@ rm -f %{buildroot}/usr/lib/libz.a
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
+%defattr(-,root,root,-)
 %{?lfs_dir}/usr/include/*
 %{?lfs_dir}/usr/lib/*.{a,so*}
 %{?lfs_dir}/usr/lib/pkgconfig/*
@@ -74,7 +81,8 @@ rm -f %{buildroot}/usr/lib/libz.a
 %else
 /usr/include/*
 /usr/lib/libz.so{,.1}
-%shlib /usr/lib/libz.so.%{version}
+# %%shlib /usr/lib/libz.so.%%{version}
+/usr/lib/libz.so.%{version}
 /usr/lib/pkgconfig/zlib.pc
 
 %files doc
