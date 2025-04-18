@@ -70,13 +70,16 @@ Documentation for %{name}
 %if %{with lfs_stage1}
 %use_lfs_tools
 %make DESTDIR=%{buildroot}/%{lfs_dir} install
-%discard_docs
-%discard_locales
 
 %else
 %make DESTDIR=%{buildroot} install
 %remove_info_dir
 
+%endif
+
+%if %{with lfs}
+%discard_docs
+%discard_locales
 %endif
 
 #---------------------------------------------------------------------------
@@ -88,8 +91,8 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/bin/m4
+%if %{with lfs}
+%{?lfs_dir}/usr/bin/m4
 
 %else
 /usr/bin/m4

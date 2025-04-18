@@ -1,10 +1,18 @@
-Name:           gmp
-Version:        6.3.0
-Release:        1%{?dist}
+# lfs
+
+%global name        gmp
+%global version     6.3.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A GNU arbitrary precision library
 License:        LGPLv3+ or GPLv2+
 
-Source:         https://ftp.gnu.org/gnu/gmp/gmp-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  texinfo
 Suggests:       %{name}-doc = %{version}
@@ -29,6 +37,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -45,6 +54,10 @@ Documentation for %{name}
 %make DESTDIR=%{buildroot} install install-html
 %remove_info_dir
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 #---------------------------------------------------------------------------
 %check
 %make check
@@ -58,6 +71,11 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include
+/usr/lib
+
+%else
 /usr/include/*.h
 /usr/lib/libgmp.so
 /usr/lib/libgmp.so.10
@@ -71,3 +89,5 @@ Documentation for %{name}
 %files doc
 /usr/share/doc/gmp-%{version}
 /usr/share/info/*
+
+%endif

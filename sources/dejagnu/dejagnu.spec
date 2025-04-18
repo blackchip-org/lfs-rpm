@@ -1,10 +1,18 @@
-Name:           dejagnu
-Version:        1.6.3
-Release:        1%{?dist}
+# lfs
+
+%global name        dejagnu
+%global version     1.6.3
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A front end for testing other programs
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/dejagnu/dejagnu-%{version}.tar.gz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  texinfo
 
@@ -31,6 +39,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -51,6 +60,10 @@ install -v -dm755  %{buildroot}/usr/share/doc/dejagnu-%{version}
 install -v -m644   doc/dejagnu.{html,txt} %{buildroot}/usr/share/doc/dejagnu-%{version}
 %remove_info_dir
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 #---------------------------------------------------------------------------
 %check
 cd build
@@ -65,6 +78,12 @@ make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+/usr/include/*
+/usr/share/%{name}
+
+%else
 /usr/bin/dejagnu
 /usr/bin/runtest
 /usr/include/*
@@ -76,3 +95,5 @@ make check
 
 %files man
 /usr/share/man/man*/*
+
+%endif

@@ -1,10 +1,18 @@
-Name:           zstd
-Version:        1.5.7
-Release:        1%{?dist}
+# lfs
+
+%global name        zstd
+%global version     1.5.7
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Zstd compression library
 License:        BSD and GPLv2
 
-Source:         https://github.com/facebook/zstd/releases/download/v%{version}/zstd-%{version}.tar.gz
+Source0:        https://github.com/facebook/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -21,6 +29,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -32,7 +41,6 @@ Documentation for %{name}
 %if %{with lfs_stage1b}
 %make DESTDIR=%{buildroot}/%{lfs_dir} prefix=/usr install
 rm -f %{buildroot}/%{lfs_dir}/usr/lib/libzstd.a
-%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} prefix=/usr install
@@ -40,13 +48,17 @@ rm -f %{buildroot}/usr/lib/libzstd.a
 
 %endif
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1b}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/*.so*
-%{lfs_dir}/usr/lib/pkgconfig/*
+%if %{with lfs}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/*.so*
+%{?lfs_dir}/usr/lib/pkgconfig/*
 
 %else
 /usr/bin/unzstd

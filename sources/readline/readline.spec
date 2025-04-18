@@ -1,11 +1,18 @@
-Name:           readline
-Version:        8.2.13
-%global         version2    8.2
-Release:        1%{?dist}
+# lfs
+
+%global name        readline
+%global version     8.2.13
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A library for editing typed command lines
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/readline/readline-%{version}.tar.gz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -31,6 +38,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -52,6 +60,10 @@ sed -i 's/-Wl,-rpath,[^ ]*//' support/shobj-conf
 install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%{version}
 %remove_info_dir
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 #---------------------------------------------------------------------------
 %post doc
 %request_info_dir
@@ -61,6 +73,13 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+%dir /usr/include/readline
+/usr/include/readline/*
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig/*
+
+%else
 /usr/share/doc/readline-%{version}
 /usr/include/readline
 /usr/lib/libhistory.so
@@ -78,3 +97,4 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 %files man
 /usr/share/man/man*/*
 
+%endif

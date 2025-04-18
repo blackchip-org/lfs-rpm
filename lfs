@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -e -o pipefail
 
 prog="$(basename $0)"
 cd "$(dirname $0)"
@@ -31,6 +31,12 @@ assert-stage() {
 
 timestamp() {
     date +"%Y-%m-%d %H:%m:%S"
+}
+
+source-spec() {
+    src_dir="$(echo $1 | sed  's_/$__')"
+    pkg_name=$(basename "$src_dir" | sed 's_/$__')
+    echo "$src_dir/$pkg_name.spec"
 }
 
 lfs-env() {
@@ -93,12 +99,13 @@ lfs-checksums() {
 lfs-build() {
     method=$1
     shift
-    specs=$*
+    source_dirs=$*
 
-    [ -z "$specs" ] && specs="$(cat containers/lfs-$stage/$stage.spec.txt | grep -ve '^#')"
+    [ -z "$source_dirs" ] && source_dirs="$(cat containers/lfs-$stage/$stage.sources.txt | grep -ve '^#')"
     echo "" >> logs/build.log
 
-    for spec in $specs; do
+    for source_dir in $source_dirs; do
+        spec=$(source-spec "$source_dir")
         if [ ! -f "$spec" ] ; then
             echo "$prog: error: $spec: file not found"
             continue

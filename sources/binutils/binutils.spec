@@ -111,19 +111,22 @@ cd build
 %if %{with lfs_stage1a}
 %use_lfs_tools
 DESTDIR=%{buildroot} %make install
-%discard_docs
 
 %elif %{with lfs_stage1b}
 %use_lfs_tools
 DESTDIR=%{buildroot}/%{lfs_dir} %make install
 rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
-%discard_docs
 
 %else
 %make tooldir=/usr DESTDIR=%{buildroot} install
 rm -fv %{buildroot}/usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
 rm -rf %{buildroot}/usr/share/info/dir
 
+%endif
+
+%if %{with lfs}
+%discard_docs
+%discard_locales
 %endif
 
 #---------------------------------------------------------------------------
@@ -139,13 +142,17 @@ make -k check
 %{lfs_tools_dir}/%{lfs_tgt}/bin/*
 %{lfs_tools_dir}/%{lfs_tgt}/lib/*
 
-%elif %{with lfs_stage1b}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/bfd-plugins/libdep.so
-%{lfs_dir}/usr/lib/*.so*
+%elif %{with lfs}
+%{?lfs_dir}/etc/*
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/bfd-plugins/libdep.so
+%{?lfs_dir}/usr/lib/*.so*
+%{?lfs_dir}/usr/lib/{gprofng,ldscripts}
+%if %{with lfs_stage1b}
 %{lfs_dir}/usr/%{lfs_tgt}/bin/*
 %{lfs_dir}/usr/%{lfs_tgt}/lib/ldscripts/*
+%endif
 
 %else
 %config(noreplace) /etc/gprofng.rc

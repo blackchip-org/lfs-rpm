@@ -1,10 +1,18 @@
-Name:           expect
-Version:        5.45.4
-Release:        1%{?dist}
+# lfs
+
+%global name        expect
+%global version     5.45.4
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A program-script interaction and testing utility
 License:        Public Domain
 
-Source:         https://prdownloads.sourceforge.net/expect/expect%{version}.tar.gz
+Source0:        https://prdownloads.sourceforge.net/%{name}/%{name}%{version}.tar.gz
+Source1:        %{name}.sha256
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/expect-%{version}-gcc14-1.patch
 
 BuildRequires:  tcl
@@ -26,6 +34,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n %{name}%{version}
 
 # patch macro has fuzz=0 which fail, manually patch
@@ -45,12 +54,23 @@ patch -Np1 -i %{PATCH0}
 %make DESTDIR=%{buildroot} install
 ln -svf expect%{version}/libexpect%{version}.so %{buildroot}/usr/lib
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 #---------------------------------------------------------------------------
 %check
 make test
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+/usr/include/*
+/usr/lib/expect%{version}
+/usr/lib/lib*.so*
+
+%else
 /usr/bin/autoexpect
 /usr/bin/autopasswd
 /usr/bin/cryptdir
@@ -80,3 +100,5 @@ make test
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

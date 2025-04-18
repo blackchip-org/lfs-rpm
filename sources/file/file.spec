@@ -62,21 +62,24 @@ popd
 %use_lfs_tools
 make DESTDIR=%{buildroot}/%{lfs_dir} install
 rm %{buildroot}/%{lfs_dir}/usr/lib/libmagic.la
-%discard_docs
 
 %else
 %make DESTDIR=%{buildroot} install
 
 %endif
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/*.so*
-%{lfs_dir}/usr/lib/pkgconfig/libmagic.pc
-%{lfs_dir}/usr/share/misc/magic.mgc
+%if %{with lfs}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/*.so*
+%{?lfs_dir}/usr/lib/pkgconfig/libmagic.pc
+%{?lfs_dir}/usr/share/misc/magic.mgc
 
 %else
 /usr/bin/file

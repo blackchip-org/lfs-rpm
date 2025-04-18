@@ -1,10 +1,18 @@
-Name:           bc
-Version:        7.0.3
-Release:        1%{?dist}
+# lfs
+
+%global name        bc
+%global version     7.0.3
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        GNU's bc (a numeric processing language) and dc (a calculator)
 License:        GPLv2+
 
-Source:         https://github.com/gavinhoward/bc/releases/download/%{version}/bc-%{version}.tar.xz
+Source0:        https://github.com/gavinhoward/%{name}/releases/download/%{version}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -32,6 +40,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -43,8 +52,17 @@ CC=gcc ./configure --prefix=/usr -G -O3 -r
 %install
 %make DESTDIR=%{buildroot} install
 
+%if %{with lfs}
+%discard_docs
+%discard_locales
+%endif
+
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+
+%else
 /usr/bin/bc
 /usr/bin/dc
 
@@ -53,3 +71,5 @@ CC=gcc ./configure --prefix=/usr -G -O3 -r
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

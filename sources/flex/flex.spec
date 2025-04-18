@@ -1,10 +1,18 @@
-Name:           flex
-Version:        2.6.4
-Release:        1%{?dist}
+# lfs
+
+%global name        flex
+%global version     2.6.4
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A tool for generating scanners (text pattern recognizers)
 License:        BSD and LGPLv2+
 
-Source:         https://github.com/westes/flex/releases/download/v%{version}/flex-%{version}.tar.gz
+Source0:        https://github.com/westes/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -43,6 +51,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -59,6 +68,11 @@ ln -sv flex   %{buildroot}/usr/bin/lex
 ln -sv flex.1 %{buildroot}/usr/share/man/man1/lex.1
 %remove_info_dir
 
+%if %{with lfs}
+%discard_docs
+%discard_locales
+%endif
+
 #---------------------------------------------------------------------------
 %post doc
 %request_info_dir
@@ -68,6 +82,12 @@ ln -sv flex.1 %{buildroot}/usr/share/man/man1/lex.1
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+/usr/include/*
+/usr/lib/lib*so*
+
+%else
 /usr/bin/flex
 /usr/bin/flex++
 /usr/bin/lex
@@ -86,3 +106,4 @@ ln -sv flex.1 %{buildroot}/usr/share/man/man1/lex.1
 %files man
 /usr/share/man/man*/*
 
+%endif

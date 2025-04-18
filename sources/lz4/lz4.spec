@@ -1,10 +1,18 @@
-Name:           lz4
-Version:        1.10.0
-Release:        1%{?dist}
+# lfs
+
+%global name        lz4
+%global version     1.10.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Extremely fast compression algorithm
 License:        GPLv2+ and BSD
 
-Source:         https://github.com/lz4/lz4/releases/download/v%{version}/lz4-%{version}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -23,6 +31,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -33,8 +42,19 @@ Documentation for %{name}
 %install
 %make DESTDIR=%{buildroot} BUILD_STATIC=no PREFIX=/usr install
 
+%if %{with lfs}
+%discard_docs
+%endif
+
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+/usr/include/*
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig/*
+
+%else
 /usr/bin/lz4
 /usr/bin/lz4c
 /usr/bin/lz4cat
@@ -49,3 +69,5 @@ Documentation for %{name}
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

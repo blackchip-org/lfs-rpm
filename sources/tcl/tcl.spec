@@ -1,16 +1,24 @@
-Name:           tcl
-Version:        8.6.16
-%global         version2    8.6
-Release:        1%{?dist}
+# lfs
+
+%global name        tcl
+%global version_2   8.6
+%global version     %{version_2}.16
+%global release     1
+
+%global tdbc_version    1.1.10
+%global itcl_version    4.3.2
+%global sqlite_version  3.47.2
+%global thread_version  2.8.11
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Tool Command Language, pronounced tickle
 License:        TCL
 
-Source:         https://downloads.sourceforge.net/tcl/tcl%{version}-src.tar.gz
-
-%global         tdbc_version    1.1.10
-%global         itcl_version    4.3.2
-%global         sqlite_version  3.47.2
-%global         thread_version  2.8.11
+Source0:        https://downloads.sourceforge.net/%{name}/%{name}%{version}-src.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  pkg-config
 Suggests:       %{name}-doc = %{version}
@@ -32,6 +40,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n %{name}%{version}
 
 #---------------------------------------------------------------------------
@@ -70,8 +79,21 @@ mv %{buildroot}/usr/share/man/man3/{Thread,Tcl_Thread}.3
 
 find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
 
+%if %{with lfs}
+%discard_docs
+%discard_locales
+%endif
+
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+/usr/include/*
+/usr/lib/{itcl,sqlite,tcl,tdbc,thread}*
+/usr/lib/lib*.{a,so*}
+/usr/lib/pkgconfig/*
+
+%else
 /usr/bin/sqlite3_analyzer
 /usr/bin/tclsh
 /usr/bin/tclsh%{version2}
@@ -113,3 +135,4 @@ find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
 %files doc
 /usr/share/man/man*/*
 
+%endif
