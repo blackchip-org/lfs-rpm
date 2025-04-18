@@ -14,6 +14,7 @@ License:        GPLv2+
 
 Source0:        https://ftp.osuosl.org/pub/%{name}/releases/%{name}-%{version_2}.x/%{name}-%{version}.tar.bz2
 Source1:        %{name}.sha256
+Source2:        macros
 
 BuildRequires:  cmake
 BuildRequires:  dbus
@@ -201,16 +202,14 @@ rm -rf %{buildroot}/usr/share/locale
 # https://github.com/rpm-software-management/rpm/issues/3187
 rm %{buildroot}/%{?lfs_dir}/usr/lib/rpm-plugins/unshare.so
 
-# TODO: This seems to be removing execute bits on shared libraries. Remove
-# it for now
-# https://github.com/rpm-software-management/rpm/issues/2496
-rm %{buildroot}/%{?lfs_dir}/usr/lib/rpm/brp-elfperms
-echo -e '#!/bin/bash\nexit 0' > %{buildroot}/%{?lfs_dir}/usr/lib/rpm/brp-elfperms
-chmod 755 %{buildroot}/%{?lfs_dir}/usr/lib/rpm/brp-elfperms
+mkdir -p %{buildroot}/%{?lfs_dir}/etc/rpm
+cp %{SOURCE2} %{buildroot}/%{?lfs_dir}/etc/rpm/macros
 
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
+%dir %{?lfs_dir}/etc/rpm
+%{?lfs_dir}/etc/rpm/*
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/rpm
 %{?lfs_dir}/usr/lib/*

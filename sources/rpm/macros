@@ -1,0 +1,4 @@
+# This seems to be removing execute bits on shared libraries. Remove
+# it for now
+# https://github.com/rpm-software-management/rpm/issues/2496
+%__brp_elfperms    %{nil}
