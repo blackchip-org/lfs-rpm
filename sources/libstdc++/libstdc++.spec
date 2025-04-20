@@ -36,7 +36,6 @@ esac
 mkdir build
 cd build
 
-%use_lfs_tools
 ../libstdc++-v3/configure           \
     --host=%{lfs_tgt}               \
     --build=$(../config.guess)      \
@@ -45,17 +44,13 @@ cd build
     --disable-nls                   \
     --disable-libstdcxx-pch         \
     --with-gxx-include-dir=/tools/%{lfs_tgt}/include/c++/%{version}
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
 
 cd build
-
-%use_lfs_tools
-DESTDIR=%{buildroot}/%{lfs_dir} %make install
-rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
-%discard_docs
+DESTDIR=%{buildroot}/%{lfs_dir} make install
 
 #---------------------------------------------------------------------------
 %files

@@ -1,0 +1,6 @@
+sources/lfs-build
+sources/binutils
+sources/gcc
+sources/linux-headers
+sources/glibc
+sources/libstdc++

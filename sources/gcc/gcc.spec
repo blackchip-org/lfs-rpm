@@ -65,7 +65,7 @@ mv mpc-%{mpc_version}    mpc
 #---------------------------------------------------------------------------
 %build
 
-case %{lfs_arch} in
+case %{_arch} in
   x86_64)
     sed -e '/m64=/s/lib64/lib/' \
         -i.orig gcc/config/i386/t-linux64
@@ -76,7 +76,6 @@ mkdir build
 cd build
 
 %if %{with lfs_stage1a}
-%use_lfs_tools
 ../configure                              \
     --target=%{lfs_tgt}                   \
     --prefix=%{lfs_tools_dir}             \
@@ -100,7 +99,6 @@ cd build
 
 
 %elif %{with lfs_stage1b}
-%use_lfs_tools
 sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     -i ../libgcc/Makefile.in ../libstdc++-v3/include/Makefile.in
 ../configure                                       \
@@ -134,7 +132,7 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
              --disable-fixincludes    \
              --with-system-zlib
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
@@ -142,33 +140,28 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
 cd build
 
 %if %{with lfs_stage1a}
-%use_lfs_tools
-DESTDIR=%{buildroot} %make install
+DESTDIR=%{buildroot} make install
 cd ..
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
-  %{buildroot}/%{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}/include/limits.h
-%discard_docs
+    %{buildroot}/%{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}/include/limits.h
 
 %elif %{with lfs_stage1b}
-%use_lfs_tools
-DESTDIR=%{buildroot}/%{lfs_dir} %make install
+DESTDIR=%{buildroot}/%{lfs_dir} make install
 ln -sv gcc %{buildroot}/%{lfs_dir}/usr/bin/cc
-%discard_docs
 
 %else
 make DESTDIR=%{buildroot} install
+
 ln -svr /usr/bin/cpp %{buildroot}/usr/lib
-ln -sv gcc %{buildroot}/usr/bin/cc
-ln -sv gcc.1 %{buildroot}/usr/share/man/man1/cc.1
-mkdir %{buildroot}/usr/lib/bfd-plugins/
+ln -sv  gcc %{buildroot}/usr/bin/cc
+ln -sv  gcc.1 %{buildroot}/usr/share/man/man1/cc.1
+
+mkdir   %{buildroot}/usr/lib/bfd-plugins/
 ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/%{version}/liblto_plugin.so \
         %{buildroot}/usr/lib/bfd-plugins/
 
-rm -v %{buildroot}/usr/lib/lib{stdc++,stdc++fs,supc++}.la
-mkdir -pv %{buildroot}/usr/share/gdb/auto-load/usr/lib
-mv -v %{buildroot}/usr/lib/*gdb.py %{buildroot}/usr/share/gdb/auto-load/usr/lib
-
-%remove_info_dir
+mkdir   -pv %{buildroot}/usr/share/gdb/auto-load/usr/lib
+mv -v   %{buildroot}/usr/lib/*gdb.py %{buildroot}/usr/share/gdb/auto-load/usr/lib
 
 %endif
 
@@ -176,15 +169,7 @@ mv -v %{buildroot}/usr/lib/*gdb.py %{buildroot}/usr/share/gdb/auto-load/usr/lib
 %check
 cd build
 ulimit -s 32768
-%make -k check
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-#---------------------------------------------------------------------------
-%posttrans doc
-%update_info_dir
+make -k check
 
 #---------------------------------------------------------------------------
 %files

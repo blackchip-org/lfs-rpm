@@ -1,5 +1,0 @@
-specs/binutils.spec
-specs/gcc.spec
-specs/linux-headers.spec
-specs/glibc.spec
-specs/libstdc++.spec

@@ -1,0 +1,18 @@
+#!/usr/bin/sh
+
+# If using normal root, avoid changing anything.
+if [ -z "$RPM_BUILD_ROOT" ] || [ "$RPM_BUILD_ROOT" = "/" ]; then
+	exit 0
+fi
+
+for root in \
+    $RPM_BUILD_ROOT/$lfs_tools_dir/share \
+    $RPM_BUILD_ROOT/$lfs_dir/usr/share \
+    $RPM_BUILD_ROOT/usr/share ; do
+
+    # Remove any documentation
+    rm -rf $root/{doc,info,man}
+
+    # Remove locale files
+    rm -rf $root/locale
+done

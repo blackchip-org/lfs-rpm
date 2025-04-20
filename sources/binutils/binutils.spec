@@ -62,7 +62,6 @@ mkdir -p    build
 cd          build
 
 %if %{with lfs_stage1a}
-%use_lfs_tools
 ../configure --prefix=%{lfs_tools_dir}  \
              --with-sysroot=%{lfs_dir}  \
              --target=%{lfs_tgt}        \
@@ -71,10 +70,9 @@ cd          build
              --disable-werror           \
              --enable-new-dtags         \
              --enable-default-hash-style=gnu
-%make
+make -j %{nproc}
 
 %elif %{with lfs_stage1b}
-%use_lfs_tools
 sed '6009s/$add_dir//' -i ../ltmain.sh
 ../configure --prefix=/usr              \
              --build=$(../config.guess) \
@@ -86,7 +84,7 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --enable-64-bit-bfd        \
              --enable-new-dtags         \
              --enable-default-hash-style=gnu
-%make
+make -j %{nproc}
 
 %else
 ../configure --prefix=/usr       \
@@ -100,7 +98,7 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --with-system-zlib  \
              --enable-new-dtags  \
              --enable-default-hash-style=gnu
-%make tooldir=/usr
+make -j %{nproc} tooldir=/usr
 
 %endif
 
@@ -109,24 +107,16 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
 cd build
 
 %if %{with lfs_stage1a}
-%use_lfs_tools
-DESTDIR=%{buildroot} %make install
+DESTDIR=%{buildroot} make install
 
 %elif %{with lfs_stage1b}
-%use_lfs_tools
-DESTDIR=%{buildroot}/%{lfs_dir} %make install
+DESTDIR=%{buildroot}/%{lfs_dir} make install
 rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
 
 %else
-%make tooldir=/usr DESTDIR=%{buildroot} install
+make tooldir=/usr DESTDIR=%{buildroot} install
 rm -fv %{buildroot}/usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
-rm -rf %{buildroot}/usr/share/info/dir
 
-%endif
-
-%if %{with lfs}
-%discard_docs
-%discard_locales
 %endif
 
 #---------------------------------------------------------------------------

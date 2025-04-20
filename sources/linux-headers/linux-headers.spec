@@ -29,28 +29,16 @@ needed for rebuilding the glibc package.
 
 #---------------------------------------------------------------------------
 %build
-%make mrproper
-%make headers
+make -j %{nproc} mrproper
+make -j %{nproc} headers
 find usr/include -type f ! -name '*.h' -delete
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-mkdir -p %{buildroot}/%{lfs_dir}/usr
-cp -rv usr/include %{buildroot}/%{lfs_dir}/usr
-
-%else
-mkdir -p %{buildroot}/usr
-cp -rv usr/include %{buildroot}/usr
-
-%endif
+mkdir -p %{buildroot}/%{?lfs_dir}/usr
+cp -rv usr/include %{buildroot}/%{?lfs_dir}/usr
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/include/*
 
-%else
-/usr/include/*
-
-%endif

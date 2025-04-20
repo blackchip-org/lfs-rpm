@@ -22,8 +22,8 @@ RUN dnf install -y \
 
 RUN ln -s /usr/bin/bison /usr/bin/yacc
 
-COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
-COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
+COPY macros.lfs-stage   /etc/rpm/macros.lfs-stage
+COPY macros.lfs-stage1  /etc/rpm/macros.lfs-stage1
 COPY sudoers            /etc/sudoers.d/lfs
 
 RUN install -o 1000 -g 1000 -d /rpmbuild && \

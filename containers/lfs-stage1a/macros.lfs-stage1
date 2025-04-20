@@ -1,0 +1,11 @@
+%with_lfs_stage1    1
+
+%lfs_dir            %{getenv:lfs_dir}
+%lfs_tools_dir      %{getenv:lfs_tools_dir}
+
+%___build_pre   \
+  %{___build_pre_env} \
+  export PATH=%{lfs_tools_dir}/bin:${PATH} \
+  %[%{verbose}?"set -x":""]\
+  umask 022\
+  cd \"%{builddir}\"\

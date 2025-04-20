@@ -13,8 +13,10 @@ Release:        %{release}%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
+Source2:        ld.so.conf
+Source3:        nsswitch.conf
 
 %if !%{with %lfs_stage1}
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/%{name}-%{version}-fhs-1.patch
@@ -53,6 +55,7 @@ Documentation for %{name}
 %prep
 %verify_sha256 -f %{SOURCE1}
 %setup -q
+cp ${SOURCE2} %{SOURCE3} .
 
 %if !%{with %lfs_stage1}
 %patch 0 -p1
@@ -66,7 +69,6 @@ cd       build
 echo "rootsbindir=/usr/sbin" > configparms
 
 %if %{with lfs_stage1}
-%use_lfs_tools
 ../configure --prefix=/usr                         \
              --host=%{lfs_tgt}                     \
              --build=$(../scripts/config.guess)    \
@@ -83,95 +85,46 @@ echo "rootsbindir=/usr/sbin" > configparms
              libc_cv_slibdir=/usr/lib
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
 cd build
 
-%if %{with lfs_stage1}
-%use_lfs_tools
-DESTDIR=%{buildroot}/%{lfs_dir} %make install
-sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/%{lfs_dir}/usr/bin/ldd
+DESTDIR=%{buildroot}/%{?lfs_dir} make install
 
-case %{lfs_arch} in
-    i?86)   mkdir -p              %{buildroot}/%{lfs_dir}/lib
-            ln -sfv ld-linux.so.2 %{buildroot}/%{lfs_dir}/lib/ld-lsb.so.3
+%if %{with lfs_stage1}
+sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/%{lfs_dir}/usr/bin/ldd
+%endif
+
+case %{_arch} in
+    i?86)   mkdir -p              %{buildroot}/%{?lfs_dir}/lib
+            ln -sfv ld-linux.so.2 %{buildroot}/%{?lfs_dir}/lib/ld-lsb.so.3
     ;;
     x86_64) mkdir -p %{buildroot}/%{lfs_dir}/lib64
-            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{lfs_dir}/lib64
-            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{lfs_dir}/lib64/ld-lsb-x86-64.so.3
-    ;;
-esac
-rm -rf %{buildroot}/%{lfs_dir}/var
-%discard_docs
-%discard_locales
-
-%else
-case %{lfs_arch} in
-    i?86)   mkdir -p              %{buildroot}/lib
-            ln -sfv ld-linux.so.2 %{buildroot}/lib/ld-lsb.so.3
-    ;;
-    x86_64) mkdir -p %{buildroot}/lib64
-            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/lib64
-            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/lib64/ld-lsb-x86-64.so.3
+            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{?lfs_dir}/lib64
+            ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{?lfs_dir}/lib64/ld-lsb-x86-64.so.3
     ;;
 esac
 
+%if %{with lfs}
+rm -rf  %{buildroot}/%{?lfs_dir}/var
+rm -rf  %{buildroot}/%{?lfs_dir}/usr/lib/{locale,systemd,tmpfiles.d}
+%endif
+
+%if !%{with lfs_stage1}
 sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 make DESTDIR=%{buildroot} install
-sed '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/usr/bin/ldd
-cp -v ../nscd/nscd.conf %{buildroot}/etc/nscd.conf
-mkdir -pv %{buildroot}/var/cache/nscd
+
+sed         '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/usr/bin/ldd
+cp -v       ../nscd/nscd.conf %{buildroot}/etc/nscd.conf
+mkdir -pv   %{buildroot}/var/cache/nscd
+
 install -v -Dm644 ../nscd/nscd.tmpfiles %{buildroot}/usr/lib/tmpfiles.d/nscd.conf
 install -v -Dm644 ../nscd/nscd.service %{buildroot}/usr/lib/systemd/system/nscd.service
 
-cat > %{buildroot}/etc/nsswitch.conf << "EOF"
-# Begin /etc/nsswitch.conf
-
-passwd: files
-group: files
-shadow: files
-
-hosts: files dns
-networks: files
-
-protocols: files
-services: files
-ethers: files
-rpc: files
-
-# End /etc/nsswitch.conf
-EOF
-
-cat > %{buildroot}/etc/ld.so.conf << "EOF"
-# Begin /etc/ld.so.conf
-/usr/local/lib
-/opt/lib
-
-EOF
-
-cat >> %{buildroot}/etc/ld.so.conf << "EOF"
-# Add an include directory
-include /etc/ld.so.conf.d/*.conf
-
-EOF
-mkdir -pv %{buildroot}/etc/ld.so.conf.d
-
-mkdir -p %{buildroot}/usr/lib/locale
-%{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
-%{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f ISO-8859-1 en_US
-%{buildroot}/usr/bin/localedef --prefix=%{buildroot} -i en_US -f UTF-8 en_US.UTF-8
-%remove_info_dir
-
-%if %{with lfs}
-%discard_docs
-%discard_locales
-
-rm -rf %{buildroot}/%{?lfs_dir}/var/lib/nss_db
-rm -rf %{buildroot}/%{?lfs_dir}/usr/lib/{locale,systemd,tmpfiles.d}
-%endif
-
+install -D -m 644 nsswitch.conf %{buildroot}/etc/nsswitch.conf
+install -D -m 644 ld.so.conf    %{buildroot}/etc/ld.so.conf
 %endif
 
 #---------------------------------------------------------------------------
@@ -180,22 +133,13 @@ make check
 
 #---------------------------------------------------------------------------
 %if !%{with lfs_stage1}
+%transfiletriggerin -P 2000000 -- /lib /usr/lib
+/sbin/ldconfig
 
-# TODO: something along these lines
-# %transfiletriggerin -P 2000000 -- /lib /usr/lib
-# grep -e "/lib/lib[^/]*\\.so[^/]*$" | xargs chmod -v +x
-# /sbin/ldconfig
-
-# %transfiletriggerpostun -P 2000000 -- /lib /usr/lib
-# /sbin/ldconfig
+%transfiletriggerpostun -P 2000000 -- /lib /usr/lib
+/sbin/ldconfig
 
 %endif
-
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
@@ -205,10 +149,7 @@ make check
 %{?lfs_dir}/etc/*
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/*
-%{?lfs_dir}/usr/lib/*.{a,o}
-%{?lfs_dir}/usr/lib/lib*.so
-%shlib %{?lfs_dir}/usr/lib/lib*.so.*
-%shlib %{?lfs_dir}/usr/lib/ld-linux-*.so*
+%{?lfs_dir}/usr/lib/*.{a,o,so*}
 %{?lfs_dir}/usr/lib/{audit,gconv}
 %{?lfs_dir}/usr/libexec/*
 %{?lfs_dir}/usr/sbin/*
