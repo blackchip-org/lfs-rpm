@@ -55,8 +55,6 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
-
 mkdir -p _build
 cd _build
 
@@ -79,40 +77,36 @@ cmake --toolchain x86_64-lfs-linux-gnu.cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     ..
-%make
+make -j %{nproc}
 
 %else
 ./configure
-%make
+make -j %{nproc}
 %endif
 
 
 #---------------------------------------------------------------------------
 %install
 %if %{with lfs_stage1}
-%use_lfs_tools
 cd _build
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
-rm %{buildroot}/%{lfs_dir}/usr/lib/*.a
-%discard_docs
+make DESTDIR=%{buildroot}/%{lfs_dir} install
 
 %else
-%make DESTDIR=%{buildroot} prefix=/usr install
-rm %{buildroot}/usr/lib/*.a
+make DESTDIR=%{buildroot} prefix=/usr install
 
 %endif
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/*.so*
-%{lfs_dir}/usr/lib/pkgconfig/*
+%if %{with lfs}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/{*.a,*.so*}
+%{?lfs_dir}/usr/lib/pkgconfig/*
 
 %else
 /usr/bin/bsdcat

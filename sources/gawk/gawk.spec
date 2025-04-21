@@ -56,7 +56,6 @@ Documentation for %{name}
 sed -i 's/extras//' Makefile.in
 
 %if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
@@ -65,21 +64,14 @@ sed -i 's/extras//' Makefile.in
 ./configure --prefix=/usr
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
-%discard_docs
-%discard_locales
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
-%else
-make DESTDIR=%{buildroot} LN='ln -f' install
+%if !%{with lfs}
 ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
-%remove_info_dir
-
 %endif
 
 #---------------------------------------------------------------------------
@@ -87,15 +79,8 @@ ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
 %make check
 
 #---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
+%if %{with lfs}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/*
 %{lfs_dir}/usr/lib/gawk

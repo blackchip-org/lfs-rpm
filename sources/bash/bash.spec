@@ -53,7 +53,6 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr                      \
             --build=$(sh support/config.guess) \
             --host=%{lfs_tgt}                  \
@@ -68,24 +67,14 @@ Documentation for %{name}
             --docdir=/usr/share/doc/bash-%{version}
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
-mkdir -p %{buildroot}/%{lfs_dir}/bin
-ln -s bash %{buildroot}/%{lfs_dir}/usr/bin/sh
-%discard_docs
-%discard_locales
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
-%else
-%make DESTDIR=%{buildroot} install
-ln -s bash %{buildroot}/usr/bin/sh
-%remove_info_dir
-
-%endif
+# mkdir -p    %{buildroot}/%{?lfs_dir}/bin
+ln -s       bash %{buildroot}/%{?lfs_dir}/usr/bin/sh
 
 #---------------------------------------------------------------------------
 %check
@@ -100,7 +89,7 @@ make tests
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
+%if %{with lfs}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/bash
 %{lfs_dir}/usr/lib/bash

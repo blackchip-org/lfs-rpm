@@ -47,7 +47,6 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 sed -i s/mawk// configure
 
 mkdir build
@@ -80,16 +79,13 @@ popd
             --with-pkg-config-libdir=/usr/lib/pkgconfig
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
 %if %{with lfs_stage1}
-%use_lfs_tools
-%make DESTDIR=%{buildroot}/%{lfs_dir} TIC_PATH=$(pwd)/build/progs/tic install
+make DESTDIR=%{buildroot}/%{lfs_dir} TIC_PATH=$(pwd)/build/progs/tic install
 echo "INPUT(-lncursesw)" > %{buildroot}/%{lfs_dir}/usr/lib/libncurses.so
-%discard_docs
-
 
 %else
 make DESTDIR=%{buildroot} install

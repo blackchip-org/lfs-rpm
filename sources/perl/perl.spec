@@ -93,7 +93,7 @@ sh Configure -des                                                    \
              -Dusethreads
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
@@ -109,17 +109,13 @@ find \
     -name "*.so" \
     -exec chmod 755 {} \;
 
-%if %{with lfs}
-%discard_docs
-%endif
-
 #---------------------------------------------------------------------------
 %check
-%make test
+make test
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
+%if %{with lfs}
 /usr/bin/*
 /usr/lib/perl5/%{perl_version}
 /usr/lib/rpm/macros.d/macros.perl

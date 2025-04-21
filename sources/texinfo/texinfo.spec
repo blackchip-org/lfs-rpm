@@ -59,24 +59,11 @@ Documentation for %{name}
             --with-external-libintl
 %endif
 
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-%remove_info_dir
-
-%if %{with lfs}
-%discard_docs
-%discard_locales
-%endif
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files

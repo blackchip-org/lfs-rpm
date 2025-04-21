@@ -72,7 +72,6 @@ mkdir -pv %{buildroot}/var/lib/hwclock
             --disable-makeinstall-chown \
             --disable-makeinstall-setuid \
             --docdir=/usr/share/doc/util-linux-%{version}
-%make
 
 %else
 sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
@@ -95,18 +94,14 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
             --disable-makeinstall-chown \
             --disable-makeinstall-setuid \
             --docdir=/usr/share/doc/util-linux-%{version}
-%make
 
 %endif
+
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-
-%if %{with lfs}
-%discard_docs
-%discard_locales
-%endif
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files

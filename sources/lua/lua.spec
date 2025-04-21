@@ -42,8 +42,7 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
-%make \
+make -j %{nproc} \
      INSTALL_TOP=/usr \
      CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar rcu" \
@@ -52,7 +51,7 @@ Documentation for %{name}
 
 %else
 sed -i 's|/usr/local|/usr|g' src/luaconf.h
-%make \
+make -j %{nproc} \
      INSTALL_TOP=/usr \
      "CFLAGS=-O2 -Wall -Wextra -DLUA_COMPAT_5_3 -DLUA_USE_LINUX -DLUA_USE_READLINE -fPIC" \
      "LDFLAGS=-Wl,-E -ldl -lreadline"
@@ -60,42 +59,27 @@ sed -i 's|/usr/local|/usr|g' src/luaconf.h
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-%make \
-     INSTALL_BIN=%{buildroot}/%{lfs_dir}/usr/bin \
-     INSTALL_LIB=%{buildroot}/%{lfs_dir}/usr/lib \
-     INSTALL_INC=%{buildroot}/%{lfs_dir}/usr/include \
-     INSTALL_MAN=%{buildroot}/%{lfs_dir}/usr/share/man/man1 \
-     INSTALL_LMOD=%{buildroot}/%{lfs_dir}/usr/share/lua/%{lua_version} \
-     INSTALL_CMOD=%{buildroot}/%{lfs_dir}/usr/lib/lua/%{lua_version} \
-     install
-rm %{buildroot}/%{lfs_dir}/usr/bin/*
-%discard_docs
-
-%else
-%make \
-     INSTALL_BIN=%{buildroot}/usr/bin \
-     INSTALL_LIB=%{buildroot}/usr/lib \
-     INSTALL_INC=%{buildroot}/usr/include \
-     INSTALL_MAN=%{buildroot}/usr/share/man \
-     INSTALL_LMOD=%{buildroot}/usr/share/lua/%{lua_version} \
-     INSTALL_CMOD=%{buildroot}/usr/lib/lua/%{lua_version} \
+make \
+     INSTALL_BIN=%{buildroot}/%{?lfs_dir}/usr/bin \
+     INSTALL_LIB=%{buildroot}/%{?lfs_dir}/usr/lib \
+     INSTALL_INC=%{buildroot}/%{?lfs_dir}/usr/include \
+     INSTALL_MAN=%{buildroot}/%{?lfs_dir}/usr/share/man/man1 \
+     INSTALL_LMOD=%{buildroot}/%?{lfs_dir}/usr/share/lua/%{lua_version} \
+     INSTALL_CMOD=%{buildroot}/%{?lfs_dir}/usr/lib/lua/%{lua_version} \
      install
 
-mkdir -p %{buildroot}/usr/lib/rpm/macros.d
-cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.lua
+mkdir -p %{buildroot}/%{?lfs_dir}/usr/lib/rpm/macros.d
+cat <<EOF | sed 's/@/%/' > %{buildroot}/%{?lfs_dir}/usr/lib/rpm/macros.d/macros.lua
 @lua_version %{lua_version}
 EOF
-
-%endif
 
 #---------------------------------------------------------------------------
 %files
 
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/*
+%if %{with lfs}
+%{?lfs_dir}/usr/bin
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/*
 
 %else
 /usr/bin/lua

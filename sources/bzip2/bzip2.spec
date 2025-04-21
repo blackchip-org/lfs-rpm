@@ -51,54 +51,36 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
-%make -f Makefile-libbz2_so
-%make clean
-%make CC=%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc \
-     AR=%{lfs_tools_dir}/bin/%{lfs_tgt}-ar \
-     RANLIB=%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib
+make -j %{nproc} -f Makefile-libbz2_so
+make clean
+make -j %{nproc} \
+    CC=%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc \
+    AR=%{lfs_tools_dir}/bin/%{lfs_tgt}-ar \
+    RANLIB=%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib
 
 %else
 sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
 sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
-%make -f Makefile-libbz2_so
-%make clean
-%make
+make -j %{nproc} -f Makefile-libbz2_so
+make clean
+make -j %{nproc}
 
 %endif
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-mkdir -p %{buildroot}/%{lfs_dir}/usr/{bin,lib}
-%make PREFIX=%{buildroot}/%{lfs_dir}/usr install
+mkdir -p %{buildroot}/%{?lfs_dir}/usr/{bin,lib,share}
+make PREFIX=%{buildroot}/%{?lfs_dir}/usr install
 
-cp -av libbz2.so.*      %{buildroot}/%{lfs_dir}/usr/lib
-ln -sv libbz2.so.1.0.8  %{buildroot}/%{lfs_dir}/usr/lib/libbz2.so
-cp -v bzip2-shared      %{buildroot}/%{lfs_dir}/usr/bin/bzip2
+cp -av libbz2.so.*      %{buildroot}/%{?lfs_dir}/usr/lib
+ln -sv libbz2.so.1.0.8  %{buildroot}/%{?lfs_dir}/usr/lib/libbz2.so
+cp -v bzip2-shared      %{buildroot}/%{?lfs_dir}/usr/bin/bzip2
 
 for i in /usr/bin/{bzcat,bunzip2,bzcmp,bzegrep,bzfgrep,bzless}; do
-    ln -sfv bzip2 %{buildroot}/%{lfs_dir}/$i
+    ln -sfv bzip2 %{buildroot}/%{?lfs_dir}/$i
 done
 
-%else
-make PREFIX=%{buildroot}/usr install
-
-cp -av libbz2.so.*          %{buildroot}/usr/lib
-ln -sv libbz2.so.%{version} %{buildroot}/usr/lib/libbz2.so
-cp -v bzip2-shared          %{buildroot}/usr/bin/bzip2
-
-for i in /usr/bin/{bzcat,bunzip2}; do
-  ln -sfv bzip2 %{buildroot}/$i
-done
-rm -f %{buildroot}/usr/lib/libbz2.a
-
-%endif
-
-%if %{with lfs}
-%discard_docs
-%endif
+mv %{buildroot}/%{?lfs_dir}/usr/man %{buildroot}/%{?lfs_dir}/usr/share/man
 
 #---------------------------------------------------------------------------
 %files

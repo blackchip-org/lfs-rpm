@@ -54,7 +54,6 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
@@ -63,31 +62,11 @@ Documentation for %{name}
 ./configure --prefix=/usr
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
-
-%else
-%make DESTDIR=%{buildroot} install
-%remove_info_dir
-
-%endif
-
-%if %{with lfs}
-%discard_docs
-%discard_locales
-%endif
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
 #---------------------------------------------------------------------------
 %files

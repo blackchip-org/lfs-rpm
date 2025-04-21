@@ -53,22 +53,15 @@ Documentation for %{name}
             --enable-optimizations
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-make DESTDIR=%{buildroot} install
-%discard_docs
-
-%else
 make DESTDIR=%{buildroot} install
 
 # Some files get installed that trigger a dependency for /usr/local/bin/python
 # and need to be fixed.
 find %{buildroot} -type f -exec sed -i 's_/usr/local/bin/python_/usr/bin/python_g' {} \;
-
-%endif
 
 # Add symlinks from unverisoned binaries to versioned (python -> python3)
 ln -s python3       %{buildroot}/usr/bin/python
@@ -84,7 +77,7 @@ EOF
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1c}
+%if %{with lfs}
 /usr/bin/*
 /usr/include/python%{python_version}
 /usr/lib/*.so*

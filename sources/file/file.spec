@@ -37,40 +37,27 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 mkdir build
 pushd build
-  ../configure --disable-bzlib      \
-               --disable-libseccomp \
-               --disable-xzlib      \
-               --disable-zlib
-  %make
+../configure    --disable-bzlib      \
+                --disable-libseccomp \
+                --disable-xzlib      \
+                --disable-zlib
+make -j %{nproc}
 popd
 
 ./configure --prefix=/usr --host=%{lfs_tgt} --build=$(./config.guess)
-%make FILE_COMPILE=$(pwd)/build/src/file
+make -j %{nproc} FILE_COMPILE=$(pwd)/build/src/file
 
 %else
 ./configure --prefix=/usr
-%make
+make -j %{nproc}
 
 %endif
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-make DESTDIR=%{buildroot}/%{lfs_dir} install
-rm %{buildroot}/%{lfs_dir}/usr/lib/libmagic.la
-
-%else
-%make DESTDIR=%{buildroot} install
-
-%endif
-
-%if %{with lfs}
-%discard_docs
-%endif
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
 #---------------------------------------------------------------------------
 %files

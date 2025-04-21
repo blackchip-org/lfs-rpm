@@ -55,7 +55,6 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr                     \
             --host=%{lfs_tgt}                 \
             --build=$(build-aux/config.guess) \
@@ -68,20 +67,11 @@ Documentation for %{name}
             --docdir=/usr/share/doc/xz-%{version}
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs}
-%make DESTDIR=%{buildroot}/%{?lfs_dir} install
-rm %{buildroot}/%{?lfs_dir}/usr/lib/liblzma.la
-%discard_docs
-%discard_locales
-
-%else
-%make DESTDIR=%{buildroot} install
-
-%endif
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
 #---------------------------------------------------------------------------
 %files

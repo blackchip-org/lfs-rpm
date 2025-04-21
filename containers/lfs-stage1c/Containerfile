@@ -4,7 +4,6 @@ ADD lfs-stage1b.tar.gz /
 
 COPY passwd             /etc/passwd
 COPY group              /etc/group
-COPY macros.lfs         /usr/lib/rpm/macros.d/macros.lfs
 COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
 
 # localedef needed for perl to compile

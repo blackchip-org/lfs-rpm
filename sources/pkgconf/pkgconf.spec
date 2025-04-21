@@ -3,7 +3,6 @@
 %global name        pkgconf
 %global version     2.3.0
 %global release     1
-%global so_version  5
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -45,7 +44,6 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr         \
             --host=%{lfs_tgt}     \
             --disable-static      \
@@ -57,36 +55,27 @@ Documentation for %{name}
             --docdir=/usr/share/doc/%{name}-%{version}
 
 %endif
-%make
+make -j %{nproc}
 
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
-ln -sv pkgconf   %{buildroot}/%{lfs_dir}/usr/bin/pkg-config
-rm -rf           %{buildroot}/%{lfs_dir}/usr/share/aclocal
-%discard_docs
+mkdir -p         %{buildroot}/%{?lfs_dir}/usr/bin
+ln -sv pkgconf   %{buildroot}/%{?lfs_dir}/usr/bin/pkg-config
 
-%else
-%make DESTDIR=%{buildroot} install
-mkdir -p         %{buildroot}/usr/bin
-mkdir -p         %{buildroot}/usr/share/man/man1
-ln -sv pkgconf   %{buildroot}/usr/bin/pkg-config
-ln -sv pkgconf.1 %{buildroot}/usr/share/man/man1/pkg-config.1
-
-%endif
+mkdir -p         %{buildroot}/%{?lfs_dir}/usr/share/man/man1
+ln -sv pkgconf.1 %{buildroot}/%{?lfs_dir}/usr/share/man/man1/pkg-config.1
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/pkgconf
-%{lfs_dir}/usr/lib/libpkgconf.so
-%{lfs_dir}/usr/lib/libpkgconf.so.%{so_version}
-%shlib %{lfs_dir}/usr/lib/libpkgconf.so.%{so_version}.*
-%{lfs_dir}/usr/lib/pkgconfig/*
+%if %{with lfs}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/pkgconf
+%{?lfs_dir}/usr/lib/libpkgconf.so*
+%{?lfs_dir}/usr/lib/pkgconfig/*
+%{?lfs_dir}/usr/share/aclocal/*
 
 %else
 /usr/bin/bomtool

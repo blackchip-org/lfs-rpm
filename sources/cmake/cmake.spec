@@ -47,38 +47,38 @@ Documentation for %{name}
 %if %{with lfs_stage1b}
 ./bootstrap \
     --verbose \
-    --parallel=%{lfs_nproc} \
+    --parallel=%{nproc} \
     -- \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_DOC_PREFIX=/usr/share/doc \
     -DCMAKE_USE_OPENSSL=OFF
-%discard_docs
 
 %else
 ./bootstrap \
     --verbose \
-    --parallel=%{lfs_nproc} \
+    --parallel=%{nproc} \
     -- \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_DOC_PREFIX=/usr/share/doc
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
-rm -rf %{buildroot}/%{lfs_dir}/usr/doc
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
-%if %{with lfs_stage1b}
-rm -rf %{buildroot}/%{lfs_dir}/usr/share/{aclocal,bash-completion,emacs,vim}
+%if %{with lfs}
+rm -rf %{buildroot}/%{?lfs_dir}/usr/doc
+
 %endif
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/share/cmake-%{version_2}
+%if %{with lfs}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/share/cmake-%{version_2}
+%{?lfs_dir}/usr/share/{aclocal,bash-completion,emacs,vim}/*
 
 %else
 /usr/bin/{cmake,ccmake,ctest,cpack}

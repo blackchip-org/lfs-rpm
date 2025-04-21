@@ -56,7 +56,6 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr                     \
             --host=%{lfs_tgt}                 \
             --build=$(build-aux/config.guess) \
@@ -71,41 +70,23 @@ FORCE_UNSAFE_CONFIGURE=1 ./configure \
             --enable-no-install-program=kill,uptime
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-make DESTDIR=%{buildroot}/%{lfs_dir} install
-mkdir -p %{buildroot}/%{lfs_dir}/usr/sbin
-mv -v %{buildroot}/%{lfs_dir}/usr/bin/chroot %{buildroot}/%{lfs_dir}/usr/sbin
-%discard_docs
-%discard_locales
+make        DESTDIR=%{buildroot}/%{?lfs_dir} install
+mkdir -p    %{buildroot}/%{?lfs_dir}/usr/sbin
+mv -v       %{buildroot}/%{?lfs_dir}/usr/bin/chroot %{buildroot}/%{?lfs_dir}/usr/sbin
 
-%else
-make DESTDIR=%{buildroot} install
-
-mkdir %{buildroot}/usr/sbin
+%if !%{with lfs}
 mkdir %{buildroot}/usr/share/man/man8
-
-mv -v %{buildroot}/usr/bin/chroot %{buildroot}/usr/sbin
 mv -v %{buildroot}/usr/share/man/man1/chroot.1 %{buildroot}/usr/share/man/man8/chroot.8
 sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
-%remove_info_dir
-
 %endif
 
 #---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
+%if %{with lfs}
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/sbin/*
 %{lfs_dir}/usr/libexec/coreutils

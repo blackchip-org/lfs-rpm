@@ -133,12 +133,10 @@ make -k check
 %{lfs_tools_dir}/%{lfs_tgt}/lib/*
 
 %elif %{with lfs}
-%{?lfs_dir}/etc/*
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/*
 %{?lfs_dir}/usr/lib/bfd-plugins/libdep.so
 %{?lfs_dir}/usr/lib/*.so*
-%{?lfs_dir}/usr/lib/{gprofng,ldscripts}
 %if %{with lfs_stage1b}
 %{lfs_dir}/usr/%{lfs_tgt}/bin/*
 %{lfs_dir}/usr/%{lfs_tgt}/lib/ldscripts/*

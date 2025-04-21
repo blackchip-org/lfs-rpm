@@ -31,44 +31,28 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
-# %%verify_sha256 -f %{SOURCE1}
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr
-%make CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
+make -j %{nproc} \
+     CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar" \
      RANLIB="%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib" \
      CHOST=%{lfs_tgt}
 
 %else
 ./configure --prefix=/usr
-# %%make
-make
+make -j %{nproc}
 
 %endif
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-
-# %%make DESTDIR=%{buildroot}/%{lfs_dir} install
-make DESTDIR=%{buildroot}/%{lfs_dir} install
-
-%else
-# %%make DESTDIR=%{buildroot} install
-make DESTDIR=%{buildroot} install
-rm -f %{buildroot}/usr/lib/libz.a
-
-%if %{with lfs}
-%discard_docs
-%endif
-
-%endif
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
 #---------------------------------------------------------------------------
 %files

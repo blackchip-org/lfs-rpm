@@ -53,45 +53,32 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-%use_lfs_tools
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
-%make
+make -j %{nproc}
 
 %else
 ./configure --prefix=/usr
-%make
+make -j %{nproc}
 make html
 
 %endif
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
-%discard_docs
-%discard_locales
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
-%else
-%make DESTDIR=%{buildroot} install
+%if !%{with lfs}
+make DESTDIR=%{buildroot} install
 install -d -m755           %{buildroot}/usr/share/doc/sed-4.9
 install -m644 doc/sed.html %{buildroot}/usr/share/doc/sed-4.9
-%remove_info_dir
 
 %endif
 
 #---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
+%if %{with lfs}
 %{lfs_dir}/usr/bin/*
 
 %else

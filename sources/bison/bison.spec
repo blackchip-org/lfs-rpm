@@ -59,30 +59,15 @@ Documentation for %{name}
 %build
 ./configure --prefix=/usr \
             --docdir=/usr/share/doc/bison-3.8.2
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-%remove_info_dir
-
-%if %{with lfs}
-%discard_docs
-%discard_locales
-rm -rf %{buildroot}/usr/share/aclocal
-%endif
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
 make check
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
-
 
 #---------------------------------------------------------------------------
 %files
@@ -90,6 +75,7 @@ make check
 /usr/bin/*
 /usr/lib/*
 /usr/share/%{name}
+/usr/share/aclocal/*
 
 %else
 /usr/bin/bison

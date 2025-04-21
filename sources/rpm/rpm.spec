@@ -170,31 +170,13 @@ cmake \
     ..
 
 %endif
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
 cd _build
 
-%if %{with lfs_stage1b}
-%make DESTDIR=%{buildroot}/%{lfs_dir} install
-%discard_docs
-%discard_locales
-
-%elif %{with lfs_stage1c}
-%make DESTDIR=%{buildroot} install
-%discard_docs
-%discard_locales
-
-%elif %{with lfs_stage2}
-%make DESTDIR=%{buildroot} install
-rm -rf %{buildroot}/usr/share/{doc,info,man}
-rm -rf %{buildroot}/usr/share/locale
-
-%else
-%make DESTDIR=%{buildroot} install
-
-%endif
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
 # TODO: This plugin seems to be causing problems when installing d-bus inside
 # the podman container. Remove it for now.

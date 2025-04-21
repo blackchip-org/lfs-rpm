@@ -1,3 +1,5 @@
+sources/lfs-build
+sources/root-fs
 sources/m4
 sources/ncurses
 sources/bash
@@ -15,7 +17,6 @@ sources/tar
 sources/xz
 sources/binutils
 sources/gcc
-sources/root-fs
 sources/lua
 sources/pkgconf
 sources/popt

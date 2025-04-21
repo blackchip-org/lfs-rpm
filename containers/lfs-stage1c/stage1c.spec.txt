@@ -1,7 +1,0 @@
-specs/elfutils.spec
-specs/rpm.spec
-specs/bison.spec
-specs/perl.spec
-specs/python.spec
-specs/texinfo.spec
-specs/util-linux.spec

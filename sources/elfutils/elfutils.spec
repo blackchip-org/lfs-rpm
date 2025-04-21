@@ -48,11 +48,11 @@ Documentation for %{name}
 ./configure --prefix=/usr                \
             --disable-debuginfod         \
             --enable-libdebuginfod=dummy
-%make
+make -j %{nproc}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 install -d %{buildroot}/usr/lib/pkgconfig
 install -vm644 -t %{buildroot}/usr/lib/pkgconfig config/libelf.pc
 
@@ -65,16 +65,14 @@ rm -rf %{buildroot}/usr/share
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
 /usr/bin/*
 /usr/include/*
-/usr/lib/lib{asm,debuginfod,dw,elf}.so
-/usr/lib/lib{asm,debuginfod,dw,elf}.so.%{so_version}
-%shlib /usr/lib/lib{asm,debuginfod,dw,elf}-%{version}.so
+/usr/lib/lib*.so*
 /usr/lib/pkgconfig/*
 
 %else
