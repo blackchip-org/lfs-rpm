@@ -47,7 +47,7 @@ Documentation for %{name}
 %if %{with lfs_stage1b}
 ./bootstrap \
     --verbose \
-    --parallel=%{nproc} \
+    --parallel=%{?_smp_build_ncpus} \
     -- \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_DOC_PREFIX=/usr/share/doc \
@@ -56,13 +56,13 @@ Documentation for %{name}
 %else
 ./bootstrap \
     --verbose \
-    --parallel=%{nproc} \
+    --parallel=%{?_smp_build_ncpus} \
     -- \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_DOC_PREFIX=/usr/share/doc
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

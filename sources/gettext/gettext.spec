@@ -66,7 +66,7 @@ Documentation for %{name}
             --docdir=/usr/share/doc/%{name}-%{version}
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

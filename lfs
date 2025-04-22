@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e -o pipefail
+set -e
 
 prog="$(basename $0)"
 cd "$(dirname $0)"
@@ -12,6 +12,7 @@ for stage in $stages; do
     images+="lfs-${stage} "
 done
 images+="lfs-pod"
+lfs_arch=$(arch)
 
 usage() {
     cat <<EOF

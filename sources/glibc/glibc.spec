@@ -85,7 +85,7 @@ echo "rootsbindir=/usr/sbin" > configparms
              libc_cv_slibdir=/usr/lib
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

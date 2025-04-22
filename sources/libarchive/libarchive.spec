@@ -77,11 +77,11 @@ cmake --toolchain x86_64-lfs-linux-gnu.cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     ..
-make -j %{nproc}
+make %{?_smp_mflags}
 
 %else
 ./configure
-make -j %{nproc}
+make %{?_smp_mflags}
 %endif
 
 

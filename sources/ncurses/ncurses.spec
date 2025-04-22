@@ -79,7 +79,7 @@ popd
             --with-pkg-config-libdir=/usr/lib/pkgconfig
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

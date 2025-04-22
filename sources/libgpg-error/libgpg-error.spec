@@ -60,7 +60,7 @@ Documentation for %{name}
             --enable-install-gpg-error-config
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

@@ -64,7 +64,7 @@ sed -i 's/extras//' Makefile.in
 ./configure --prefix=/usr
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -81,11 +81,11 @@ ln -sv gawk.1 %{buildroot}/usr/share/man/man1/awk.1
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/gawk
-%{lfs_dir}/usr/libexec/awk
-%{lfs_dir}/usr/share/awk
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/gawk
+%{?lfs_dir}/usr/libexec/awk
+%{?lfs_dir}/usr/share/awk
 
 %else
 /usr/bin/awk

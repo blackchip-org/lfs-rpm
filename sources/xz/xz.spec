@@ -67,7 +67,7 @@ Documentation for %{name}
             --docdir=/usr/share/doc/xz-%{version}
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

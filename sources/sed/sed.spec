@@ -56,11 +56,11 @@ Documentation for %{name}
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
             --build=$(build-aux/config.guess)
-make -j %{nproc}
+make %{?_smp_mflags}
 
 %else
 ./configure --prefix=/usr
-make -j %{nproc}
+make %{?_smp_mflags}
 make html
 
 %endif
@@ -79,7 +79,7 @@ install -m644 doc/sed.html %{buildroot}/usr/share/doc/sed-4.9
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/bin/*
 
 %else
 /usr/bin/sed

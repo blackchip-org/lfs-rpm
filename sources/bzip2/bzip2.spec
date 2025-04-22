@@ -51,26 +51,26 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-make -j %{nproc} -f Makefile-libbz2_so
+make %{?_smp_mflags} -f Makefile-libbz2_so
 make clean
-make -j %{nproc} \
+make %{?_smp_mflags} \
     CC=%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc \
     AR=%{lfs_tools_dir}/bin/%{lfs_tgt}-ar \
     RANLIB=%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib
 
 %else
-sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
-sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
-make -j %{nproc} -f Makefile-libbz2_so
-make clean
-make -j %{nproc}
+sed     -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+sed     -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+make    %{?_smp_mflags} -f Makefile-libbz2_so
+make    clean
+make    %{?_smp_mflags}
 
 %endif
 
 #---------------------------------------------------------------------------
 %install
-mkdir -p %{buildroot}/%{?lfs_dir}/usr/{bin,lib,share}
-make PREFIX=%{buildroot}/%{?lfs_dir}/usr install
+mkdir   -p %{buildroot}/%{?lfs_dir}/usr/{bin,lib,share}
+make    PREFIX=%{buildroot}/%{?lfs_dir}/usr install
 
 cp -av libbz2.so.*      %{buildroot}/%{?lfs_dir}/usr/lib
 ln -sv libbz2.so.1.0.8  %{buildroot}/%{?lfs_dir}/usr/lib/libbz2.so

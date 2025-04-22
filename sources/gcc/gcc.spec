@@ -132,7 +132,7 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
              --disable-fixincludes    \
              --with-system-zlib
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

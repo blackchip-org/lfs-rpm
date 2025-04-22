@@ -53,7 +53,7 @@ Documentation for %{name}
             --enable-optimizations
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

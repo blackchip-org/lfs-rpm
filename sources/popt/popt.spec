@@ -53,6 +53,7 @@ Documentation for %{name}
 ./configure --prefix=/usr
 
 %endif
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -61,8 +62,8 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{lfs_dir}/usr/include/*
-%{lfs_dir}/usr/lib/*
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/*
 
 %else
 /usr/include/*.h

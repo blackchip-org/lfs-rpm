@@ -51,7 +51,7 @@ Documentation for %{name}
 ./configure --prefix=/usr
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

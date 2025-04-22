@@ -97,7 +97,7 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
 
 %endif
 
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

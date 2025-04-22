@@ -67,14 +67,12 @@ Documentation for %{name}
             --docdir=/usr/share/doc/bash-%{version}
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-make DESTDIR=%{buildroot}/%{?lfs_dir} install
-
-# mkdir -p    %{buildroot}/%{?lfs_dir}/bin
-ln -s       bash %{buildroot}/%{?lfs_dir}/usr/bin/sh
+make    DESTDIR=%{buildroot}/%{?lfs_dir} install
+ln -s   bash %{buildroot}/%{?lfs_dir}/usr/bin/sh
 
 #---------------------------------------------------------------------------
 %check
@@ -90,10 +88,10 @@ make tests
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/bash
-%{lfs_dir}/usr/lib/bash
-%{lfs_dir}/usr/lib/pkgconfig/bash.pc
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/bash
+%{?lfs_dir}/usr/lib/bash
+%{?lfs_dir}/usr/lib/pkgconfig/bash.pc
 
 %else
 /usr/bin/bash

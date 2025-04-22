@@ -70,7 +70,7 @@ cd          build
              --disable-werror           \
              --enable-new-dtags         \
              --enable-default-hash-style=gnu
-make -j %{nproc}
+make %{?_smp_mflags}
 
 %elif %{with lfs_stage1b}
 sed '6009s/$add_dir//' -i ../ltmain.sh
@@ -84,7 +84,7 @@ sed '6009s/$add_dir//' -i ../ltmain.sh
              --enable-64-bit-bfd        \
              --enable-new-dtags         \
              --enable-default-hash-style=gnu
-make -j %{nproc}
+make %{?_smp_mflags}
 
 %else
 ../configure --prefix=/usr       \
@@ -98,7 +98,7 @@ make -j %{nproc}
              --with-system-zlib  \
              --enable-new-dtags  \
              --enable-default-hash-style=gnu
-make -j %{nproc} tooldir=/usr
+make %{?_smp_mflags} tooldir=/usr
 
 %endif
 

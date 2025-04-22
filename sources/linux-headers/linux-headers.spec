@@ -29,8 +29,8 @@ needed for rebuilding the glibc package.
 
 #---------------------------------------------------------------------------
 %build
-make -j %{nproc} mrproper
-make -j %{nproc} headers
+make %{?_smp_mflags} mrproper
+make %{?_smp_mflags} headers
 find usr/include -type f ! -name '*.h' -delete
 
 #---------------------------------------------------------------------------

@@ -26,7 +26,7 @@ C++ standard library for use in LFS bootstrapping only.
 #---------------------------------------------------------------------------
 %build
 
-case %{lfs_arch} in
+case %{_arch} in
   x86_64)
     sed -e '/m64=/s/lib64/lib/' \
         -i.orig gcc/config/i386/t-linux64
@@ -44,7 +44,7 @@ cd build
     --disable-nls                   \
     --disable-libstdcxx-pch         \
     --with-gxx-include-dir=/tools/%{lfs_tgt}/include/c++/%{version}
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

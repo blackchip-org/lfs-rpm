@@ -38,7 +38,7 @@ Documentation for %{name}
 %build
 %if %{with lfs_stage1}
 ./configure --prefix=/usr
-make -j %{nproc} \
+make %{?_smp_mflags} \
      CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar" \
      RANLIB="%{lfs_tools_dir}/bin/%{lfs_tgt}-ranlib" \
@@ -46,7 +46,7 @@ make -j %{nproc} \
 
 %else
 ./configure --prefix=/usr
-make -j %{nproc}
+make %{?_smp_mflags}
 
 %endif
 
@@ -57,7 +57,6 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%defattr(-,root,root,-)
 %{?lfs_dir}/usr/include/*
 %{?lfs_dir}/usr/lib/*.{a,so*}
 %{?lfs_dir}/usr/lib/pkgconfig/*

@@ -65,7 +65,7 @@ FORCE_UNSAFE_CONFIGURE=1  \
 ./configure --prefix=/usr
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -78,8 +78,8 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/libexec/*
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/libexec/*
 
 %else
 /usr/bin/tar

@@ -63,7 +63,7 @@ sed -i "s/echo/#echo/" src/egrep.sh
 ./configure --prefix=/usr
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -76,7 +76,7 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/bin/*
 
 %else
 /usr/bin/egrep

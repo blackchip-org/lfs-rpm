@@ -52,16 +52,16 @@ Documentation for %{name}
 ./configure --prefix=/usr
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-make -j %{nproc} DESTDIR=%{buildroot}/%{?lfs_dir} install
+make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/bin/*
 
 %else
 /usr/bin/gunzip

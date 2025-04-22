@@ -42,7 +42,7 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-make -j %{nproc} \
+make %{?_smp_mflags} \
      INSTALL_TOP=/usr \
      CC="%{lfs_tools_dir}/bin/%{lfs_tgt}-gcc" \
      AR="%{lfs_tools_dir}/bin/%{lfs_tgt}-ar rcu" \
@@ -51,7 +51,7 @@ make -j %{nproc} \
 
 %else
 sed -i 's|/usr/local|/usr|g' src/luaconf.h
-make -j %{nproc} \
+make %{?_smp_mflags} \
      INSTALL_TOP=/usr \
      "CFLAGS=-O2 -Wall -Wextra -DLUA_COMPAT_5_3 -DLUA_USE_LINUX -DLUA_USE_READLINE -fPIC" \
      "LDFLAGS=-Wl,-E -ldl -lreadline"

@@ -1,0 +1,9 @@
+#!/usr/bin/sh
+
+# If using normal root, avoid changing anything.
+if [ -z "$RPM_BUILD_ROOT" ] || [ "$RPM_BUILD_ROOT" = "/" ]; then
+	exit 0
+fi
+
+# Remove info index file, this will be regenerated in an RPM file trigger
+rm -rf "$RPM_BUILD_ROOT/usr/share/info/dir"

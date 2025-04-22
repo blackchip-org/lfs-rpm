@@ -43,15 +43,15 @@ pushd build
                 --disable-libseccomp \
                 --disable-xzlib      \
                 --disable-zlib
-make -j %{nproc}
+make %{?_smp_mflags}
 popd
 
 ./configure --prefix=/usr --host=%{lfs_tgt} --build=$(./config.guess)
-make -j %{nproc} FILE_COMPILE=$(pwd)/build/src/file
+make %{?_smp_mflags} FILE_COMPILE=$(pwd)/build/src/file
 
 %else
 ./configure --prefix=/usr
-make -j %{nproc}
+make %{?_smp_mflags}
 
 %endif
 

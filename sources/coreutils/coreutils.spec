@@ -70,7 +70,7 @@ FORCE_UNSAFE_CONFIGURE=1 ./configure \
             --enable-no-install-program=kill,uptime
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -87,9 +87,9 @@ sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/sbin/*
-%{lfs_dir}/usr/libexec/coreutils
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/sbin/*
+%{?lfs_dir}/usr/libexec/coreutils
 
 %else
 /usr/bin/[

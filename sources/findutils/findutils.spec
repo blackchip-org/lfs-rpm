@@ -64,7 +64,7 @@ Documentation for %{name}
 ./configure --prefix=/usr --localstatedir=/var/lib/locate
 
 %endif
-make -j %{nproc}
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -77,8 +77,8 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs_stage1}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/libexec/*
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/libexec/*
 
 %else
 /usr/bin/find

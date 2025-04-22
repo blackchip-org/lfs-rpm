@@ -1,5 +1,5 @@
+%lfs_vendor         %{getenv:lfs_vendor}
 %lfs_version        %{getenv:lfs_version}
-%nproc              %{getenv:lfs_nproc}
 
 %_build_id_links    none
 %debug_package      %{nil}
@@ -20,6 +20,4 @@
     %{?__brp_strip_comment_note} \
     %{?__brp_remove_la_files} \
     /usr/lib/rpm/brp-lfs-build
-
-%_arch %{getenv:lfs_arch}
 

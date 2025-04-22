@@ -1,0 +1,7 @@
+%__os_install_post    \
+    %{?__brp_compress} \
+    %{?__brp_strip} \
+    %{?__brp_strip_static_archive} \
+    %{?__brp_strip_comment_note} \
+    %{?__brp_remove_la_files} \
+    /usr/lib/rpm/%{_vendor}/brp-remove-info-index

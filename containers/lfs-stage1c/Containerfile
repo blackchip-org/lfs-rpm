@@ -7,8 +7,7 @@ COPY group              /etc/group
 COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
 
 # localedef needed for perl to compile
-RUN install -o 1000 -g 1000 -d /rpmbuild && \
-    mkdir /usr/lib/locale && \
+RUN mkdir /usr/lib/locale && \
     /usr/bin/localedef -i POSIX -f UTF-8 C.UTF-8 || true
 
 WORKDIR /rpmbuild
