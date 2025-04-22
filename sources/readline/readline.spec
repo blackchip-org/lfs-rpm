@@ -52,24 +52,12 @@ sed -i 's/-Wl,-rpath,[^ ]*//' support/shobj-conf
             --disable-static \
             --with-curses    \
             --docdir=/usr/share/doc/readline-%{version}
-%make SHLIB_LIBS="-lncursesw"
+make %{_smp_mflags} SHLIB_LIBS="-lncursesw"
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} SHLIB_LIBS="-lncursesw" install
+make DESTDIR=%{buildroot} SHLIB_LIBS="-lncursesw" install
 install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%{version}
-%remove_info_dir
-
-%if %{with lfs}
-%discard_docs
-%endif
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

@@ -1,10 +1,18 @@
-Name:           attr
-Version:        2.5.2
-Release:        1%{?dist}
+# lfs
+
+%global name        attr
+%global version     2.5.2
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Utilities for managing filesystem extended attributes
 License:        GPLv2+
 
-Source0:        https://download.savannah.gnu.org/releases/attr/attr-%{version}.tar.gz
+Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -35,6 +43,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -43,18 +52,26 @@ Documentation for %{name}
             --disable-static  \
             --sysconfdir=/etc \
             --docdir=/usr/share/doc/attr-%{version}
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/etc
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 %config(noreplace) /etc/xattr.conf
 /usr/bin/attr
 /usr/bin/getfattr
@@ -73,3 +90,5 @@ Documentation for %{name}
 
 %files man
 /usr/share/man/man*/*
+
+%endif

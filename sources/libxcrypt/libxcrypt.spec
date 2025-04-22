@@ -1,10 +1,18 @@
-Name:           libxcrypt
-Version:        4.4.36
-Release:        1%{?dist}
+# lfs
+
+%global name        libxcrypt
+%global version     4.4.36
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Extended crypt library for DES, MD5, Blowfish and others
 License:        LGPLv2+ and BSD and Public Domain
 
-Source:         https://github.com/besser82/libxcrypt/releases/download/v%{version}/libxcrypt-%{version}.tar.xz
+Source0:        https://github.com/besser82/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  pkg-config
 Suggests:       %{name}-doc = %{version}
@@ -47,6 +55,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -56,18 +65,24 @@ Documentation for %{name}
             --enable-obsolete-api=no     \
             --disable-static             \
             --disable-failure-tokens
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make prefix=%{buildroot}/usr install
+make prefix=%{buildroot}/usr install
 
 #---------------------------------------------------------------------------
 %check
-%make test
+make test
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/include/*.h
 /usr/lib/libcrypt.so
 /usr/lib/libcrypt.so.2
@@ -77,4 +92,6 @@ Documentation for %{name}
 
 %files doc
 /usr/share/man/man*/*
+
+%endif
 

@@ -1,10 +1,18 @@
-Name:           mpc
-Version:        1.3.1
-Release:        1%{?dist}
+# lfs
+
+%global name        mpc
+%global version     1.3.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        C library for multiple precision complex arithmetic
 License:        LGPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/mpc/mpc-%{version}.tar.gz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  autoconf
 BuildRequires:  texinfo
@@ -24,6 +32,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -31,27 +40,24 @@ Documentation for %{name}
 ./configure --prefix=/usr    \
             --disable-static \
             --docdir=/usr/share/doc/mpc-%{version}
-%make
-%make html
+make %{?_smp_mflags}
+make html
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install install-html
-%remove_info_dir
+make DESTDIR=%{buildroot} install install-html
 
 #---------------------------------------------------------------------------
 %check
 %make check
 
 #---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include
+/usr/lib/lib*.so*
+
+%else
 /usr/include/*.h
 /usr/lib/libmpc.so
 /usr/lib/libmpc.so.3
@@ -60,3 +66,5 @@ Documentation for %{name}
 %files doc
 /usr/share/doc/mpc-%{version}
 /usr/share/info/*
+
+%endif

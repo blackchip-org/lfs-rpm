@@ -59,26 +59,13 @@ Documentation for %{name}
 ./configure --prefix=/usr \
             --docdir=/usr/share/doc/flex-%{version} \
             --disable-static
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
 make DESTDIR=%{buildroot} install
 ln -sv flex   %{buildroot}/usr/bin/lex
 ln -sv flex.1 %{buildroot}/usr/share/man/man1/lex.1
-%remove_info_dir
-
-%if %{with lfs}
-%discard_docs
-%discard_locales
-%endif
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

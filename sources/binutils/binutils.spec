@@ -111,13 +111,13 @@ DESTDIR=%{buildroot} make install
 
 %elif %{with lfs_stage1b}
 DESTDIR=%{buildroot}/%{lfs_dir} make install
-rm -v %{buildroot}/%{lfs_dir}/usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes,sframe}.{a,la}
 
 %else
 make tooldir=/usr DESTDIR=%{buildroot} install
-rm -fv %{buildroot}/usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
 
 %endif
+
+rm -fv %{buildroot}/%{?lfs_dir}/usr/lib/lib{bfd,ctf,ctf-nobfd,gprofng,opcodes,sframe}.a
 
 #---------------------------------------------------------------------------
 %check
@@ -127,19 +127,20 @@ make -k check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs_stage1a}
-%{lfs_tools_dir}/bin/*
-%{lfs_tools_dir}/lib/*
-%{lfs_tools_dir}/%{lfs_tgt}/bin/*
-%{lfs_tools_dir}/%{lfs_tgt}/lib/*
+%{lfs_tools_dir}/bin
+%{lfs_tools_dir}/lib
+%{lfs_tools_dir}/%{lfs_tgt}/bin
+%{lfs_tools_dir}/%{lfs_tgt}/lib
 
 %elif %{with lfs}
-%{?lfs_dir}/usr/bin/*
-%{?lfs_dir}/usr/include/*
-%{?lfs_dir}/usr/lib/bfd-plugins/libdep.so
-%{?lfs_dir}/usr/lib/*.so*
+%{?lfs_dir}/usr/bin
+%{?lfs_dir}/usr/include
+%{?lfs_dir}/usr/lib
 %if %{with lfs_stage1b}
-%{lfs_dir}/usr/%{lfs_tgt}/bin/*
-%{lfs_dir}/usr/%{lfs_tgt}/lib/ldscripts/*
+%{?lfs_dir}/usr/%{lfs_tgt}/bin
+%{?lfs_dir}/usr/%{lfs_tgt}/lib/ldscripts
+%else
+%{?lfs_dir}/etc
 %endif
 
 %else

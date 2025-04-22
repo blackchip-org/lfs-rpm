@@ -44,21 +44,22 @@ install -dv -m 1777 %{buildroot}/%{root}/tmp %{buildroot}/%{root}/var/tmp
 
 #---------------------------------------------------------------------------
 %files
+%dir %{root}/{boot,home,mnt,opt,srv}
+%dir %{root}/usr/lib/firmware
+%dir %{root}/media/{floppy,cdrom}
+%dir %{root}/usr/{include,src}
+%dir %{root}/usr/local/{include,src}
+%dir %{root}/usr/local/{bin,lib,sbin}
+%dir %{root}/usr/share/{color,dict,doc,info,locale,man}
+%dir %{root}/usr/share/{misc,terminfo,zoneinfo}
+%dir %{root}/usr/local/share/{color,dict,doc,info,locale,man}
+%dir %{root}/usr/local/share/{misc,terminfo,zoneinfo}
+%dir %{root}/var/{cache,local,log,mail,opt,spool}
+%dir %{root}/var/lib/{color,misc,locate}
+%dir %{root}/root
+%dir %{root}/tmp
+%dir %{root}/var/tmp
+
+# Symlinks
 %{root}/{bin,lib,sbin}
-%{root}/{boot,home,mnt,opt,srv}
-%{root}/usr/lib/firmware
-%{root}/media/{floppy,cdrom}
-%{root}/usr/{include,src}
-%{root}/usr/local/{include,src}
-%{root}/usr/local/{bin,lib,sbin}
-%{root}/usr/share/{color,dict,doc,info,locale,man}
-%{root}/usr/share/{misc,terminfo,zoneinfo}
-%{root}/usr/local/share/{color,dict,doc,info,locale,man}
-%{root}/usr/local/share/{misc,terminfo,zoneinfo}
-%{root}/var/{cache,local,log,mail,opt,spool}
-%{root}/var/lib/{color,misc,locate}
-%{root}/var/run
-%{root}/var/lock
-%{root}/root
-%{root}/tmp
-%{root}/var/tmp
+%{root}/var/{lock,run}

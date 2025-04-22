@@ -1,10 +1,18 @@
-Name:           shadow
-Version:        4.17.3
-Release:        1%{?dist}
+# lfs
+
+%global name        shadow
+%global version     4.17.3
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Utilities for managing accounts and shadow password files
 License:        BSD and GPLv2+
 
-Source:         https://github.com/shadow-maint/shadow/releases/download/%{version}/shadow-%{version}.tar.xz
+Source0:        https://github.com/shadow-maint/shadow/releases/download/%{version}/shadow-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -35,6 +43,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -54,16 +63,15 @@ sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD YESCRYPT:' \
             --with-{b,yes}crypt \
             --without-libbsd    \
             --with-group-name-max-length=32
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} exec_prefix=/usr install
-%make -C man DESTDIR=%{buildroot} install-man
+make DESTDIR=%{buildroot} exec_prefix=/usr install
+make -C man DESTDIR=%{buildroot} install-man
 
 #---------------------------------------------------------------------------
 %post
-
 /usr/sbin/pwconv
 /usr/sbin/grpconv
 mkdir -p /etc/default
@@ -72,6 +80,14 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/etc
+/usr/bin
+/usr/include/shadow
+/usr/lib/lib*.so*
+/usr/sbin
+
+%else
 %config(noreplace) /etc/limits
 %config(noreplace) /etc/login.access
 %config(noreplace) /etc/login.defs
@@ -120,3 +136,4 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 %files doc
 /usr/share/man/man*/*
 
+%endif

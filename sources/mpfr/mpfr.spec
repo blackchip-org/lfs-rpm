@@ -1,10 +1,18 @@
-Name:           mpfr
-Version:        4.2.1
-Release:        1%{?dist}
+# lfs
+
+%global name        mpfr
+%global version     4.2.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A C library for multiple-precision floating-point computations
 License:        LGPLv3+ or GPLv2+
 
-Source:         https://ftp.gnu.org/gnu/mpfr/mpfr-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  autoconf
 BuildRequires:  texinfo
@@ -26,6 +34,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -38,27 +47,21 @@ sed -e 's/+01,234,567/+1,234,567 /' \
             --disable-static     \
             --enable-thread-safe \
             --docdir=/usr/share/doc/mpfr-%{version}
-%make
-%make html
+make %{?_smp_mflags}
+make html
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install install-html
-%remove_info_dir
-
-#---------------------------------------------------------------------------
-%check
-%make check
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
+make DESTDIR=%{buildroot} install install-html
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/include/*
 /usr/lib/libmpfr.so
 /usr/lib/libmpfr.so.6
@@ -68,3 +71,5 @@ sed -e 's/+01,234,567/+1,234,567 /' \
 %files doc
 /usr/share/doc/mpfr-%{version}
 /usr/share/info/*
+
+%endif

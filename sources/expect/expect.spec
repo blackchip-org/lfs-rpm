@@ -47,16 +47,12 @@ patch -Np1 -i %{PATCH0}
             --enable-shared         \
             --mandir=/usr/share/man \
             --with-tclinclude=/usr/include
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 ln -svf expect%{version}/libexpect%{version}.so %{buildroot}/usr/lib
-
-%if %{with lfs}
-%discard_docs
-%endif
 
 #---------------------------------------------------------------------------
 %check

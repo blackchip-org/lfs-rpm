@@ -36,15 +36,11 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
-%make BUILD_STATIC=no PREFIX=/usr
+make %{?_smp_mflags} BUILD_STATIC=no PREFIX=/usr
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} BUILD_STATIC=no PREFIX=/usr install
-
-%if %{with lfs}
-%discard_docs
-%endif
+make DESTDIR=%{buildroot} BUILD_STATIC=no PREFIX=/usr install
 
 #---------------------------------------------------------------------------
 %files

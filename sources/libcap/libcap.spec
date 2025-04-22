@@ -1,10 +1,18 @@
-Name:           libcap
-Version:        2.73
-Release:        1%{?dist}
+# lfs
+
+%global name        libcap
+%global version     2.73
+%global revision    1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{revision}%{?dist}
 Summary:        Library for getting and setting POSIX.1e capabilities
 License:        BSD or GPLv2
 
-Source:         https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-%{version}.tar.xz
+Source0:        https://www.kernel.org/pub/linux/libs/security/linux-privs/%{name}2/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -21,23 +29,31 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 sed -i '/install -m.*STA/d' libcap/Makefile
-%make prefix=/usr lib=lib
+make %{?_smp_mflags} prefix=/usr lib=lib
 
 #---------------------------------------------------------------------------
 %install
-%make prefix=%{buildroot}/usr lib=lib install
+make prefix=%{buildroot}/usr lib=lib install
 
 #---------------------------------------------------------------------------
 %check
-%make test
+make test
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include/sys
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+/usr/sbin
+
+%else
 /usr/include/sys/*.h
 /usr/lib/libcap.so
 /usr/lib/libcap.so.2
@@ -54,4 +70,6 @@ sed -i '/install -m.*STA/d' libcap/Makefile
 
 %files doc
 /usr/share/man/man*/*
+
+%endif
 

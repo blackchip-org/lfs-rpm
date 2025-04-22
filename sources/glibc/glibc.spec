@@ -1,9 +1,8 @@
 # lfs
 
-%global name    glibc
-%global version 2.41
-%global release 1
-
+%global name            glibc
+%global version         2.41
+%global release         1
 %global enable_kernel   5.4
 
 #---------------------------------------------------------------------------
@@ -55,7 +54,7 @@ Documentation for %{name}
 %prep
 %verify_sha256 -f %{SOURCE1}
 %setup -q
-cp ${SOURCE2} %{SOURCE3} .
+cp %{SOURCE2} %{SOURCE3} .
 
 %if !%{with %lfs_stage1}
 %patch 0 -p1
@@ -101,16 +100,11 @@ case %{_arch} in
     i?86)   mkdir -p              %{buildroot}/%{?lfs_dir}/lib
             ln -sfv ld-linux.so.2 %{buildroot}/%{?lfs_dir}/lib/ld-lsb.so.3
     ;;
-    x86_64) mkdir -p %{buildroot}/%{lfs_dir}/lib64
+    x86_64) mkdir -p %{buildroot}/%{?lfs_dir}/lib64
             ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{?lfs_dir}/lib64
             ln -sfv ../lib/ld-linux-x86-64.so.2 %{buildroot}/%{?lfs_dir}/lib64/ld-lsb-x86-64.so.3
     ;;
 esac
-
-%if %{with lfs}
-rm -rf  %{buildroot}/%{?lfs_dir}/var
-rm -rf  %{buildroot}/%{?lfs_dir}/usr/lib/{locale,systemd,tmpfiles.d}
-%endif
 
 %if !%{with lfs_stage1}
 sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
@@ -123,8 +117,8 @@ mkdir -pv   %{buildroot}/var/cache/nscd
 install -v -Dm644 ../nscd/nscd.tmpfiles %{buildroot}/usr/lib/tmpfiles.d/nscd.conf
 install -v -Dm644 ../nscd/nscd.service %{buildroot}/usr/lib/systemd/system/nscd.service
 
-install -D -m 644 nsswitch.conf %{buildroot}/etc/nsswitch.conf
-install -D -m 644 ld.so.conf    %{buildroot}/etc/ld.so.conf
+install -D -m 644 ../ld.so.conf    %{buildroot}/etc/ld.so.conf
+install -D -m 644 ../nsswitch.conf %{buildroot}/etc/nsswitch.conf
 %endif
 
 #---------------------------------------------------------------------------
@@ -145,16 +139,17 @@ make check
 %files
 
 %if %{with lfs}
-%{?lfs_dir}/lib64/*
-%{?lfs_dir}/etc/*
-%{?lfs_dir}/usr/bin/*
-%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/lib64
+%{?lfs_dir}/etc
+%{?lfs_dir}/usr/bin
+%{?lfs_dir}/usr/include
 %{?lfs_dir}/usr/lib/*.{a,o,so*}
-%{?lfs_dir}/usr/lib/{audit,gconv}
-%{?lfs_dir}/usr/libexec/*
-%{?lfs_dir}/usr/sbin/*
+%{?lfs_dir}/usr/lib/{audit,gconv,locale,systemd,tmpfiles.d}
+%{?lfs_dir}/usr/libexec
+%{?lfs_dir}/usr/sbin
 %{?lfs_dir}/usr/share/i18n/charmaps
 %{?lfs_dir}/usr/share/i18n/locales
+%{?lfs_dir}/var/lib/nss_db
 
 %else
 /etc/ld.so.cache

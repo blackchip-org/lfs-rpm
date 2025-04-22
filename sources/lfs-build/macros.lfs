@@ -12,7 +12,6 @@
 # The brp-elfperms script is in the os_install_post by default but seems to be
 # removing execute bits on shared libraries. Remove it for now/
 # https://github.com/rpm-software-management/rpm/issues/2496
-
 %__os_install_post    \
     %{?__brp_compress} \
     %{?__brp_strip} \

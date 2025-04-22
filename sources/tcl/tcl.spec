@@ -50,7 +50,7 @@ cd unix
 ./configure --prefix=/usr           \
             --mandir=/usr/share/man \
             --disable-rpath
-%make
+make %{?_smp_mflags}
 
 sed -e "s|$SRCDIR/unix|/usr/lib|" \
     -e "s|$SRCDIR|/usr/include|"  \
@@ -78,11 +78,6 @@ ln -sfv tclsh%{version2} %{buildroot}/usr/bin/tclsh
 mv %{buildroot}/usr/share/man/man3/{Thread,Tcl_Thread}.3
 
 find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
-
-%if %{with lfs}
-%discard_docs
-%discard_locales
-%endif
 
 #---------------------------------------------------------------------------
 %files

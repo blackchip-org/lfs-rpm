@@ -63,7 +63,7 @@ lfs-init() {
         --userns    keep-id \
         --volume    "./build/rpms/${stage}:/rpmbuild/RPMS:z" \
         --volume    "./build/srpms:/rpmbuild/SRPMS:z" \
-        --volume    .:/mnt:z \
+        --volume    .:/host:z \
         lfs-$stage
     podman start lfs-$stage
 }
@@ -113,6 +113,7 @@ lfs-build() {
         fi
 
         package=$(basename "$spec" .spec)
+        # TODO: Add check here to make sure spec file is valid
         package_version=$(rpmspec --undefine dist --qf '%{NAME}-%{VERSION}-%{RELEASE}\n' -qv $spec | head -1 | sed 's/.src//')
 
         if [ "$package" == "gcc" ] && [ "$stage" == "stage1b" ] ; then
@@ -146,11 +147,11 @@ lfs-build() {
             ( set -e -x -o pipefail
             podman exec lfs-$stage rpmbuild \
                 --define "_topdir /rpmbuild" \
-                --define "_sourcedir /mnt/build/sources" \
+                --define "_sourcedir /host/build/sources" \
                 --nodeps \
                 $rpmbuild_flags \
                 $rpmbuild_pkg_flags \
-                /mnt/${spec} 2>&1 \
+                /host/${spec} 2>&1 \
                 | tee logs/${stage}/${package}.log
             podman exec --user root lfs-$stage rpm \
                 $method \
@@ -170,14 +171,14 @@ lfs-export() {
         stage1a)
             (
             set -x
-            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /mnt/build/containers/lfs-${stage}.tar.gz  .
+            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /host/build/containers/lfs-${stage}.tar.gz  .
             cp build/containers/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
         stage1b)
             (
             set -x
-            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /mnt/build/containers/lfs-${stage}.tar.gz --exclude=./tools .
+            podman exec --user root -t lfs-${stage} tar -C /lfs -c -z -f /host/build/containers/lfs-${stage}.tar.gz --exclude=./tools .
             cp build/containers/lfs-${stage}.tar.gz containers/lfs-${next_stage}
             )
             ;;
@@ -185,9 +186,9 @@ lfs-export() {
             (
             set -x
             podman exec --user root -t lfs-$stage \
-                tar -C / -c -z -f /mnt/build/containers/lfs-$stage.tar.gz \
-                --exclude='./mnt/*' \
-                --exclude='./build' \
+                tar -C / -c -z -f /host/build/containers/lfs-$stage.tar.gz \
+                --exclude='./host' \
+                --exclude='./rpmbuild' \
                 --exclude='./tmp/*' \
                 --exclude './home/*' \
                 --exclude './root/*' \
@@ -203,8 +204,9 @@ lfs-export() {
             (
             set -x
             podman exec --user root -t lfs-$stage \
-                tar -C / -c -z -f /mnt/build/containers/lfs-$stage.tar.gz \
-                --exclude='./build' \
+                tar -C / -c -z -f /host/build/containers/lfs-$stage.tar.gz \
+                --exclude='./host' \
+                --exclude='./rpmbuild' \
                 --exclude='./tmp/*' \
                 --exclude './home/*' \
                 --exclude './root/*' \

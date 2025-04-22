@@ -46,28 +46,16 @@ Documentation for %{name}
             --enable-cxx     \
             --disable-static \
             --docdir=/usr/share/doc/gmp-%{version}
-%make
-%make html
+make %{?_smp_mflags}
+make html
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install install-html
-%remove_info_dir
-
-%if %{with lfs}
-%discard_docs
-%endif
+make DESTDIR=%{buildroot} install install-html
 
 #---------------------------------------------------------------------------
 %check
 %make check
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
 
 #---------------------------------------------------------------------------
 %files

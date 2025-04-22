@@ -1,4 +1,4 @@
-source/lfs-build
+sources/lfs-build
 sources/rpm-config
 sources/root-fs
 sources/iana-etc

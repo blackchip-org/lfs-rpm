@@ -34,30 +34,18 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
-%make prefix=/usr
+make %{_smp_mflags} prefix=/usr
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1b}
-%make DESTDIR=%{buildroot}/%{lfs_dir} prefix=/usr install
-rm -f %{buildroot}/%{lfs_dir}/usr/lib/libzstd.a
-
-%else
-%make DESTDIR=%{buildroot} prefix=/usr install
-rm -f %{buildroot}/usr/lib/libzstd.a
-
-%endif
-
-%if %{with lfs}
-%discard_docs
-%endif
+make DESTDIR=%{buildroot}/%{?lfs_dir} prefix=/usr install
 
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/*
-%{?lfs_dir}/usr/lib/*.so*
+%{?lfs_dir}/usr/lib/{lib*.so*,*.a}
 %{?lfs_dir}/usr/lib/pkgconfig/*
 
 %else

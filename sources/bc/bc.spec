@@ -46,16 +46,11 @@ Documentation for %{name}
 #---------------------------------------------------------------------------
 %build
 CC=gcc ./configure --prefix=/usr -G -O3 -r
-%make
+make %{_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-
-%if %{with lfs}
-%discard_docs
-%discard_locales
-%endif
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files

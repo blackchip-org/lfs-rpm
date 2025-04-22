@@ -50,6 +50,8 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
+sed     -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+
 %if %{with lfs_stage1}
 make %{?_smp_mflags} -f Makefile-libbz2_so
 make clean
@@ -60,7 +62,6 @@ make %{?_smp_mflags} \
 
 %else
 sed     -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
-sed     -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
 make    %{?_smp_mflags} -f Makefile-libbz2_so
 make    clean
 make    %{?_smp_mflags}
@@ -79,8 +80,6 @@ cp -v bzip2-shared      %{buildroot}/%{?lfs_dir}/usr/bin/bzip2
 for i in /usr/bin/{bzcat,bunzip2,bzcmp,bzegrep,bzfgrep,bzless}; do
     ln -sfv bzip2 %{buildroot}/%{?lfs_dir}/$i
 done
-
-mv %{buildroot}/%{?lfs_dir}/usr/man %{buildroot}/%{?lfs_dir}/usr/share/man
 
 #---------------------------------------------------------------------------
 %files

@@ -48,33 +48,21 @@ mkdir -v build
 cd       build
 
 ../configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 makeinfo --html --no-split -o doc/dejagnu.html ../doc/dejagnu.texi
 makeinfo --plaintext       -o doc/dejagnu.txt  ../doc/dejagnu.texi
 
 #---------------------------------------------------------------------------
 %install
 cd build
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 install -v -dm755  %{buildroot}/usr/share/doc/dejagnu-%{version}
 install -v -m644   doc/dejagnu.{html,txt} %{buildroot}/usr/share/doc/dejagnu-%{version}
-%remove_info_dir
-
-%if %{with lfs}
-%discard_docs
-%endif
 
 #---------------------------------------------------------------------------
 %check
 cd build
 make check
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
