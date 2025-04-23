@@ -76,7 +76,7 @@ make check
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
+%if %{with lfs}
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/libexec/*
 

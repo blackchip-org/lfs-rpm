@@ -80,12 +80,12 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{?lfs_dir}/usr/bin/*
-%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/bin
+%{?lfs_dir}/usr/include
 %{?lfs_dir}/usr/lib/gettext
 %{?lfs_dir}/usr/lib/*.{a,so*}
 %{?lfs_dir}/usr/libexec/%{name}
-%{?lfs_dir}/usr/share/aclocal/*
+%{?lfs_dir}/usr/share/aclocal
 %{?lfs_dir}/usr/share/gettext-%{version}
 %{?lfs_dir}/usr/share/gettext
 

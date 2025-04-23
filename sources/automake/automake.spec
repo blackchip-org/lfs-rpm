@@ -1,11 +1,19 @@
-Name:           automake
-Version:        1.16.5
-%global         version2 1.16
+# lfs
+
+%global name        automake
+%global version_2   1.16
+%global version     %{version_2}.5
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
 Release:        1%{?dist}
 Summary:        A GNU tool for automatically creating Makefiles
 License:        GPLv2+ and GFDL and Public Domain and MIT
 
-Source0:        https://ftp.gnu.org/gnu/automake/automake-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/automake/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  autoconf >= 2.65
 Suggests:       %{name}-doc = %{version}
@@ -33,6 +41,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -41,23 +50,21 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 mv %{buildroot}/usr/share/aclocal/README %{buildroot}/usr/share/doc/automake-%{version}
-%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
-%make check
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
+make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/share/aclocal-%{version_2}
+/usr/share/automake-%{version_2}
+
+%else
 /usr/bin/aclocal
 /usr/bin/aclocal-%{version2}
 /usr/bin/automake
@@ -71,3 +78,5 @@ mv %{buildroot}/usr/share/aclocal/README %{buildroot}/usr/share/doc/automake-%{v
 
 %files man
 /usr/share/man/man*/*
+
+%endif

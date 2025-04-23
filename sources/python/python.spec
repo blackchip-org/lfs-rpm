@@ -78,10 +78,10 @@ EOF
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin/*
+/usr/bin
 /usr/include/python%{python_version}
 /usr/lib/*.so*
-/usr/lib/pkgconfig/*
+/usr/lib/pkgconfig
 /usr/lib/python%{python_version}
 /usr/lib/rpm/macros.d/macros.python
 

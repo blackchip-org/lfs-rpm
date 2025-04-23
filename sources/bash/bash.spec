@@ -79,16 +79,9 @@ ln -s   bash %{buildroot}/%{?lfs_dir}/usr/bin/sh
 make tests
 
 #---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/bin
 %{?lfs_dir}/usr/include/bash
 %{?lfs_dir}/usr/lib/bash
 %{?lfs_dir}/usr/lib/pkgconfig/bash.pc

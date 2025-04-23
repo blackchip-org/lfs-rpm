@@ -1,10 +1,18 @@
-Name:           iproute
-Version:        6.13.0
-Release:        1%{?dist}
+# lfs
+
+%global name        iproute
+%global version     6.13.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Advanced IP routing and network device configuration tools
 License:        GPLv2+ and Public Domain
 
-Source:         https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-%{version}.tar.xz
+Source0:        https://www.kernel.org/pub/linux/utils/net/%{name}2/%{name}2-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  bison
 Suggests:       %{name}-doc = %{version}
@@ -23,6 +31,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n iproute2-%{version}
 
 #---------------------------------------------------------------------------
@@ -30,14 +39,21 @@ Documentation for %{name}
 sed -i /ARPD/d Makefile
 rm -fv man/man8/arpd.8
 
-%make NETNS_RUN_DIR=/run/netns
+make %{?_smp_mflags} NETNS_RUN_DIR=/run/netns
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} SBINDIR=/usr/sbin install
+make DESTDIR=%{buildroot} SBINDIR=/usr/sbin install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include
+/usr/lib/tc
+/usr/sbin
+/usr/share/{bash-completion,%{name}2}
+
+%else
 /usr/include/iproute2
 /usr/lib/tc/*
 /usr/sbin/bridge
@@ -66,3 +82,5 @@ rm -fv man/man8/arpd.8
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

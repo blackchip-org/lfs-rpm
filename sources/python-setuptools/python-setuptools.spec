@@ -1,10 +1,19 @@
-Name:           python-setuptools
-Version:        75.8.1
-Release:        1%{?dist}
+# lfs
+
+%global source_name setuptools
+%global name        python-%{source_name}
+%global version     75.8.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Easily build and distribute Python 3 packages
 License:        MIT
 
-Source0:        https://pypi.org/packages/source/s/setuptools/setuptools-%{version}.tar.gz
+Source0:        https://pypi.org/packages/source/s/%{source_name}/%{source_name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Requires:       python-wheel
 
@@ -21,6 +30,7 @@ execute the software that requires pkg_resources.py.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n setuptools-%{version}
 
 #---------------------------------------------------------------------------

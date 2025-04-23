@@ -1,10 +1,18 @@
-Name:           procps-ng
-Version:        4.0.5
-Release:        1%{?dist}
+# lfs
+
+%global name        procps-ng
+%global version     4.0.5
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        System and process monitoring utilities
 License:        GPL+ and GPLv2 and GPLv2+ and GPLv3+ and LGPLv2+
 
-Source:         https://sourceforge.net/projects/procps-ng/files/Production/procps-ng-%{version}.tar.xz
+Source0:        https://sourceforge.net/projects/%{name}/files/Production/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  pkg-config
 BuildRequires:  systemd
@@ -54,6 +62,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -63,18 +72,26 @@ Documentation for %{name}
             --disable-static                        \
             --disable-kill                          \
             --with-systemd
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include/libproc2
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+/usr/sbin
+
+%else
 /usr/bin/free
 /usr/bin/hugetop
 /usr/bin/pgrep
@@ -108,3 +125,4 @@ Documentation for %{name}
 /usr/share/man/{??,pt_BR,zh_CN}/man*/*
 /usr/share/man/man*/*
 
+%endif

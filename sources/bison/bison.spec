@@ -72,16 +72,16 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin/*
-/usr/lib/*
+/usr/bin
+/usr/lib
 /usr/share/%{name}
-/usr/share/aclocal/*
+/usr/share/aclocal
 
 %else
 /usr/bin/bison
 /usr/bin/yacc
 /usr/lib/liby.a
-/usr/share/aclocal/*
+/usr/share/aclocal
 /usr/share/%{name}
 
 %files lang

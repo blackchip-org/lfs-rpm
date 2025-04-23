@@ -1,10 +1,18 @@
-Name:           libpipeline
-Version:        1.5.8
-Release:        1%{?dist}
+# lfs
+
+%global name        libpipeline
+%global version     1.5.8
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A pipeline manipulation library
 License:        GPLv3+
 
-Source:         https://download.savannah.gnu.org/releases/libpipeline/libpipeline-%{version}.tar.gz
+Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -24,16 +32,17 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
@@ -41,6 +50,12 @@ make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/include/pipeline.h
 /usr/lib/libpipeline.so
 /usr/lib/libpipeline.so.1
@@ -49,3 +64,5 @@ make check
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

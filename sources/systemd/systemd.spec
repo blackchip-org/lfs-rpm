@@ -1,11 +1,19 @@
-Name:           systemd
-Version:        257.3
-Release:        1%{?dist}
+# lfs
+
+%global name        systemd
+%global version     257.3
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        System and Service Manager
 License:        LGPLv2+ and MIT and GPLv2+
 
-Source0:        https://github.com/systemd/systemd/archive/v%{version}/systemd-%{version}.tar.gz
-Source1:        https://anduin.linuxfromscratch.org/LFS/systemd-man-pages-%{version}.tar.xz
+Source0:        https://github.com/systemd/systemd/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
+Source2:        https://anduin.linuxfromscratch.org/LFS/%{name}-man-pages-%{version}.tar.xz
 
 BuildRequires:  gettext
 BuildRequires:  gperf
@@ -52,6 +60,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -112,10 +121,12 @@ ninja
 cd build
 DESTDIR=%{buildroot} ninja install
 
+%if !%{with lfs}
 mkdir -p %{buildroot}/usr/share/man
-tar -xf %{SOURCE1} \
+tar -xf %{SOURCE2} \
     --no-same-owner --strip-components=1   \
     -C %{buildroot}/usr/share/man
+%endif
 
 #---------------------------------------------------------------------------
 %post
@@ -126,6 +137,16 @@ systemctl preset-all
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/etc/{init.d,profile.d,ssh,systemd,udev,xdg,X11}
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/{environment.d,kernel,modprobe.d,pkgconfig,sysctl.d,systemd,tmpfiles.d,udev}
+/usr/sbin
+/usr/share/{bash-completion,dbus-1,factory,mime,pkgconfig,polkit-1,systemd,zsh}
+
+%else
 /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
 /etc/init.d/README
 /etc/profile.d/70-systemd-shell-extra.sh
@@ -256,3 +277,5 @@ systemctl preset-all
 
 %files man
 /usr/share/man/man*/*
+
+%endif

@@ -1,10 +1,18 @@
-Name:           check
-Version:        0.15.2
-Release:        1%{?dist}
+# lfs
+
+%global name        check
+%global version     0.15.2
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A unit test framework for C
 License:        LGPLv2+
 
-Source0:        https://github.com/libcheck/check/releases/download/%{version}/check-%{version}.tar.gz
+Source0:        https://github.com/lib%{name}/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 %description
 Check is a unit test framework for C. It features a simple interface for
@@ -29,28 +37,32 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr --disable-static
-%make
+make %{_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} docdir=/usr/share/doc/check-0.15.2 install
-%remove_info_dir
+make DESTDIR=%{buildroot} docdir=/usr/share/doc/check-0.15.2 install
 
 #---------------------------------------------------------------------------
 %check
 %make check
 
 #---------------------------------------------------------------------------
-%post
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+/usr/share/aclocal
+
+%else
 /usr/bin/checkmk
 /usr/include/*.h
 /usr/lib/libcheck.so
@@ -58,11 +70,12 @@ Documentation for %{name}
 %shlib /usr/lib/libcheck.so.0.0.0
 /usr/lib/pkgconfig/check.pc
 /usr/share/aclocal/check.m4
-/usr/share/doc/check-%{version}
 
 %files doc
 /usr/share/info/*
+/usr/share/doc/check-%{version}
 
 %files man
 /usr/share/man/man*/*
 
+%endif

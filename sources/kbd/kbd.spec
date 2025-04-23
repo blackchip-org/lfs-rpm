@@ -1,10 +1,18 @@
-Name:           kbd
-Version:        2.7.1
-Release:        1%{?dist}
+# lfs
+
+%global name        kbd
+%global version     2.7.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Tools for configuring the console (keyboard, virtual terminals, etc.)
 License:        GPLv2+
 
-Source:         https://www.kernel.org/pub/linux/utils/kbd/kbd-%{version}.tar.xz
+Source0:        https://www.kernel.org/pub/linux/utils/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/kbd-%{version}-backspace-1.patch
 
 BuildRequires:  autoconf
@@ -32,6 +40,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 %patch 0 -p 1
 
@@ -40,14 +49,20 @@ Documentation for %{name}
 sed -i '/RESIZECONS_PROGS=/s/yes/no/' configure
 sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
 ./configure --prefix=/usr --disable-vlock
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/share/console{fonts,trans}
+/usr/share/{keymaps,unimaps}
+
+%else
 /usr/bin/chvt
 /usr/bin/deallocvt
 /usr/bin/dumpkeys
@@ -82,3 +97,5 @@ sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

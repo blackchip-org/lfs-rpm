@@ -1,10 +1,18 @@
-Name:           kmod
-Version:        34
-Release:        1%{?dist}
+# lfs
+
+%global name        kmod
+%global version     34
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Linux kernel module management utilities
 License:        GPLv2+
 
-Source:         https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-%{version}.tar.xz
+Source0:        https://www.kernel.org/pub/linux/utils/kernel/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  meson
 BuildRequires:  ninja
@@ -19,6 +27,7 @@ and unloaded modules.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -41,11 +50,18 @@ DESTDIR=%{buildroot} ninja install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+/usr/sbin
+/usr/share/{bash-completion,fish,pkgconfig,zsh}
+
+%else
 /usr/bin/kmod
 /usr/include/*.h
-/usr/lib/libkmod.so
-/usr/lib/libkmod.so.2
-%shlib /usr/lib/libkmod.so.2.5.1
+/usr/lib/libkmod.so*
 /usr/lib/pkgconfig/libkmod.pc
 /usr/sbin/depmod
 /usr/sbin/insmod
@@ -57,4 +73,6 @@ DESTDIR=%{buildroot} ninja install
 /usr/share/fish/vendor_functions.d/{insmod,lsmod,rmmod}.fish
 /usr/share/pkgconfig/kmod.pc
 /usr/share/zsh/site-functions/_{insmod,lsmod,rmmod}
+
+%endif
 

@@ -1,10 +1,18 @@
-Name:           psmisc
-Version:        23.7
-Release:        1%{?dist}
+# lfs
+
+%global name        psmisc
+%global version     23.7
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Utilities for managing processes on your system
 License:        GPLv2+
 
-Source:         https://sourceforge.net/projects/psmisc/files/psmisc/psmisc-%{version}.tar.xz
+Source0:        https://sourceforge.net/projects/psmisc/files/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -33,23 +41,28 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+
+%else
 /usr/bin/fuser
 /usr/bin/killall
 /usr/bin/peekfd
@@ -64,3 +77,5 @@ Documentation for %{name}
 %files doc
 /usr/share/man/{??,pt_BR}/man*/*
 /usr/share/man/man*/*
+
+%endif

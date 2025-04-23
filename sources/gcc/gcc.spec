@@ -175,17 +175,26 @@ make -k check
 %files
 %if %{with lfs_stage1a}
 %{lfs_tools_dir}/bin/*
-%{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}
 %{lfs_tools_dir}/lib64/*
+%{lfs_tools_dir}/lib/gcc/%{lfs_tgt}/%{version}
 %{lfs_tools_dir}/libexec/gcc/%{lfs_tgt}/%{version}
 
 %elif %{with lfs_stage1b}
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/c++/%{version}
-%{lfs_dir}/usr/lib/gcc/%{lfs_tgt}/%{version}
-%{lfs_dir}/usr/lib/*.{so*,a,spec}
-%{lfs_dir}/usr/libexec/gcc/%{lfs_tgt}/%{version}
-%{lfs_dir}/usr/share/gcc-%{version}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/c++/%{version}
+%{?lfs_dir}/usr/lib/*.{so*,a,spec}
+%{?lfs_dir}/usr/share/gcc-%{version}
+%{?lfs_dir}/lib/gcc/%{lfs_tgt}/%{version}
+%{?lfs_dir}/libexec/gcc/%{lfs_tgt}/%{version}
+
+%elif %{with lfs}
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/c++/%{version}
+%{?lfs_dir}/usr/lib/*.{so*,a,spec,o}
+%{?lfs_dir}/usr/lib/{bfd-plugins,cpp,gcc}
+%{?lfs_dir}/usr/share/gcc-%{version}
+%{?lfs_dir}/usr/share/gdb
+%{?lfs_dir}/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}
 
 %else
 /usr/bin/c++

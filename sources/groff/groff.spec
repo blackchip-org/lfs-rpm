@@ -1,10 +1,18 @@
-Name:           groff
-Version:        1.23.0
-Release:        1%{?dist}
+# lfs
+
+%global name        groff
+%global version     1.23.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Groff formatting system
 License:        GPLv3+ and GFDL and BSD and MIT
 
-Source:         https://ftp.gnu.org/gnu/groff/groff-%{version}.tar.gz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  perl
 Suggests:       %{name}-doc = %{version}
@@ -39,31 +47,29 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 PAGE=letter ./configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-%remove_info_dir
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
-%make check
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
+make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/share/groff
+
+%else
 /usr/bin/addftinfo
 /usr/bin/afmtodit
 /usr/bin/chem
@@ -114,3 +120,5 @@ PAGE=letter ./configure --prefix=/usr
 
 %files man
 /usr/share/man/man*/*
+
+%endif

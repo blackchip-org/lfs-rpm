@@ -1,10 +1,18 @@
-Name:           intltool
-Version:        0.51.0
-Release:        1%{?dist}
+# lfs
+
+%global name        intltool
+%global version     0.51.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Utility for internationalizing various kinds of data files
 License:        GPLv2 with exceptions
 
-Source:         https://launchpad.net/intltool/trunk/%{version}/+download/intltool-%{version}.tar.gz
+Source0:        https://launchpad.net/intltool/trunk/%{version}/+download/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  perl-XML-Parser
 Suggests:       %{name}-doc = %{version}
@@ -30,25 +38,31 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 sed -i 's:\\\${:\\\$\\{:' intltool-update.in
 ./configure --prefix=/usr
-%make
+make %{_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 install -v -Dm644 doc/I18N-HOWTO %{buildroot}/usr/share/doc/intltool-%{version}/I18N-HOWTO
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/share/{aclocal,intltool}
+
+%else
 /usr/bin/intltool-extract
 /usr/bin/intltool-merge
 /usr/bin/intltool-prepare
@@ -62,3 +76,5 @@ install -v -Dm644 doc/I18N-HOWTO %{buildroot}/usr/share/doc/intltool-%{version}/
 
 %files man
 /usr/share/man/man*/*
+
+%endif

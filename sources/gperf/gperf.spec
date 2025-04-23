@@ -1,10 +1,18 @@
-Name:           gperf
-Version:        3.1
-Release:        1%{?dist}
+# lfs
+
+%global name        gperf
+%global version     3.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        GNU gperf is a perfect hash function generator
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/gperf/gperf-%{version}.tar.gz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -35,31 +43,28 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr --docdir=/usr/share/doc/gperf-%{version}
-%make
+make %{_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-%remove_info_dir
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
 make -j1 check
 
 #---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+
+%else
 /usr/bin/gperf
 /usr/share/doc/gperf-%{version}
 
@@ -68,3 +73,5 @@ make -j1 check
 
 %files man
 /usr/share/man/man*/*
+
+%endif

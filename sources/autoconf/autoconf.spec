@@ -1,10 +1,18 @@
-Name:           autoconf
-Version:        2.72
-Release:        1%{?dist}
+# lfs
+
+%global name        autoconf
+%global version     2.72
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A GNU tool for automatically configuring source code
 License:        GPLv2+ and GFDL
 
-Source0:        https://ftp.gnu.org/gnu/autoconf/autoconf-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -38,6 +46,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -47,26 +56,23 @@ sed -e 's/SECONDS|/&SHLVL|/'               \
     -i.orig tests/local.at
 
 ./configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-%remove_info_dir
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
 make check
 
 #---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/share/autoconf
+
+%else
 /usr/bin/autoconf
 /usr/bin/autoheader
 /usr/bin/autom4te
@@ -81,3 +87,5 @@ make check
 
 %files man
 /usr/share/man/man*/*
+
+%endif

@@ -1,10 +1,18 @@
-Name:           libtool
-Version:        2.5.4
-Release:        1%{?dist}
+# lfs
+
+%global name        libtool
+%global version     2.5.4
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        The GNU Portable Library Tool
 License:        GPLv2+ and LGPLv2+ and GFDL
 
-Source:         https://ftp.gnu.org/gnu/libtool/libtool-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -39,32 +47,32 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 rm -fv %{buildroot}/usr/lib/libltdl.a
-%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
-%make -k check
-
-#---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
+make -k check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/share/{aclocal,libtool}
+
+%else
 /usr/bin/libtool
 /usr/bin/libtoolize
 /usr/include/libltdl
@@ -81,3 +89,4 @@ rm -fv %{buildroot}/usr/lib/libltdl.a
 %files man
 /usr/share/man/man*/*
 
+%endif

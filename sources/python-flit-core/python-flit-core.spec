@@ -1,10 +1,19 @@
-Name:           python-flit-core
-Version:        3.11.0
-Release:        1%{?dist}
+# lfs
+
+%global source_name flit_core
+%global name        python-flit-core
+%global version     3.11.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Simplified packaging of Python modules
 License:        BSD-3-Clause
 
-Source0:        https://pypi.org/packages/source/f/flit-core/flit_core-%{version}.tar.gz
+Source0:        https://pypi.org/packages/source/f/%{source_name}/%{source_name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  python
 
@@ -23,7 +32,8 @@ so long as they can be imported on Python 3.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n flit_core-%{version}
+%verify_sha256 -f %{SOURCE1}
+%setup -q -n %{source_name}-%{version}
 
 #---------------------------------------------------------------------------
 %build

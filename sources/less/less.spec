@@ -1,10 +1,18 @@
-Name:           less
-Version:        668
-Release:        1%{?dist}
+# lfs
+
+%global name        less
+%global version     668
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A text file browser similar to more, but better
 License:        GPLv3+ or BSD
 
-Source:         https://www.greenwoodsoftware.com/less/less-%{version}.tar.gz
+Source0:        https://www.greenwoodsoftware.com/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -26,26 +34,33 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr --sysconfdir=/etc
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+
+%else
 /usr/bin/less
 /usr/bin/lessecho
 /usr/bin/lesskey
 
 %files doc
 /usr/share/man/man1/*
+
+%endif

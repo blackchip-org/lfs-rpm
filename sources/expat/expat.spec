@@ -1,10 +1,18 @@
-Name:           expat
-Version:        2.7.1
-Release:        1%{?dist}
+# lfs
+
+%global name        expat
+%global version     2.7.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        An XML parser library
 License:        MIT
 
-Source:         https://prdownloads.sourceforge.net/expat/expat-%{version}.tar.xz
+Source0:        https://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -31,6 +39,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -38,19 +47,27 @@ Documentation for %{name}
 ./configure --prefix=/usr    \
             --disable-static \
             --docdir=/usr/share/doc/expat-%{version}
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 install -v -m644 -t %{buildroot}/usr/share/doc/expat-%{version} doc/*.{html,css}
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include
+/usr/lib/cmake/expat-%{version}
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/bin/xmlwf
 /usr/include/*.h
 /usr/lib/cmake/expat-%{version}
@@ -64,3 +81,5 @@ install -v -m644 -t %{buildroot}/usr/share/doc/expat-%{version} doc/*.{html,css}
 
 %files man
 /usr/share/man/man*/*
+
+%endif

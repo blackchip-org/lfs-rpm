@@ -1,10 +1,18 @@
-Name:           meson
-Version:        1.7.0
-Release:        1%{?dist}
+# lfs
+
+%global name        meson
+%global version     1.7.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Meson is an open source build system designed to be both extremely fast and as user friendly as possible.
 License:        ASL
 
-Source:         https://github.com/mesonbuild/meson/releases/download/%{version}/meson-%{version}.tar.gz
+Source0:        https://github.com/mesonbuild/meson/releases/download/%{version}/meson-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  python
 BuildRequires:  python-setuptools
@@ -27,6 +35,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n meson-%{version}
 
 #---------------------------------------------------------------------------
@@ -39,6 +48,12 @@ pip3 install --root %{buildroot} --no-index --find-links dist meson
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/lib/python%{python_version}/site-packages
+/usr/share/polkit-1
+
+%else
 /usr/bin/meson
 /usr/lib/python%{python_version}/site-packages/meson-%{version}.dist-info
 /usr/lib/python%{python_version}/site-packages/mesonbuild
@@ -46,3 +61,5 @@ pip3 install --root %{buildroot} --no-index --find-links dist meson
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

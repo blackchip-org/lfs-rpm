@@ -375,6 +375,7 @@ case $1 in
     stop)           assert-stage && podman stop --timeout 0 lfs-$stage ;;
     build)          assert-stage && lfs-build --install ;;
     rpm)            assert-stage && shift ; lfs-build --reinstall "$@" ;;
+    rpm-install)    assert-stage && shift ; rpmbuild_flags="--short-circuit -bi" ; lfs-build --reinstall "$@" ;;
     shell)          assert-stage && exec podman exec -it lfs-$stage /bin/bash ;;
     root)           assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)         assert-stage && lfs-export ;;

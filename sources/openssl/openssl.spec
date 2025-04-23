@@ -1,10 +1,18 @@
-Name:           openssl
-Version:        3.4.1
-Release:        1%{?dist}
+# lfs
+
+%global name        openssl
+%global version     3.4.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Utilities from the general purpose cryptography library with TLS implementation
 License:        OpenSSL and ASL 2.0
 
-Source:         https://www.openssl.org/source/openssl-%{version}.tar.gz
+Source0:        https://www.openssl.org/source/openssl-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -29,43 +37,23 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%if %{with lfs_stage1}
-%use_lfs_tools
-./config --prefix=%{lfs_dir}/usr                      \
-         --openssldir=%{lfs_dir}/etc/ssl              \
-         --with-zlib-include=%{lfs_dir}/usr/include   \
-         --libdir=lib                                 \
-         shared                                       \
-         zlib-dynamic
-
-%else
 ./config --prefix=/usr         \
          --openssldir=/etc/ssl \
          --libdir=lib          \
          shared                \
          zlib-dynamic
-
-%endif
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%if %{with lfs_stage1}
-%use_lfs_tools
-%endif
-
 sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
-%make DESTDIR=%{buildroot} MANSUFFIX=ssl install
+make DESTDIR=%{buildroot} MANSUFFIX=ssl install
 
-
-%if %{with lfs_stage1}
-%discard_docs
-
-%else
 mv -v %{buildroot}/usr/share/doc/openssl \
       %{buildroot}/usr/share/doc/openssl-%{version}
 cp -vfr doc/* %{buildroot}/usr/share/doc/openssl-%{version}
@@ -73,23 +61,21 @@ cp -vfr doc/* %{buildroot}/usr/share/doc/openssl-%{version}
 # perl(WWW::Curl::Easy)
 rm %{buildroot}/etc/ssl/misc/tsget*
 
-%endif
-
 #---------------------------------------------------------------------------
 %check
-%make test
+make test
 
 #---------------------------------------------------------------------------
 %files
-%if %{with lfs_stage1}
-%{lfs_dir}/etc/ssl
-%{lfs_dir}/usr/bin/*
-%{lfs_dir}/usr/include/openssl
-%{lfs_dir}/usr/lib/engines-3
-%{lfs_dir}/usr/lib/*.so*
-%{lfs_dir}/usr/lib/cmake/OpenSSL
-%{lfs_dir}/usr/lib/ossl-modules
-%{lfs_dir}/usr/lib/pkgconfig/*
+%if %{with lfs}
+%{?lfs_dir}/etc/ssl
+%{?lfs_dir}/usr/bin
+%{?lfs_dir}/usr/include/openssl
+%{?lfs_dir}/usr/lib/engines-3
+%{?lfs_dir}/usr/lib/lib*.so*
+%{?lfs_dir}/usr/lib/cmake/OpenSSL
+%{?lfs_dir}/usr/lib/ossl-modules
+%{?lfs_dir}/usr/lib/pkgconfig
 
 %else
 %config(noreplace) /etc/ssl/ct_log_list.cnf

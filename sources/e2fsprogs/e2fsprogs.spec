@@ -1,10 +1,18 @@
-Name:           e2fsprogs
-Version:        1.47.2
-Release:        1%{?dist}
+# lfs
+
+%global name        e2fsprogs
+%global version     1.47.2
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Utilities for managing ext2, ext3, and ext4 file systems
 License:        GPLv2
 
-Source:         https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v%{version}/e2fsprogs-%{version}.tar.gz
+Source0:        https://downloads.sourceforge.net/project/%{name}/%{name}/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  pkg-config
 BuildRequires:  systemd
@@ -47,6 +55,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -61,21 +70,32 @@ cd       build
              --disable-libuuid       \
              --disable-uuidd         \
              --disable-fsck
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
 
 cd build
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 rm -fv %{buildroot}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/etc
+/usr/bin
+/usr/include
+/usr/lib/{e2initrd_helper,pkgconfig,systemd,udev}
+/usr/lib/lib*.so*
+/usr/libexec/%{name}
+/usr/sbin
+/usr/share/{et,ss}
+
+%else
 %config(noreplace) /etc/e2scrub.conf
 %config(noreplace) /etc/mke2fs.conf
 /usr/bin/chattr
@@ -147,3 +167,5 @@ rm -fv %{buildroot}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
 
 %files man
 /usr/share/man/man*/*
+
+%endif

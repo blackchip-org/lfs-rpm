@@ -106,13 +106,11 @@ make DESTDIR=%{buildroot} install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/bin/*
-/sbin/*
-/usr/bin/*
-/usr/include/*
-/usr/lib/*
-/usr/sbin/*
-/usr/share/bash-completion/completions/*
+/usr/bin
+/usr/include
+/usr/lib
+/usr/sbin
+/usr/share/bash-completion/completions
 
 %else
 /usr/bin/cal

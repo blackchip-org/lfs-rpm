@@ -76,7 +76,7 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/bin
 
 %else
 /usr/bin/egrep

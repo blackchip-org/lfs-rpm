@@ -1,10 +1,19 @@
-Name:           inetutils
-Version:        2.6
-Release:        1%{?dist}
+# lfs
+
+%global name        inetutils
+%global version     2.6
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A collection of common network programs
 License:        GPLv2+
 
-Source:         https://ftp.gnu.org/gnu/inetutils/inetutils-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
+
 Suggests:       %{name}-doc = %{version}
 
 %description
@@ -41,6 +50,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -57,22 +67,17 @@ sed -i 's/def HAVE_TERMCAP_TGETENT/ 1/' telnet/telnet.c
             --disable-rlogin     \
             --disable-rsh        \
             --disable-servers
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 mkdir %{buildroot}/usr/sbin
 mv -v %{buildroot}/usr/{,s}bin/ifconfig
-%remove_info_dir
 
 #---------------------------------------------------------------------------
 %check
-%make check
-
-#---------------------------------------------------------------------------
-%post
-%update_info_dir
+make check
 
 #---------------------------------------------------------------------------
 %files
@@ -87,8 +92,11 @@ mv -v %{buildroot}/usr/{,s}bin/ifconfig
 %attr(4755,root,root) /usr/bin/traceroute
 /usr/sbin/ifconfig
 
+%if !%{with lfs}
 %files doc
 /usr/share/info/*
 
 %files man
 /usr/share/man/man*/*
+
+%endif

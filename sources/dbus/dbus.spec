@@ -1,10 +1,18 @@
-Name:           dbus
-Version:        1.16.0
-Release:        1%{?dist}
+# lfs
+
+%global name        dbus
+%global version     1.16.0
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        D-BUS message bus
 License:        (AFL-2.1 OR GPL-2.0-or-later) AND GPL-2.0-or-later
 
-Source:         https://dbus.freedesktop.org/releases/dbus/dbus-%{version}.tar.xz
+Source0:        https://dbus.freedesktop.org/releases/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  expat
 BuildRequires:  meson
@@ -27,6 +35,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -54,6 +63,18 @@ make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/etc/dbus-1
+/usr/bin
+/usr/include/dbus-1.0
+/usr/lib/lib*.so*
+/usr/lib/{cmake,dbus-1.0,pkgconfig,systemd,sysusers.d,tmpfiles.d}
+/usr/libexec/dbus-daemon-launch-helper
+/usr/share/dbus-1
+/usr/share/xml/dbus-1
+/var/lib/dbus/machine-id
+
+%else
 %config(noreplace) /etc/dbus-1/session.conf
 %config(noreplace) /etc/dbus-1/system.conf
 /usr/bin/dbus-cleanup-sockets
@@ -88,3 +109,5 @@ make check
 
 %files doc
 /usr/share/doc/dbus
+
+%endif

@@ -1,10 +1,18 @@
-Name:           python-wheel
-Version:        0.45.1
-Release:        1%{?dist}
+# lfs
+
+%global source_name wheel
+%global name        python-%{source_name}
+%global version     0.45.1
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Built-package format for Python
 License:        MIT
 
-Source:         https://pypi.org/packages/source/w/wheel/wheel-%{version}.tar.gz
+Source:         https://pypi.org/packages/source/w/%{source_name}/%{source_name}-%{version}.tar.gz
 
 BuildRequires:  python
 BuildRequires:  python-flit-core
@@ -20,7 +28,7 @@ Python 3 version.
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n wheel-%{version}
+%setup -q -n %{source_name}-%{version}
 
 #---------------------------------------------------------------------------
 %build

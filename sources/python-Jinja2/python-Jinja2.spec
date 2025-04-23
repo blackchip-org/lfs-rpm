@@ -1,10 +1,20 @@
-Name:           python-Jinja2
-Version:        3.1.5
-Release:        1%{?dist}
+# lfs
+
+%global source_name jinja2
+%global camel_name  Jinja2
+%global name        python-%{camel_name}
+%global version     3.1.5
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        General purpose template engine for python
 License:        BSD
 
-Source:         https://pypi.org/packages/source/J/Jinja2/jinja2-%{version}.tar.gz
+Source0:        https://pypi.org/packages/source/J/%{camel_name}/%{source_name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Requires:       python-MarkupSafe
 BuildRequires:  python
@@ -22,6 +32,7 @@ useful for templating environments.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n jinja2-%{version}
 
 #---------------------------------------------------------------------------

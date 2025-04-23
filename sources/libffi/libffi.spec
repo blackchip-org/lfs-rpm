@@ -1,11 +1,18 @@
-Name:           libffi
-Version:        3.4.7
-%global         so_version  8.1.4
-Release:        1%{?dist}
+# lfs
+
+%global name        libffi
+%global version     3.4.7
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A portable foreign function interface library
 License:        MIT
 
-Source:         https://github.com/libffi/libffi/releases/download/v%{version}/libffi-%{version}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -50,6 +57,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -57,26 +65,24 @@ Documentation for %{name}
 ./configure --prefix=/usr          \
             --disable-static       \
             --with-gcc-arch=native
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
-%remove_info_dir
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
 %make check
 
 #---------------------------------------------------------------------------
-%post doc
-%request_info_dir
-
-%posttrans doc
-%update_info_dir
-
-#---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/include/*
 /usr/lib/libffi.so
 /usr/lib/libffi.so.8
@@ -88,3 +94,5 @@ Documentation for %{name}
 
 %files man
 /usr/share/man/man*/*
+
+%endif
