@@ -1,12 +1,18 @@
-# extra
+# dnf
 
-Name:           zchunk
-Version:        1.5.1
-Release:        1%{?dist}
+%global name            zchunk
+%global version         1.5.1
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Compressed file format that splits the file into independent chunks
 License:        BSD-2
 
-Source:         https://github.com/zchunk/zchunk/archive/refs/tags/%{version}.tar.gz
+Source0:        https://github.com/%{name}/%{name}/archive/refs/tags/%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  meson
 BuildRequires:  ninja
@@ -31,6 +37,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -46,6 +53,13 @@ DESTDIR=%{buildroot} ninja install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/bin/unzck
 /usr/bin/zck
 /usr/bin/zck_delta_size
@@ -59,3 +73,5 @@ DESTDIR=%{buildroot} ninja install
 
 %files doc
 /usr/share/man/man*/*.gz
+
+%endif
