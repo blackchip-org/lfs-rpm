@@ -14,7 +14,14 @@ License:        GPLv3+ or BSD
 Source0:        https://www.greenwoodsoftware.com/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-doc = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+Provides:       %{name}-man = %{version}
+
+%endif
 
 %description
 The less utility is a text file browser that resembles more, but has more
@@ -25,12 +32,11 @@ starts, less starts up more quickly than text editors (for example, vi).
 You should install less because it is a basic utility for viewing text files,
 and you'll use it frequently.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
-
+%if !%{with lfs}
 %description doc
 Documentation for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep

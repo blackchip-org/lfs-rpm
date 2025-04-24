@@ -1,6 +1,7 @@
 # lfs
 
 %global name            perl
+%global major_name      perl5
 %global perl_version    5.40
 %global version         %{perl_version}.1
 %global smash_version   5.00401
@@ -16,7 +17,9 @@ License:        GPL+ or Artistic
 Source0:        https://www.cpan.org/src/5.0/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
+Requires:       less
 Requires:       libxcrypt
+
 Provides:       perl = %smash_version
 Provides:       perl = 1:%{version}
 
@@ -24,9 +27,18 @@ Provides:       perl = 1:%{version}
 # installed yet
 %if %{with lfs_stage1}
 AutoReqProv:    no
-%else
-# FIXME: Is this needed?
-# AutoReq:        no
+%endif
+
+%if !%{with lfs}
+Recommends:     %{name}-doc = %{version}
+Recommends:     %{name}-man = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%man_package
+
 %endif
 
 %description
@@ -44,12 +56,11 @@ instead. E.g. to handle Perl scripts with /usr/bin/perl interpreter, install
 perl-interpreter package. See perl-interpreter description for more details on
 the Perl decomposition into packages.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
-
+%if !%{with lfs}
 %description doc
 Documentation for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -71,12 +82,29 @@ sh Configure -des                                                       \
              -Dsitearch=/usr/lib/perl5/%{perl_version}/site_perl        \
              -Dvendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl     \
              -Dvendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl    \
-             -Dman1dir=/usr/share/man/man1                              \
-             -Dman3dir=/usr/share/man/man3                              \
+             -Dman1dir=none                                             \
+             -Dman3dir=none
+
+%elif %{with lfs}
+#export BUILD_ZLIB=False
+#export BUILD_BZIP2=0
+
+sh Configure -des                                                    \
+             -Dprefix=/usr                                           \
+             -Dvendorprefix=/usr                                     \
+             -Dprivlib=/usr/lib/perl5/%{perl_version}/core_perl      \
+             -Darchlib=/usr/lib/perl5/%{perl_version}/core_perl      \
+             -Dsitelib=/usr/lib/perl5/%{perl_version}/site_perl      \
+             -Dsitearch=/usr/lib/perl5/%{perl_version}/site_perl     \
+             -Dvendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl  \
+             -Dvendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl \
+             -Dman1dir=none                                          \
+             -Dman3dir=none                                          \
+             -Dpager="/usr/bin/less -isR"                            \
+             -Duseshrplib                                            \
+             -Dusethreads
 
 %else
-export BUILD_ZLIB=False
-export BUILD_BZIP2=0
 sh Configure -des                                                    \
              -Dprefix=/usr                                           \
              -Dvendorprefix=/usr                                     \
@@ -90,7 +118,8 @@ sh Configure -des                                                    \
              -Dman3dir=/usr/share/man/man3                           \
              -Dpager="/usr/bin/less -isR"                            \
              -Duseshrplib                                            \
-             -Dusethreads
+             -Dusethreads                                            \
+             -Dusershrplib
 
 %endif
 make %{?_smp_mflags}
@@ -105,19 +134,32 @@ cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.perl
 EOF
 
 find \
-    %{buildroot}/usr/lib/perl5/%{perl_version} \
+    %{buildroot}/usr/lib/%{major_name}/%{perl_version} \
     -name "*.so" \
     -exec chmod 755 {} \;
+
+pushd %{buildroot}
+
+find usr/lib/%{major_name}/%{perl_version} -type f \
+    | grep -v .pod \
+    | sed 's_^usr_/usr_' \
+    > %{_builddir}/files-lib.txt
+
+find usr/lib/%{major_name}/%{perl_version} -type f \
+    | grep .pod \
+    | sed 's_^usr_/usr_' \
+    > %{_builddir}/files-doc.txt
+
+popd
 
 #---------------------------------------------------------------------------
 %check
 make test
 
 #---------------------------------------------------------------------------
-%files
+%files -f %{_builddir}/files-lib.txt
 %if %{with lfs}
 /usr/bin/*
-/usr/lib/perl5/%{perl_version}
 /usr/lib/rpm/macros.d/macros.perl
 
 %else
@@ -152,10 +194,8 @@ make test
 /usr/bin/streamzip
 /usr/bin/xsubpp
 /usr/bin/zipdetails
-/usr/lib/perl5/%{perl_version}
 /usr/lib/rpm/macros.d/macros.perl
 
-%files doc
-/usr/share/man/man*/*
+%files doc -f %{_builddir}/files-doc.txt
 
 %endif

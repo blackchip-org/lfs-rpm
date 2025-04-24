@@ -1,3 +1,7 @@
+%verify_sha256(f:)  ( cd %_sourcedir && sha256sum -c %{-f*} )
+%_build_id_links    none
+
+
 %__os_install_post    \
     %{?__brp_compress} \
     %{?__brp_strip} \
@@ -5,3 +9,14 @@
     %{?__brp_strip_comment_note} \
     %{?__brp_remove_la_files} \
     /usr/lib/rpm/%{_vendor}/brp-remove-info-index
+
+%man_package \
+%package man \
+Summary:   Manual pages for %{name} \
+BuildArch: noarch \
+\
+%description man \
+Manual pages for %{name} \
+\
+%files man \
+/usr/share/man/man*/*

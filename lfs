@@ -265,7 +265,7 @@ lfs-mkpod() {
         exit 1
     fi
     set -x
-    podman exec --user root -t lfs-stage3 bash /build/lfs-rpm/containers/lfs-stage3/mkpod.sh
+    podman exec --user root -t lfs-stage3 bash /host/containers/lfs-stage3/mkpod.sh
 }
 
 lfs-build-all() {

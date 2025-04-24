@@ -1,6 +1,6 @@
 [pod]
 name=Pod build container
-baseurl=file:///build/rpmbuild/RPMS/x86_64
+baseurl=file:///rpmbuild/RPMS
 enabled=1
 metadata_expire=0
 repo_gpgcheck=0

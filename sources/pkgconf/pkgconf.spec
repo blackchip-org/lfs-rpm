@@ -15,26 +15,43 @@ Source0:        https://distfiles.ariadne.space/%{name}/%{name}-%{version}.tar.x
 Source1:        %{name}.sha256
 
 Provides:       pkg-config
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-doc = %{version}
+Recommends:     %{name}-man = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}-devel%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%man_package
+
+%endif
 
 %description
 pkgconf is a program which helps to configure compiler and linker flags for
 development frameworks. It is similar to pkg-config from freedesktop.org and
 handles .pc files in a similar manner as pkg-config.
 
-%package man
-Summary:        Manual pages for %{name}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
-
-%description man
-Manual pages for %{name}
+%description static
+Static libraries for %{name}
 
 %description doc
 Documentation for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -51,7 +68,6 @@ Documentation for %{name}
 
 %else
 ./configure --prefix=/usr         \
-            --disable-static      \
             --docdir=/usr/share/doc/%{name}-%{version}
 
 %endif
@@ -70,26 +86,28 @@ ln -sv pkgconf.1 %{buildroot}/%{?lfs_dir}/usr/share/man/man1/pkg-config.1
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/bin
 %{?lfs_dir}/usr/include/pkgconf
 %{?lfs_dir}/usr/lib/libpkgconf.so*
-%{?lfs_dir}/usr/lib/pkgconfig/*
-%{?lfs_dir}/usr/share/aclocal/*
+%{?lfs_dir}/usr/lib/pkgconfig
+%{?lfs_dir}/usr/share/aclocal
 
 %else
 /usr/bin/bomtool
 /usr/bin/pkgconf
+/usr/bin/pkg-config
+/usr/lib/libpkgconf.so.*
+
+%files devel
 /usr/include/pkgconf/libpkgconf
 /usr/lib/libpkgconf.so
-/usr/lib/libpkgconf.so.5
-%shlib /usr/lib/libpkgconf.so.5.0.0
 /usr/lib/pkgconfig/libpkgconf.pc
-/usr/share/aclocal/*
+/usr/share/aclocal/pkg.m4
+
+%files static
+/usr/lib/libpkgconf.a
 
 %files doc
 /usr/share/doc/%{name}-%{version}
-
-%files man
-/usr/share/man/man*/*
 
 %endif

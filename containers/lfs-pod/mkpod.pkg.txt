@@ -1,5 +1,6 @@
 # basic filesystem layout
 root-fs
+rpm-config
 
 # install required by Containerfile
 coreutils

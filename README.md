@@ -38,6 +38,9 @@ To test the image in a virtual machine, install:
 
     sudo dnf install qemu-kvm virt-manager
 
+To continue onward after the initial LFS build, install createrepo:
+
+    sudo dnf install createrepo_c
 
 ### Ubuntu
 

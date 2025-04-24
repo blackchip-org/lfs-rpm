@@ -15,7 +15,17 @@ Source0:        https://github.com/besser82/%{name}/releases/download/v%{version
 Source1:        %{name}.sha256
 
 BuildRequires:  pkg-config
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-man = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%man_package
+
+%endif
 
 %description
 libxcrypt is a modern library for one-way hashing of passwords. It supports
@@ -46,12 +56,11 @@ work with glibc's libcrypt. Also, programs that use certain legacy APIs
 supplied by glibc's libcrypt ('encrypt', 'encrypt_r', 'setkey', 'setkey_r', and
 'fcrypt') cannot be compiled against libxcrypt.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -83,15 +92,13 @@ make test
 /usr/lib/pkgconfig
 
 %else
+/usr/lib/libcrypt.so.*
+
+%files devel
 /usr/include/*.h
 /usr/lib/libcrypt.so
-/usr/lib/libcrypt.so.2
-%shlib /usr/lib/libcrypt.so.2.0.0
 /usr/lib/pkgconfig/libcrypt.pc
 /usr/lib/pkgconfig/libxcrypt.pc
-
-%files doc
-/usr/share/man/man*/*
 
 %endif
 

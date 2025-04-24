@@ -9,20 +9,16 @@ COPY group              /etc/group
 COPY macros.pod         /usr/lib/rpm/macros.d/macros.pod
 COPY pod.repo           /etc/yum.repos.d/pod.repo
 
-# The --noplugins flag seems to be required starting with rpm 4.20
-# when running in podman? Error occurred when installing the dbus
-# package.
-# https://github.com/rpm-software-management/rpm/issues/3187
-RUN install -o 1000 -g 1000 -d /build/rpmbuild && \
-    rpm -i --justdb --nodeps --noplugins /root/*.rpm
+RUN install -o 1000 -g 1000 -d /rpmbuild && \
+    rpm -i --justdb --nodeps /root/*.rpm
 
-# FIXME: See issue above, disabling the offending plugin for now
-RUN rm /usr/lib/rpm-plugins/unshare.so
+# localedef needed for perl to compile
+RUN mkdir /usr/lib/locale && \
+    /usr/bin/localedef -i POSIX -f UTF-8 C.UTF-8 || true
 
 RUN dnf update -y
 RUN rm -rf /root/*.rpm
 
-
-WORKDIR /build
+WORKDIR /rpmbuild
 
 CMD [ "/usr/bin/tail", "-f", "/dev/null" ]
