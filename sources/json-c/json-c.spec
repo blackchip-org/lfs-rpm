@@ -1,14 +1,19 @@
-# extra
+# dnf
 
-Name:           json-c
-Version:        0.18
-Release:        1%{?dist}
+%global name            json-c
+%global version         0.18
+%global release         1
+%global date            20240915
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        JSON implementation in C
 License:        MIT
 
-%global date    20240915
-
 Source0:        https://github.com/json-c/json-c/archive/refs/tags/json-c-%{version}-%{date}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  cmake
 
@@ -20,6 +25,7 @@ to conform to RFC 8259.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n %{name}-%{name}-%{version}-%{date}
 
 #---------------------------------------------------------------------------
@@ -29,6 +35,7 @@ cd      json-c-build
 cmake   -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_INSTALL_LIBDIR=/usr/lib \
         ..
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -38,10 +45,19 @@ rm %{buildroot}/usr/lib/libjson-c.a
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include/json-c
+/usr/lib/cmake/json-c
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/include/json-c
 /usr/lib/cmake/json-c
 /usr/lib/libjson-c.so
 /usr/lib/libjson-c.so.5
 %shlib /usr/lib/libjson-c.so.5.4.0
 /usr/lib/pkgconfig/json-c.pc
+
+%endif
 

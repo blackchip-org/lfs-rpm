@@ -206,7 +206,7 @@ lfs-export() {
             podman exec --user root -t lfs-$stage \
                 tar -C / -c -z -f /host/build/containers/lfs-$stage.tar.gz \
                 --exclude='./host' \
-                --exclude='./rpmbuild' \
+                --exclude='./rpmbuild/*' \
                 --exclude='./tmp/*' \
                 --exclude './home/*' \
                 --exclude './root/*' \

@@ -1,12 +1,18 @@
-# extra
+# lfs
 
-Name:           fmt
-Version:        11.1.4
-Release:        1%{?dist}
+%global name            fmt
+%global version         11.1.4
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Fast and safe alternative to C stdio and C++ iostreams
 License:        {fmt}
 
-Source:         https://github.com/fmtlib/fmt/archive/refs/tags/%{version}.tar.gz
+Source0:        https://github.com/fmtlib/%{name}/archive/refs/tags/%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  cmake
 
@@ -16,6 +22,7 @@ alternative to C stdio and C++ iostreams.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -27,18 +34,27 @@ cmake \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     -DBUILD_SHARED_LIBS=TRUE \
     ..
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
 cd build
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include/%{name}
+/usr/lib/cmake/%{name}
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/include/%{name}
 /usr/lib/cmake/%{name}
 /usr/lib/libfmt.so
 /usr/lib/libfmt.so.11
 %shlib /usr/lib/libfmt.so.%{version}
 /usr/lib/pkgconfig/%{name}.pc
+
+%endif

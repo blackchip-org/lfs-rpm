@@ -1,18 +1,25 @@
-# extra
+# dnf
 
-Name:		      libsolv
-Version:	    0.7.31
-Release:	    1%{?dist}
+%global name            libsolv
+%global version         0.7.31
+%global release         1
+
+# TODO: Have cmake define this macro
+%global cmake_version   3.30
+
+#---------------------------------------------------------------------------
+Name:		    %{name}
+Version:	    %{version}
+Release:	    %{release}%{?dist}
 Summary:	    Dependency solver using a satisfiability algorithm
-License:      BSD
+License:        BSD
 
-Source: 	    https://github.com/openSUSE/libsolv/archive/refs/tags/%{version}.tar.gz
+Source0:	    https://github.com/openSUSE/%{name}/archive/refs/tags/%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  cmake
 BuildRequires:  libxml2
 Suggests:       %{name}-doc = %{version}
-
-%global         cmake_version 3.30
 
 %description
 This is libsolv, a free package dependency solver using a satisfiability
@@ -20,11 +27,11 @@ algorithm.
 
 The code is based on two major, but independent, blocks:
 
-- Using a dictionary approach to store and retrieve package and dependency
-  information in a fast and space efficient manner.
+Using a dictionary approach to store and retrieve package and dependency
+information in a fast and space efficient manner.
 
-- Using satisfiability, a well known and researched topic, for resolving
-  package dependencies.
+Using satisfiability, a well known and researched topic, for resolving
+package dependencies.
 
 The sat-solver code has been written to aim for the newest packages, record the
 decision tree to provide introspection, and also provides the user with
@@ -40,6 +47,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -59,7 +67,7 @@ cmake \
     -DWITH_LIBXML2=ON \
     -DMULTI_SEMANTICS=ON \
     ..
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -70,6 +78,14 @@ mv %{buildroot}/usr/share/cmake \
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include/solv
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+/usr/share/cmake-%{cmake_version}
+
+%else
 /usr/bin/comps2solv
 /usr/bin/deltainfoxml2solv
 /usr/bin/dumpsolv
@@ -93,3 +109,5 @@ mv %{buildroot}/usr/share/cmake \
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

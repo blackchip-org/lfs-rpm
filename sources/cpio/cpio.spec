@@ -1,15 +1,20 @@
-# extra
+# dnf
 
-Name:           cpio
-Version:        2.15
-Release:        1%{?dist}
+%global name        cpio
+%global version     2.15
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Copies files into or out of a cpio or tar archive
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/cpio/cpio-%{version}.tar.gz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 %description
-
 GNU cpio copies files into or out of a cpio or tar archive. The archive can be
 another file on the disk, a magnetic tape, or a pipe.
 
@@ -44,27 +49,27 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 # Both the tar package and this package have a rmt command. For now, take
 # the one found in tar
 rm %{buildroot}/usr/libexec/rmt
-%remove_info_dir
-
-#---------------------------------------------------------------------------
-%post
-%update_info_dir
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+
+%else
 /usr/bin/cpio
 
 %files lang
@@ -75,3 +80,5 @@ rm %{buildroot}/usr/libexec/rmt
 
 %files man
 /usr/share/man/man*/*
+
+%endif

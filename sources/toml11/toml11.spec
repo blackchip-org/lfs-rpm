@@ -1,12 +1,18 @@
-# extra
+# dnf
 
-Name:           toml11
-Version:        4.4.0
-Release:        1%{?dist}
+%global name            toml11
+%global version         4.4.0
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Feature-rich TOML language library for C++11/14/17/20
 License:        MIT
 
-Source:         https://github.com/ToruNiina/toml11/archive/refs/tags/v%{version}.tar.gz
+Source0:        https://github.com/ToruNiina/toml11/archive/refs/tags/v%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  cmake
 
@@ -27,6 +33,7 @@ toml11 is a feature-rich TOML language library for C++11/14/17/20.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -37,6 +44,7 @@ cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     ..
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -45,7 +53,14 @@ make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include
+/usr/lib/cmake/%{name}
+
+%else
 /usr/include/toml.hpp
 /usr/include/%{name}
 /usr/lib/cmake/%{name}
+
+%endif
 

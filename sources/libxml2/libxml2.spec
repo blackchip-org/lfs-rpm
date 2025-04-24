@@ -1,13 +1,19 @@
-# extra
+# dnf
 
-Name:           libxml2
-Version:        2.13.6
-%global         version2 2.13
-Release:        1%{?dist}
+%global name        libxml2
+%global version_2   2.13
+%global version     %{version_2}.6
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        XML C parser and toolkit developed for the GNOME project
 License:        MIT
 
-Source:         https://download.gnome.org/sources/libxml2/%{version2}/libxml2-%{version}.tar.xz
+Source0:        https://download.gnome.org/sources/%{name}/%{version_2}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  pkg-config
 BuildRequires:  python
@@ -37,20 +43,35 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 rm -rf %{buildroot}/usr/lib/%{python_version}/__pycache__
+
+%if %{with lfs}
+rm -rf %{buildroot}/usr/share/gtk-doc
+%endif
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include/%{name}
+/usr/lib/python%{python_version}/site-packages
+/usr/share/aclocal
+/usr/lib/cmake
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/bin/xml2-config
 /usr/bin/xmlcatalog
 /usr/bin/xmllint
@@ -69,4 +90,6 @@ rm -rf %{buildroot}/usr/lib/%{python_version}/__pycache__
 
 %files man
 /usr/share/man/man*/*
+
+%endif
 
