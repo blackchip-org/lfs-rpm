@@ -245,11 +245,11 @@ lfs-mkimage() {
 }
 
 lfs-mkimage-stage2() {
-    lfs-mkimage build/stage2/lfs-stage2.tar.gz
+    lfs-mkimage build/containers/lfs-stage2.tar.gz
 }
 
 lfs-mkimage-pod() {
-    lfs-mkimage build/pod/lfs-pod.tar.gz
+    lfs-mkimage build/containers/lfs-pod.tar.gz
 }
 
 lfs-install() {

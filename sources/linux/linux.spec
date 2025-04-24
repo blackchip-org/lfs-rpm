@@ -1,10 +1,18 @@
-Name:           linux
-Version:        6.13.4
-Release:        1%{?dist}
+# lfs
+
+%global name        linux
+%global version     6.13.4
+%global release     1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        The Linux kernel
 License:        GPLv2 and Redistributable, no modification permitted
 
-Source:         https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{version}.tar.xz
+Source0:        https://www.kernel.org/pub/linux/kernel/v6.x/linux-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  bc
 BuildRequires:  bison
@@ -16,12 +24,13 @@ system: memory allocation, process allocation, device input and output, etc.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
-%make mrproper
-%make defconfig
+make mrproper
+make defconfig
 cat <<EOF >.config.sed
 # Settings recommeded in the LFS book
 s/CONFIG_WERROR=y/CONFIG_WERROR=n/
@@ -38,17 +47,17 @@ EOF
 sed -i .config -f .config.sed
 cat .config
 
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make INSTALL_MOD_PATH=%{buildroot}/usr modules_install
+make INSTALL_MOD_PATH=%{buildroot}/usr modules_install
 install -m 755 -d %{buildroot}/boot
-install -m 644 arch/x86/boot/bzImage %{buildroot}/boot/vmlinuz-%{version}%{dist}.%{lfs_arch}
+install -m 644 arch/x86/boot/bzImage %{buildroot}/boot/vmlinuz-%{version}%{dist}.%{_arch}
 install -m 644 System.map            %{buildroot}/boot/System.map-%{version}
 install -m 644 .config               %{buildroot}/boot/config-%{version}
 
-ln -s vmlinuz-%{version}%{dist}.%{lfs_arch} %{buildroot}/boot/vmlinuz
+ln -s vmlinuz-%{version}%{dist}.%{_arch}    %{buildroot}/boot/vmlinuz
 ln -s System.map-%{version}                 %{buildroot}/boot/System.map
 ln -s config-%{version}                     %{buildroot}/boot/config
 
@@ -66,7 +75,7 @@ rm %{buildroot}/usr/lib/modules/%{version}/build
 /boot/System.map
 /boot/config-%{version}
 /boot/config
-/boot/vmlinuz-%{version}%{dist}.%{lfs_arch}
+/boot/vmlinuz-%{version}%{dist}.%{_arch}
 /boot/vmlinuz
 /etc/modprobe.d
 /usr/lib/modules/%{version}
