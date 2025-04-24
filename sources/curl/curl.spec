@@ -1,12 +1,18 @@
-# extra
+# dnf
 
-Name:           curl
-Version:        8.12.1
-Release:        1%{?dist}
+%global name            curl
+%global version         8.12.1
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Tool for transferring data from or to a server using URLs
 License:        curl
 
-Source0:        https://curl.se/download/curl-%{version}.tar.xz
+Source0:        https://curl.se/download/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  libpsl
 BuildRequires:  openssl
@@ -29,6 +35,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -36,17 +43,25 @@ Documentation for %{name}
 ./configure \
     --prefix=/usr \
     --with-openssl
-%make
+make
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 # Remove static library
 rm %{buildroot}/usr/lib/libcurl.a
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+/usr/share/aclocal
+
+%else
 /usr/bin/curl
 /usr/bin/curl-config
 /usr/include/%{name}
@@ -58,3 +73,5 @@ rm %{buildroot}/usr/lib/libcurl.a
 
 %files doc
 /usr/share/man/man{1,3}/*
+
+%endif

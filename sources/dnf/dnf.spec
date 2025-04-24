@@ -1,10 +1,18 @@
-Name:           dnf
-Version:        5.2.11.0
-Release:        1%{?dist}
+# dnf
+
+%global name            dnf
+%global version         5.2.11.0
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Command-line package manager
 License:        GPLv2
 
 Source0:        https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Requires:       elfutils
 Requires:       file
@@ -40,6 +48,7 @@ Language files for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n dnf5-%{version}
 
 #---------------------------------------------------------------------------
@@ -97,16 +106,30 @@ cmake \
     ..
 %endif
 
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
 cd build
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 ln -s dnf5 %{buildroot}/usr/bin/dnf
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/etc/bash_completion.d
+/etc/dnf
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/dnf5
+/usr/lib/libdnf5
+/usr/lib/python%{python_version}
+/usr/lib/pkgconfig
+/usr/lib/systemd
+/usr/share/dnf5
+
+%else
 /etc/bash_completion.d/dnf5
 %config(noreplace) /etc/dnf/dnf.conf
 %config(noreplace) /etc/dnf/libdnf5-plugins/actions.conf
@@ -160,4 +183,6 @@ ln -s dnf5 %{buildroot}/usr/bin/dnf
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*.mo
+
+%endif
 

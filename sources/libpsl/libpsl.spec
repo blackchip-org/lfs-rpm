@@ -1,12 +1,18 @@
-# extra
+# dnf
 
-Name:           libpsl
-Version:        0.21.5
-Release:        1%{?dist}
+%global name            libpsl
+%global version         0.21.5
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        A collection of Top Level Domains (TLDs) suffixes
 License:        MIT
 
-Source:         https://github.com/rockdaboot/libpsl/releases/download/%{version}/libpsl-%{version}.tar.gz
+Source0:        https://github.com/rockdaboot/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  python
 Suggests:       %{name}-doc = %{version}
@@ -28,22 +34,30 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 # Remove static library
 rm %{buildroot}/usr/lib/libpsl.a
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/bin/psl
 /usr/bin/psl-make-dafsa
 /usr/include/libpsl.h
@@ -54,3 +68,5 @@ rm %{buildroot}/usr/lib/libpsl.a
 
 %files doc
 /usr/share/man/man*/*
+
+%endif

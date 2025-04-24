@@ -1,12 +1,18 @@
-# extra
+# dnf
 
-Name:           librepo
-Version:        1.19.0
-Release:        1%{?dist}
+%global name            librepo
+%global version         1.19.0
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Library for downloading linux repository metadata and packages
 License:        LGPL-2.1
 
-Source:         https://github.com/rpm-software-management/librepo/archive/refs/tags/%{version}.tar.gz
+Source0:        https://github.com/rpm-software-management/%{name}/archive/refs/tags/%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  attr
 BuildRequires:  check
@@ -25,6 +31,7 @@ repository metadata and packages.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -37,7 +44,7 @@ cmake \
     -DUSE_GPGME=OFF \
     -DENABLE_DOCS=OFF \
     ..
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
@@ -46,8 +53,17 @@ make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include/%{name}
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+/usr/lib/python%{python_version}
+
+%else
 /usr/include/%{name}
 /usr/lib/librepo.so
 %shlib /usr/lib/librepo.so.0
 /usr/lib/pkgconfig/librepo.pc
 /usr/lib/python%{python_version}/site-packages/%{name}
+
+%endif

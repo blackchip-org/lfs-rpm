@@ -1,15 +1,19 @@
-# extra
+# dnf
 
-Name:           glib
-Version:        2.84.0
-Release:        1%{?dist}
+%global name            glib
+%global version_2       2.84
+%global version         %{version_2}.0
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Low-level core library
 License:        LGPLv2
 
-%global         version2    2.84
-%global         so_version  0.8400.0
-
-Source0:        https://download.gnome.org/sources/glib/%{version2}/glib-%{version}.tar.xz
+Source0:        https://download.gnome.org/sources/%{name}/%{version_2}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 BuildRequires:  gettext
 BuildRequires:  libffi
@@ -33,6 +37,7 @@ Language files for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -46,6 +51,15 @@ DESTDIR=%{buildroot} meson install -C _build
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include
+/usr/lib/lib*.so*
+/usr/lib/{glib-2.0,pkgconfig}
+/usr/libexec
+/usr/share/{aclocal,bash-completion,gdb,gettext,glib-2.0}
+
+%else
 /usr/bin/gapplication
 /usr/bin/gdbus
 /usr/bin/gdbus-codegen
@@ -112,3 +126,5 @@ DESTDIR=%{buildroot} meson install -C _build
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*
+
+%endif

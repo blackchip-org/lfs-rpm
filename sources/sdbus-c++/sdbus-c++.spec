@@ -1,12 +1,19 @@
-# extra
+# dnf
 
-Name:           sdbus-c++
-Version:        2.1.0
-Release:        1%{?dist}
+%global name            sdbus-c++
+%global source_name     sdbus-cpp
+%global version         2.1.0
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Library for Linux designed to provide expressive, easy-to-use API in modern C++.
 License:        LGPL-2.1
 
-Source:         https://github.com/Kistler-Group/sdbus-cpp/archive/refs/tags/v%{version}.tar.gz
+Source0:        https://github.com/Kistler-Group/%{source_name}/archive/refs/tags/v%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  cmake
 BuildRequires:  pkg-config
@@ -35,7 +42,8 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n sdbus-cpp-%{version}
+%verify_sha256 -f %{SOURCE1}
+%setup -q -n %{source_name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
@@ -45,15 +53,22 @@ cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
     ..
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
 cd _build
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/include/%{name}
+/usr/lib/cmake/%{name}
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig
+
+%else
 /usr/include/sdbus-c++
 /usr/lib/cmake/sdbus-c++
 /usr/lib/libsdbus-c++.so
@@ -63,3 +78,5 @@ cd _build
 
 %files doc
 /usr/share/doc/sdbus-c++
+
+%endif

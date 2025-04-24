@@ -1,12 +1,18 @@
-# extra
+# dnf
 
-Name:           swig
-Version:        4.3.0
-Release:        1%{?dist}
+%global name            swig
+%global version         4.3.0
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Simplified Wrapper and Interface Generator
 License:        GPLv3+
 
-Source:         https://github.com/swig/swig/archive/refs/tags/v%{version}.tar.gz
+Source0:        https://github.com/swig/swig/archive/refs/tags/v%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -20,20 +26,28 @@ MzScheme/Racket), Scilab, Ocaml. SWIG can also export its parse tree into XML.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./autogen.sh
 ./configure --prefix=/usr
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/share/swig
+
+%else
 /usr/bin/ccache-swig
 /usr/bin/swig
 /usr/share/swig/%{version}
+
+%endif

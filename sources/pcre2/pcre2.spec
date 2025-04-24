@@ -1,12 +1,18 @@
-# extra
+# dnf
 
-Name:           pcre2
-Version:        10.45
-Release:        1%{?dist}
+%global name            pcre2
+%global version         10.45
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Regular expression pattern matching
 License:        BSD
 
-Source:         https://github.com/PCRE2Project/pcre2/releases/download/pcre2-%{version}/pcre2-%{version}.tar.gz
+Source0:        https://github.com/PCRE2Project/%{name}/releases/download/%{name}-%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -38,19 +44,27 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr
-%make
+make
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin
+/usr/include
+/usr/lib/lib*.{so*,a}
+/usr/lib/pkgconfig
+
+%else
 /usr/bin/pcre2-config
 /usr/bin/pcre2grep
 /usr/bin/pcre2test
@@ -71,3 +85,5 @@ Documentation for %{name}
 
 %files man
 /usr/share/man/man*/*
+
+%endif
