@@ -142,6 +142,7 @@ pushd %{buildroot}
 
 find usr/lib/%{major_name}/%{perl_version} -type f \
     | grep -v .pod \
+    | grep -v libperl.so \
     | sed 's_^usr_/usr_' \
     > %{_builddir}/files-lib.txt
 
@@ -194,6 +195,9 @@ make test
 /usr/bin/streamzip
 /usr/bin/xsubpp
 /usr/bin/zipdetails
+
+%files devel
+/usr/lib/%{major_name}/%{perl_version}/core_perl/CORE/libperl.so
 /usr/lib/rpm/macros.d/macros.perl
 
 %files doc -f %{_builddir}/files-doc.txt
