@@ -8,15 +8,3 @@
     %{?__brp_strip_comment_note} \
     %{?__brp_remove_la_files} \
     /usr/lib/rpm/%{_vendor}/brp-remove-info-index
-
-%man_package \
-%package man \
-Summary:   Manual pages for %{name} \
-BuildArch: noarch \
-\
-%description man \
-Manual pages for %{name} \
-\
-%files man \
-/usr/share/man/man*/*
-

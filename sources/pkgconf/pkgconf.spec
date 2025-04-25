@@ -109,10 +109,14 @@ ln -sv pkgconf.1 %{buildroot}/%{?lfs_dir}/usr/share/man/man1/pkg-config.1
 /usr/lib/pkgconfig/libpkgconf.pc
 /usr/share/aclocal/pkg.m4
 
+%files doc
+/usr/share/doc/%{name}-%{version}
+
+%files man
+/usr/share/man/man*/*.gz
+
 %files static
 /usr/lib/libpkgconf.a
 
-%files doc
-/usr/share/doc/%{name}-%{version}
 
 %endif

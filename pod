@@ -127,7 +127,7 @@ pod-build() {
     podman exec --user root \
         lfs-pod \
         dnf install -y "$package" | \
-    tee "logs/pod/${package}.log"
+    tee --append "logs/pod/${package}.log"
 
 }
 

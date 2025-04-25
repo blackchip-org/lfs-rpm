@@ -115,6 +115,6 @@ make DESTDIR=%{buildroot} install
 /usr/share/info/*
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

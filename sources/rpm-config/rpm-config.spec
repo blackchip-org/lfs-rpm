@@ -2,7 +2,7 @@
 
 %global name        rpm-config
 %global version     1
-%global release     1
+%global release     2
 
 #---------------------------------------------------------------------------
 Name:           %{name}
