@@ -8,6 +8,7 @@ cd "$(dirname $0)"
 source ./pod-env
 
 rpmbuild_flags=""
+rpmspec_flags=(--define "dist ${pod_dist}")
 
 usage() {
     cat <<EOF
@@ -56,8 +57,8 @@ pod-build() {
     package="$(basename $source)"
     spec="${package}.spec"
 
-    package_arch=$(rpmspec -q --queryformat="%{ARCH}"  "$source/$spec" | head -1)
-    package_version=$(rpmspec --define "dist ${pod_dist}" -qv "$source/$spec" | head -1 | sed 's/.src//')
+    package_arch=$(rpmspec "${rpmspec_flags[@]}" -q --queryformat="%{ARCH}"  "$source/$spec" | head -1)
+    package_version=$(rpmspec "${rpmspec_flags[@]}" -qv "$source/$spec" | head -1 | sed 's/.src//')
     if [ -z "$rebuild" ] && [ -e "build/rpms/pod/packages/$package/${package_arch}/${package_version}.rpm" ] ; then
         echo "package already built: $package"
         return
@@ -125,7 +126,7 @@ pod-build() {
     # Ensure the newly built package can be installed
     podman exec --user root \
         lfs-pod \
-        dnf reinstall -y "$package" | \
+        dnf install -y "$package" | \
     tee "logs/pod/${package}.log"
 
 }

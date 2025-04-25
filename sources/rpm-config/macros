@@ -1,7 +1,6 @@
 %verify_sha256(f:)  ( cd %_sourcedir && sha256sum -c %{-f*} )
 %_build_id_links    none
 
-
 %__os_install_post    \
     %{?__brp_compress} \
     %{?__brp_strip} \
@@ -20,3 +19,4 @@ Manual pages for %{name} \
 \
 %files man \
 /usr/share/man/man*/*
+

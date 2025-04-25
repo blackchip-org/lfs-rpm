@@ -32,7 +32,9 @@ Requires:       %{name}-devel%{?_isa} = %{version}-%{release}
 Summary:        Documentation for %{name}
 BuildArch:      noarch
 
-%man_package
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
 
 %endif
 
@@ -50,6 +52,9 @@ Static libraries for %{name}
 
 %description doc
 Documentation for %{name}
+
+%description man
+Manual pages for %{name}
 
 %endif
 
@@ -86,11 +91,11 @@ ln -sv pkgconf.1 %{buildroot}/%{?lfs_dir}/usr/share/man/man1/pkg-config.1
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{?lfs_dir}/usr/bin
+%{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/pkgconf
 %{?lfs_dir}/usr/lib/libpkgconf.so*
-%{?lfs_dir}/usr/lib/pkgconfig
-%{?lfs_dir}/usr/share/aclocal
+%{?lfs_dir}/usr/lib/pkgconfig/*
+%{?lfs_dir}/usr/share/aclocal/*
 
 %else
 /usr/bin/bomtool

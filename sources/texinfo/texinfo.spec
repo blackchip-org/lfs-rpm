@@ -16,13 +16,7 @@ Source1:        %{name}.sha256
 
 BuildRequires:  perl-libintl
 
-%description
-Texinfo uses a single source file to produce output in a number of formats,
-both online and printed (HTML, PDF, DVI, Info, DocBook, LaTeX, EPUB 3). This
-means that instead of writing different documents for online information and
-another for a printed manual, you need write only one document. The Texinfo
-system is well-integrated with GNU Emacs.
-
+%if !{%with lfs}
 %package lang
 Summary:        Language files for %{name}
 Requires:       %{name} = %{version}
@@ -34,6 +28,15 @@ Summary:        Manual pages for %{name}
 %package doc
 Summary:        Documentation for %{name}
 Recommends:     %{name}-man = %{version}
+
+
+%description
+Texinfo uses a single source file to produce output in a number of formats,
+both online and printed (HTML, PDF, DVI, Info, DocBook, LaTeX, EPUB 3). This
+means that instead of writing different documents for online information and
+another for a printed manual, you need write only one document. The Texinfo
+system is well-integrated with GNU Emacs.
+
 
 %description lang
 Language files for %{name}

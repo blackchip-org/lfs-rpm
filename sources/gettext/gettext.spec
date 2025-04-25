@@ -14,7 +14,36 @@ License:        GPLv3+ and LGPLv2+
 Source0:        https://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 The GNU gettext package provides a set of tools and documentation for producing
@@ -27,17 +56,15 @@ an easy to use library and tools for creating, using, and modifying natural
 language catalogs and is a powerful and simple method for internationalizing
 programs.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description doc
+Documentation for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
+%description devel
+Development files for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -45,8 +72,10 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -62,7 +91,6 @@ Documentation for %{name}
 
 %else
 ./configure --prefix=/usr    \
-            --disable-static \
             --docdir=/usr/share/doc/%{name}-%{version}
 
 %endif
@@ -112,36 +140,54 @@ make check
 /usr/bin/ngettext
 /usr/bin/recode-sr-latin
 /usr/bin/xgettext
-/usr/include/*.h
-/usr/include/textstyle
 /usr/lib/gettext
-/usr/lib/libasprintf.so
-/usr/lib/libasprintf.so.0
-%shlib /usr/lib/libasprintf.so.0.0.0
-/usr/lib/libgettextlib.so
-%shlib /usr/lib/libgettextlib-0.24.so
-/usr/lib/libgettextpo.so
-/usr/lib/libgettextpo.so.0
-%shlib /usr/lib/libgettextpo.so.0.5.13
-/usr/lib/libgettextsrc.so
-%shlib /usr/lib/libgettextsrc-0.24.so
-/usr/lib/libtextstyle.so
-/usr/lib/libtextstyle.so.0
-%shlib /usr/lib/libtextstyle.so.0.2.4
-%shlib /usr/lib/preloadable_libintl.so
+/usr/lib/libasprintf.so.*
+/usr/lib/libgettextlib-%{version}.so
+/usr/lib/libgettextpo.so.*
+/usr/lib/libgettextsrc-%{version}.so
+/usr/lib/libtextstyle.so.*
+/usr/lib/preloadable_libintl.so
 /usr/libexec/%{name}
-/usr/share/aclocal/*.m4
 /usr/share/%{name}-%{version}
 /usr/share/%{name}
+
+%files devel
+/usr/include/*.h
+/usr/include/textstyle
+/usr/lib/libasprintf.so
+/usr/lib/libgettextlib.so
+/usr/lib/libgettextpo.so
+/usr/lib/libgettextsrc.so
+/usr/lib/libtextstyle.so
+/usr/share/aclocal/build-to-host.m4
+/usr/share/aclocal/gettext.m4
+/usr/share/aclocal/host-cpu-c-abi.m4
+/usr/share/aclocal/iconv.m4
+/usr/share/aclocal/intlmacosx.m4
+/usr/share/aclocal/lib-ld.m4
+/usr/share/aclocal/lib-link.m4
+/usr/share/aclocal/lib-prefix.m4
+/usr/share/aclocal/nls.m4
+/usr/share/aclocal/po.m4
+/usr/share/aclocal/progtest.m4
+
+%files doc
+/usr/share/doc/%{name}-%{version}
+
+%files info
+/usr/share/info/*
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*.mo
 
-%files doc
-/usr/share/doc/%{name}-%{version}
-/usr/share/info/*
-
 %files man
 /usr/share/man/man*/*
+
+%files static
+/usr/lib/libasprintf.a
+/usr/lib/libgettextlib.a
+/usr/lib/libgettextpo.a
+/usr/lib/libgettextsrc.a
+/usr/lib/libtextstyle.a
 
 %endif
