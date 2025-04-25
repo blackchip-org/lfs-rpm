@@ -23,12 +23,12 @@ cp %{SOURCE0} %{SOURCE1} .
 
 #---------------------------------------------------------------------------
 %install
-install -D -m 644 macros.lfs    %{buildroot}/usr/lib/rpm/macros.d/macros.lfs
+install -D -m 644 macros.lfs    %{buildroot}/etc/rpm/macros
 install -D -m 755 brp-lfs-build %{buildroot}/usr/lib/rpm/brp-lfs-build
 
 #---------------------------------------------------------------------------
 %files
-/usr/lib/rpm/macros.d/macros.lfs
+/etc/rpm/macros
 /usr/lib/rpm/brp-lfs-build
 
 
