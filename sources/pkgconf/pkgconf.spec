@@ -1,8 +1,8 @@
 # lfs
 
-%global name        pkgconf
-%global version     2.3.0
-%global release     1
+%global name            pkgconf
+%global version         2.4.3
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        Package compiler and linker metadata toolkit
 License:        ISC
 
-Source0:        https://distfiles.ariadne.space/%{name}/%{name}-%{version}.tar.xz
+Source0:       https://distfiles.ariadne.space/pkgconf/pkgconf-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 Provides:       pkg-config
@@ -71,6 +71,11 @@ Manual pages for %{name}
             --disable-static      \
             --docdir=/usr/share/doc/%{name}-%{version}
 
+%elif %{with lfs}
+./configure --prefix=/usr         \
+            --disable-static      \
+            --docdir=/usr/share/doc/%{name}-%{version}
+
 %else
 ./configure --prefix=/usr         \
             --docdir=/usr/share/doc/%{name}-%{version}
@@ -117,6 +122,5 @@ ln -sv pkgconf.1 %{buildroot}/%{?lfs_dir}/usr/share/man/man1/pkg-config.1
 
 %files static
 /usr/lib/libpkgconf.a
-
 
 %endif

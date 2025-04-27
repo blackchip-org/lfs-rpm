@@ -73,15 +73,20 @@ lfs-spectool() {
     (
     set -x
     mkdir -p downloads/$name
-    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C downloads/$name $1
+    rm -rf tmp/spectool
+    mkdir -p tmp/spectool
+
+    rpmspec -P $1 > tmp/spectool/$name.spec
+    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C downloads/$name tmp/spectool/$name.spec
     )
 }
 
 lfs-download() {
-    specs=$@
-    [ -z "$specs" ] && specs="$(ls specs/*.spec | grep -v '#' | sort)"
-    for spec in $specs; do
-        lfs-spectool $spec
+    sources=$@
+    [ -z "$sources" ] && sources="$(ls sources | grep -v '#' | sort | uniq)"
+    for source in $sources; do
+        spec="$(basename $source).spec"
+        lfs-spectool "$source/$spec"
     done
 }
 
@@ -89,9 +94,9 @@ lfs-checksums() {
     packages=$(ls downloads | grep -v root-fs)
     sources_dir="$(pwd)/sources"
     for package in $packages ; do
-        echo $package
-        mkdir -p "$sources_dir/$package"
         if [ ! -e "$sources_dir/$package/$package.sha256" ] ; then
+            echo $package
+            mkdir -p "$sources_dir/$package"
             ( cd downloads/$package && sha256sum * > "$sources_dir/$package/$package.sha256" || true )
         fi
     done
@@ -375,7 +380,7 @@ case $1 in
     stop)           assert-stage && podman stop --timeout 0 lfs-$stage ;;
     build)          assert-stage && lfs-build --install ;;
     rpm)            assert-stage && shift ; lfs-build --reinstall "$@" ;;
-    rpm-install)    assert-stage && shift ; rpmbuild_flags="--short-circuit -bi" ; lfs-build --reinstall "$@" ;;
+    rpm-install)    assert-stage && shift ; rpmbuild_flags="--short-circuit --nocheck -bi" ; lfs-build --reinstall "$@" ;;
     shell)          assert-stage && exec podman exec -it lfs-$stage /bin/bash ;;
     root)           assert-stage && exec podman exec --user root -it lfs-$stage /bin/bash ;;
     export)         assert-stage && lfs-export ;;

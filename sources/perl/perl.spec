@@ -33,11 +33,17 @@ AutoReqProv:    no
 Recommends:     %{name}-doc = %{version}
 Recommends:     %{name}-man = %{version}
 
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
 %package doc
 Summary:        Documentation for %{name}
 BuildArch:      noarch
 
-%man_package
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
 
 %endif
 
@@ -57,8 +63,14 @@ perl-interpreter package. See perl-interpreter description for more details on
 the Perl decomposition into packages.
 
 %if !%{with lfs}
+%description devel
+Development files for %{name}
+
 %description doc
 Documentation for %{name}
+
+%description man
+Manual pages for %{name}
 
 %endif
 
@@ -72,6 +84,8 @@ Documentation for %{name}
 %if %{with lfs_stage1}
 unset LC_ALL
 
+# Disabling man page generation as described in the documentation does
+# not work.
 sh Configure -des                                                       \
              -Dprefix=/usr                                              \
              -Dvendorprefix=/usr                                        \
@@ -82,8 +96,8 @@ sh Configure -des                                                       \
              -Dsitearch=/usr/lib/perl5/%{perl_version}/site_perl        \
              -Dvendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl     \
              -Dvendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl    \
-             -Dman1dir=none                                             \
-             -Dman3dir=none
+             -Dman1dir=/usr/share/man/man1                              \
+             -Dman3dir=/usr/share/man/man3
 
 %elif %{with lfs}
 #export BUILD_ZLIB=False
@@ -98,8 +112,8 @@ sh Configure -des                                                    \
              -Dsitearch=/usr/lib/perl5/%{perl_version}/site_perl     \
              -Dvendorlib=/usr/lib/perl5/%{perl_version}/vendor_perl  \
              -Dvendorarch=/usr/lib/perl5/%{perl_version}/vendor_perl \
-             -Dman1dir=none                                          \
-             -Dman3dir=none                                          \
+             -Dman1dir=/usr/share/man/man1                           \
+             -Dman3dir=/usr/share/man/man3                           \
              -Dpager="/usr/bin/less -isR"                            \
              -Duseshrplib                                            \
              -Dusethreads
@@ -133,6 +147,8 @@ cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.perl
 @perl_version %{perl_version}
 EOF
 
+
+
 find \
     %{buildroot}/usr/lib/%{major_name}/%{perl_version} \
     -name "*.so" \
@@ -146,10 +162,16 @@ find usr/lib/%{major_name}/%{perl_version} -type f \
     | sed 's_^usr_/usr_' \
     > %{_builddir}/files-lib.txt
 
+%if %{with lfs}
+find %{buildroot} -name "*.pod" -delete
+
+%else
 find usr/lib/%{major_name}/%{perl_version} -type f \
     | grep .pod \
     | sed 's_^usr_/usr_' \
     > %{_builddir}/files-doc.txt
+
+%endif
 
 popd
 
@@ -161,6 +183,7 @@ make test
 %files -f %{_builddir}/files-lib.txt
 %if %{with lfs}
 /usr/bin/*
+/usr/lib/%{major_name}/%{perl_version}/core_perl/CORE/libperl.so
 /usr/lib/rpm/macros.d/macros.perl
 
 %else

@@ -16,7 +16,7 @@ Source1:        %{name}.sha256
 
 BuildRequires:  perl-libintl
 
-%if !{%with lfs}
+%if !%{with lfs}
 %package lang
 Summary:        Language files for %{name}
 Requires:       %{name} = %{version}
@@ -24,11 +24,11 @@ Requires:       %{name} = %{version}
 %package man
 Summary:        Manual pages for %{name}
 
-
 %package doc
 Summary:        Documentation for %{name}
 Recommends:     %{name}-man = %{version}
 
+%endif
 
 %description
 Texinfo uses a single source file to produce output in a number of formats,
@@ -37,7 +37,7 @@ means that instead of writing different documents for online information and
 another for a printed manual, you need write only one document. The Texinfo
 system is well-integrated with GNU Emacs.
 
-
+%if !%{with lfs}
 %description lang
 Language files for %{name}
 
@@ -46,6 +46,8 @@ Manual pages for %{name}
 
 %description doc
 Documentation for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep

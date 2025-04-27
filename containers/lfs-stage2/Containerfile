@@ -4,6 +4,7 @@ ADD lfs-stage1c.tar.gz /
 
 COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
 
+RUN install -d -m 755 -o 1000 -g 1000 /rpmbuild
 WORKDIR /rpmbuild
 
 CMD [ "/usr/bin/tail", "-f", "/dev/null" ]

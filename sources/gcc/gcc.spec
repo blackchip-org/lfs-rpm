@@ -150,7 +150,7 @@ DESTDIR=%{buildroot}/%{lfs_dir} make install
 ln -sv gcc %{buildroot}/%{lfs_dir}/usr/bin/cc
 
 %else
-make DESTDIR=%{buildroot} install
+make %{?_smp_mflags} DESTDIR=%{buildroot} install
 
 ln -svr /usr/bin/cpp %{buildroot}/usr/lib
 ln -sv  gcc %{buildroot}/usr/bin/cc
@@ -180,12 +180,12 @@ make -k check
 %{lfs_tools_dir}/libexec/gcc/%{lfs_tgt}/%{version}
 
 %elif %{with lfs_stage1b}
-%{?lfs_dir}/usr/bin/*
-%{?lfs_dir}/usr/include/c++/%{version}
-%{?lfs_dir}/usr/lib/*.{so*,a,spec}
-%{?lfs_dir}/usr/share/gcc-%{version}
-%{?lfs_dir}/lib/gcc/%{lfs_tgt}/%{version}
-%{?lfs_dir}/libexec/gcc/%{lfs_tgt}/%{version}
+%{lfs_dir}/usr/bin/*
+%{lfs_dir}/usr/include/c++/%{version}
+%{lfs_dir}/usr/lib/*.{so*,a,spec}
+%{lfs_dir}/usr/lib/gcc
+%{lfs_dir}/usr/libexec/gcc
+%{lfs_dir}/usr/share/gcc-%{version}
 
 %elif %{with lfs}
 %{?lfs_dir}/usr/bin/*

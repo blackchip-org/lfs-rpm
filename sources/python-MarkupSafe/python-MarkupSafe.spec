@@ -13,7 +13,7 @@ Release:        %{release}%{?dist}
 Summary:        Implements a XML/HTML/XHTML Markup safe string
 License:        BSD
 
-Source0:        https://pypi.org/packages/source/M/${camel_name}/%{source_name}-%{version}.tar.gz
+Source0:        https://pypi.org/packages/source/M/%{camel_name}/%{source_name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 BuildRequires:  python

@@ -1,10 +1,18 @@
-Name:           acl
-Version:        2.3.2
-Release:        1%{?dist}
+# lfs
+
+%global name            acl
+%global version         2.3.2
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Access control list utilities
 License:        GPLv2+
 
-Source0:        https://download.savannah.gnu.org/releases/acl/acl-%{version}.tar.xz
+Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 Suggests:       %{name}-doc = %{version}
 
@@ -34,6 +42,7 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -41,14 +50,21 @@ Documentation for %{name}
 ./configure --prefix=/usr         \
             --disable-static      \
             --docdir=/usr/share/doc/acl-%{version}
-%make
+make %{?%_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/usr/bin/*
+/usr/include/{acl,sys}
+/usr/lib/lib*.so*
+/usr/lib/pkgconfig/*
+
+%else
 /usr/bin/chacl
 /usr/bin/getfacl
 /usr/bin/setfacl
@@ -68,3 +84,4 @@ Documentation for %{name}
 %files man
 /usr/share/man/man*/*
 
+%endif

@@ -1,8 +1,8 @@
 # lfs
 
-%global name        attr
-%global version     2.5.2
-%global release     1
+%global name            attr
+%global version         2.5.2
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}

@@ -23,7 +23,9 @@ Recommends:     %{name}-man = %{version}
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-%man_package
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
 
 %endif
 
@@ -59,6 +61,9 @@ supplied by glibc's libcrypt ('encrypt', 'encrypt_r', 'setkey', 'setkey_r', and
 %if !%{with lfs}
 %description devel
 Development files for %{name}
+
+%description man
+Manual pages for %{name}
 
 %endif
 

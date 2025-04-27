@@ -57,6 +57,8 @@ Documentation for %{name}
 %if %{with lfs_stage1}
 mkdir -pv %{buildroot}/var/lib/hwclock
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime    \
+            --bindir=/usr/bin     \
+            --sbindir=/usr/sbin   \
             --libdir=/usr/lib     \
             --runstatedir=/run    \
             --disable-chfn-chsh   \
@@ -106,11 +108,13 @@ make DESTDIR=%{buildroot} install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
-/usr/include
-/usr/lib
-/usr/sbin
-/usr/share/bash-completion/completions
+/usr/bin/*
+/usr/include/{blkid,libfdisk,libmount,libsmartcols,uuid}
+/usr/lib/lib*.so*
+/usr/lib/{pkgconfig,tmpfiles.d}/*
+/usr/lib/systemd/system/*
+/usr/sbin/*
+/usr/share/bash-completion/completions/*
 
 %else
 /usr/bin/cal
