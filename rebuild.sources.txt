@@ -1,3 +1,5 @@
+sources/rpm-config
+sources/gettext
 sources/pkgconf
 sources/libxcrypt
 sources/less
@@ -8,6 +10,7 @@ sources/acl
 sources/attr
 sources/autoconf
 sources/automake
+sources/readline
 sources/bash
 sources/bc
 sources/binutils
@@ -15,10 +18,8 @@ sources/bison
 sources/bzip2
 sources/check
 sources/cmake
-sources/gettext
 sources/coreutils
 sources/cpio
-sources/curl
 sources/dejagnu
 sources/diffutils
 sources/elfutils
@@ -46,7 +47,6 @@ sources/libffi
 sources/libgcrypt
 sources/libgpg-error
 sources/linux-headers
-sources/readline
 sources/lua
 sources/lz4
 sources/m4
@@ -75,6 +75,7 @@ sources/glib
 sources/glibc
 sources/grub
 sources/libpsl
+sources/curl
 sources/libxml2
 sources/libsolv
 sources/root-fs

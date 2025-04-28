@@ -147,8 +147,6 @@ cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.perl
 @perl_version %{perl_version}
 EOF
 
-
-
 find \
     %{buildroot}/usr/lib/%{major_name}/%{perl_version} \
     -name "*.so" \
@@ -224,5 +222,8 @@ make test
 /usr/lib/rpm/macros.d/macros.perl
 
 %files doc -f %{_builddir}/files-doc.txt
+
+%files man
+/usr/share/man/man*/*.gz
 
 %endif

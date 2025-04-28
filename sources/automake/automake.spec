@@ -1,9 +1,9 @@
 # lfs
 
-%global name        automake
-%global version_2   1.16
-%global version     %{version_2}.5
-%global release     1
+%global name            automake
+%global version_2       1.16
+%global version         %{version_2}.5
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -16,7 +16,25 @@ Source0:        https://ftp.gnu.org/gnu/automake/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 BuildRequires:  autoconf >= 2.65
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 Automake is a tool for automatically generating `Makefile.in' files compliant
@@ -25,19 +43,17 @@ with the GNU Coding Standards.
 You should install Automake if you are developing software and would like to
 use its ability to automatically generate GNU standard Makefiles.
 
-%package man
-Summary:        Manual pages for %{name}
+%if !%{with lfs}
+%description doc
+Documentation for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description info
+Info documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -66,17 +82,19 @@ make check
 
 %else
 /usr/bin/aclocal
-/usr/bin/aclocal-%{version2}
+/usr/bin/aclocal-%{version_2}
 /usr/bin/automake
-/usr/bin/automake-%{version2}
-/usr/share/aclocal-%{version2}
-/usr/share/automake-%{version2}
+/usr/bin/automake-%{version_2}
+/usr/share/aclocal-%{version_2}
+/usr/share/%{name}-%{version_2}
 
 %files doc
-/usr/share/doc/automake-%{version}
-/usr/share/info/*
+/usr/share/doc/%{name}-%{version}
+
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

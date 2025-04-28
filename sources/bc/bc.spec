@@ -1,8 +1,8 @@
 # lfs
 
-%global name        bc
-%global version     7.0.3
-%global release     1
+%global name            bc
+%global version         7.0.3
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,19 @@ License:        GPLv2+
 Source0:        https://github.com/gavinhoward/%{name}/releases/download/%{version}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The bc package includes bc and dc. Bc is an arbitrary precision numeric
@@ -24,19 +36,14 @@ based calculator, which can be used as a text mode calculator.
 Install the bc package if you need its number handling capabilities or if you
 would like to use its text mode calculator.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
-
+%if !%{with lfs}
 %description lang
 Language files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -64,7 +71,7 @@ make DESTDIR=%{buildroot} install
 %files lang
 /usr/share/locale/*/bc
 
-%files doc
+%files man
 /usr/share/man/man*/*
 
 %endif

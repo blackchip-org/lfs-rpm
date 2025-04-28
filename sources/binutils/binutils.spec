@@ -1,8 +1,8 @@
 # lfs
 
-%global name        binutils
-%global version     2.44
-%global release     1
+%global name            binutils
+%global version         2.44
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,9 +14,28 @@ License:        GPLv3+
 Source0:        https://sourceware.org/pub/%{name}/releases/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
 
-BuildRequires:  texinfo
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 Binutils is a collection of binary utilities, including ar (for creating,
@@ -30,17 +49,12 @@ object or archive file), strings (for listing printable strings from files),
 strip (for discarding symbols), and addr2line (for converting addresses to file
 and line).
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -48,8 +62,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -172,36 +185,33 @@ make -k check
 /usr/bin/size
 /usr/bin/strings
 /usr/bin/strip
-/usr/include/*.h
 /usr/lib/bfd-plugins/*
 /usr/lib/gprofng
 /usr/lib/ldscripts
 /usr/lib/libbfd-%{version}.so
+/usr/lib/libctf-nobfd.so.*
+/usr/lib/libctf.so.*
+/usr/lib/libgprofng.so.*
+/usr/lib/libopcodes-%{version}.so
+/usr/lib/libsframe.so.*
+
+%files devel
+/usr/include/*.h
 /usr/lib/libbfd.so
 /usr/lib/libctf-nobfd.so
-/usr/lib/libctf-nobfd.so.0
-%shlib /usr/lib/libctf-nobfd.so.0.0.0
 /usr/lib/libctf.so
-/usr/lib/libctf.so.0
-%shlib /usr/lib/libctf.so.0.0.0
 /usr/lib/libgprofng.so
-/usr/lib/libgprofng.so.0
-%shlib /usr/lib/libgprofng.so.0.0.0
-/usr/lib/libopcodes-%{version}.so
 /usr/lib/libopcodes.so
 /usr/lib/libsframe.so
-/usr/lib/libsframe.so.1
-%shlib /usr/lib/libsframe.so.1.0.0
+
+%files info
+/usr/share/info/*.gz
 
 %files lang
-/usr/share/locale/*/LC_MESSAGES/*
-
-%files doc
-/usr/share/info/*
-/usr/share/doc/gprofng
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif
 

@@ -14,11 +14,17 @@ License:        GPLv2+
 Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
 
-%description
-This package contains the getfacl and setfacl utilities needed for manipulating
-access control lists.
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
 
 %package lang
 Summary:        Language files for %{name}
@@ -26,10 +32,20 @@ Requires:       %{name} = %{version}
 
 %package man
 Summary:        Manual pages for %{name}
+BuildArch:      noarch
 
-%package doc
-Summary:        Documentation for %{name}
-Recommends:     %{name}-man = %{version}
+%endif
+
+%description
+This package contains the getfacl and setfacl utilities needed for manipulating
+access control lists.
+
+%if !%{with lfs}
+%description devel
+Development files for %{name}
+
+%description doc
+Documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -37,8 +53,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -68,20 +83,21 @@ make DESTDIR=%{buildroot} install
 /usr/bin/chacl
 /usr/bin/getfacl
 /usr/bin/setfacl
-/usr/include/acl/*.h
+/usr/lib/libacl.so.*
+
+%files devel
+/usr/include/%{name}
 /usr/include/sys/*.h
 /usr/lib/libacl.so
-/usr/lib/libacl.so.1
-%shlib /usr/lib/libacl.so.1.1.*
 /usr/lib/pkgconfig/libacl.pc
 
 %files lang
-/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files doc
 /usr/share/doc/%{name}-%{version}
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

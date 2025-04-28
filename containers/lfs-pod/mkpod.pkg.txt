@@ -66,6 +66,7 @@ findutils
 flex
 gawk
 gcc
+gettext
 grep
 gzip
 libxcrypt

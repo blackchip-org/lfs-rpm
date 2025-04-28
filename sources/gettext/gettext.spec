@@ -34,6 +34,7 @@ BuildArch:      noarch
 %package lang
 Summary:        Language files for %{name}
 Requires:       %{name} = %{version}
+BuildArch:      noarch
 
 %package man
 Summary:        Manual pages for %{name}
@@ -57,11 +58,11 @@ language catalogs and is a powerful and simple method for internationalizing
 programs.
 
 %if !%{with lfs}
-%description doc
-Documentation for %{name}
-
 %description devel
 Development files for %{name}
+
+%description doc
+Documentation for %{name}
 
 %description info
 Info documentation for %{name}
@@ -108,14 +109,14 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{?lfs_dir}/usr/bin
-%{?lfs_dir}/usr/include
-%{?lfs_dir}/usr/lib/gettext
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/lib/%{name}
 %{?lfs_dir}/usr/lib/*.{a,so*}
 %{?lfs_dir}/usr/libexec/%{name}
-%{?lfs_dir}/usr/share/aclocal
-%{?lfs_dir}/usr/share/gettext-%{version}
-%{?lfs_dir}/usr/share/gettext
+%{?lfs_dir}/usr/share/aclocal/*
+%{?lfs_dir}/usr/share/%{name}-%{version}
+%{?lfs_dir}/usr/share/%{name}
 
 %else
 /usr/bin/autopoint

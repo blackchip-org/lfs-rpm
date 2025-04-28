@@ -92,9 +92,9 @@ make test
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/include
+/usr/include/*
 /usr/lib/lib*.so*
-/usr/lib/pkgconfig
+/usr/lib/pkgconfig/*
 
 %else
 /usr/lib/libcrypt.so.*
@@ -104,6 +104,9 @@ make test
 /usr/lib/libcrypt.so
 /usr/lib/pkgconfig/libcrypt.pc
 /usr/lib/pkgconfig/libxcrypt.pc
+
+%files man
+/usr/share/man/man*/*.gz
 
 %endif
 

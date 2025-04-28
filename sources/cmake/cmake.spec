@@ -1,9 +1,9 @@
 # rpm
 
-%global name        cmake
-%global version_2   3.31
-%global version     %{version_2}.6
-%global release     1
+%global name            cmake
+%global version_2       3.31
+%global version         %{version_2}.6
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -17,6 +17,21 @@ Source1:        %{name}.sha256
 
 BuildRequires:  openssl
 
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%endif
+
+# TODO: Build documentation with Sphinx
+# -DSPHINX_HTML=ON
+# -DSPHINX_MAN=ON
+# -DSPHINX_EXECUTABLE=/path/to/sphinx-build
+# https://sphinx-doc.org
+
 %description
 CMake is used to control the software compilation process using simple platform
 and compiler independent configuration files. CMake generates native makefiles
@@ -25,17 +40,11 @@ CMake is quite sophisticated: it is possible to support complex environments
 requiring system configuration, preprocessor generation, code generation, and
 template instantiation.
 
-%package doc
-Summary:        Documentation for %{name}
-
-# TODO: Build documentation with Sphinx
-# -DSPHINX_HTML=ON
-# -DSPHINX_MAN=ON
-# -DSPHINX_EXECUTABLE=/path/to/sphinx-build
-# https://sphinx-doc.org
-
+%if !%{with lfs}
 %description doc
 Documentation for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -44,13 +53,14 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
+# -DCMAKE_DOC_PREFIX doesn't seem to work
+
 %if %{with lfs_stage1b}
 ./bootstrap \
     --verbose \
     --parallel=%{?_smp_build_ncpus} \
     -- \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DCMAKE_DOC_PREFIX=/usr/share/doc \
     -DCMAKE_USE_OPENSSL=OFF
 
 %else
@@ -58,8 +68,7 @@ Documentation for %{name}
     --verbose \
     --parallel=%{?_smp_build_ncpus} \
     -- \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DCMAKE_DOC_PREFIX=/usr/share/doc
+    -DCMAKE_INSTALL_PREFIX=/usr
 
 %endif
 make %{?_smp_mflags}
@@ -70,6 +79,9 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
 %if %{with lfs}
 rm -rf %{buildroot}/%{?lfs_dir}/usr/doc
+
+%else
+mv %{buildroot}/usr/doc %{buildroot}/usr/share/doc
 
 %endif
 

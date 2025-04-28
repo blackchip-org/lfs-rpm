@@ -1,8 +1,8 @@
 # dnf
 
-%global name        cpio
-%global version     2.15
-%global release     1
+%global name            cpio
+%global version         2.15
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -13,6 +13,25 @@ License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
+
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 GNU cpio copies files into or out of a cpio or tar archive. The archive can be
@@ -26,17 +45,9 @@ extracting from archives, cpio automatically recognizes which kind of archive
 it is reading and can read archives created on machines with a different
 byte-order.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -44,8 +55,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -67,7 +77,7 @@ rm %{buildroot}/usr/libexec/rmt
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
+/usr/bin/*
 
 %else
 /usr/bin/cpio
@@ -75,10 +85,10 @@ rm %{buildroot}/usr/libexec/rmt
 %files lang
 /usr/share/locale/*/LC_MESSAGES/%{name}.mo
 
-%files doc
-/usr/share/info/*
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

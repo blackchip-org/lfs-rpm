@@ -16,13 +16,25 @@ Source1:        %{name}.sha256
 
 Provides:       /bin/sh
 Provides:       /bin/bash
-Suggests:       %{name}-doc = %{version}
 
-%description
-The GNU Bourne Again shell (Bash) is a shell or command language interpreter
-that is compatible with the Bourne shell (sh). Bash incorporates useful
-features from the Korn shell (ksh) and the C shell (csh). Most sh scripts can
-be run by bash without modification.
+BuildRequires:  readline
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
 
 %package lang
 Summary:        Language files for %{name}
@@ -30,11 +42,25 @@ Requires:       %{name} = %{version}
 
 %package man
 Summary:        Manual pages for %{name}
+BuildArch:      noarch
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%endif
+
+%description
+The GNU Bourne Again shell (Bash) is a shell or command language interpreter
+that is compatible with the Bourne shell (sh). Bash incorporates useful
+features from the Korn shell (ksh) and the C shell (csh). Most sh scripts can
+be run by bash without modification.
+
+%if !%{with lfs}
+%description devel
+Development files for %{name}
+
+%description doc
+Documentation for %{name}
+
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -42,8 +68,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -81,27 +106,31 @@ make tests
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{?lfs_dir}/usr/bin
-%{?lfs_dir}/usr/include/bash
-%{?lfs_dir}/usr/lib/bash
-%{?lfs_dir}/usr/lib/pkgconfig/bash.pc
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/%{name}
+%{?lfs_dir}/usr/lib/%{name}
+%{?lfs_dir}/usr/lib/pkgconfig/*
 
 %else
 /usr/bin/bash
 /usr/bin/bashbug
 /usr/bin/sh
-/usr/include/bash/*
 /usr/lib/bash
-/usr/lib/pkgconfig/bash.pc
 
-%files lang
-/usr/share/locale/*/LC_MESSAGES/*
+%files devel
+/usr/include/%{name}
+/usr/lib/pkgconfig/bash.pc
 
 %files doc
 /usr/share/doc/%{name}-%{version}
-/usr/share/info/*
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
+
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

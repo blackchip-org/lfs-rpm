@@ -1,8 +1,8 @@
 # lfs
 
-%global name        autoconf
-%global version     2.72
-%global release     1
+%global name            autoconf
+%global version         2.72
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,19 @@ License:        GPLv2+ and GFDL
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 GNU's Autoconf is a tool for configuring source code and Makefiles. Using
@@ -30,19 +42,14 @@ Note that the Autoconf package is not required for the end-user who may be
 configuring software with an Autoconf-generated script; Autoconf is only
 required for the generation of the scripts, not their use.
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -69,8 +76,8 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
-/usr/share/autoconf
+/usr/bin/*
+/usr/share/%{name}
 
 %else
 /usr/bin/autoconf
@@ -82,10 +89,10 @@ make check
 /usr/bin/ifnames
 /usr/share/autoconf
 
-%files doc
-/usr/share/info/*
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

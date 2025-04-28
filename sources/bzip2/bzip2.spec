@@ -1,8 +1,8 @@
 # lfs
 
-%global name        bzip2
-%global version     1.0.8
-%global release     1
+%global name            bzip2
+%global version         1.0.8
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,6 +15,28 @@ Source0:        https://www.sourceware.org/pub/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/bzip2-%{version}-install_docs-1.patch
 
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
+
 %description
 Bzip2 is a freely available, patent-free, high quality data compressor. Bzip2
 compresses files to within 10 to 15 percent of the capabilities of the best
@@ -25,19 +47,20 @@ utility, but it does strike a balance between speed and compression capability.
 
 Install bzip2 if you need a compression utility.
 
-%package man
-Summary:        Manual pages for %{name}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description doc
+Documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -100,16 +123,20 @@ done
 /usr/bin/bzip2recover
 /usr/bin/bzless
 /usr/bin/bzmore
+/usr/lib/libbz2.so.*
+
+%files devel
 /usr/include/bzlib.h
 /usr/lib/libbz2.so
-/usr/lib/libbz2.so.1.0
-%shlib /usr/lib/libbz2.so.%{version}
 
 %files doc
 /usr/share/doc/%{name}-%{version}
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
+
+%files static
+/usr/lib/libbz2.a
 
 %endif
 

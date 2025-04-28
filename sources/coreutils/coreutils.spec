@@ -1,8 +1,8 @@
 # lfs
 
-%global name        coreutils
-%global version     9.6
-%global release     1
+%global name            coreutils
+%global version         9.6
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -19,21 +19,32 @@ BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  gettext
 
-%description
-These are the GNU core utilities. This package is the combination of the old
-GNU fileutils, sh-utils, and textutils packages.
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
 
 %package lang
 Summary:        Language files for %{name}
 Requires:       %{name} = %{version}
+BuildArch:      noarch
 
 %package man
 Summary:        Manual pages for %{name}
+BuildArch:      noarch
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%endif
+
+%description
+These are the GNU core utilities. This package is the combination of the old
+GNU fileutils, sh-utils, and textutils packages.
+
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -41,8 +52,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -195,17 +205,17 @@ sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 /usr/bin/who
 /usr/bin/whoami
 /usr/bin/yes
-%shlib /usr/libexec/coreutils/libstdbuf.so
+/usr/libexec/coreutils/libstdbuf.so
 /usr/sbin/chroot
 
-%files lang
-/usr/share/locale/*/LC_{MESSAGES,TIME}/*
+%files info
+/usr/share/info/*.gz
 
-%files doc
-/usr/share/info/*
+%files lang
+/usr/share/locale/*/LC_{MESSAGES,TIME}/*.mo
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif
 

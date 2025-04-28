@@ -59,7 +59,7 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
+/usr/bin/*
 
 %else
 /usr/bin/less

@@ -15,7 +15,6 @@ Source0:        https://github.com/gflohr/libintl-perl/archive/refs/tags/release
 Source1:        %{name}.sha256
 
 Requires:       perl
-BuildRequires:  perl
 Recommends:     %{name}-doc = %{version}
 
 %package doc
@@ -52,5 +51,5 @@ make DESTDIR=%{buildroot} install
 /usr/lib/perl5/%{perl_version}/site_perl/auto/libintl-perl
 
 %files doc
-/usr/share/man/man*
+/usr/share/man/man*/*.gz
 

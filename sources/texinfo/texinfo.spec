@@ -17,16 +17,24 @@ Source1:        %{name}.sha256
 BuildRequires:  perl-libintl
 
 %if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
 %package lang
 Summary:        Language files for %{name}
 Requires:       %{name} = %{version}
 
 %package man
 Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Recommends:     %{name}-man = %{version}
+BuildArch:      noarch
 
 %endif
 
@@ -38,14 +46,17 @@ another for a printed manual, you need write only one document. The Texinfo
 system is well-integrated with GNU Emacs.
 
 %if !%{with lfs}
+%description devel
+Development files for %{name}
+
+%description info
+Info documentation for %{name}
+
 %description lang
 Language files for %{name}
 
 %description man
 Manual pages for %{name}
-
-%description doc
-Documentation for %{name}
 
 %endif
 
@@ -88,33 +99,31 @@ make DESTDIR=%{buildroot} install
 /usr/bin/texi2dvi
 /usr/bin/texi2pdf
 /usr/bin/texindex
-%shlib /usr/lib/texi2any/ConvertXS.so
-%shlib /usr/lib/texi2any/DocumentXS.so
-%shlib /usr/lib/texi2any/IndicesXS.so
-%shlib /usr/lib/texi2any/MiscXS.so
-%shlib /usr/lib/texi2any/Parsetexi.so
-%shlib /usr/lib/texi2any/StructuringTransfoXS.so
-%shlib /usr/lib/texi2any/XSParagraph.so
-/usr/lib/texi2any/libtexinfo-convert.so
-/usr/lib/texi2any/libtexinfo-convert.so.0
-%shlib /usr/lib/texi2any/libtexinfo-convert.so.0.0.0
-/usr/lib/texi2any/libtexinfo-convertxs.so
-/usr/lib/texi2any/libtexinfo-convertxs.so.0
-%shlib /usr/lib/texi2any/libtexinfo-convertxs.so.0.0.0
-/usr/lib/texi2any/libtexinfo.so
-/usr/lib/texi2any/libtexinfo.so.0
-%shlib /usr/lib/texi2any/libtexinfo.so.0.0.0
-/usr/lib/texi2any/libtexinfoxs.so
-/usr/lib/texi2any/libtexinfoxs.so.0
-%shlib /usr/lib/texi2any/libtexinfoxs.so.0.0.0
+/usr/lib/texi2any/ConvertXS.so
+/usr/lib/texi2any/DocumentXS.so
+/usr/lib/texi2any/IndicesXS.so
+/usr/lib/texi2any/MiscXS.so
+/usr/lib/texi2any/Parsetexi.so
+/usr/lib/texi2any/StructuringTransfoXS.so
+/usr/lib/texi2any/XSParagraph.so
+/usr/lib/texi2any/libtexinfo-convert.so.*
+/usr/lib/texi2any/libtexinfo-convertxs.*
+/usr/lib/texi2any/libtexinfo.so.*
+/usr/lib/texi2any/libtexinfoxs.so.*
 /usr/share/texi2any
 /usr/share/texinfo
+
+%files devel
+/usr/lib/texi2any/libtexinfo-convert.so
+/usr/lib/texi2any/libtexinfo-convertxs.so
+/usr/lib/texi2any/libtexinfo.so
+/usr/lib/texi2any/libtexinfoxs.so
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*
 
-%files doc
-/usr/share/info/*
+%files info
+/usr/share/info/*.gz
 
 %files man
 /usr/share/man/man*/*.gz

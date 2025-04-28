@@ -1,8 +1,8 @@
 # lfs
 
-%global name        readline
-%global version     8.2.13
-%global release     1
+%global name            readline
+%global version         8.2.13
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,14 +14,36 @@ License:        GPLv3+
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
 
-%package man
-Summary:        Manual pages for %{name}
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %package doc
 Summary:        Documentation for %{name}
-Recommends:     %{name}-man = %{version}
+BuildArch:      noarch
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 The Readline library provides a set of functions that allow users to edit
@@ -30,11 +52,26 @@ library includes additional functions for maintaining a list of
 previously-entered command lines for recalling or editing those lines, and for
 performing csh-like history expansion on previous commands
 
-%description man
-Manual pages for %{name}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
 %description doc
 Documentation for %{name}
+
+%description info
+Info documentation for %{name}
+
+%description lang
+Language files for %{name}
+
+%description man
+Manual pages for %{name}
+
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -48,10 +85,19 @@ sed -i '/{OLDSUFF}/c:' support/shlib-install
 
 sed -i 's/-Wl,-rpath,[^ ]*//' support/shobj-conf
 
+%if %{with lfs}
 ./configure --prefix=/usr    \
             --disable-static \
             --with-curses    \
             --docdir=/usr/share/doc/readline-%{version}
+
+%else
+./configure --prefix=/usr    \
+            --with-curses    \
+            --docdir=/usr/share/doc/readline-%{version}
+
+%endif
+
 make %{_smp_mflags} SHLIB_LIBS="-lncursesw"
 
 #---------------------------------------------------------------------------
@@ -68,21 +114,28 @@ install -m 644 doc/*.{ps,pdf,html,dvi} -Dt %{buildroot}/usr/share/doc/readline-%
 /usr/lib/pkgconfig/*
 
 %else
-/usr/share/doc/readline-%{version}
-/usr/include/readline
+/usr/lib/libhistory.so.*
+/usr/lib/libreadline.so.*
+/usr/share/%{name}
+
+%files devel
+/usr/include/%{name}
 /usr/lib/libhistory.so
-/usr/lib/libhistory.so.8
-%shlib /usr/lib/libhistory.so.%{version2}
 /usr/lib/libreadline.so
-/usr/lib/libreadline.so.8
-%shlib /usr/lib/libreadline.so.%{version2}
 /usr/lib/pkgconfig/history.pc
 /usr/lib/pkgconfig/readline.pc
 
 %files doc
+/usr/share/doc/%{name}-%{version}
+
+%files info
 /usr/share/info/*
 
 %files man
 /usr/share/man/man*/*
+
+%files static
+/usr/lib/libhistory.a
+/usr/lib/libreadline.a
 
 %endif
