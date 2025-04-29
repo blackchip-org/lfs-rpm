@@ -1,9 +1,9 @@
 # lfs
 
-%global source_name flit_core
-%global name        python-flit-core
-%global version     3.11.0
-%global release     1
+%global source_name     flit_core
+%global name            python-flit-core
+%global version         3.11.0
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,7 +15,9 @@ License:        BSD-3-Clause
 Source0:        https://pypi.org/packages/source/f/%{source_name}/%{source_name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-BuildRequires:  python
+BuildArch:      noarch
+
+BuildRequires:  python-devel
 
 %description
 Flit is a simple way to put Python packages and modules on PyPI.

@@ -1,9 +1,9 @@
 # dnf
 
-%global name        libxml2
-%global version_2   2.13
-%global version     %{version_2}.6
-%global release     1
+%global name            libxml2
+%global version_2       2.13
+%global version         %{version_2}.6
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,16 +15,26 @@ License:        MIT
 Source0:        https://download.gnome.org/sources/%{name}/%{version_2}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-BuildRequires:  pkg-config
-BuildRequires:  python
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  pkgconf
+BuildRequires:  python-devel
 
-%package man
-Summary:        Manual pages for %{name}
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %package doc
 Summary:        Documentation for %{name}
-Recommends:     %{name}-man = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 Libxml2 is the XML C parser and toolkit developed for the GNOME project
@@ -35,11 +45,17 @@ extra "markup" information enclosed between angle brackets. HTML is the most
 well-known markup language. Though the library is written in C a variety of
 language bindings make it available in other environments.
 
-%description man
-Manual pages for %{name}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
 %description doc
 Documentation for %{name}
+
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -63,25 +79,26 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
+/usr/bin/*
 /usr/include/%{name}
-/usr/lib/python%{python_version}/site-packages
-/usr/share/aclocal
-/usr/lib/cmake
+/usr/lib/python%{python_version}/site-packages/*
+/usr/share/aclocal/*
+/usr/lib/cmake/*
 /usr/lib/lib*.so*
-/usr/lib/pkgconfig
+/usr/lib/pkgconfig/*
 
 %else
 /usr/bin/xml2-config
 /usr/bin/xmlcatalog
 /usr/bin/xmllint
-/usr/include/%{name}
 /usr/lib/python%{python_version}/site-packages/*
+/usr/lib/libxml2.so.*
+
+%files devel
+/usr/include/%{name}
 /usr/share/aclocal/libxml.m4
 /usr/lib/cmake/%{name}
 /usr/lib/libxml2.so
-/usr/lib/libxml2.so.2
-%shlib /usr/lib/libxml2.so.2.13.6
 /usr/lib/pkgconfig/libxml-2.0.pc
 
 %files doc

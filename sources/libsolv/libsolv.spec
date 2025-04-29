@@ -18,8 +18,20 @@ Source0:	    https://github.com/openSUSE/%{name}/archive/refs/tags/%{version}.ta
 Source1:        %{name}.sha256
 
 BuildRequires:  cmake
-BuildRequires:  libxml2
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  libxml2-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 This is libsolv, a free package dependency solver using a satisfiability
@@ -38,12 +50,14 @@ decision tree to provide introspection, and also provides the user with
 suggestions on how to deal with unsolvable problems. It also takes advantage of
 repository storage to minimize memory usage.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -98,16 +112,18 @@ mv %{buildroot}/usr/share/cmake \
 /usr/bin/rpms2solv
 /usr/bin/testsolv
 /usr/bin/updateinfoxml2solv
+/usr/lib/libsolv.so.*
+/usr/lib/libsolvext.so.*
+
+%files devel
 /usr/include/solv
 /usr/lib/libsolv.so
-/usr/lib/libsolv.so.1
 /usr/lib/libsolvext.so
-/usr/lib/libsolvext.so.1
 /usr/lib/pkgconfig/libsolv.pc
 /usr/lib/pkgconfig/libsolvext.pc
 /usr/share/cmake-%{cmake_version}/Modules/FindLibSolv.cmake
 
-%files doc
-/usr/share/man/man*/*
+%files man
+/usr/share/man/man*/*.gz
 
 %endif

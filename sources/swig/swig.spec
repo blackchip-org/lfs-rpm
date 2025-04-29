@@ -17,7 +17,7 @@ Source1:        %{name}.sha256
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
-BuildRequires:  pcre2
+BuildRequires:  pcre2-devel
 
 %description
 SWIG is a compiler that integrates C and C++ with languages including Perl,

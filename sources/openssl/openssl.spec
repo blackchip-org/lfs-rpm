@@ -1,8 +1,8 @@
 # lfs
 
-%global name        openssl
-%global version     3.4.1
-%global release     1
+%global name            openssl
+%global version         3.4.1
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,27 +14,40 @@ License:        OpenSSL and ASL 2.0
 Source0:        https://www.openssl.org/source/openssl-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The OpenSSL toolkit provides support for secure communications between
 machines. OpenSSL includes a certificate management tool and shared libraries
 which provide various cryptographic algorithms and protocols.
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
-
-%description man
-Manual pages for %{name}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
 %description doc
 Documentation for %{name}
 
+%description man
+Manual pages for %{name}
+
+%endif
 #---------------------------------------------------------------------------
 %prep
 %verify_sha256 -f %{SOURCE1}
@@ -52,7 +65,7 @@ make %{?_smp_mflags}
 #---------------------------------------------------------------------------
 %install
 sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
-make DESTDIR=%{buildroot} MANSUFFIX=ssl install
+make %{?_smp_mflags} DESTDIR=%{buildroot} MANSUFFIX=ssl install
 
 mv -v %{buildroot}/usr/share/doc/openssl \
       %{buildroot}/usr/share/doc/openssl-%{version}
@@ -69,13 +82,13 @@ make test
 %files
 %if %{with lfs}
 %{?lfs_dir}/etc/ssl
-%{?lfs_dir}/usr/bin
+%{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/openssl
 %{?lfs_dir}/usr/lib/engines-3
 %{?lfs_dir}/usr/lib/lib*.so*
 %{?lfs_dir}/usr/lib/cmake/OpenSSL
 %{?lfs_dir}/usr/lib/ossl-modules
-%{?lfs_dir}/usr/lib/pkgconfig
+%{?lfs_dir}/usr/lib/pkgconfig/*
 
 %else
 %config(noreplace) /etc/ssl/ct_log_list.cnf
@@ -87,17 +100,19 @@ make test
 /etc/ssl/openssl.cnf.dist
 /usr/bin/c_rehash
 /usr/bin/openssl
-/usr/include/openssl
 /usr/lib/engines-3/afalg.so
 /usr/lib/engines-3/capi.so
 /usr/lib/engines-3/loader_attic.so
 /usr/lib/engines-3/padlock.so
+/usr/lib/libcrypto.so.*
+/usr/lib/libssl.*
+/usr/lib/ossl-modules/legacy.so
+
+%files devel
+/usr/include/openssl
 /usr/lib/libcrypto.so
-%shlib /usr/lib/libcrypto.so.3
 /usr/lib/libssl.so
-%shlib /usr/lib/libssl.so.3
 /usr/lib/cmake/OpenSSL
-%shlib /usr/lib/ossl-modules/legacy.so
 /usr/lib/pkgconfig/libcrypto.pc
 /usr/lib/pkgconfig/libssl.pc
 /usr/lib/pkgconfig/openssl.pc
@@ -106,6 +121,6 @@ make test
 /usr/share/doc/openssl-%{version}
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

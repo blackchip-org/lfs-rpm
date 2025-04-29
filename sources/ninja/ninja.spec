@@ -1,8 +1,8 @@
 # lfs
 
-%global name        ninja
-%global version     1.12.1
-%global release     1
+%global name            ninja
+%global version         1.12.1
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,7 @@ License:        ASL
 Source0:        https://github.com/%{name}-build/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-BuildRequires:  python
+BuildRequires:  python-devel
 
 %description
 Ninja is a small build system with a focus on speed. It differs from other

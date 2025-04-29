@@ -1,9 +1,9 @@
 # lfs
 
-%global source_name setuptools
-%global name        python-%{source_name}
-%global version     75.8.1
-%global release     1
+%global source_name     setuptools
+%global name            python-%{source_name}
+%global version         75.8.1
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,9 +15,11 @@ License:        MIT
 Source0:        https://pypi.org/packages/source/s/%{source_name}/%{source_name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
+BuildArch:      noarch
+
 Requires:       python-wheel
 
-BuildRequires:  python
+BuildRequires:  python-devel
 BuildRequires:  python-wheel
 
 %description

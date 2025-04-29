@@ -1,8 +1,8 @@
 # lfs
 
-%global name        psmisc
-%global version     23.7
-%global release     1
+%global name            psmisc
+%global version         23.7
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -11,10 +11,22 @@ Release:        %{release}%{?dist}
 Summary:        Utilities for managing processes on your system
 License:        GPLv2+
 
-Source0:        https://sourceforge.net/projects/psmisc/files/%{name}/%{name}-%{version}.tar.xz
+Source0:        https://sourceforge.net/projects/%{name}/files/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The psmisc package contains utilities for managing processes on your system:
@@ -25,19 +37,14 @@ name. The fuser command identifies the PIDs of processes that are using
 specified files or filesystems. The pslog command shows the path of log files
 owned by a given process.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
-
+%if !%{with lfs}
 %description lang
 Language files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -60,7 +67,7 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
+/usr/bin/*
 
 %else
 /usr/bin/fuser
@@ -72,9 +79,9 @@ make check
 /usr/bin/pstree.x11
 
 %files lang
-/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
-%files doc
+%files man
 /usr/share/man/{??,pt_BR}/man*/*
 /usr/share/man/man*/*
 

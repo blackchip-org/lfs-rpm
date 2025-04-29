@@ -1,10 +1,10 @@
 # lfs
 
-%global source_name jinja2
-%global camel_name  Jinja2
-%global name        python-%{camel_name}
-%global version     3.1.5
-%global release     1
+%global source_name     jinja2
+%global camel_name      Jinja2
+%global name            python-%{camel_name}
+%global version         3.1.5
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -16,8 +16,11 @@ License:        BSD
 Source0:        https://pypi.org/packages/source/J/%{camel_name}/%{source_name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
+BuildArch:      noarch
+
 Requires:       python-MarkupSafe
-BuildRequires:  python
+
+BuildRequires:  python-devel
 BuildRequires:  python-flit-core
 
 %description

@@ -17,11 +17,34 @@ Source2:        https://anduin.linuxfromscratch.org/LFS/%{name}-man-pages-%{vers
 
 BuildRequires:  gettext
 BuildRequires:  gperf
+BuildRequires:  libxcrypt-devel
 BuildRequires:  meson
 BuildRequires:  pkg-config
 BuildRequires:  python-Jinja2
 BuildRequires:  ninja
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 systemd is a system and service manager that runs as PID 1 and starts the rest
@@ -37,17 +60,12 @@ runtime directories and settings, and daemons to manage simple network
 configuration, network time synchronization, log forwarding, and name
 resolution.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description doc
+Documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -55,8 +73,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -138,13 +155,16 @@ systemctl preset-all
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/etc/{init.d,profile.d,ssh,systemd,udev,xdg,X11}
-/usr/bin
-/usr/include
+/etc/{init.d,profile.d,ssh,systemd,udev,xdg,X11}/*
+/usr/bin/*
+/usr/include/*
 /usr/lib/lib*.so*
-/usr/lib/{environment.d,kernel,modprobe.d,pkgconfig,sysctl.d,systemd,tmpfiles.d,udev}
-/usr/sbin
-/usr/share/{bash-completion,dbus-1,factory,mime,pkgconfig,polkit-1,systemd,zsh}
+/usr/lib/{kernel,modprobe.d,pkgconfig,sysctl.d,udev}/*
+/usr/lib/{environment.d,systemd,tmpfiles.d}
+/usr/sbin/*
+/usr/share/bash-completion/completions/*
+/usr/share/{dbus-1,factory,mime,pkgconfig,polkit-1,zsh}/*
+/usr/share/%{name}
 
 %else
 /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
@@ -153,6 +173,7 @@ systemctl preset-all
 %config(noreplace) /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
 %config(noreplace) /etc/systemd/coredump.conf
 %config(noreplace) /etc/systemd/journald.conf
+%config(noreplace) /etc/systemd/journal-upload.conf
 %config(noreplace) /etc/systemd/logind.conf
 %config(noreplace) /etc/systemd/networkd.conf
 %config(noreplace) /etc/systemd/oomd.conf
@@ -169,6 +190,7 @@ systemctl preset-all
 /usr/bin/busctl
 /usr/bin/coredumpctl
 /usr/bin/hostnamectl
+/usr/bin/importctl
 /usr/bin/journalctl
 /usr/bin/kernel-install
 /usr/bin/localectl
@@ -213,8 +235,6 @@ systemctl preset-all
 /usr/bin/timedatectl
 /usr/bin/udevadm
 /usr/bin/varlinkctl
-/usr/include/libudev.h
-/usr/include/systemd
 /usr/lib/environment.d/99-environment.conf
 /usr/lib/kernel/install.conf
 /usr/lib/kernel/install.d/50-depmod.install
@@ -224,17 +244,11 @@ systemctl preset-all
 /usr/lib/libnss_mymachines.so.2
 /usr/lib/libnss_resolve.so.2
 /usr/lib/libnss_systemd.so.2
-/usr/lib/libsystemd.so
-/usr/lib/libsystemd.so.0
-%shlib /usr/lib/libsystemd.so.0.40.0
-/usr/lib/libudev.so
-/usr/lib/libudev.so.1
-%shlib/usr/lib/libudev.so.1.7.10
+/usr/lib/libsystemd.so.*
+/usr/lib/libudev.so.*
 /usr/lib/kernel/uki.conf
 /usr/lib/modprobe.d/README
 /usr/lib/modprobe.d/systemd.conf
-/usr/lib/pkgconfig/libsystemd.pc
-/usr/lib/pkgconfig/libudev.pc
 /usr/lib/sysctl.d/50-coredump.conf
 /usr/lib/sysctl.d/50-default.conf
 /usr/lib/sysctl.d/50-pid-max.conf
@@ -263,19 +277,22 @@ systemctl preset-all
 /usr/share/systemd/language-fallback-map
 /usr/share/zsh/site-functions/*
 
-%if !%{with lfs_stage2}
-%config(noreplace) /etc/systemd/journal-upload.conf
-/usr/bin/importctl
+%files devel
 /usr/lib/rpm/macros.d/macros.systemd
-%endif
+/usr/include/libudev.h
+/usr/include/systemd
+/usr/lib/libsystemd.so
+/usr/lib/pkgconfig/libsystemd.pc
+/usr/lib/pkgconfig/libudev.pc
 
 %files lang
-/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files doc
 /usr/share/doc/systemd-%{version}
+/usr/lib/libudev.so
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

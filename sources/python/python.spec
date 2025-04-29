@@ -16,23 +16,38 @@ License:        Python
 Source0:        https://www.python.org/ftp/%{name}/%{version}/%{source_name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-BuildRequires:  expat
-BuildRequires:  openssl
+BuildRequires:  expat-devel
+BuildRequires:  openssl-devel
+BuildRequires:  readline-devel
 # Python test fails with 3.49
-BuildRequires:  sqlite = 3.48.0
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  sqlite-devel = 3.48.0
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 Python is an accessible, high-level, dynamically typed, interpreted programming
 language, designed with an emphasis on code readibility. It includes an
 extensive standard library, and has a vast ecosystem of third-party libraries.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -78,10 +93,10 @@ EOF
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
+/usr/bin/*
 /usr/include/python%{python_version}
 /usr/lib/*.so*
-/usr/lib/pkgconfig
+/usr/lib/pkgconfig/*
 /usr/lib/python%{python_version}
 /usr/lib/rpm/macros.d/macros.python
 
@@ -91,18 +106,20 @@ EOF
 /usr/bin/{pydoc,pydoc3,pydoc%{python_version}}
 /usr/bin/{python,python3,python%{python_version}}
 /usr/bin/{python-config,python3-config,python%{python_version}-config}
+/usr/lib/libpython%{python_version}.so.*
+/usr/lib/python%{python_version}
+
+%files devel
 /usr/include/python%{python_version}
-/usr/lib/libpython%{python_version}.so
 /usr/lib/libpython3.so
-%shlib /usr/lib/libpython%{python_version}.so.1.0
+/usr/lib/libpython%{python_version}.so
 /usr/lib/pkgconfig/python-%{python_version}-embed.pc
 /usr/lib/pkgconfig/python-%{python_version}.pc
 /usr/lib/pkgconfig/python3-embed.pc
 /usr/lib/pkgconfig/python3.pc
-/usr/lib/python%{python_version}
 /usr/lib/rpm/macros.d/macros.python
 
-%files doc
+%files man
 /usr/share/man/man*/*
 
 %endif

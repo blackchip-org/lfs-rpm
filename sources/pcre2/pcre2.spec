@@ -3,6 +3,7 @@
 %global name            pcre2
 %global version         10.45
 %global release         1
+%global so_version      8
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +15,27 @@ License:        BSD
 Source0:        https://github.com/PCRE2Project/%{name}/releases/download/%{name}-%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 The PCRE2 library is a set of C functions that implement regular expression
@@ -28,19 +49,20 @@ PCRE2 was first released in 2015 to replace the API in the original PCRE
 library, which is now obsolete and no longer maintained. As well as a more
 flexible API, the code of PCRE2 has been much improved since the fork.
 
-%package man
-Summary:        Manual pages for %{name}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description doc
+Documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -59,8 +81,8 @@ make DESTDIR=%{buildroot} install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
-/usr/include
+/usr/bin/*
+/usr/include/*.h
 /usr/lib/lib*.{so*,a}
 /usr/lib/pkgconfig
 
@@ -68,16 +90,14 @@ make DESTDIR=%{buildroot} install
 /usr/bin/pcre2-config
 /usr/bin/pcre2grep
 /usr/bin/pcre2test
-/usr/include/*
-/usr/lib/libpcre2-8.a
-/usr/lib/libpcre2-8.so
-/usr/lib/libpcre2-8.so.0
-%shlib /usr/lib/libpcre2-8.so.0.14.0
-/usr/lib/libpcre2-posix.a
+/usr/lib/libpcre2-%{so_version}.so.*
+/usr/lib/libpcre2-posix.so.*
+
+%files devel
+/usr/include/*.h
+/usr/lib/libpcre2-%{so_version}.so
 /usr/lib/libpcre2-posix.so
-/usr/lib/libpcre2-posix.so.3
-%shlib /usr/lib/libpcre2-posix.so.3.0.6
-/usr/lib/pkgconfig/libpcre2-8.pc
+/usr/lib/pkgconfig/libpcre2-%{so_version}.pc
 /usr/lib/pkgconfig/libpcre2-posix.pc
 
 %files doc
@@ -85,5 +105,9 @@ make DESTDIR=%{buildroot} install
 
 %files man
 /usr/share/man/man*/*
+
+%files static
+/usr/lib/libpcre2-%{so_version}.a
+/usr/lib/libpcre2-posix.a
 
 %endif

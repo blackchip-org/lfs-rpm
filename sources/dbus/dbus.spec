@@ -1,8 +1,10 @@
 # lfs
 
-%global name        dbus
-%global version     1.16.0
-%global release     1
+%global name            dbus
+%global major_name      dbus-1
+%global major_name_2    %{major_name}.0
+%global version         1.16.0
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,22 +16,40 @@ License:        (AFL-2.1 OR GPL-2.0-or-later) AND GPL-2.0-or-later
 Source0:        https://dbus.freedesktop.org/releases/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-BuildRequires:  expat
+Requires:       shadow
+
+BuildRequires:  expat-devel
 BuildRequires:  meson
 BuildRequires:  ninja
-BuildRequires:  pkg-config
-BuildRequires:  systemd
+BuildRequires:  pkgconf
+BuildRequires:  systemd-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 D-BUS is a system for sending messages between applications. It is used both
 for the system-wide message bus service, and as a per-user-login-session
 messaging facility.
 
-%package doc
-Summary:        Documentation for %{name}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
 %description doc
 Documentation for %{name}
+
+%endif
 
 # TODO: Build doxygen/xml docs
 
@@ -64,19 +84,20 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/etc/dbus-1
-/usr/bin
-/usr/include/dbus-1.0
+/etc/%{major_name}/*
+/usr/bin/*
+/usr/include/%{major_name}
 /usr/lib/lib*.so*
-/usr/lib/{cmake,dbus-1.0,pkgconfig,systemd,sysusers.d,tmpfiles.d}
+/usr/lib/{cmake,pkgconfig,systemd,sysusers.d,tmpfiles.d}/*
+/usr/lib/%{major_name}
 /usr/libexec/dbus-daemon-launch-helper
-/usr/share/dbus-1
-/usr/share/xml/dbus-1
+/usr/share/%{major_name_2}
+/usr/share/xml/%{major_name}
 /var/lib/dbus/machine-id
 
 %else
-%config(noreplace) /etc/dbus-1/session.conf
-%config(noreplace) /etc/dbus-1/system.conf
+%config(noreplace) /etc/%{major_name}/session.conf
+%config(noreplace) /etc/%{major_name}/system.conf
 /usr/bin/dbus-cleanup-sockets
 /usr/bin/dbus-daemon
 /usr/bin/dbus-launch
@@ -86,13 +107,8 @@ make check
 /usr/bin/dbus-test-tool
 /usr/bin/dbus-update-activation-environment
 /usr/bin/dbus-uuidgen
-/usr/include/dbus-1.0
-/usr/lib/cmake/DBus1
-/usr/lib/dbus-1.0
-/usr/lib/libdbus-1.so
-/usr/lib/libdbus-1.so.3
-%shlib /usr/lib/libdbus-1.so.3.38.3
-/usr/lib/pkgconfig/dbus-1.pc
+/usr/lib/%{major_name_2}
+/usr/lib/lib%{major_name}.so.*
 /usr/lib/systemd/system/dbus.service
 /usr/lib/systemd/system/dbus.socket
 /usr/lib/systemd/system/multi-user.target.wants/dbus.service
@@ -103,11 +119,17 @@ make check
 /usr/libexec/dbus-daemon-launch-helper
 /usr/lib/sysusers.d/dbus.conf
 /usr/lib/tmpfiles.d/dbus.conf
-/usr/share/dbus-1
-/usr/share/xml/dbus-1
+/usr/share/%{major_name}
+/usr/share/xml/%{major_name}
 /var/lib/dbus/machine-id
 
+%files devel
+/usr/include/%{major_name_2}
+/usr/lib/cmake/DBus1
+/usr/lib/lib%{major_name}.so
+/usr/lib/pkgconfig/%{major_name}.pc
+
 %files doc
-/usr/share/doc/dbus
+/usr/share/doc/%{name}
 
 %endif

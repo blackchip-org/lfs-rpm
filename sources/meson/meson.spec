@@ -1,8 +1,8 @@
 # lfs
 
-%global name        meson
-%global version     1.7.0
-%global release     1
+%global name            meson
+%global version         1.7.0
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,9 +14,19 @@ License:        ASL
 Source0:        https://github.com/mesonbuild/meson/releases/download/%{version}/meson-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-BuildRequires:  python
+BuildArch:      noarch
+
+BuildRequires:  python-devel
 BuildRequires:  python-setuptools
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 Meson is an open source build system meant to be both extremely fast, and, even
@@ -26,12 +36,11 @@ The main design point of Meson is that every moment a developer spends writing
 or debugging build definitions is a second wasted. So is every second spent
 waiting for the build system to actually start compiling code.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description man
+Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -49,9 +58,9 @@ pip3 install --root %{buildroot} --no-index --find-links dist meson
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
-/usr/lib/python%{python_version}/site-packages
-/usr/share/polkit-1
+/usr/bin/*
+/usr/lib/python%{python_version}/site-packages/*
+/usr/share/polkit-1/actions/*
 
 %else
 /usr/bin/meson
@@ -59,7 +68,7 @@ pip3 install --root %{buildroot} --no-index --find-links dist meson
 /usr/lib/python%{python_version}/site-packages/mesonbuild
 /usr/share/polkit-1/actions/com.mesonbuild.install.policy
 
-%files doc
+%files man
 /usr/share/man/man*/*
 
 %endif

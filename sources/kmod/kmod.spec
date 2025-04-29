@@ -1,8 +1,8 @@
 # lfs
 
-%global name        kmod
-%global version     34
-%global release     1
+%global name            kmod
+%global version         34
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -16,14 +16,26 @@ Source1:        %{name}.sha256
 
 BuildRequires:  meson
 BuildRequires:  ninja
-BuildRequires:  pkg-config
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  pkgconf
+
+%if !%{with lfs}
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%endif
 
 %description
 The kmod package provides various programs needed for automatic loading and
 unloading of modules under 2.6, 3.x, and later kernels, as well as other module
 management programs. Device drivers and filesystems are two examples of loaded
 and unloaded modules.
+
+%if !%{with lfs}
+%description devel
+Development files for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -51,16 +63,18 @@ DESTDIR=%{buildroot} ninja install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
-/usr/include
+/usr/bin/*
+/usr/include/*.h
 /usr/lib/lib*.so*
-/usr/lib/pkgconfig
-/usr/sbin
-/usr/share/{bash-completion,fish,pkgconfig,zsh}
+/usr/lib/pkgconfig/*
+/usr/sbin/*
+/usr/share/bash-completion/completions/*
+/usr/share/fish/vendor_functions.d/*
+/usr/share/pkgconfig/*
+/usr/share/zsh/site-functions/*
 
 %else
 /usr/bin/kmod
-/usr/include/*.h
 /usr/lib/libkmod.so*
 /usr/lib/pkgconfig/libkmod.pc
 /usr/sbin/depmod
@@ -71,8 +85,11 @@ DESTDIR=%{buildroot} ninja install
 /usr/sbin/rmmod
 /usr/share/bash-completion/completions/{insmod,kmod,lsmod,rmmod}
 /usr/share/fish/vendor_functions.d/{insmod,lsmod,rmmod}.fish
-/usr/share/pkgconfig/kmod.pc
 /usr/share/zsh/site-functions/_{insmod,lsmod,rmmod}
+
+%files devel
+/usr/include/*.h
+/usr/share/pkgconfig/%{name}.pc
 
 %endif
 

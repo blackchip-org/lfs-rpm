@@ -1,8 +1,8 @@
 # lfs
 
-%global name        sed
-%global version     4.9
-%global release     1
+%global name            sed
+%global version         4.9
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,7 +15,30 @@ Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 BuildRequires:  texinfo
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The sed (Stream EDitor) editor is a stream or batch (non-interactive) editor.
@@ -24,17 +47,12 @@ and outputs the modified text. The operations that sed performs (substitutions,
 deletions, insertions, etc.) can be specified in a script file or from the
 command line.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description doc
+Documentation for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -42,8 +60,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -92,7 +109,7 @@ install -m644 doc/sed.html %{buildroot}/usr/share/doc/sed-4.9
 /usr/share/info/*
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif
 

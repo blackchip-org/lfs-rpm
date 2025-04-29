@@ -1,9 +1,9 @@
 # rpm
 
-%global name        rpm
-%global version_2   4.20
-%global version     %{version_2}.1
-%global release     1
+%global name            rpm
+%global version_2       4.20
+%global version         %{version_2}.1
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -16,14 +16,36 @@ Source0:        https://ftp.osuosl.org/pub/%{name}/releases/%{name}-%{version_2}
 Source1:        %{name}.sha256
 
 BuildRequires:  cmake
-BuildRequires:  dbus
+BuildRequires:  dbus-devel
 BuildRequires:  gettext
-BuildRequires:  pkg-config
-BuildRequires:  python
-BuildRequires:  lua
-BuildRequires:  readline
-BuildRequires:  sqlite
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  pkgconf
+BuildRequires:  python-devel
+BuildRequires:  lua-devel
+BuildRequires:  readline-devel
+BuildRequires:  sqlite-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The RPM Package Manager (RPM) is a powerful command line driven
@@ -32,17 +54,12 @@ verifying, querying, and updating software packages. Each software
 package consists of an archive of files along with information about
 the package like its version, a description, etc.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description doc
+Documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -50,8 +67,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -205,39 +221,36 @@ rm %{buildroot}/%{?lfs_dir}/usr/lib/rpm-plugins/unshare.so
 /usr/bin/rpmsort
 /usr/bin/rpmspec
 /usr/bin/rpmverify
-/usr/include/rpm
-/usr/lib/cmake/rpm
-/usr/lib/librpm.so
-/usr/lib/librpm.so.10
-%shlib /usr/lib/librpm.so.%{so_version}
-/usr/lib/librpmbuild.so
-/usr/lib/librpmbuild.so.10
-%shlib /usr/lib/librpmbuild.so.%{so_version}
-/usr/lib/librpmio.so
-/usr/lib/librpmio.so.10
-%shlib /usr/lib/librpmio.so.%{so_version}
-/usr/lib/librpmsign.so
-/usr/lib/librpmsign.so.10
-%shlib /usr/lib/librpmsign.so.%{so_version}
-/usr/lib/pkgconfig/rpm.pc
+/usr/lib/librpm.so.*
+/usr/lib/librpmbuild.so.*
+/usr/lib/librpmio.so.*
+/usr/lib/librpmsign.so.*
 /usr/lib/python%{python_version}/site-packages/*
-/usr/lib/rpm
-%shlib /usr/lib/rpm-plugins/dbus_announce.so
-%shlib /usr/lib/rpm-plugins/prioreset.so
-%shlib /usr/lib/rpm-plugins/syslog.so
-%shlib /usr/lib/rpm-plugins/systemd_inhibit.so
-
+/usr/lib/%{name}
+/usr/lib/rpm-plugins/dbus_announce.so
+/usr/lib/rpm-plugins/prioreset.so
+/usr/lib/rpm-plugins/syslog.so
+/usr/lib/rpm-plugins/systemd_inhibit.so
 # %%shlib /usr/lib/rpm-plugins/unshare.so
 /usr/share/dbus-1/system.d/org.rpm.conf
 
+%files devel
+/usr/include/%{name}
+/usr/lib/cmake/%{name}
+/usr/lib/librpm.so
+/usr/lib/librpmbuild.so
+/usr/lib/librpmio.so
+/usr/lib/librpmsign.so
+/usr/lib/pkgconfig/%{name}.pc
+
 %files lang
-/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files doc
-/usr/share/doc/rpm
+/usr/share/doc/%{name}
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif
 

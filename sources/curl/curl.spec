@@ -14,9 +14,25 @@ License:        curl
 Source0:        https://curl.se/download/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-BuildRequires:  libpsl
-BuildRequires:  openssl
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  libpsl-devel
+BuildRequires:  openssl-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 curl is a tool for transferring data from or to a server using URLs. It
@@ -26,12 +42,17 @@ SMB, SMBS, SMTP, SMTPS, TELNET, TFTP, WS and WSS.
 
 curl is powered by libcurl for all transfer-related features.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -49,29 +70,35 @@ make
 %install
 make DESTDIR=%{buildroot} install
 
-# Remove static library
+%if %{with lfs}
 rm %{buildroot}/usr/lib/libcurl.a
+
+%endif
 
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
-/usr/include
+/usr/bin/*
+/usr/include/%{name}
 /usr/lib/lib*.so*
-/usr/lib/pkgconfig
-/usr/share/aclocal
+/usr/lib/pkgconfig/*
+/usr/share/aclocal/*
 
 %else
 /usr/bin/curl
 /usr/bin/curl-config
+/usr/lib/libcurl.so.*
+
+%files devel
 /usr/include/%{name}
 /usr/lib/libcurl.so
-/usr/lib/libcurl.so.4
-%shlib /usr/lib/libcurl.so.4.8.0
 /usr/lib/pkgconfig/libcurl.pc
 /usr/share/aclocal/libcurl.m4
 
-%files doc
+%files man
 /usr/share/man/man{1,3}/*
+
+%files static
+/usr/lib/libcurl.a
 
 %endif

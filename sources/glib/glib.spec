@@ -3,6 +3,7 @@
 %global name            glib
 %global version_2       2.84
 %global version         %{version_2}.0
+%global major_version   2.0
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -16,11 +17,23 @@ Source0:        https://download.gnome.org/sources/%{name}/%{version_2}/%{name}-
 Source1:        %{name}.sha256
 
 BuildRequires:  gettext
-BuildRequires:  libffi
+BuildRequires:  libffi-devel
 BuildRequires:  meson
 BuildRequires:  ninja
-BuildRequires:  pcre2
-BuildRequires:  pkg-config
+BuildRequires:  pcre2-devel
+BuildRequires:  pkgconf
+
+%if !%{with lfs}
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%endif
 
 %description
 GLib is the low-level core library that forms the basis for projects such
@@ -28,12 +41,14 @@ as GTK and GNOME. It provides data structure handling for C, portability
 wrappers, and interfaces for such runtime functionality as an event loop,
 threads, dynamic loading, and an object system.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
 %description lang
 Language files for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -52,12 +67,17 @@ DESTDIR=%{buildroot} meson install -C _build
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
-/usr/include
+/usr/bin/*
+/usr/include/*.h
 /usr/lib/lib*.so*
-/usr/lib/{glib-2.0,pkgconfig}
+/usr/lib/%{name}-%{major_version}
+/usr/lib/pkgconfig/*
 /usr/libexec
-/usr/share/{aclocal,bash-completion,gdb,gettext,glib-2.0}
+/usr/share/aclocal/*
+/usr/share/bash-completion/completions/*
+/usr/share/gdb/*
+/usr/share/gettext/*
+/usr/share/%{version}-%{major_version}/*
 
 %else
 /usr/bin/gapplication
@@ -78,51 +98,47 @@ DESTDIR=%{buildroot} meson install -C _build
 /usr/bin/gsettings
 /usr/bin/gtester
 /usr/bin/gtester-report
-/usr/include/gio-unix-2.0
-/usr/include/glib-2.0
-/usr/lib/glib-2.0/include/glibconfig.h
-/usr/lib/libgio-2.0.so
-/usr/lib/libgio-2.0.so.0
-%shlib /usr/lib/libgio-2.0.so.%{so_version}
-/usr/lib/libgirepository-2.0.so
-/usr/lib/libgirepository-2.0.so.0
-%shlib /usr/lib/libgirepository-2.0.so.%{so_version}
-/usr/lib/libglib-2.0.so
-/usr/lib/libglib-2.0.so.0
-%shlib /usr/lib/libglib-2.0.so.%{so_version}
-/usr/lib/libgmodule-2.0.so
-/usr/lib/libgmodule-2.0.so.0
-%shlib /usr/lib/libgmodule-2.0.so.%{so_version}
-/usr/lib/libgobject-2.0.so
-/usr/lib/libgobject-2.0.so.0
-%shlib /usr/lib/libgobject-2.0.so.%{so_version}
-/usr/lib/libgthread-2.0.so
-/usr/lib/libgthread-2.0.so.0
-%shlib /usr/lib/libgthread-2.0.so.%{so_version}
-/usr/lib/pkgconfig/gio-2.0.pc
-/usr/lib/pkgconfig/gio-unix-2.0.pc
-/usr/lib/pkgconfig/girepository-2.0.pc
-/usr/lib/pkgconfig/glib-2.0.pc
-/usr/lib/pkgconfig/gmodule-2.0.pc
-/usr/lib/pkgconfig/gmodule-export-2.0.pc
-/usr/lib/pkgconfig/gmodule-no-export-2.0.pc
-/usr/lib/pkgconfig/gobject-2.0.pc
-/usr/lib/pkgconfig/gthread-2.0.pc
+/usr/lib/libgio-%{major_version}.so.*
+/usr/lib/libgirepository-%{major_version}.so.*
+/usr/lib/libglib-%{major_version}.so.*
+/usr/lib/libgmodule-%{major_version}.so.*
+/usr/lib/libgobject-%{major_version}.so.*
+/usr/lib/libgthread-%{major_version}.so.*
 /usr/libexec/gio-launch-desktop
 /usr/libexec/installed-tests/glib
-/usr/share/aclocal/glib-2.0.m4
-/usr/share/aclocal/glib-gettext.m4
-/usr/share/aclocal/gsettings.m4
 /usr/share/bash-completion/completions/gapplication
 /usr/share/bash-completion/completions/gdbus
 /usr/share/bash-completion/completions/gio
 /usr/share/bash-completion/completions/gresource
 /usr/share/bash-completion/completions/gsettings
-/usr/share/gdb/auto-load/usr/lib/libglib-2.0.so.%{so_version}-gdb.py
-/usr/share/gdb/auto-load/usr/lib/libgobject-2.0.so.%{so_version}-gdb.py
+/usr/share/gdb/auto-load/usr/lib/libglib-%{major_version}.so.*
+/usr/share/gdb/auto-load/usr/lib/libgobject-%{major_version}.so.*
 /usr/share/gettext/its/gschema.its
 /usr/share/gettext/its/gschema.loc
-/usr/share/glib-2.0
+/usr/share/glib-%{major_version}
+
+%files devel
+/usr/include/gio-unix-%{major_version}
+/usr/include/%{name}-%{major_version}
+/usr/lib/glib-%{major_version}/include/glibconfig.h
+/usr/lib/libgio-%{major_version}.so
+/usr/lib/libgirepository-%{major_version}.so
+/usr/lib/libglib-%{major_version}.so
+/usr/lib/libgmodule-%{major_version}.so
+/usr/lib/libgobject-%{major_version}.so
+/usr/lib/libgthread-%{major_version}.so
+/usr/lib/pkgconfig/gio-%{major_version}.pc
+/usr/lib/pkgconfig/gio-unix-%{major_version}.pc
+/usr/lib/pkgconfig/girepository-%{major_version}.pc
+/usr/lib/pkgconfig/glib-%{major_version}.pc
+/usr/lib/pkgconfig/gmodule-%{major_version}.pc
+/usr/lib/pkgconfig/gmodule-export-%{major_version}.pc
+/usr/lib/pkgconfig/gmodule-no-export-%{major_version}.pc
+/usr/lib/pkgconfig/gobject-%{major_version}.pc
+/usr/lib/pkgconfig/gthread-%{major_version}.pc
+/usr/share/aclocal/glib-%{major_version}.m4
+/usr/share/aclocal/glib-gettext.m4
+/usr/share/aclocal/gsettings.m4
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*

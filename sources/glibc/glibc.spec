@@ -26,7 +26,28 @@ BuildRequires:  gettext
 BuildRequires:  texinfo
 BuildRequires:  python
 Provides:       rtld(GNU_HASH)
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 The glibc package contains standard libraries which are used by multiple
@@ -36,19 +57,20 @@ between programs. This particular package contains the most important sets of
 shared libraries: the standard C library and the standard math library. Without
 these two libraries, a Linux system will not function.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -117,6 +139,9 @@ mkdir -pv   %{buildroot}/var/cache/nscd
 install -v -Dm644 ../nscd/nscd.tmpfiles %{buildroot}/usr/lib/tmpfiles.d/nscd.conf
 install -v -Dm644 ../nscd/nscd.service %{buildroot}/usr/lib/systemd/system/nscd.service
 
+install -d -m 755 %{buildroot}/etc/ld.so.conf.d
+install -d -m 755 %{buildroot}/etc/ld.so.conf.d
+
 install -D -m 644 ../ld.so.conf    %{buildroot}/etc/ld.so.conf
 install -D -m 644 ../nsswitch.conf %{buildroot}/etc/nsswitch.conf
 %endif
@@ -139,14 +164,14 @@ make check
 %files
 
 %if %{with lfs}
-%{?lfs_dir}/lib64
-%{?lfs_dir}/etc
-%{?lfs_dir}/usr/bin
-%{?lfs_dir}/usr/include
+%{?lfs_dir}/lib64/*
+%{?lfs_dir}/etc/*
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*.h
 %{?lfs_dir}/usr/lib/*.{a,o,so*}
-%{?lfs_dir}/usr/lib/{audit,gconv,locale,systemd,tmpfiles.d}
-%{?lfs_dir}/usr/libexec
-%{?lfs_dir}/usr/sbin
+%{?lfs_dir}/usr/lib/{audit,gconv,locale,systemd,tmpfiles.d}/*
+%{?lfs_dir}/usr/libexec/*
+%{?lfs_dir}/usr/sbin/*
 %{?lfs_dir}/usr/share/i18n/charmaps
 %{?lfs_dir}/usr/share/i18n/locales
 %{?lfs_dir}/var/lib/nss_db
@@ -154,12 +179,12 @@ make check
 %else
 /etc/ld.so.cache
 /etc/ld.so.conf
-/etc/ld.so.conf.d
+%dir /etc/ld.so.conf.d
 /etc/nscd.conf
 /etc/nsswitch.conf
 /etc/rpc
-/lib64/ld-linux-x86-64.so.2
-/lib64/ld-lsb-x86-64.so.3
+/lib64/ld-linux-x86-64.so.*
+/lib64/ld-lsb-x86-64.so.*
 /usr/bin/gencat
 /usr/bin/getconf
 /usr/bin/getent
@@ -177,7 +202,6 @@ make check
 /usr/bin/tzselect
 /usr/bin/xtrace
 /usr/bin/zdump
-/usr/include/*
 /usr/lib/Mcrt1.o
 /usr/lib/Scrt1.o
 /usr/lib/crt1.o
@@ -185,53 +209,28 @@ make check
 /usr/lib/crtn.o
 /usr/lib/gcrt1.o
 /usr/lib/grcrt1.o
-%shlib /usr/lib/ld-linux-x86-64.so.2
-/usr/lib/libBrokenLocale.a
-/usr/lib/libBrokenLocale.so
-%shlib /usr/lib/libBrokenLocale.so.1
-/usr/lib/libanl.a
-/usr/lib/libanl.so
-%shlib /usr/lib/libanl.so.1
-/usr/lib/libc.a
-/usr/lib/libc.so
-%shlib /usr/lib/libc.so.6
-/usr/lib/libc_malloc_debug.so
-%shlib /usr/lib/libc_malloc_debug.so.0
-/usr/lib/libc_nonshared.a
-/usr/lib/libdl.a
-%shlib /usr/lib/libdl.so.2
-/usr/lib/libg.a
-/usr/lib/libm-%{version}.a
-/usr/lib/libm.a
-/usr/lib/libm.so
-%shlib /usr/lib/libm.so.6
-/usr/lib/libmcheck.a
+/usr/lib/ld-linux-x86-64.so.*
+/usr/lib/libBrokenLocale.so.*
+/usr/lib/libanl.so.*
+/usr/lib/libc.so.*
+/usr/lib/libc_malloc_debug.so.*
+/usr/lib/libdl.so.*
+/usr/lib/libm.so.*
 /usr/lib/libmemusage.so
-/usr/lib/libmvec.a
-/usr/lib/libmvec.so
-%shlib /usr/lib/libmvec.so.1
-%shlib /usr/lib/libnsl.so.1
-/usr/lib/libnss_compat.so
-%shlib /usr/lib/libnss_compat.so.2
-/usr/lib/libnss_db.so
-%shlib /usr/lib/libnss_db.so.2
-%shlib /usr/lib/libnss_dns.so.2
-%shlib /usr/lib/libnss_files.so.2
-/usr/lib/libnss_hesiod.so
-%shlib /usr/lib/libnss_hesiod.so.2
+/usr/lib/libmvec.so.*
+/usr/lib/libnsl.so.*
+/usr/lib/libnss_compat.so.*
+/usr/lib/libnss_db.so.*
+/usr/lib/libnss_dns.so.*
+/usr/lib/libnss_files.so.*
+/usr/lib/libnss_hesiod.so.*
 /usr/lib/libpcprofile.so
-/usr/lib/libpthread.a
-%shlib /usr/lib/libpthread.so.0
-/usr/lib/libresolv.a
-/usr/lib/libresolv.so
-%shlib /usr/lib/libresolv.so.2
-/usr/lib/librt.a
-%shlib /usr/lib/librt.so.1
-/usr/lib/libthread_db.so
-%shlib /usr/lib/libthread_db.so.1
-/usr/lib/libutil.a
-%shlib /usr/lib/libutil.so.1
-/usr/lib/locale/locale-archive
+/usr/lib/libpthread.so.*
+/usr/lib/libresolv.so.*
+/usr/lib/librt.so.*
+/usr/lib/libthread_db.so.*
+/usr/lib/libutil.so.*
+%ghost /usr/lib/locale/locale-archive
 /usr/lib/rcrt1.o
 /usr/lib/{audit,gconv}
 /usr/lib/systemd/system/nscd.service
@@ -242,16 +241,46 @@ make check
 /usr/sbin/nscd
 /usr/sbin/sln
 /usr/sbin/zic
-/usr/share/i18n/charmaps/*
-/usr/share/i18n/locales/*
+/usr/share/i18n/charmaps
+/usr/share/i18n/locales
+
+%files devel
+/usr/include/*
+/usr/lib/libBrokenLocale.so
+/usr/lib/libanl.so
+/usr/lib/libc.so
+/usr/lib/libc_malloc_debug.so
+/usr/lib/libm.so
+/usr/lib/libmvec.so
+/usr/lib/libnss_compat.so
+/usr/lib/libnss_db.so
+/usr/lib/libnss_hesiod.so
+/usr/lib/libresolv.so
+/usr/lib/libthread_db.so
 /var/lib/nss_db/Makefile
+
+%files info
+/usr/share/info/*.gz
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*
 /usr/share/locale/locale.alias
 
-%files doc
-/usr/share/info/*
+%files static
+/usr/lib/libBrokenLocale.a
+/usr/lib/libanl.a
+/usr/lib/libc.a
+/usr/lib/libc_nonshared.a
+/usr/lib/libdl.a
+/usr/lib/libg.a
+/usr/lib/libm-%{version}.a
+/usr/lib/libm.a
+/usr/lib/libmcheck.a
+/usr/lib/libmvec.a
+/usr/lib/libpthread.a
+/usr/lib/libresolv.a
+/usr/lib/librt.a
+/usr/lib/libutil.a
 
 %endif
 

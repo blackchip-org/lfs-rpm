@@ -1,8 +1,8 @@
 # rpm
 
-%global name        popt
-%global version     1.19
-%global release     1
+%global name            popt
+%global version         1.19
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,6 +14,28 @@ License:        MIT
 Source0:        http://ftp.rpm.org/popt/releases/popt-1.x/popt-%{version}.tar.gz
 Source1:        %{name}.sha256
 
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
+
 %description
 Popt is a C library for parsing command line parameters. Popt was heavily
 influenced by the getopt() and getopt_long() functions, but it improves on them
@@ -23,19 +45,20 @@ Popt allows command line arguments to be aliased via configuration files and
 includes utility functions for parsing arbitrary strings into argv[] arrays
 using shell-like rules.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
 %description lang
 Language files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -66,16 +89,20 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 %{?lfs_dir}/usr/lib/*
 
 %else
+/usr/lib/libpopt.so.*
+
+%files devel
 /usr/include/*.h
 /usr/lib/libpopt.so
-/usr/lib/libpopt.so.0
-%shlib /usr/lib/libpopt.so.0.0.2
 /usr/lib/pkgconfig/popt.pc
 
 %files lang
-/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
-%files doc
-/usr/share/man/man3/*
+%files man
+/usr/share/man/man3/*.gz
+
+%files static
+/usr/lib/libpopt.a
 
 %endif

@@ -1,8 +1,8 @@
 # lfs
 
-%global name        shadow
-%global version     4.17.3
-%global release     1
+%global name            shadow
+%global version         4.17.3
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,31 @@ License:        BSD and GPLv2+
 Source0:        https://github.com/shadow-maint/shadow/releases/download/%{version}/shadow-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  libxcrypt-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 The shadow-utils package includes the necessary programs for converting UNIX
@@ -27,19 +51,20 @@ login times for all users. The useradd, userdel, and usermod commands are used
 for managing user accounts. The groupadd, groupdel, and groupmod commands are
 used for managing group accounts.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
 %description lang
 Language files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -58,17 +83,30 @@ sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD YESCRYPT:' \
     -e '/PATH=/{s@/sbin:@@;s@/bin:@@}'                  \
     -i etc/login.defs
 
+%if %{with lfs}
 ./configure --sysconfdir=/etc   \
             --disable-static    \
             --with-{b,yes}crypt \
             --without-libbsd    \
             --with-group-name-max-length=32
+
+%else
+./configure --sysconfdir=/etc   \
+            --with-{b,yes}crypt \
+            --without-libbsd    \
+            --with-group-name-max-length=32
+
+%endif
 make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
 make DESTDIR=%{buildroot} exec_prefix=/usr install
+
+%if !%{with lfs}
 make -C man DESTDIR=%{buildroot} install-man
+
+%endif
 
 #---------------------------------------------------------------------------
 %post
@@ -81,11 +119,11 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/etc
-/usr/bin
+/etc/*
+/usr/bin/*
 /usr/include/shadow
 /usr/lib/lib*.so*
-/usr/sbin
+/usr/sbin/*
 
 %else
 %config(noreplace) /etc/limits
@@ -105,10 +143,7 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 /usr/bin/passwd
 /usr/bin/sg
 /usr/bin/su
-/usr/include/shadow
-/usr/lib/libsubid.so
-/usr/lib/libsubid.so.5
-%shlib /usr/lib/libsubid.so.5.0.0
+/usr/lib/libsubid.so.*
 /usr/sbin/chgpasswd
 /usr/sbin/chpasswd
 /usr/sbin/groupadd
@@ -130,10 +165,17 @@ sed -i '/MAIL/s/yes/no/' /etc/default/useradd
 /usr/sbin/vigr
 /usr/sbin/vipw
 
+%files devel
+/usr/include/shadow
+/usr/lib/libsubid.so
+
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*.mo
 
-%files doc
+%files man
 /usr/share/man/man*/*
+
+%files static
+/usr/lib/libsubid.a
 
 %endif

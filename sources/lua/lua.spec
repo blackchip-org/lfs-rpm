@@ -85,7 +85,7 @@ make \
      INSTALL_LIB=%{buildroot}/%{?lfs_dir}/usr/lib \
      INSTALL_INC=%{buildroot}/%{?lfs_dir}/usr/include \
      INSTALL_MAN=%{buildroot}/%{?lfs_dir}/usr/share/man/man1 \
-     INSTALL_LMOD=%{buildroot}/%?{lfs_dir}/usr/share/lua/%{lua_version} \
+     INSTALL_LMOD=%{buildroot}/%{?lfs_dir}/usr/share/lua/%{lua_version} \
      INSTALL_CMOD=%{buildroot}/%{?lfs_dir}/usr/lib/lua/%{lua_version} \
      install
 

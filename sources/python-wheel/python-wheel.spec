@@ -1,9 +1,9 @@
 # lfs
 
-%global source_name wheel
-%global name        python-%{source_name}
-%global version     0.45.1
-%global release     1
+%global source_name     wheel
+%global name            python-%{source_name}
+%global version         0.45.1
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,7 @@ License:        MIT
 
 Source:         https://pypi.org/packages/source/w/%{source_name}/%{source_name}-%{version}.tar.gz
 
-BuildRequires:  python
+BuildRequires:  python-devel
 BuildRequires:  python-flit-core
 
 %description

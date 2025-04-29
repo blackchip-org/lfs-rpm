@@ -1,8 +1,8 @@
 # lfs
 
-%global name        patch
-%global version     2.7.6
-%global release     1
+%global name            patch
+%global version         2.7.6
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,14 @@ License:        GPLv3+
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The patch program applies diff files to originals. The diff command is used to
@@ -24,12 +31,11 @@ file to add the changes to their original file (patching the file).
 
 Patch should be installed because it is a common way of upgrading applications.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description man
+Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -61,7 +67,7 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 %else
 /usr/bin/patch
 
-%files doc
+%files man
 /usr/share/man/man*/*
 
 %endif

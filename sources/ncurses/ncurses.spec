@@ -1,8 +1,8 @@
 # lfs
 
-%global name      ncurses
-%global version   6.5
-%global release   1
+%global name            ncurses
+%global version         6.5
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,23 @@ License:        MIT
 Source0:        https://invisible-mirror.net/archives/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The curses library routines are a terminal-independent method of updating
@@ -25,24 +41,22 @@ classic curses library.
 This package contains support utilities, including a terminfo compiler tic, a
 decompiler infocmp, clear, tput, tset, and a termcap conversion tool captoinfo.
 
-#---------------------------------------------------------------------------
-%prep
-%verify_sha256 -f %{SOURCE1}
-%setup -q
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description doc
+Documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
+
+#---------------------------------------------------------------------------
+%prep
+%verify_sha256 -f %{SOURCE1}
+%setup -q
 
 #---------------------------------------------------------------------------
 %build
@@ -108,12 +122,12 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-%{?lfs_dir}/usr/bin
-%{?lfs_dir}/usr/include
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*
 %{?lfs_dir}/usr/lib/lib*.so*
-%{?lfs_dir}/usr/lib/{pkgconfig,terminfo}
-%{?lfs_dir}/usr/share/tabset
-%{?lfs_dir}/usr/share/terminfo
+%{?lfs_dir}/usr/lib/{pkgconfig,terminfo}/*
+%{?lfs_dir}/usr/share/tabset/*
+%{?lfs_dir}/usr/share/terminfo/*
 
 %else
 /usr/bin/captoinfo
@@ -127,28 +141,28 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 /usr/bin/toe
 /usr/bin/tput
 /usr/bin/tset
-/usr/include/*.h
 /usr/lib/libcurses.so
 /usr/lib/libcursesw.so
 /usr/lib/libform.so
-/usr/lib/libformw.so
-/usr/lib/libformw.so.6
-%shlib /usr/lib/libformw.so.%{version}
+/usr/lib/libformw.so.*
 /usr/lib/libmenu.so
-/usr/lib/libmenuw.so
-/usr/lib/libmenuw.so.6
-%shlib /usr/lib/libmenuw.so.%{version}
-/usr/lib/libncurses++w.so
-/usr/lib/libncurses++w.so.6
-%shlib /usr/lib/libncurses++w.so.%{version}
+/usr/lib/libmenuw.so.*
+/usr/lib/libncurses++w.so.*
 /usr/lib/libncurses.so
-/usr/lib/libncursesw.so
-/usr/lib/libncursesw.so.6
-%shlib /usr/lib/libncursesw.so.%{version}
+/usr/lib/libncursesw.so.*
 /usr/lib/libpanel.so
+/usr/lib/libpanelw.so.*
+/usr/lib/terminfo
+/usr/share/tabset/*
+/usr/share/terminfo/*
+
+%files devel
+/usr/include/*.h
+/usr/lib/libformw.so
+/usr/lib/libmenuw.so
+/usr/lib/libncurses++w.so
+/usr/lib/libncursesw.so
 /usr/lib/libpanelw.so
-/usr/lib/libpanelw.so.6
-%shlib /usr/lib/libpanelw.so.%{version}
 /usr/lib/pkgconfig/form.pc
 /usr/lib/pkgconfig/formw.pc
 /usr/lib/pkgconfig/menu.pc
@@ -158,15 +172,12 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 /usr/lib/pkgconfig/ncursesw.pc
 /usr/lib/pkgconfig/panel.pc
 /usr/lib/pkgconfig/panelw.pc
-/usr/lib/terminfo
-/usr/share/tabset/*
-/usr/share/terminfo/*/*
 
 %files doc
 /usr/share/doc/%{name}-*
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif
 
