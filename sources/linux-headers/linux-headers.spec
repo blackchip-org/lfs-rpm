@@ -1,10 +1,10 @@
 # lfs
 
-%global name        linux-headers
-%global source_name linux
-%global version     6.10.5
-%global version_1   6
-%global release     1
+%global name            linux-headers
+%global source_name     linux
+%global version         6.10.5
+%global version_1       6
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:       %{name}

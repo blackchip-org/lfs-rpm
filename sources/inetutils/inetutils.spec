@@ -1,8 +1,8 @@
 # lfs
 
-%global name        inetutils
-%global version     2.6
-%global release     1
+%global name            inetutils
+%global version         2.6
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,19 @@ License:        GPLv2+
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 Inetutils is a collection of common network programs. It includes:
@@ -34,19 +46,14 @@ Inetutils is a collection of common network programs. It includes:
 Most of them are improved versions of programs originally from BSD. Some others
 are original versions, written from scratch.
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -93,10 +100,10 @@ make check
 /usr/sbin/ifconfig
 
 %if !%{with lfs}
-%files doc
-/usr/share/info/*
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

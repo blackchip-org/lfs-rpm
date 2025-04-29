@@ -1,8 +1,8 @@
 # lfs
 
-%global name        m4
-%global version     1.4.19
-%global release     1
+%global name            m4
+%global version         1.4.19
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -11,10 +11,27 @@ Release:        %{release}%{?dist}
 Summary:        GNU macro processor
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 A GNU implementation of the traditional UNIX macro processor. M4 is useful for
@@ -25,17 +42,9 @@ for generating configure scripts, but not for running configure scripts.
 
 Install m4 if you need a macro processor.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -43,8 +52,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -76,13 +84,13 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 %else
 /usr/bin/m4
 
-%files lang
-/usr/share/locale/*/LC_MESSAGES/m4.mo
+%files info
+/usr/share/info/*.gz
 
-%files doc
-/usr/share/info/*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/%{name}.mo
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

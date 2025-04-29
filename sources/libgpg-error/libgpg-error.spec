@@ -1,8 +1,8 @@
 # rpm
 
-%global name        libgpg-error
-%global version     1.51
-%global release     1
+%global name            libgpg-error
+%global version         1.51
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,24 +14,40 @@ License:        LGPLv2+
 Source0:        https://www.gnupg.org/ftp/gcrypt/%{name}/%{name}-%{version}.tar.bz2
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 This is a library that defines common error values for all GnuPG components.
 Among these are GPG, GPGSM, GPGME, GPG-Agent, libgcrypt, pinentry, SmartCard
 Daemon and possibly more in the future.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -39,8 +55,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -82,22 +97,24 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 /usr/bin/gpg-error-config
 /usr/bin/gpgrt-config
 /usr/bin/yat2m
-/usr/include/*.h
-/usr/lib/libgpg-error.so
-/usr/lib/libgpg-error.so.0
-%shlib /usr/lib/libgpg-error.so.0.38.0
-/usr/lib/pkgconfig/gpg-error.pc
-/usr/share/aclocal/*
+/usr/lib/libgpg-error.so.*
 /usr/share/common-lisp/source/gpg-error
 /usr/share/libgpg-error
 
-%files lang
-/usr/share/locale/*/LC_MESSAGES/*
+%files devel
+/usr/include/*.h
+/usr/lib/libgpg-error.so
+/usr/lib/pkgconfig/gpg-error.pc
+/usr/share/aclocal/gpg-error.m4
+/usr/share/aclocal/gpgrt.m4
 
-%files doc
-/usr/share/info/*
+%files info
+/usr/share/info/*.gz
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

@@ -1,9 +1,9 @@
 # rpm
 
-%global name        lua
-%global lua_version 5.4
-%global version     %{lua_version}.7
-%global release     1
+%global name            lua
+%global lua_version     5.4
+%global version         %{lua_version}.7
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:          %{name}
@@ -15,8 +15,24 @@ License:       MIT
 Source0:       http://www.lua.org/ftp/%{name}-%{version}.tar.gz
 Source1:       %{name}.sha256
 
-BuildRequires: readline
-Suggests:      %{name}-doc = %{version}
+BuildRequires: readline-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 Lua is a powerful light-weight programming language designed for extending
@@ -27,12 +43,17 @@ semantics. Lua is dynamically typed, interpreted from bytecodes, and has
 automatic memory management with garbage collection, making it ideal for
 configuration, scripting, and rapid prototyping.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -75,21 +96,24 @@ EOF
 
 #---------------------------------------------------------------------------
 %files
-
 %if %{with lfs}
-%{?lfs_dir}/usr/bin
-%{?lfs_dir}/usr/include/*
+%{?lfs_dir}/usr/bin/*
+%{?lfs_dir}/usr/include/*.{h,hpp}
 %{?lfs_dir}/usr/lib/*
 
 %else
 /usr/bin/lua
+
+%files devel
 /usr/bin/luac
 /usr/include/*.{h,hpp}
-/usr/lib/liblua.a
 /usr/lib/rpm/macros.d/macros.lua
 
-%files doc
-/usr/share/man/*
+%files man
+/usr/share/man/man*/*.gz
+
+%files static
+/usr/lib/liblua.a
 
 %endif
 

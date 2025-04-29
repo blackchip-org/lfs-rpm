@@ -24,11 +24,12 @@ Source2:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
 Source3:        https://ftp.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
 Source4:        https://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
 
-%endif
-
+%else
 BuildRequires:  gmp-devel
-BuildRequires:  mpfr-devel
 BuildRequires:  mpc-devel
+BuildRequires:  mpfr-devel
+
+%endif
 
 %if !%{with lfs}
 Recommends:     %{name}-info = %{version}

@@ -1,9 +1,9 @@
 # lfs
 
-%global source_name XML-Parser
-%global name        perl-%{source_name}
-%global version     2.47
-%global release     1
+%global source_name     XML-Parser
+%global name            perl-%{source_name}
+%global version         2.47
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,9 +15,18 @@ License:        GPL+ or Artistic
 Source0:        https://cpan.metacpan.org/authors/id/T/TO/TODDR/%{source_name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-BuildRequires:  expat
+BuildRequires:  expat-devel
+BuildRequires:  libxcrypt-devel
 BuildRequires:  perl
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 This module provides ways to parse XML documents. It is built on top of
@@ -29,12 +38,11 @@ passed on to the Expat object on each parse call. They can also be given as
 extra arguments to the parse methods, in which case they override options given
 at XML::Parser creation time.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description man
+Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -65,7 +73,7 @@ make test
 /usr/lib/perl5/%{perl_version}/site_perl/XML/Parser
 /usr/lib/perl5/%{perl_version}/site_perl/auto/XML/Parser
 
-%files doc
-/usr/share/man/man*/*
+%files man
+/usr/share/man/man*/*.gz
 
 %endif

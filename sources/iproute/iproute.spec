@@ -1,8 +1,9 @@
 # lfs
 
-%global name        iproute
-%global version     6.13.0
-%global release     1
+%global name            iproute
+%global major_name      %{name}2
+%global version         6.13.0
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -11,28 +12,43 @@ Release:        %{release}%{?dist}
 Summary:        Advanced IP routing and network device configuration tools
 License:        GPLv2+ and Public Domain
 
-Source0:        https://www.kernel.org/pub/linux/utils/net/%{name}2/%{name}2-%{version}.tar.xz
+Source0:        https://www.kernel.org/pub/linux/utils/net/%{major_name}/%{major_name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 BuildRequires:  bison
-Suggests:       %{name}-doc = %{version}
+
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The iproute package contains networking utilities (ip and rtmon, for example)
 which are designed to use the advanced networking capabilities of the Linux
 kernel.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
 %verify_sha256 -f %{SOURCE1}
-%setup -q -n iproute2-%{version}
+%setup -q -n %{major_name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
@@ -48,13 +64,13 @@ make DESTDIR=%{buildroot} SBINDIR=/usr/sbin install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/include
+/usr/include/*
 /usr/lib/tc
-/usr/sbin
-/usr/share/{bash-completion,%{name}2}
+/usr/sbin/*
+/usr/share/bash-completion/completions/*
+/usr/share/%{major_name}
 
 %else
-/usr/include/iproute2
 /usr/lib/tc/*
 /usr/sbin/bridge
 /usr/sbin/ctstat
@@ -80,7 +96,10 @@ make DESTDIR=%{buildroot} SBINDIR=/usr/sbin install
 /usr/share/iproute2/rt_scopes
 /usr/share/iproute2/rt_tables
 
-%files doc
-/usr/share/man/man*/*
+%files devel
+/usr/include/%{major_name}
+
+%files man
+/usr/share/man/man*/*.gz
 
 %endif

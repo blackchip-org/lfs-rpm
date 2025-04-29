@@ -1,8 +1,8 @@
 # lfs
 
-%global name        grep
-%global version     3.11
-%global release     1
+%global name            grep
+%global version         3.11
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,24 @@ License:        GPLv3+
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The GNU versions of commonly used grep utilities. Grep searches
@@ -25,17 +42,9 @@ include grep, egrep and fgrep.
 GNU grep is needed by many scripts, so it shall be installed on every
 system.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -43,8 +52,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -83,13 +91,13 @@ make check
 /usr/bin/fgrep
 /usr/bin/grep
 
-%files lang
-/usr/share/locale/*/LC_MESSAGES/*
+%files info
+/usr/share/info/*.gz
 
-%files doc
-/usr/share/info/*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

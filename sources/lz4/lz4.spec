@@ -1,8 +1,8 @@
 # lfs
 
-%global name        lz4
-%global version     1.10.0
-%global release     1
+%global name            lz4
+%global version         1.10.0
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,22 @@ License:        GPLv2+ and BSD
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 LZ4 is an extremely fast loss-less compression algorithm, providing compression
@@ -22,12 +37,17 @@ speed at 400 MB/s per core, scalable with multi-core CPU. It also features
 an extremely fast decoder, with speed in multiple GB/s per core, typically
 reaching RAM speed limits on multi-core systems.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -36,17 +56,29 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
+%if %{with lfs}
 make %{?_smp_mflags} BUILD_STATIC=no PREFIX=/usr
+
+%else
+make %{?_smp_mflags} PREFIX=/usr
+
+%endif
 
 #---------------------------------------------------------------------------
 %install
+%if %{with lfs}
 make DESTDIR=%{buildroot} BUILD_STATIC=no PREFIX=/usr install
+
+%else
+make DESTDIR=%{buildroot} PREFIX=/usr install
+
+%endif
 
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
 /usr/bin/*
-/usr/include/*
+/usr/include/*.h
 /usr/lib/lib*.so*
 /usr/lib/pkgconfig/*
 
@@ -55,15 +87,17 @@ make DESTDIR=%{buildroot} BUILD_STATIC=no PREFIX=/usr install
 /usr/bin/lz4c
 /usr/bin/lz4cat
 /usr/bin/unlz4
-/usr/include/lz4.h
-/usr/include/lz4frame.h
-/usr/include/lz4hc.h
+/usr/lib/liblz4.so.*
+
+%files devel
+/usr/include/*.h
 /usr/lib/liblz4.so
-/usr/lib/liblz4.so.1
-%shlib /usr/lib/liblz4.so.%{version}
 /usr/lib/pkgconfig/liblz4.pc
 
-%files doc
-/usr/share/man/man*/*
+%files man
+/usr/share/man/man*/*.gz
+
+%files static
+/usr/lib/liblz4.a
 
 %endif

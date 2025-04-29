@@ -1,12 +1,17 @@
-Name:           man-pages
-Version:        6.12
-Release:        1%{?dist}
+# lfs
+
+%global name            man-pages
+%global version         6.12
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Linux kernel and C library user-space interface documentation
 License:        GPL+ and GPLv2+ and BSD and MIT and Copyright only
 
 Source:         https://www.kernel.org/pub/linux/docs/man-pages/man-pages-%{version}.tar.xz
-
-Requires:       man-db
 
 %description
 A large collection of manual pages from the Linux Documentation Project (LDP).

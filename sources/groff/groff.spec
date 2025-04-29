@@ -1,8 +1,8 @@
 # lfs
 
-%global name        groff
-%global version     1.23.0
-%global release     1
+%global name            groff
+%global version         1.23.0
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,7 +15,25 @@ Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 BuildRequires:  perl
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 groff (GNU roff) is a typesetting system that reads plain text input files that
@@ -31,19 +49,17 @@ of several best-selling software engineering texts. groff is capable of
 producing typographically sophisticated documents while consuming minimal
 system resources.
 
-%package man
-Summary:        Manual pages for %{name}
+%if !%{with lfs}
+%description doc
+Documentation for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description info
+Info documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -66,8 +82,8 @@ make check
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
-/usr/share/groff
+/usr/bin/*
+/usr/share/%{name}
 
 %else
 /usr/bin/addftinfo
@@ -109,16 +125,17 @@ make check
 /usr/bin/tbl
 /usr/bin/tfmtodit
 /usr/bin/troff
-/usr/share/doc/groff-%{version}
-/usr/share/groff/%{version}
-/usr/share/groff/current
-/usr/share/groff/site-tmac/man.local
-/usr/share/groff/site-tmac/mdoc.local
+/usr/share/%{name}/%{version}
+/usr/share/%{name}/current
+/usr/share/%{name}/site-tmac
 
 %files doc
-/usr/share/info/*
+/usr/share/doc/%{name}-%{version}
+
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

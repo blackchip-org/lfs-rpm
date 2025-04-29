@@ -1,8 +1,8 @@
 # lfs
 
-%global name        kbd
-%global version     2.7.1
-%global release     1
+%global name            kbd
+%global version         2.7.1
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -17,26 +17,34 @@ Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/kbd-
 
 BuildRequires:  autoconf
 BuildRequires:  pkg-config
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The kbd package contains tools for managing a Linux system's console's
 behavior, including the keyboard, the screen fonts, the virtual terminals and
 font files.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
-
+%if !%{with lfs}
 %description lang
 Language files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -58,7 +66,7 @@ make DESTDIR=%{buildroot} install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
+/usr/bin/*
 /usr/share/console{fonts,trans}
 /usr/share/{keymaps,unimaps}
 
@@ -93,9 +101,9 @@ make DESTDIR=%{buildroot} install
 /usr/share/unimaps
 
 %files lang
-/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
-%files doc
-/usr/share/man/man*/*
+%files man
+/usr/share/man/man*/*.gz
 
 %endif

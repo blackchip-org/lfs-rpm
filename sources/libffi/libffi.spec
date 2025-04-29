@@ -1,8 +1,8 @@
 # lfs
 
-%global name        libffi
-%global version     3.4.7
-%global release     1
+%global name            libffi
+%global version         3.4.7
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,27 @@ License:        MIT
 Source0:        https://github.com/%{name}/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 Compilers for high level languages generate code that follow certain
@@ -41,19 +61,20 @@ lowest, machine dependent layer of a fully featured foreign function interface.
 A layer must exist above `libffi' that handles type conversions for values
 passed between the two languages.
 
-%package man
-Summary:        Manual pages for %{name}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description info
+Info documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -62,9 +83,16 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
+%if %{with lfs}
 ./configure --prefix=/usr          \
             --disable-static       \
             --with-gcc-arch=native
+
+%else
+./configure --prefix=/usr          \
+            --with-gcc-arch=native
+
+%endif
 make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
@@ -78,21 +106,25 @@ make DESTDIR=%{buildroot} install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/include
+/usr/include/*.h
 /usr/lib/lib*.so*
-/usr/lib/pkgconfig
+/usr/lib/pkgconfig/*
 
 %else
-/usr/include/*
+/usr/lib/libffi.so.*
+
+%files devel
+/usr/include/*.h
 /usr/lib/libffi.so
-/usr/lib/libffi.so.8
-%shlib /usr/lib/libffi.so.%{so_version}
 /usr/lib/pkgconfig/libffi.pc
 
-%files doc
-/usr/share/info/*
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
+
+%files static
+/usr/lib/libffi.a
 
 %endif

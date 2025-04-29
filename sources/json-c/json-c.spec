@@ -17,11 +17,31 @@ Source1:        %{name}.sha256
 
 BuildRequires:  cmake
 
+%if !%{with lfs}
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
+
 %description
 JSON-C implements a reference counting object model that allows you to easily
 construct JSON objects in C, output them as JSON formatted strings and parse
 JSON formatted strings back into the C representation of JSON objects. It aims
 to conform to RFC 8259.
+
+%if !%{with lfs}
+%description devel
+Development files for %{name}
+
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -41,7 +61,11 @@ make %{?_smp_mflags}
 %install
 cd json-c-build
 make DESTDIR=%{buildroot} install
+
+%if %{with lfs}
 rm %{buildroot}/usr/lib/libjson-c.a
+
+%endif
 
 #---------------------------------------------------------------------------
 %files
@@ -49,15 +73,19 @@ rm %{buildroot}/usr/lib/libjson-c.a
 /usr/include/json-c
 /usr/lib/cmake/json-c
 /usr/lib/lib*.so*
-/usr/lib/pkgconfig
+/usr/lib/pkgconfig/*
 
 %else
+/usr/lib/libjson-c.so.*
+
+%files devel
 /usr/include/json-c
 /usr/lib/cmake/json-c
 /usr/lib/libjson-c.so
-/usr/lib/libjson-c.so.5
-%shlib /usr/lib/libjson-c.so.5.4.0
 /usr/lib/pkgconfig/json-c.pc
+
+%files static
+/usr/lib/libjson-c.a
 
 %endif
 

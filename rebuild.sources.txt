@@ -31,6 +31,7 @@ sources/fmt
 sources/gawk
 sources/gmp
 sources/mpfr
+sources/mpc
 sources/gcc
 sources/gdbm
 sources/gperf
@@ -53,7 +54,6 @@ sources/lz4
 sources/m4
 sources/make
 sources/man-pages
-sources/mpc
 sources/ncurses
 sources/openssl
 sources/patch
