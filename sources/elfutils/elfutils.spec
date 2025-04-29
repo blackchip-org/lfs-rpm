@@ -1,9 +1,8 @@
 # lfs
 
-%global name        elfutils
-%global version     0.192
-%global release     1
-%global so_version  1
+%global name            elfutils
+%global version         0.192
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,7 +14,27 @@ License:        GPLv2+
 Source0:        https://sourceware.org/ftp/%{name}/%{version}/%{name}-%{version}.tar.bz2
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 Elfutils is a collection of utilities, including stack (to show backtraces), nm
@@ -24,19 +43,20 @@ an object or archive file), strip (for discarding symbols), readelf (to see the
 raw ELF file structures), elflint (to check for well-formed ELF files) and
 elfcompress (to compress or decompress ELF sections).
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
 %description lang
 Language files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -55,12 +75,11 @@ make %{?_smp_mflags}
 make DESTDIR=%{buildroot} install
 install -d %{buildroot}/usr/lib/pkgconfig
 install -vm644 -t %{buildroot}/usr/lib/pkgconfig config/libelf.pc
-
-rm %{buildroot}/usr/lib/*.a
-
+\
 %if %{with lfs}
 rm -rf %{buildroot}/usr/etc
 rm -rf %{buildroot}/usr/share
+rm     %{buildroot}/usr/lib/*.a
 %endif
 
 #---------------------------------------------------------------------------
@@ -97,29 +116,36 @@ make check
 /usr/bin/eu-unstrip
 /usr/etc/profile.d/debuginfod.csh
 /usr/etc/profile.d/debuginfod.sh
-/usr/include/elfutils
+/usr/lib/libasm.so.*
+/usr/lib/libasm-%{version}.so
+/usr/lib/libdebuginfod.so.*
+/usr/lib/libdebuginfod-%{version}.so
+/usr/lib/libdw.so.*
+/usr/lib/libdw-%{version}.so
+/usr/lib/libelf.so.*
+/usr/lib/libelf-%{version}.so
+/usr/share/fish/vendor_conf.d/debuginfod.fish
+
+%files devel
 /usr/include/*.h
+/usr/include/%{name}
 /usr/lib/libasm.so
-/usr/lib/libasm.so.1
-%shlib /usr/lib/libasm-%{version}.so
 /usr/lib/libdebuginfod.so
-/usr/lib/libdebuginfod.so.1
-%shlib /usr/lib/libdebuginfod-%{version}.so
 /usr/lib/libdw.so
-/usr/lib/libdw.so.1
-%shlib /usr/lib/libdw-%{version}.so
 /usr/lib/libelf.so
-/usr/lib/libelf.so.1
-%shlib /usr/lib/libelf-%{version}.so
 /usr/lib/pkgconfig/libelf.pc
 /usr/lib/pkgconfig/libdebuginfod.pc
 /usr/lib/pkgconfig/libdw.pc
-/usr/share/fish/vendor_conf.d/debuginfod.fish
 
 %files lang
-/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
-%files doc
-/usr/share/man/man*/*
+%files man
+/usr/share/man/man*/*.gz
+
+%files static
+/usr/lib/libasm.a
+/usr/lib/libdw.a
+/usr/lib/libelf.a
 
 %endif

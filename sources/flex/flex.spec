@@ -1,8 +1,8 @@
 # lfs
 
-%global name        flex
-%global version     2.6.4
-%global release     1
+%global name            flex
+%global version         2.6.4
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,37 @@ License:        BSD and LGPLv2+
 Source0:        https://github.com/westes/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 The flex program generates scanners. Scanners are programs which can recognize
@@ -28,17 +58,15 @@ Bison, and is used by many programs as part of their build process.
 You should install flex if you are going to use your system for application
 development.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
+%description doc
+Documentation for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -46,8 +74,10 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -56,9 +86,16 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
+%if %{with lfs}
 ./configure --prefix=/usr \
-            --docdir=/usr/share/doc/flex-%{version} \
+            --docdir=/usr/share/doc/%{name}-%{version} \
             --disable-static
+
+%else
+./configure --prefix=/usr \
+            --docdir=/usr/share/doc/%{name}-%{version}
+
+%endif
 make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
@@ -78,19 +115,25 @@ ln -sv flex.1 %{buildroot}/usr/share/man/man1/lex.1
 /usr/bin/flex
 /usr/bin/flex++
 /usr/bin/lex
-/usr/include/*
-/usr/lib/libfl.so
-/usr/lib/libfl.so.2
-%shlib /usr/lib/libfl.so.2.0.0
+/usr/lib/libfl.so.*
 
-%files lang
-/usr/share/locale/*/LC_MESSAGES/*
+%files devel
+/usr/include/*.h
+/usr/lib/libfl.so
 
 %files doc
 /usr/share/doc/flex-%{version}
-/usr/share/info/*
+
+%files info
+/usr/share/info/*.gz
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
+
+%files static
+/usr/lib/libfl.a
 
 %endif

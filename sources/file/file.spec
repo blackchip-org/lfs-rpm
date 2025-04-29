@@ -1,8 +1,8 @@
 # lfs
 
-%global name        file
-%global version     5.46
-%global release     1
+%global name            file
+%global version         5.46
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,18 @@ License:        BSD
 Source0:        https://astron.com/pub/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The file command is used to identify a particular file according to the type of
@@ -22,12 +33,14 @@ data contained by the file. File can identify many different file types,
 including ELF binaries, system libraries, RPM packages, and different graphics
 formats.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -70,15 +83,16 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 
 %else
 /usr/bin/file
-/usr/include/magic.h
-/usr/lib/libmagic.so
-/usr/lib/libmagic.so.1
-%shlib /usr/lib/libmagic.so.1.0.0
-/usr/lib/pkgconfig/libmagic.pc
+/usr/lib/libmagic.so.*
 /usr/share/misc/magic.mgc
 
-%files doc
-/usr/share/man/man*/*
+%files devel
+/usr/include/magic.h
+/usr/lib/libmagic.so
+/usr/lib/pkgconfig/libmagic.pc
+
+%files man
+/usr/share/man/man*/*.gz
 
 %endif
 

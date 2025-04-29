@@ -1,8 +1,8 @@
 # lfs
 
-%global name      gcc
-%global version   14.2.0
-%global release   1
+%global name            gcc
+%global version         14.2.0
+%global release         1
 
 %global glibc_version   2.40
 %global mpfr_version    4.2.1
@@ -19,20 +19,35 @@ License:        GPLv3+ and GPLv3+ with ewith-glibc-verxceptions and GPLv2+ with 
 Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-%if %{with lfs_stage1}
+%if %{with lfs}
 Source2:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
 Source3:        https://ftp.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
 Source4:        https://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
+
 %endif
 
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  gmp-devel
+BuildRequires:  mpfr-devel
+BuildRequires:  mpc-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
 
 %package man
 Summary:        Manual pages for %{name}
+BuildArch:      noarch
 
-%package doc
-Summary:        Documentation for %{name}
-Recommends:     %{name}-man = %{version}
+%endif
 
 %description
 The GNU Compiler Collection includes front ends for C, C++, Objective-C,
@@ -41,11 +56,17 @@ Fortran, Ada, Go, D and Modula-2 as well as libraries for these languages
 operating system. The GNU system was developed to be 100% free software, free
 in the sense that it respects the user's freedom.
 
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
+
+%description lang
+Language files for %{name}
+
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -209,106 +230,79 @@ make -k check
 /usr/bin/gcov-dump
 /usr/bin/gcov-tool
 /usr/bin/lto-dump
-/usr/bin/x86_64-pc-linux-gnu-c++
-/usr/bin/x86_64-pc-linux-gnu-g++
-/usr/bin/x86_64-pc-linux-gnu-gcc
-/usr/bin/x86_64-pc-linux-gnu-gcc-%{version}
-/usr/bin/x86_64-pc-linux-gnu-gcc-ar
-/usr/bin/x86_64-pc-linux-gnu-gcc-nm
-/usr/bin/x86_64-pc-linux-gnu-gcc-ranlib
+/usr/bin/%{_arch}-pc-linux-gnu-c++
+/usr/bin/%{_arch}-pc-linux-gnu-g++
+/usr/bin/%{_arch}-pc-linux-gnu-gcc
+/usr/bin/%{_arch}-pc-linux-gnu-gcc-%{version}
+/usr/bin/%{_arch}-pc-linux-gnu-gcc-ar
+/usr/bin/%{_arch}-pc-linux-gnu-gcc-nm
+/usr/bin/%{_arch}-pc-linux-gnu-gcc-ranlib
 /usr/lib/bfd-plugins/liblto_plugin.so
 /usr/lib/cpp
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/*.{o,a}
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/include
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/install-tools
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/gtype.state
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/include
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcc1plugin.so
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcc1plugin.so.0
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcp1plugin.so
-/usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcp1plugin.so.0
+/usr/lib/gcc/%{_arch}-pc-linux-gnu/%{version}/*.{o,a}
+/usr/lib/gcc/%{_arch}-pc-linux-gnu/%{version}/include
+/usr/lib/gcc/%{_arch}-pc-linux-gnu/%{version}/install-tools
+/usr/lib/gcc/%{_arch}-pc-linux-gnu/%{version}/plugin/gtype.state
+/usr/lib/gcc/%{_arch}-pc-linux-gnu/%{version}/plugin/include
+/usr/lib/gcc/%{_arch}-pc-linux-gnu/%{version}/plugin/libcc1plugin.so*
+/usr/lib/gcc/%{_arch}-pc-linux-gnu/%{version}/plugin/libcp1plugin.so*
 /usr/lib/libatomic.a
-/usr/lib/libatomic.so
-/usr/lib/libatomic.so.1
-%shlib /usr/lib/libatomic.so.1.2.0
-/usr/lib/libcc1.so
-/usr/lib/libcc1.so.0
-%shlib /usr/lib/libcc1.so.0.0.0
-/usr/lib/libgcc_s.so
-%shlib /usr/lib/libgcc_s.so.1
+/usr/lib/libatomic.so*
+/usr/lib/libcc1.so*
+/usr/lib/libgcc_s.so*
 /usr/lib/libgomp.a
-/usr/lib/libgomp.so
-/usr/lib/libgomp.so.1
-%shlib /usr/lib/libgomp.so.1.0.0
+/usr/lib/libgomp.so*
 /usr/lib/libgomp.spec
 /usr/lib/libquadmath.a
-/usr/lib/libquadmath.so
-/usr/lib/libquadmath.so.0
-%shlib /usr/lib/libquadmath.so.0.0.0
+/usr/lib/libquadmath.so*
 /usr/lib/libssp.a
-/usr/lib/libssp.so
-/usr/lib/libssp.so.0
-%shlib /usr/lib/libssp.so.0.0.0
+/usr/lib/libssp.so*
 /usr/lib/libssp_nonshared.a
-/usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/cc1
-/usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/cc1plus
-/usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/collect2
-/usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/g++-mapper-server
-/usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/install-tools/mkinstalldirs
-/usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/liblto_plugin.so
-/usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/lto-wrapper
-/usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/lto1
-/usr/libexec/gcc/x86_64-pc-linux-gnu/%{version}/plugin/gengtype
-%shlib /usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcc1plugin.so.0.0.0
-%shlib /usr/lib/gcc/x86_64-pc-linux-gnu/%{version}/plugin/libcp1plugin.so.0.0.0
-/usr/share/locale/*/LC_MESSAGES/*.mo
+/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}/cc1
+/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}/cc1plus
+/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}/collect2
+/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}/g++-mapper-server
+/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}/install-tools/mkinstalldirs
+/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}/liblto_plugin.so
+/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}/lto-wrapper
+/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}/lto1
+/usr/libexec/gcc/%{_arch}-pc-linux-gnu/%{version}/plugin/gengtype
 /usr/share/gcc-%{version}
 
 # libstdc++
 /usr/include/c++/%{version}
 /usr/lib/libasan.a
-/usr/lib/libasan.so
-/usr/lib/libasan.so.8
-%shlib /usr/lib/libasan.so.8.0.0
+/usr/lib/libasan.so*
 /usr/lib/libasan_preinit.o
 /usr/lib/libhwasan.a
-/usr/lib/libhwasan.so
-/usr/lib/libhwasan.so.0
-%shlib /usr/lib/libhwasan.so.0.0.0
+/usr/lib/libhwasan.so*
 /usr/lib/libhwasan_preinit.o
 /usr/lib/libitm.a
-/usr/lib/libitm.so
-/usr/lib/libitm.so.1
-%shlib /usr/lib/libitm.so.1.0.0
+/usr/lib/libitm.so*
 /usr/lib/libitm.spec
 /usr/lib/liblsan.a
-/usr/lib/liblsan.so
-/usr/lib/liblsan.so.0
-%shlib /usr/lib/liblsan.so.0.0.0
+/usr/lib/liblsan.so*
 /usr/lib/liblsan_preinit.o
 /usr/lib/libsanitizer.spec
 /usr/lib/libstdc++.a
-/usr/lib/libstdc++.so
-/usr/lib/libstdc++.so.6
-%shlib /usr/lib/libstdc++.so.6.0.33
+/usr/lib/libstdc++.so*
 /usr/lib/libstdc++exp.a
 /usr/lib/libstdc++fs.a
 /usr/lib/libsupc++.a
 /usr/lib/libtsan.a
-/usr/lib/libtsan.so
-/usr/lib/libtsan.so.2
-%shlib /usr/lib/libtsan.so.2.0.0
+/usr/lib/libtsan.so*
 /usr/lib/libtsan_preinit.o
 /usr/lib/libubsan.a
-/usr/lib/libubsan.so
-/usr/lib/libubsan.so.1
-%shlib /usr/lib/libubsan.so.1.0.0
+/usr/lib/libubsan.so*
 /usr/share/gdb/auto-load/usr/lib/libstdc++.so.6.0.33-gdb.py
 
-%files man
-/usr/share/man/man{1,7}/*
+%files info
+/usr/share/info/*.gz
 
-%files doc
-/usr/share/info/*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
+
+%files man
+/usr/share/man/man{1,7}/*.gz
 
 %endif

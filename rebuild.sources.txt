@@ -29,9 +29,10 @@ sources/findutils
 sources/flex
 sources/fmt
 sources/gawk
+sources/gmp
+sources/mpfr
 sources/gcc
 sources/gdbm
-sources/gmp
 sources/gperf
 sources/grep
 sources/groff
@@ -53,7 +54,6 @@ sources/m4
 sources/make
 sources/man-pages
 sources/mpc
-sources/mpfr
 sources/ncurses
 sources/openssl
 sources/patch

@@ -16,9 +16,22 @@ Source1:        %{name}.sha256
 
 BuildRequires:  cmake
 
+%if !%{with lfs}
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%endif
+
 %description
 {fmt} is an open-source formatting library providing a fast and safe
 alternative to C stdio and C++ iostreams.
+
+%if !%{with lfs}
+%description devel
+Development files for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -50,11 +63,12 @@ make DESTDIR=%{buildroot} install
 /usr/lib/pkgconfig
 
 %else
+/usr/lib/libfmt.so.*
+
+%files devel
 /usr/include/%{name}
 /usr/lib/cmake/%{name}
 /usr/lib/libfmt.so
-/usr/lib/libfmt.so.11
-%shlib /usr/lib/libfmt.so.%{version}
 /usr/lib/pkgconfig/%{name}.pc
 
 %endif

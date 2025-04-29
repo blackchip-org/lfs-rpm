@@ -1,8 +1,8 @@
 # lfs
 
-%global name        dejagnu
-%global version     1.6.3
-%global release     1
+%global name            dejagnu
+%global version         1.6.3
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -16,6 +16,29 @@ Source1:        %{name}.sha256
 
 BuildRequires:  texinfo
 
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
+
 %description
 DejaGnu is an Expect/Tcl based framework for testing other programs. DejaGnu
 has several purposes: to make it easy to write tests for any program; to allow
@@ -23,19 +46,20 @@ you to write tests which will be portable to any host or target where a program
 must be tested; and to standardize the output format of all tests (making it
 easier to integrate the testing into software development).
 
-%package man
-Summary:        Manual pages for %{name}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description doc
+Documentation for %{name}
+
+%description info
+Info documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -74,14 +98,18 @@ make check
 %else
 /usr/bin/dejagnu
 /usr/bin/runtest
-/usr/include/*
 /usr/share/%{name}
+
+%files devel
+/usr/include/*.h
 
 %files doc
 /usr/share/doc/%{name}-%{version}
-/usr/share/info/*
+
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

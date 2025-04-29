@@ -1,8 +1,8 @@
 # lfs
 
-%global name        diffutils
-%global version     3.11
-%global release     1
+%global name            diffutils
+%global version         3.11
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -13,6 +13,25 @@ License:        GPLv3+
 
 Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
+
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 Diffutils includes four utilities: diff, cmp, diff3 and sdiff. Diff compares
@@ -26,17 +45,9 @@ used to merge two files interactively.
 
 Install diffutils if you need to compare text files.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -44,8 +55,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -84,14 +94,14 @@ make check
 /usr/bin/diff3
 /usr/bin/sdiff
 
-%files lang
-/usr/share/locale/*/LC_MESSAGES/*
+%files info
+/usr/share/info/*.gz
 
-%files doc
-/usr/share/info/*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif
 
