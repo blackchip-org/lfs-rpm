@@ -14,6 +14,8 @@ License:        MIT
 Source0:        brp-remove-info-index
 Source1:        macros
 
+BuildArch:      noarch
+
 %description
 RPM vendor configurations.
 

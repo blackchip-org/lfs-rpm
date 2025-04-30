@@ -63,9 +63,9 @@ sources/psmisc
 sources/sqlite
 sources/python
 sources/python-flit-core
-sources/python-MarkupSafe
 sources/python-wheel
 sources/python-setuptools
+sources/python-MarkupSafe
 sources/python-Jinja2
 sources/meson
 sources/ninja
