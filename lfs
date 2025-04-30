@@ -83,7 +83,7 @@ lfs-spectool() {
 
 lfs-download() {
     sources=$@
-    [ -z "$sources" ] && sources="$(ls sources | grep -v '#' | sort | uniq)"
+    [ -z "$sources" ] && sources="$(find sources -type d | sort | sed '1d')"
     for source in $sources; do
         spec="$(basename $source).spec"
         lfs-spectool "$source/$spec"
