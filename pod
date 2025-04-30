@@ -57,7 +57,7 @@ pod-build() {
     package="$(basename $source)"
     spec="${package}.spec"
 
-    package_arch=$(rpmspec "${rpmspec_flags[@]}" -q --queryformat="%{ARCH}"  "$source/$spec" | head -1)
+    package_arch=$(rpmspec "${rpmspec_flags[@]}" -q --queryformat="%{ARCH}\n"  "$source/$spec" | head -1)
     package_version=$(rpmspec "${rpmspec_flags[@]}" -qv "$source/$spec" | head -1 | sed 's/.src//')
     if [ -z "$rebuild" ] && [ -e "build/rpms/pod/packages/$package/${package_arch}/${package_version}.rpm" ] ; then
         echo "package already built: $package"
