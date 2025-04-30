@@ -1,8 +1,8 @@
 # lfs
 
-%global name        zstd
-%global version     1.5.7
-%global release     1
+%global name            zstd
+%global version         1.5.7
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,18 +14,39 @@ License:        BSD and GPLv2
 Source0:        https://github.com/facebook/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 Zstd, short for Zstandard, is a fast lossless compression algorithm, targeting
 real-time compression scenarios at zlib-level compression ratio.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%description static
+Static libraries for %{name}
+
+%endif
+
 
 #---------------------------------------------------------------------------
 %prep
@@ -55,13 +76,17 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} prefix=/usr install
 /usr/bin/zstdgrep
 /usr/bin/zstdless
 /usr/bin/zstdmt
+/usr/lib/libzstd.so.*
+
+%files devel
 /usr/include/*.h
 /usr/lib/libzstd.so
-/usr/lib/libzstd.so.1
-%shlib /usr/lib/libzstd.so.%{version}
 /usr/lib/pkgconfig/libzstd.pc
 
-%files doc
-/usr/share/man/man1/*
+%files man
+/usr/share/man/man1/*.gz
+
+%files static
+/usr/lib/libzstd.a
 
 %endif

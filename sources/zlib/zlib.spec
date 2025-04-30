@@ -1,10 +1,8 @@
 # lfs
 
-%global name        zlib
-%global version     1.3.1
-%global release     1
-
-%global debug_package      %{nil}
+%global name             zlib
+%global version          1.3.1
+%global release          1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -16,18 +14,33 @@ License:        zlib and Boost
 Source0:        https://zlib.net/fossils/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+Provides:       zlib-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 Zlib is a general-purpose, patent-free, lossless data compression library which
 is used by many different programs.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description man
+Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -62,14 +75,15 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 %{?lfs_dir}/usr/lib/pkgconfig/*
 
 %else
-/usr/include/*
-/usr/lib/libz.so{,.1}
-# %%shlib /usr/lib/libz.so.%%{version}
-/usr/lib/libz.so.%{version}
+/usr/include/*.h
+/usr/lib/libz.so*
 /usr/lib/pkgconfig/zlib.pc
 
-%files doc
-/usr/share/man/man*/*
+%files man
+/usr/share/man/man*/*.gz
+
+%files static
+/usr/lib/libz.a
 
 %endif
 

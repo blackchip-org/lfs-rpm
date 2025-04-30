@@ -1,8 +1,8 @@
 # lfs
 
-%global name        expect
-%global version     5.45.4
-%global release     1
+%global name            expect
+%global version         5.45.4
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,8 +15,20 @@ Source0:        https://prdownloads.sourceforge.net/%{name}/%{name}%{version}.ta
 Source1:        %{name}.sha256
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/expect-%{version}-gcc14-1.patch
 
-BuildRequires:  tcl
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  tcl-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 Expect is a tcl application for automating and testing interactive applications
@@ -25,12 +37,14 @@ script to control another program and interact with it.
 
 This package contains expect and some scripts that use it.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -89,12 +103,14 @@ make test
 /usr/bin/weather
 /usr/bin/xkibitz
 /usr/bin/xpstat
-/usr/include/*
-/usr/lib/expect5.45.4/pkgIndex.tcl
-/usr/lib/libexpect5.45.4.so
-%shlib /usr/lib/expect5.45.4/libexpect5.45.4.so
+/usr/lib/expect%{version}/pkgIndex.tcl
+/usr/lib/libexpect%{version}.so
+/usr/lib/expect%{version}/libexpect%{version}.so
 
-%files doc
-/usr/share/man/man*/*
+%files devel
+/usr/include/*.h
+
+%files man
+/usr/share/man/man*/*.gz
 
 %endif

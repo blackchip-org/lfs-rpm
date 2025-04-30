@@ -14,6 +14,7 @@ License:       MIT
 
 Source0:       http://www.lua.org/ftp/%{name}-%{version}.tar.gz
 Source1:       %{name}.sha256
+Patch0:        https://www.linuxfromscratch.org/patches/blfs/%{lfs_version}/lua-%{version}-shared_library-1.patch
 
 BuildRequires: readline-devel
 
@@ -60,6 +61,10 @@ Static libraries for %{name}
 %verify_sha256 -f %{SOURCE1}
 %setup -q
 
+export V=%{lua_version}
+export R=%{version}
+patch -Np1 -i %{PATCH0}
+
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
@@ -74,7 +79,7 @@ make %{?_smp_mflags} \
 sed -i 's|/usr/local|/usr|g' src/luaconf.h
 make %{?_smp_mflags} \
      INSTALL_TOP=/usr \
-     "CFLAGS=-O2 -Wall -Wextra -DLUA_COMPAT_5_3 -DLUA_USE_LINUX -DLUA_USE_READLINE -fPIC" \
+     "CFLAGS=-O2 -Wall -Wextra -DLUA_COMPAT_ALL -DLUA_USE_LINUX -DLUA_USE_READLINE -fPIC" \
      "LDFLAGS=-Wl,-E -ldl -lreadline"
 %endif
 
@@ -87,12 +92,41 @@ make \
      INSTALL_MAN=%{buildroot}/%{?lfs_dir}/usr/share/man/man1 \
      INSTALL_LMOD=%{buildroot}/%{?lfs_dir}/usr/share/lua/%{lua_version} \
      INSTALL_CMOD=%{buildroot}/%{?lfs_dir}/usr/lib/lua/%{lua_version} \
+     TO_LIB="liblua.a liblua.so.%{version}" \
      install
+
+ln -s liblua.so.%{version} %{buildroot}/%{?lfs_dir}/usr/lib/liblua.so.%{lua_version}
+ln -s liblua.so.%{version} %{buildroot}/%{?lfs_dir}/usr/lib/liblua.so
 
 mkdir -p %{buildroot}/%{?lfs_dir}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/%{?lfs_dir}/usr/lib/rpm/macros.d/macros.lua
 @lua_version %{lua_version}
 EOF
+
+cat > lua.pc << "EOF"
+V=%{lua_version}
+R=%{version}
+
+prefix=/usr
+INSTALL_BIN=${prefix}/bin
+INSTALL_INC=${prefix}/include
+INSTALL_LIB=${prefix}/lib
+INSTALL_MAN=${prefix}/share/man/man1
+INSTALL_LMOD=${prefix}/share/lua/${V}
+INSTALL_CMOD=${prefix}/lib/lua/${V}
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Lua
+Description: An Extensible Extension Language
+Version: ${R}
+Requires:
+Libs: -L${libdir} -llua -lm -ldl
+Cflags: -I${includedir}
+EOF
+
+install -D -m 644 lua.pc %{buildroot}/%{?lfs_dir}/usr/lib/pkgconfig/lua.pc
 
 #---------------------------------------------------------------------------
 %files
@@ -100,13 +134,17 @@ EOF
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/*.{h,hpp}
 %{?lfs_dir}/usr/lib/*
+%{?lfs_dir}/usr/lib/pkgconfig/*
 
 %else
 /usr/bin/lua
+/usr/lib/liblua.so.*
 
 %files devel
 /usr/bin/luac
 /usr/include/*.{h,hpp}
+/usr/lib/liblua.so
+/usr/lib/pkgconfig/%{name}.pc
 /usr/lib/rpm/macros.d/macros.lua
 
 %files man

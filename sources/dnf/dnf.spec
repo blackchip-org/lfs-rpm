@@ -17,21 +17,34 @@ Source1:        %{name}.sha256
 Requires:       elfutils
 Requires:       file
 BuildRequires:  cmake
-BuildRequires:  fmt
+BuildRequires:  fmt-devel
 BuildRequires:  gettext
-BuildRequires:  json-c
-BuildRequires:  librepo
-BuildRequires:  libsolv
-BuildRequires:  libxml2
-BuildRequires:  perl
-BuildRequires:  pkg-config
-BuildRequires:  python
-BuildRequires:  sdbus-c++
+BuildRequires:  json-c-devel
+BuildRequires:  librepo-devel
+BuildRequires:  libsolv-devel
+BuildRequires:  libxml2-devel
+BuildRequires:  libxcrypt-devel
+BuildRequires:  perl-devel
+BuildRequires:  pkgconf
+BuildRequires:  python-devel
+BuildRequires:  sdbus-c++-devel
 BuildRequires:  swig
-BuildRequires:  sqlite
-BuildRequires:  toml11
-BuildRequires:  zchunk
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  sqlite-devel
+BuildRequires:  systemd-devel
+BuildRequires:  toml11-devel
+BuildRequires:  zchunk-devel
+
+%if !%{with lfs}
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%endif
 
 %description
 DNF5 is a command-line package manager that automates the process of
@@ -39,12 +52,14 @@ installing, upgrading, configuring, and removing computer programs in a
 consistent manner. It supports RPM packages, modulemd modules, and comps
 groups and environments.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
 %description lang
 Language files for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -137,30 +152,23 @@ ln -s dnf5 %{buildroot}/usr/bin/dnf
 /etc/dnf/dnf5-aliases.d/README
 /usr/bin/{dnf,dnf5}
 /usr/bin/dnf-automatic
-/usr/include/dnf5
-/usr/include/libdnf5-cli
-/usr/include/libdnf5
 /usr/lib/dnf5/plugins/README
-/usr/lib/libdnf5-cli.so
-%shlib /usr/lib/libdnf5-cli.so.2
-/usr/lib/libdnf5.so
-%shlib /usr/lib/libdnf5.so.2
-%shlib /usr/lib/libdnf5/plugins/python_plugins_loader.so
-%shlib /usr/lib/dnf5/plugins/automatic_cmd_plugin.so
-%shlib /usr/lib/dnf5/plugins/builddep_cmd_plugin.so
-%shlib /usr/lib/dnf5/plugins/changelog_cmd_plugin.so
-%shlib /usr/lib/dnf5/plugins/config-manager_cmd_plugin.so
-%shlib /usr/lib/dnf5/plugins/copr_cmd_plugin.so
-%shlib /usr/lib/libdnf5/plugins/expired-pgp-keys.so
-%shlib /usr/lib/dnf5/plugins/repoclosure_cmd_plugin.so
-%shlib /usr/lib/dnf5/plugins/reposync_cmd_plugin.so
-%shlib /usr/lib/libdnf5/plugins/actions.so
+/usr/lib/libdnf5-cli.so.*
+/usr/lib/libdnf5.so.*
+/usr/lib/libdnf5/plugins/python_plugins_loader.so
+/usr/lib/dnf5/plugins/automatic_cmd_plugin.so
+/usr/lib/dnf5/plugins/builddep_cmd_plugin.so
+/usr/lib/dnf5/plugins/changelog_cmd_plugin.so
+/usr/lib/dnf5/plugins/config-manager_cmd_plugin.so
+/usr/lib/dnf5/plugins/copr_cmd_plugin.so
+/usr/lib/libdnf5/plugins/expired-pgp-keys.so
+/usr/lib/dnf5/plugins/repoclosure_cmd_plugin.so
+/usr/lib/dnf5/plugins/reposync_cmd_plugin.so
+/usr/lib/libdnf5/plugins/actions.so
 /usr/lib/python%{python_version}/site-packages/libdnf5-%{version}.dist-info
 /usr/lib/python%{python_version}/site-packages/libdnf5_cli-%{version}.dist-info
 /usr/lib/python%{python_version}/site-packages/libdnf5{,_cli}
 /usr/lib/python%{python_version}/site-packages/libdnf_plugins
-/usr/lib/pkgconfig/libdnf5-cli.pc
-/usr/lib/pkgconfig/libdnf5.pc
 /usr/lib/systemd/system/dnf-automatic.service
 /usr/lib/systemd/system/dnf-automatic.timer
 /usr/lib/systemd/system/dnf5-automatic.service
@@ -180,6 +188,15 @@ ln -s dnf5 %{buildroot}/usr/bin/dnf
 /usr/lib/systemd/system/dnf5-offline-transaction.service
 
 %endif
+
+%files devel
+/usr/include/dnf5
+/usr/include/libdnf5-cli
+/usr/include/libdnf5
+/usr/lib/libdnf5.so
+/usr/lib/libdnf5-cli.so
+/usr/lib/pkgconfig/libdnf5-cli.pc
+/usr/lib/pkgconfig/libdnf5.pc
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*.mo

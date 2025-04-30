@@ -1,8 +1,8 @@
 # lfs
 
-%global name        procps-ng
-%global version     4.0.5
-%global release     1
+%global name            procps-ng
+%global version         4.0.5
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,9 +14,35 @@ License:        GPL+ and GPLv2 and GPLv2+ and GPLv3+ and LGPLv2+
 Source0:        https://sourceforge.net/projects/%{name}/files/Production/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-BuildRequires:  pkg-config
-BuildRequires:  systemd
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  pkgconf
+BuildRequires:  systemd-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 The procps package contains a set of system utilities that provide system
@@ -39,17 +65,12 @@ traps, and CPU activity. The pwdx command reports the current working directory
 of a process or processes. The pidwait command waits for processes of specified
 names.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description doc
+Documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -57,8 +78,10 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -67,11 +90,20 @@ Documentation for %{name}
 
 #---------------------------------------------------------------------------
 %build
+%if %{with lfs}
 ./configure --prefix=/usr                           \
             --docdir=/usr/share/doc/procps-ng-%{version} \
             --disable-static                        \
             --disable-kill                          \
             --with-systemd
+
+%else
+./configure --prefix=/usr                           \
+            --docdir=/usr/share/doc/procps-ng-%{version} \
+            --disable-kill                          \
+            --with-systemd
+
+%endif
 make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
@@ -108,12 +140,13 @@ make check
 /usr/bin/vmstat
 /usr/bin/w
 /usr/bin/watch
+/usr/lib/libproc2.so.*
+/usr/sbin/sysctl
+
+%files devel
 /usr/include/libproc2
 /usr/lib/libproc2.so
-/usr/lib/libproc2.so.1
-%shlib /usr/lib/libproc2.so.1.0.0
 /usr/lib/pkgconfig/libproc2.pc
-/usr/sbin/sysctl
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*.mo
@@ -124,5 +157,8 @@ make check
 %files man
 /usr/share/man/{??,pt_BR,zh_CN}/man*/*
 /usr/share/man/man*/*
+
+%files static
+/usr/lib/libproc2.a
 
 %endif

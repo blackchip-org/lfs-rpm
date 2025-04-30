@@ -1,8 +1,8 @@
 # lfs
 
-%global name        tar
-%global version     1.35
-%global release     1
+%global name            tar
+%global version         1.35
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           tar
@@ -14,7 +14,24 @@ License:        GPLv3+
 Source0:        https://ftp.gnu.org/gnu/tar/tar-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The GNU tar program saves many files together in one archive and can restore
@@ -27,17 +44,9 @@ ability to perform incremental and full backups.
 If you want to use tar for remote backups, you also need to install the rmt
 package on the remote box.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -45,8 +54,7 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -85,14 +93,14 @@ make check
 /usr/bin/tar
 /usr/libexec/rmt
 
-%files lang
-/usr/share/locale/*/LC_MESSAGES/*
+%files info
+/usr/share/info/*.gz
 
-%files doc
-/usr/share/info/*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif
 

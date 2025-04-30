@@ -15,6 +15,7 @@ License:        GPLv2+
 Source0:        https://ftp.osuosl.org/pub/%{name}/releases/%{name}-%{version_2}.x/%{name}-%{version}.tar.bz2
 Source1:        %{name}.sha256
 
+BuildRequires:  acl-devel
 BuildRequires:  cmake
 BuildRequires:  dbus-devel
 BuildRequires:  gettext
@@ -23,6 +24,7 @@ BuildRequires:  python-devel
 BuildRequires:  lua-devel
 BuildRequires:  readline-devel
 BuildRequires:  sqlite-devel
+BuildRequires:  systemd-devel
 
 %if !%{with lfs}
 Recommends:     %{name}-doc  = %{version}

@@ -1,27 +1,60 @@
-Name:           perl-File-Which
-Version:        1.27
-Release:        1%{?dist}
-Summary:        Which
+# beyond
+
+%global source_name     File-Which
+%global name            perl-%{source_name}
+%global version         1.27
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
+Summary:        Perl implementation of the which utility as an API
 License:        GPLv2+
 
-Source:         https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/File-Which-%{version}.tar.gz
+Source0:        https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/%{source_name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  perl
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
-Which
+File::Which finds the full or relative paths to executable programs on the
+system. This is normally the function of which utility. which is typically
+implemented as either a program or a built in shell command. On some platforms,
+such as Microsoft Windows it is not provided as part of the core operating
+system. This module provides a consistent API to this functionality regardless
+of the underlying platform.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+The focus of this module is correctness and portability. As a consequence
+platforms where the current directory is implicitly part of the search path
+such as Microsoft Windows will find executables in the current directory,
+whereas on platforms such as UNIX where this is not the case executables in
+the current directory will only be found if the current directory is explicitly
+added to the path.
 
-%description doc
-Documentation for %{name}
+If you need a portable which on the command line in an environment that does
+not provide it, install App::pwhich which provides a command line interface
+to this API.
+
+%if !%{with lfs}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n File-Which-%{version}
+%verify_sha256 -f %{SOURCE1}
+%setup -q -n %{source_name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
@@ -42,5 +75,5 @@ rm %{buildroot}/usr/lib/perl5/%{perl_version}/core_perl/perllocal.pod
 /usr/lib/perl5/%{perl_version}/site_perl/File/Which{,.pm}
 /usr/lib/perl5/%{perl_version}/site_perl/auto/File/Which
 
-%files doc
+%files man
 /usr/share/man/man*/*

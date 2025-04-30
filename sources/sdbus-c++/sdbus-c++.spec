@@ -15,13 +15,19 @@ License:        LGPL-2.1
 Source0:        https://github.com/Kistler-Group/%{source_name}/archive/refs/tags/v%{version}.tar.gz
 Source1:        %{name}.sha256
 
+Provides:       %{name}-devel
 BuildRequires:  cmake
-BuildRequires:  pkg-config
-BuildRequires:  systemd
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  pkgconf
+BuildRequires:  systemd-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
 
 %package doc
 Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 sdbus-c++ is a high-level C++ D-Bus library for Linux designed to provide
@@ -37,8 +43,11 @@ that is intuitive and friendly to the user and inherently free of those bugs.
 Even though sdbus-c++ uses sd-bus library, it is not necessarily constrained
 to systemd and can perfectly be used in non-systemd environments as well.
 
+%if !%{with lfs}
 %description doc
 Documentation for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -69,14 +78,12 @@ make DESTDIR=%{buildroot} install
 /usr/lib/pkgconfig
 
 %else
-/usr/include/sdbus-c++
-/usr/lib/cmake/sdbus-c++
-/usr/lib/libsdbus-c++.so
-/usr/lib/libsdbus-c++.so.2
-%shlib /usr/lib/libsdbus-c++.so.%{version}
-/usr/lib/pkgconfig/sdbus-c++.pc
+/usr/include/%{name}
+/usr/lib/cmake/%{name}
+/usr/lib/libsdbus-c++.so*
+/usr/lib/pkgconfig/%{name}.pc
 
 %files doc
-/usr/share/doc/sdbus-c++
+/usr/share/doc/%{name}
 
 %endif

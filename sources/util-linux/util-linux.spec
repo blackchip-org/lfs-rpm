@@ -1,9 +1,9 @@
 # lfs
 
-%global name        util-linux
-%global version_2   2.40
-%global version     %{version_2}.4
-%global release     1
+%global name            util-linux
+%global version_2       2.40
+%global version         %{version_2}.4
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -17,8 +17,34 @@ Source1:        %{name}.sha256
 
 BuildRequires:  autoconf
 BuildRequires:  automake
-BuildRequires:  systemd
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  systemd-devel
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 The util-linux package contains a large variety of low-level system
@@ -26,17 +52,12 @@ utilities that are necessary for a Linux system to function. Among
 others, util-linux contains the fdisk configuration tool and the login
 program.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description doc
+Documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -44,8 +65,10 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -91,7 +114,6 @@ sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
             --disable-runuser    \
             --disable-pylibmount \
             --disable-liblastlog2 \
-            --disable-static     \
             --without-python     \
             --disable-makeinstall-chown \
             --disable-makeinstall-setuid \
@@ -194,31 +216,11 @@ make DESTDIR=%{buildroot} install
 /usr/bin/wdctl
 /usr/bin/whereis
 /usr/bin/x86_64
-/usr/include/blkid/blkid.h
-/usr/include/libfdisk/libfdisk.h
-/usr/include/libmount/libmount.h
-/usr/include/libsmartcols/libsmartcols.h
-/usr/include/uuid/uuid.h
-/usr/lib/libblkid.so
-/usr/lib/libblkid.so.1
-%shlib /usr/lib/libblkid.so.1.1.0
-/usr/lib/libfdisk.so
-/usr/lib/libfdisk.so.1
-%shlib /usr/lib/libfdisk.so.1.1.0
-/usr/lib/libmount.so
-/usr/lib/libmount.so.1
-%shlib /usr/lib/libmount.so.1.1.0
-/usr/lib/libsmartcols.so
-/usr/lib/libsmartcols.so.1
-%shlib /usr/lib/libsmartcols.so.1.1.0
-/usr/lib/libuuid.so
-/usr/lib/libuuid.so.1
-%shlib /usr/lib/libuuid.so.1.3.0
-/usr/lib/pkgconfig/blkid.pc
-/usr/lib/pkgconfig/fdisk.pc
-/usr/lib/pkgconfig/mount.pc
-/usr/lib/pkgconfig/smartcols.pc
-/usr/lib/pkgconfig/uuid.pc
+/usr/lib/libblkid.so.*
+/usr/lib/libfdisk.so.*
+/usr/lib/libmount.so.*
+/usr/lib/libsmartcols.so.*
+/usr/lib/libuuid.so.*
 /usr/lib/systemd/system/fstrim.service
 /usr/lib/systemd/system/fstrim.timer
 /usr/lib/systemd/system/uuidd.service
@@ -257,7 +259,6 @@ make DESTDIR=%{buildroot} install
 /usr/sbin/rfkill
 /usr/sbin/rtcwake
 /usr/sbin/sfdisk
-/usr/sbin/sulogin
 /usr/sbin/swaplabel
 /usr/sbin/swapoff
 /usr/sbin/swapon
@@ -267,13 +268,37 @@ make DESTDIR=%{buildroot} install
 /usr/sbin/zramctl
 /usr/share/bash-completion/completions/*
 
-%files lang
-/usr/share/locale/*/LC_MESSAGES/*
+%files devel
+/usr/include/blkid/blkid.h
+/usr/include/libfdisk/libfdisk.h
+/usr/include/libmount/libmount.h
+/usr/include/libsmartcols/libsmartcols.h
+/usr/include/uuid/uuid.h
+/usr/lib/libblkid.so
+/usr/lib/libfdisk.so
+/usr/lib/libmount.so
+/usr/lib/libsmartcols.so
+/usr/lib/libuuid.so
+/usr/lib/pkgconfig/blkid.pc
+/usr/lib/pkgconfig/fdisk.pc
+/usr/lib/pkgconfig/mount.pc
+/usr/lib/pkgconfig/smartcols.pc
+/usr/lib/pkgconfig/uuid.pc
 
 %files doc
-/usr/share/doc/util-linux-%{version}
+/usr/share/doc/%{name}-%{version}
+
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files man
-/usr/share/man/man{1,3,5,8}
+/usr/share/man/man{1,3,5,8}/*
+
+%files static
+/usr/lib/libblkid.a
+/usr/lib/libfdisk.a
+/usr/lib/libmount.a
+/usr/lib/libsmartcols.a
+/usr/lib/libuuid.a
 
 %endif

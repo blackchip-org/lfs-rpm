@@ -15,6 +15,7 @@ Source0:        https://github.com/ToruNiina/toml11/archive/refs/tags/v%{version
 Source1:        %{name}.sha256
 
 BuildRequires:  cmake
+Provides:       %{name}-devel
 
 %description
 toml11 is a feature-rich TOML language library for C++11/14/17/20.

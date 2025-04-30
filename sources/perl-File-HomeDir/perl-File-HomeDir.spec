@@ -1,13 +1,32 @@
-Name:           perl-File-HomeDir
-Version:        1.006
-Release:        1%{?dist}
+# beyond
+
+%global source_name     File-HomeDir
+%global name            perl-%{source_name}
+%global version         1.006
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Find your home and other directories on any platform
 License:        GPLv2+
 
-Source:        https://github.com/perl5-utils/File-HomeDir/archive/refs/tags/%{version}.tar.gz
+Source0:        https://github.com/perl5-utils/%{source_name}/archive/refs/tags/%{version}.tar.gz
+Source1:        %{name}.sha256
+
+BuildArch:      noarch
 
 BuildRequires:  perl
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 File::HomeDir is a module for locating the directories that are "owned" by a
@@ -18,16 +37,16 @@ The end result is a single API that can find your resources on any platform,
 making it relatively trivial to create Perl software that works elegantly and
 correctly no matter where you run it.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description man
+Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
-%setup -q -n File-HomeDir-%{version}
+%verify_sha256 -f %{SOURCE1}
+%setup -q -n %{source_name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
@@ -48,5 +67,6 @@ rm %{buildroot}/usr/lib/perl5/%{perl_version}/core_perl/perllocal.pod
 /usr/lib/perl5/%{perl_version}/site_perl/File/HomeDir{,.pm}
 /usr/lib/perl5/%{perl_version}/site_perl/auto/File/HomeDir
 
-%files doc
-/usr/share/man/man*/*
+%files man
+/usr/share/man/man*/*.gz
+

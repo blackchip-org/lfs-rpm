@@ -1,9 +1,9 @@
 # lfs
 
-%global name        vim
-%global version     9.1.1166
-%global version_2   91
-%global release     1
+%global name            vim
+%global version         9.1.1166
+%global version_2       91
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -16,7 +16,14 @@ Source0:        https://github.com/vim/vim/archive/v%{version}/%{name}-%{version
 Source1:        %{name}.sha256
 Source2:        vimrc
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 VIM (VIsual editor iMproved) is an updated and improved version of the vi
@@ -27,12 +34,11 @@ a minimal version of VIM, which is installed into /bin/vi for use when only the
 root partition is present. NOTE: The online help is only available when the
 vim-common package is installed.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description man
+Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -85,9 +91,9 @@ install -D -m 644 vimrc %{buildroot}/etc/vimrc
 /usr/share/icons/hicolor/48x48/apps/gvim.png
 /usr/share/icons/locolor/16x16/apps/gvim.png
 /usr/share/icons/locolor/32x32/apps/gvim.png
-/usr/share/vim/vim%{version2}
+/usr/share/vim/vim%{version_2}
 
-%files doc
+%files man
 /usr/share/man/*.ISO8859-{1,2,9}/man*/*
 /usr/share/man/*.UTF-8/man*/*
 /usr/share/man/??/man*/*

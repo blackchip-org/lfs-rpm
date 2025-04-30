@@ -16,7 +16,19 @@ Source1:        %{name}.sha256
 
 BuildRequires:  meson
 BuildRequires:  ninja
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 zchunk is a compressed file format that splits the file into independent
@@ -28,12 +40,14 @@ to download only the changed chunks, your client must be zchunk-aware).
 zchunk files are protected with strong checksums to verify that the file you
 downloaded is, in fact, the file you wanted.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -54,10 +68,10 @@ DESTDIR=%{buildroot} ninja install
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
-/usr/bin
-/usr/include
+/usr/bin/*
+/usr/include.*.h
 /usr/lib/lib*.so*
-/usr/lib/pkgconfig
+/usr/lib/pkgconfig/*
 
 %else
 /usr/bin/unzck
@@ -65,13 +79,14 @@ DESTDIR=%{buildroot} ninja install
 /usr/bin/zck_delta_size
 /usr/bin/zck_gen_zdict
 /usr/bin/zck_read_header
+/usr/lib/libzck.so.*
+
+%files devel
 /usr/include/zck.h
 /usr/lib/libzck.so
-/usr/lib/libzck.so.1
-%shlib /usr/lib/libzck.so.1.5.1
 /usr/lib/pkgconfig/zck.pc
 
-%files doc
+%files man
 /usr/share/man/man*/*.gz
 
 %endif

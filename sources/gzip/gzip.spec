@@ -1,8 +1,8 @@
 # lfs
 
-%global name        gzip
-%global version     1.13
-%global release     1
+%global name            gzip
+%global version         1.13
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -15,7 +15,20 @@ Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 BuildRequires:  less
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The gzip package contains the popular GNU gzip data compression program.
@@ -24,19 +37,14 @@ Gzipped files have a .gz extension.
 Gzip should be installed on your system, because it is a very commonly used
 data compression program.
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%if !%{with lfs}
+%description info
+Info documentation for %{name}
 
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -79,10 +87,10 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 /usr/bin/zmore
 /usr/bin/znew
 
-%files doc
-/usr/share/info/*
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
 
 %endif

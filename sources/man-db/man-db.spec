@@ -1,17 +1,43 @@
-Name:           man-db
-Version:        2.13.0
-Release:        1%{?dist}
+# lfs
+
+%global name            man-db
+%global version         2.13.0
+%global release         1
+
+#---------------------------------------------------------------------------
+Name:           %{name}
+Version:        %{version}
+Release:        %{release}%{?dist}
 Summary:        Tools for searching and reading man pages
 License:        GPLv2+ and GPLv3+
 
-Source:         https://download.savannah.gnu.org/releases/man-db/man-db-%{version}.tar.xz
+Source0:        https://download.savannah.gnu.org/releases/%{name}/%{name}-%{version}.tar.xz
+Source1:        %{name}.sha256
 
-BuildRequires:  gdbm
+BuildRequires:  gdbm-devel
 BuildRequires:  groff
 BuildRequires:  libpipeline
-BuildRequires:  pkg-config
+BuildRequires:  pkgconf
 BuildRequires:  systemd
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
 
 %description
 The man-db package includes five tools for browsing man-pages: man, whatis,
@@ -20,17 +46,9 @@ searches the manual page names. apropos searches the manual page names and
 descriptions. manpath determines search path for manual pages. lexgrog directly
 reads header information in manual pages.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
-
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%if !%{with lfs}
+%description doc
+Documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -38,32 +56,32 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%endif
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
 %build
 ./configure --prefix=/usr                         \
-            --docdir=/usr/share/doc/man-db-%{version} \
+            --docdir=/usr/share/doc/%{name}-%{version} \
             --sysconfdir=/etc                     \
             --disable-setuid                      \
             --enable-cache-owner=bin              \
             --with-browser=/usr/bin/lynx          \
             --with-vgrind=/usr/bin/vgrind         \
             --with-grap=/usr/bin/grap
-%make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
-%make DESTDIR=%{buildroot} install
+make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %check
-%make check
+make check
 
 #---------------------------------------------------------------------------
 %files
@@ -76,24 +94,24 @@ Documentation for %{name}
 /usr/bin/mandb
 /usr/bin/manpath
 /usr/bin/whatis
-/usr/lib/man-db/libman.so
-%shlib /usr/lib/man-db/libman-%{version}.so
-/usr/lib/man-db/libmandb.so
-%shlib /usr/lib/man-db/libmandb-%{version}.so
+/usr/lib/%{name}/libman.so*
+/usr/lib/%{name}/libman-%{version}.so*
+/usr/lib/%{name}/libmandb.so*
+/usr/lib/%{name}/libmandb-%{version}.so*
 /usr/lib/systemd/system/man-db.service
 /usr/lib/systemd/system/man-db.timer
 /usr/lib/tmpfiles.d/man-db.conf
-/usr/libexec/man-db/globbing
-/usr/libexec/man-db/manconv
-/usr/libexec/man-db/zsoelim
+/usr/libexec/%{name}/globbing
+/usr/libexec/%{name}/manconv
+/usr/libexec/%{name}/zsoelim
 /usr/sbin/accessdb
 
 %files lang
 /usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files doc
-/usr/share/doc/man-db-%{version}
+/usr/share/doc/%{name}-%{version}
 
 %files man
-/usr/share/man/it/man{1,5,8}/*
-/usr/share/man/man{1,5,8}/*
+/usr/share/man/it/man{1,5,8}/*.gz
+/usr/share/man/man{1,5,8}/*.gz

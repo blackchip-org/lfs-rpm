@@ -14,16 +14,18 @@ License:        LGPL-2.1
 Source0:        https://github.com/rpm-software-management/%{name}/archive/refs/tags/%{version}.tar.gz
 Source1:        %{name}.sha256
 
-BuildRequires:  attr
-BuildRequires:  check
+Provides:       %{name}-devel
+
+BuildRequires:  attr-devel
+BuildRequires:  check-devel
 BuildRequires:  cmake
-BuildRequires:  curl
-BuildRequires:  glib
-BuildRequires:  libxml2
-BuildRequires:  openssl
-BuildRequires:  pkg-config
-BuildRequires:  python
-BuildRequires:  zchunk
+BuildRequires:  curl-devel
+BuildRequires:  glib-devel
+BuildRequires:  libxml2-devel
+BuildRequires:  openssl-devel
+BuildRequires:  pkgconf
+BuildRequires:  python-devel
+BuildRequires:  zchunk-devel
 
 %description
 A library providing C and Python (libcURL like) API for downloading linux

@@ -1,8 +1,8 @@
 # lfs
 
-%global name        e2fsprogs
-%global version     1.47.2
-%global release     1
+%global name            e2fsprogs
+%global version         1.47.2
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,10 +14,36 @@ License:        GPLv2
 Source0:        https://downloads.sourceforge.net/project/%{name}/%{name}/v%{version}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
-BuildRequires:  pkg-config
+BuildRequires:  pkgconf
 BuildRequires:  systemd
 BuildRequires:  texinfo
-Suggests:       %{name}-doc = %{version}
+
+%if !%{with lfs}
+Recommends:     %{name}-info = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package info
+Summary:        Info documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 The e2fsprogs package contains a number of utilities for creating, checking,
@@ -32,17 +58,12 @@ system parameters), and most of the other core ext2fs file system utilities.
 You should install the e2fsprogs package if you need to manage the performance
 of an ext2, ext3, or ext4 file system.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description info
+Info documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -50,8 +71,10 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -77,7 +100,14 @@ make %{?_smp_mflags}
 
 cd build
 make DESTDIR=%{buildroot} install
+
+%if %{with lfs}
 rm -fv %{buildroot}/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+
+%else
+chmod 644 %{buildroot}/usr/lib/*.a
+
+%endif
 
 #---------------------------------------------------------------------------
 %check
@@ -102,25 +132,11 @@ make check
 /usr/bin/compile_et
 /usr/bin/lsattr
 /usr/bin/mk_cmds
-/usr/include/*.h
-/usr/include/{e2p,et,ext2fs,ss}
 /usr/lib/e2initrd_helper
-/usr/lib/libcom_err.so
-/usr/lib/libcom_err.so.2
-%shlib /usr/lib/libcom_err.so.2.1
-/usr/lib/libe2p.so
-/usr/lib/libe2p.so.2
-%shlib /usr/lib/libe2p.so.2.3
-/usr/lib/libext2fs.so
-/usr/lib/libext2fs.so.2
-%shlib /usr/lib/libext2fs.so.2.4
-/usr/lib/libss.so
-/usr/lib/libss.so.2
-%shlib /usr/lib/libss.so.2.0
-/usr/lib/pkgconfig/com_err.pc
-/usr/lib/pkgconfig/e2p.pc
-/usr/lib/pkgconfig/ext2fs.pc
-/usr/lib/pkgconfig/ss.pc
+/usr/lib/libcom_err.so.*
+/usr/lib/libe2p.so.*
+/usr/lib/libext2fs.so.*
+/usr/lib/libss.so.*
 /usr/lib/systemd/system/e2scrub@.service
 /usr/lib/systemd/system/e2scrub_all.service
 /usr/lib/systemd/system/e2scrub_all.timer
@@ -159,13 +175,31 @@ make check
 /usr/share/ss/ct_c.awk
 /usr/share/ss/ct_c.sed
 
-%files lang
-/usr/share/locale/*/LC_MESSAGES/*
+%files devel
+/usr/include/*.h
+/usr/include/{e2p,et,ext2fs,ss}
+/usr/lib/libcom_err.so
+/usr/lib/libe2p.so
+/usr/lib/libext2fs.so
+/usr/lib/libss.so
+/usr/lib/pkgconfig/com_err.pc
+/usr/lib/pkgconfig/e2p.pc
+/usr/lib/pkgconfig/ext2fs.pc
+/usr/lib/pkgconfig/ss.pc
 
-%files doc
-/usr/share/info/*
+%files lang
+/usr/share/locale/*/LC_MESSAGES/*.mo
+
+%files info
+/usr/share/info/*.gz
 
 %files man
-/usr/share/man/man*/*
+/usr/share/man/man*/*.gz
+
+%files static
+/usr/lib/libcom_err.a
+/usr/lib/libe2p.a
+/usr/lib/libext2fs.a
+/usr/lib/libss.a
 
 %endif

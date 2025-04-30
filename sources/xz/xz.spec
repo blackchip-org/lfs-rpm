@@ -1,8 +1,8 @@
 # lfs
 
-%global name        xz
-%global version     5.6.4
-%global release     1
+%global name            xz
+%global version         5.6.4
+%global release         1
 
 #---------------------------------------------------------------------------
 Name:           %{name}
@@ -14,7 +14,32 @@ License:        GPLv2+ and Public Domain
 Source0:        https://github.com/tukaani-project/%{name}/releases/download/v%{version}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
-Suggests:       %{name}-doc = %{version}
+%if !%{with lfs}
+Recommends:     %{name}-doc  = %{version}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%package lang
+Summary:        Language files for %{name}
+Requires:       %{name} = %{version}
+BuildArch:      noarch
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%package static
+Summary:        Static libraries for %{name}
+Requires:       %{name}%{?_isa}-devel
+
+%endif
 
 %description
 XZ Utils are an attempt to make LZMA compression easy to use on free (as in
@@ -26,17 +51,12 @@ LZMA is a general purpose compression algorithm designed by Igor Pavlov as part
 of 7-Zip. It provides high compression ratio while keeping the decompression
 speed fast.
 
-%package lang
-Summary:        Language files for %{name}
-Requires:       %{name} = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%package man
-Summary:        Manual pages for %{name}
-
-%package doc
-Summary:        Documentation for %{name}
-Requires:       texinfo
-Recommends:     %{name}-man = %{version}
+%description doc
+Documentation for %{name}
 
 %description lang
 Language files for %{name}
@@ -44,8 +64,10 @@ Language files for %{name}
 %description man
 Manual pages for %{name}
 
-%description doc
-Documentation for %{name}
+%description static
+Static libraries for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -59,12 +81,16 @@ Documentation for %{name}
             --host=%{lfs_tgt}                 \
             --build=$(build-aux/config.guess) \
             --disable-static                  \
-            --docdir=/usr/share/doc/xz-%{version}
+            --docdir=/usr/share/doc/%{name}-%{version}
+
+%elif %{with lfs}
+./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/%{name}-%{version}
 
 %else
 ./configure --prefix=/usr    \
-            --disable-static \
-            --docdir=/usr/share/doc/xz-%{version}
+            --docdir=/usr/share/doc/%{name}-%{version}
 
 %endif
 make %{?_smp_mflags}
@@ -106,21 +132,25 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 /usr/bin/xzgrep
 /usr/bin/xzless
 /usr/bin/xzmore
+/usr/lib/liblzma.so.*
+
+%files devel
 /usr/include/lzma.h
 /usr/include/lzma
 /usr/lib/liblzma.so
-/usr/lib/liblzma.so.5
-%shlib /usr/lib/liblzma.so.%{version}
 /usr/lib/pkgconfig/liblzma.pc
 
 %files lang
-/usr/share/locale/*/LC_MESSAGES/*
+/usr/share/locale/*/LC_MESSAGES/*.mo
 
 %files doc
-/usr/share/doc/xz-%{version}
+/usr/share/doc/%{name}-%{version}
 
 %files man
-/usr/share/man/{de,fr,ko,pt_BR,ro,uk}/man*/*
-/usr/share/man/man*/*
+/usr/share/man/{de,fr,ko,pt_BR,ro,uk}/man*/*.gz
+/usr/share/man/man*/*.gz
+
+%files static
+/usr/lib/liblzma.a
 
 %endif

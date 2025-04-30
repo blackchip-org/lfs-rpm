@@ -145,11 +145,12 @@ pod-export() {
 
     podman exec --user root lfs-pod \
         dnf install -y $packages
-    image="build/pod/lfs-pod.tar.gz"
+    image="build/containers/lfs-pod.tar.gz"
     echo -n "exporting ${image}... "
     podman exec --user root -t lfs-pod \
-        tar -C / -c -z -f /build/lfs-rpm/$image \
-            --exclude='./build' \
+        tar -C / -c -z -f /host/$image \
+            --exclude='./rpmbuild' \
+            --exclude='./host' \
             --exclude='./tmp/*' \
             --exclude './dev/*' \
             --exclude './proc/*' \
@@ -163,6 +164,7 @@ pod-create() {
 
     echo "creating container"
     bash -c "source ./pod-env ; env | grep -e '^pod_'" > eval-pod.env
+    mkdir -p build/images
 
     podman create \
         --name      lfs-pod \

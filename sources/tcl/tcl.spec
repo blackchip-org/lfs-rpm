@@ -1,9 +1,9 @@
 # lfs
 
-%global name        tcl
-%global version_2   8.6
-%global version     %{version_2}.16
-%global release     1
+%global name            tcl
+%global version_2       8.6
+%global version         %{version_2}.16
+%global release         1
 
 %global tdbc_version    1.1.10
 %global itcl_version    4.3.2
@@ -20,8 +20,21 @@ License:        TCL
 Source0:        https://downloads.sourceforge.net/%{name}/%{name}%{version}-src.tar.gz
 Source1:        %{name}.sha256
 
-BuildRequires:  pkg-config
-Suggests:       %{name}-doc = %{version}
+BuildRequires:  pkgconf
+
+%if !%{with lfs}
+Recommends:     %{name}-man  = %{version}
+
+%package devel
+Summary:        Development files for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%package man
+Summary:        Manual pages for %{name}
+BuildArch:      noarch
+
+%endif
+
 
 %description
 The Tcl (Tool Command Language) provides a powerful platform for creating
@@ -31,12 +44,14 @@ fastest and powerful way to create cross-platform GUI applications. Tcl can
 also be used for a variety of web-related tasks and for creating powerful
 command languages for applications.
 
-%package doc
-Summary:        Documentation for %{name}
-Provides:       %{name}-man = %{version}
+%if !%{with lfs}
+%description devel
+Development files for %{name}
 
-%description doc
-Documentation for %{name}
+%description man
+Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -74,7 +89,7 @@ unset SRCDIR
 cd unix
 make DESTDIR=%{buildroot} install
 make DESTDIR=%{buildroot} install-private-headers
-ln -sfv tclsh%{version2} %{buildroot}/usr/bin/tclsh
+ln -sfv tclsh%{version_2} %{buildroot}/usr/bin/tclsh
 mv %{buildroot}/usr/share/man/man3/{Thread,Tcl_Thread}.3
 
 find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
@@ -91,26 +106,24 @@ find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
 %else
 /usr/bin/sqlite3_analyzer
 /usr/bin/tclsh
-/usr/bin/tclsh%{version2}
-/usr/include/*
+/usr/bin/tclsh%{version_2}
 /usr/lib/itcl%{itcl_version}/itcl.tcl
 /usr/lib/itcl%{itcl_version}/itclConfig.sh
 /usr/lib/itcl%{itcl_version}/itclHullCmds.tcl
 /usr/lib/itcl%{itcl_version}/itclWidget.tcl
 /usr/lib/itcl%{itcl_version}/libitclstub%{itcl_version}.a
 /usr/lib/itcl%{itcl_version}/pkgIndex.tcl
-%shlib /usr/lib/itcl%{itcl_version}/libitcl%{itcl_version}.so
-%shlib /usr/lib/libtcl%{version2}.so
-%shlib /usr/lib/tdbc%{tdbc_version}/libtdbc%{tdbc_version}.so
-%shlib /usr/lib/tdbcmysql%{tdbc_version}/libtdbcmysql%{tdbc_version}.so
-%shlib /usr/lib/tdbcodbc%{tdbc_version}/libtdbcodbc%{tdbc_version}.so
-%shlib /usr/lib/tdbcpostgres%{tdbc_version}/libtdbcpostgres%{tdbc_version}.so
-%shlib /usr/lib/thread%{thread_version}/libthread%{thread_version}.so
-/usr/lib/libtclstub%{version2}.a
-/usr/lib/pkgconfig/tcl.pc
+/usr/lib/itcl%{itcl_version}/libitcl%{itcl_version}.so
+/usr/lib/libtcl%{version_2}.so
+/usr/lib/tdbc%{tdbc_version}/libtdbc%{tdbc_version}.so
+/usr/lib/tdbcmysql%{tdbc_version}/libtdbcmysql%{tdbc_version}.so
+/usr/lib/tdbcodbc%{tdbc_version}/libtdbcodbc%{tdbc_version}.so
+/usr/lib/tdbcpostgres%{tdbc_version}/libtdbcpostgres%{tdbc_version}.so
+/usr/lib/thread%{thread_version}/libthread%{thread_version}.so
+/usr/lib/libtclstub%{version_2}.a
 /usr/lib/sqlite%{sqlite_version}/libsqlite%{sqlite_version}.so
 /usr/lib/sqlite%{sqlite_version}/pkgIndex.tcl
-/usr/lib/tcl%{version2}
+/usr/lib/tcl%{version_2}
 /usr/lib/tcl8
 /usr/lib/tclConfig.sh
 /usr/lib/tclooConfig.sh
@@ -127,7 +140,11 @@ find %{buildroot}/usr/lib -type f -name "*.so" -exec chmod 755 {} \;
 /usr/lib/thread%{thread_version}/pkgIndex.tcl
 /usr/lib/thread%{thread_version}/ttrace.tcl
 
-%files doc
-/usr/share/man/man*/*
+%files devel
+/usr/include/*.h
+/usr/lib/pkgconfig/tcl.pc
+
+%files man
+/usr/share/man/man*/*.gz
 
 %endif
