@@ -167,7 +167,7 @@ make check
 %{?lfs_dir}/lib64/*
 %{?lfs_dir}/etc/*
 %{?lfs_dir}/usr/bin/*
-%{?lfs_dir}/usr/include/*.h
+%{?lfs_dir}/usr/include/*
 %{?lfs_dir}/usr/lib/*.{a,o,so*}
 %{?lfs_dir}/usr/lib/{audit,gconv,locale,systemd,tmpfiles.d}/*
 %{?lfs_dir}/usr/libexec/*

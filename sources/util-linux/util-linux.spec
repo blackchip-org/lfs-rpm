@@ -134,7 +134,6 @@ make DESTDIR=%{buildroot} install
 /usr/include/{blkid,libfdisk,libmount,libsmartcols,uuid}
 /usr/lib/lib*.so*
 /usr/lib/{pkgconfig,tmpfiles.d}/*
-/usr/lib/systemd/system/*
 /usr/sbin/*
 /usr/share/bash-completion/completions/*
 

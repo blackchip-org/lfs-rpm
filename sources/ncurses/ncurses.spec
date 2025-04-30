@@ -125,9 +125,12 @@ cp -v -R doc -T %{buildroot}/usr/share/doc/ncurses-6.4
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/*
 %{?lfs_dir}/usr/lib/lib*.so*
-%{?lfs_dir}/usr/lib/{pkgconfig,terminfo}/*
+%{?lfs_dir}/usr/lib/terminfo
 %{?lfs_dir}/usr/share/tabset/*
 %{?lfs_dir}/usr/share/terminfo/*
+%if %{with lfs_stage2}
+/usr/lib/pkgconfig/*.pc
+%endif
 
 %else
 /usr/bin/captoinfo

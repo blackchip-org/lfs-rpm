@@ -13,6 +13,7 @@ for stage in $stages; do
 done
 images+="lfs-pod"
 lfs_arch=$(arch)
+rpmspec_flags=(--define "dist ${lfs_dist}")
 
 usage() {
     cat <<EOF
@@ -149,7 +150,7 @@ lfs-build() {
                 done
             )
 
-            ( set -e -x -o pipefail
+            ( set -e -x
             podman exec lfs-$stage rpmbuild \
                 --define "_topdir /rpmbuild" \
                 --define "_sourcedir /host/build/sources" \
@@ -158,11 +159,14 @@ lfs-build() {
                 $rpmbuild_pkg_flags \
                 /host/${spec} 2>&1 \
                 | tee logs/${stage}/${package}.log
+
+            package_arch=$(rpmspec "${rpmspec_flags[@]}" -q --queryformat="%{ARCH}\n"  "$spec" | head -1)
+
             podman exec --user root lfs-$stage rpm \
                 $method \
                 $rpm_flags \
                 $rpm_pkg_flags \
-                /rpmbuild/RPMS/$lfs_arch/${package_version}~${stage}${lfs_dist}.${lfs_arch}.rpm 2>&1 \
+                /rpmbuild/RPMS/$package_arch/${package_version}~${stage}${lfs_dist}.${package_arch}.rpm 2>&1 \
                 | tee --append logs/${stage}/${package}.log
             )
             echo "$stage:$package" > logs/last-success
