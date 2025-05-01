@@ -68,11 +68,11 @@ booted with the following three steps:
 
 This downloads all the necessary source files and builds them using podman. This
 will take some time. Here are the timing results from my personal desktop with
-an Intel i7-7700 CPU, SSD hard drive, 16 GiB of memory, default podman
-configuration, and *make -j8*:
+an Intel i7-14700K CPU, SSD hard drive, 32 GiB of memory, default podman
+configuration, and *make -j28*:
 
 ```
-real	131m27.156s
+real	84m16.287s
 ```
 
 Once done, the root filesystem can be found at `build/stage2/lfs-stage2.tar.gz`
