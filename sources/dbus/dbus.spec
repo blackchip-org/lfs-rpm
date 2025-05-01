@@ -86,12 +86,12 @@ make check
 %if %{with lfs}
 /etc/%{major_name}/*
 /usr/bin/*
-/usr/include/%{major_name}
+/usr/include/%{major_name_2}
 /usr/lib/lib*.so*
 /usr/lib/{cmake,pkgconfig,systemd,sysusers.d,tmpfiles.d}/*
-/usr/lib/%{major_name}
+/usr/lib/%{major_name_2}
 /usr/libexec/dbus-daemon-launch-helper
-/usr/share/%{major_name_2}
+/usr/share/%{major_name}
 /usr/share/xml/%{major_name}
 /var/lib/dbus/machine-id
 

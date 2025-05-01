@@ -68,7 +68,7 @@ DESTDIR=%{buildroot} meson install -C _build
 %files
 %if %{with lfs}
 /usr/bin/*
-/usr/include/*.h
+/usr/include/{gio-unix-%{major_version},glib-%{major_version}}
 /usr/lib/lib*.so*
 /usr/lib/%{name}-%{major_version}
 /usr/lib/pkgconfig/*
@@ -77,7 +77,7 @@ DESTDIR=%{buildroot} meson install -C _build
 /usr/share/bash-completion/completions/*
 /usr/share/gdb/*
 /usr/share/gettext/*
-/usr/share/%{version}-%{major_version}/*
+/usr/share/%{name}-%{major_version}/*
 
 %else
 /usr/bin/gapplication

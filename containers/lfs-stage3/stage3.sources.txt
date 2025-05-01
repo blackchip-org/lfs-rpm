@@ -14,4 +14,3 @@ sources/sqlite
 sources/swig
 sources/sdbus-c++
 sources/dnf
-# sources/elfutils

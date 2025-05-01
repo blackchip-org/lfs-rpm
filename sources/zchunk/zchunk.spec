@@ -69,7 +69,7 @@ DESTDIR=%{buildroot} ninja install
 %files
 %if %{with lfs}
 /usr/bin/*
-/usr/include.*.h
+/usr/include/*.h
 /usr/lib/lib*.so*
 /usr/lib/pkgconfig/*
 

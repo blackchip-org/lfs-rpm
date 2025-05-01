@@ -150,7 +150,7 @@ lfs-build() {
                 done
             )
 
-            ( set -e -x
+            ( set -e -x -o pipefail
             podman exec lfs-$stage rpmbuild \
                 --define "_topdir /rpmbuild" \
                 --define "_sourcedir /host/build/sources" \
@@ -159,9 +159,11 @@ lfs-build() {
                 $rpmbuild_pkg_flags \
                 /host/${spec} 2>&1 \
                 | tee logs/${stage}/${package}.log
+            )
 
             package_arch=$(rpmspec "${rpmspec_flags[@]}" -q --queryformat="%{ARCH}\n"  "$spec" | head -1)
 
+            ( set -e -x -o pipefail
             podman exec --user root lfs-$stage rpm \
                 $method \
                 $rpm_flags \

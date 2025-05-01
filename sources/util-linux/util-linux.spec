@@ -132,10 +132,13 @@ make DESTDIR=%{buildroot} install
 %if %{with lfs}
 /usr/bin/*
 /usr/include/{blkid,libfdisk,libmount,libsmartcols,uuid}
-/usr/lib/lib*.so*
+/usr/lib/lib*.{so*,a}
 /usr/lib/{pkgconfig,tmpfiles.d}/*
 /usr/sbin/*
 /usr/share/bash-completion/completions/*
+%if %{with lfs_stage2}
+/usr/lib/systemd/system/*
+%endif
 
 %else
 /usr/bin/cal
