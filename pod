@@ -105,6 +105,7 @@ pod-build() {
         done
     )
 
+    ( set -e -x -o pipefail
     podman exec \
         lfs-pod \
         rpmbuild \
@@ -115,6 +116,7 @@ pod-build() {
             $rpmbuild_flags \
             /host/$source/$spec | \
             tee logs/pod/${package}.log
+    )
 
     echo "pod:$package" > logs/last-success
     echo "[$(timestamp)] done  pod:$package" >> logs/build.log

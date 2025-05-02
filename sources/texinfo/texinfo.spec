@@ -82,20 +82,22 @@ make %{?_smp_mflags}
 make DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
+%if !%{with lfs}
 %global update_info_dir \
-    pushd /usr/share/info 2&>/dev/null \
+    pushd /usr/share/info >/dev/null 2>&1 \
         rm -f dir \
         for f in * \
-            do install-info $f dir 2>/dev/null \
+            do install-info $f dir >/dev/null 2>&1 \
         done \
-    popd 2&>/dev/null
+    popd >/dev/null 2>&1
 
-if !%{with lfs}
 %transfiletriggerin -- /usr/share/info
 %update_info_dir
 
-%transfiletriggerpostun -P 2000000 -- /lib /usr/lib
+%transfiletriggerpostun -- /usr/share/info
 %update_info_dir
+
+%endif
 
 #---------------------------------------------------------------------------
 %files

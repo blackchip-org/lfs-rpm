@@ -7,7 +7,7 @@ rpm -qa $(grep -v '^#' /host/containers/lfs-pod/mkpod.pkg.txt) \
     > /tmp/pod.pkg.txt
 
 mkdir -p /rpmbuild/mkpod
-cp /host/build/rpms/stage{2,3}/x86_64/*.rpm /rpmbuild/mkpod
+cp /host/build/rpms/stage{2,3}/*/*.rpm /rpmbuild/mkpod
 
 mkdir -p /rpmbuild/pod/root
 for pkg in $(cat /tmp/pod.pkg.txt); do
