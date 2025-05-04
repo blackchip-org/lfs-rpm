@@ -270,6 +270,10 @@ make DESTDIR=%{buildroot} install
 /usr/sbin/zramctl
 /usr/share/bash-completion/completions/*
 
+%if !%{with lfs}
+/usr/sbin/sulogin
+%endif
+
 %files devel
 /usr/include/blkid/blkid.h
 /usr/include/libfdisk/libfdisk.h
