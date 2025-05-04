@@ -17,14 +17,11 @@ Source1:        %{name}.sha256
 
 BuildRequires:  perl
 
-%if !%{with lfs}
 Recommends:     %{name}-man  = %{version}
 
 %package man
 Summary:        Manual pages for %{name}
 BuildArch:      noarch
-
-%endif
 
 %description
 File::Which finds the full or relative paths to executable programs on the
@@ -45,11 +42,8 @@ If you need a portable which on the command line in an environment that does
 not provide it, install App::pwhich which provides a command line interface
 to this API.
 
-%if !%{with lfs}
 %description man
 Manual pages for %{name}
-
-%endif
 
 #---------------------------------------------------------------------------
 %prep

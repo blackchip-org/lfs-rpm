@@ -19,14 +19,11 @@ BuildArch:      noarch
 
 BuildRequires:  perl
 
-%if !%{with lfs}
 Recommends:     %{name}-man  = %{version}
 
 %package man
 Summary:        Manual pages for %{name}
 BuildArch:      noarch
-
-%endif
 
 %description
 File::HomeDir is a module for locating the directories that are "owned" by a
@@ -37,11 +34,8 @@ The end result is a single API that can find your resources on any platform,
 making it relatively trivial to create Perl software that works elegantly and
 correctly no matter where you run it.
 
-%if !%{with lfs}
 %description man
 Manual pages for %{name}
-
-%endif
 
 #---------------------------------------------------------------------------
 %prep

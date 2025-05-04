@@ -77,8 +77,8 @@ lfs-spectool() {
     rm -rf tmp/spectool
     mkdir -p tmp/spectool
 
-    rpmspec -P $1 > tmp/spectool/$name.spec
-    ./spectool -d "with_lfs_stage1 1" -d "lfs_version ${lfs_version}" -g -C downloads/$name tmp/spectool/$name.spec
+    rpmspec -D "with_lfs 1" -D "lfs_version ${lfs_version}" -P $1 > tmp/spectool/$name.spec
+    ./spectool -g -C downloads/$name tmp/spectool/$name.spec
     )
 }
 
@@ -311,7 +311,7 @@ lfs-clean() {
 lfs-dist-clean() {
     set -x
     lfs-clean
-    rm -rf build
+    rm -rf downloads
 }
 
 if ! [[ -x $(command -v rpmbuild) ]]; then
