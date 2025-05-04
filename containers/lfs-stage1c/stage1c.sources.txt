@@ -1,0 +1,8 @@
+sources/lfs-build
+sources/elfutils
+sources/rpm
+sources/bison
+sources/perl
+sources/python
+sources/texinfo
+sources/util-linux

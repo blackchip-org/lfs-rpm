@@ -1,0 +1,16 @@
+sources/cpio
+sources/libxml2
+sources/libsolv
+sources/json-c
+sources/toml11
+sources/fmt
+sources/zchunk
+sources/libpsl
+sources/curl
+sources/pcre2
+sources/glib
+sources/librepo
+sources/sqlite
+sources/swig
+sources/sdbus-c++
+sources/dnf

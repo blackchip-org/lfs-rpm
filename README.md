@@ -16,7 +16,7 @@ my Linux system and a chroot to build LFS, I wanted to use podman instead. And
 I wanted to use RPM infrastructure for building and installing the packages
 too. This repository holds the result of this work.
 
-This build creates a bootable system, using a virutal machine, where you can
+This build creates a bootable system, using a virtual machine, where you can
 get to a login prompt, login, and type in `echo "hello world!"`. Not much else
 has been tested beyond that. Additional testing and hacking is left to me as a
 fun exercise for a future rainy day activity. There is a chance that there are
@@ -38,6 +38,9 @@ To test the image in a virtual machine, install:
 
     sudo dnf install qemu-kvm virt-manager
 
+To continue onward after the initial LFS build, install createrepo:
+
+    sudo dnf install createrepo_c
 
 ### Ubuntu
 
@@ -65,14 +68,14 @@ booted with the following three steps:
 
 This downloads all the necessary source files and builds them using podman. This
 will take some time. Here are the timing results from my personal desktop with
-an Intel i7-7700 CPU, SSD hard drive, 16 GiB of memory, default podman
-configuration, and *make -j8*:
+an Intel i7-14700K CPU, SSD hard drive, 32 GiB of memory, default podman
+configuration, and *make -j28*:
 
 ```
-real	131m27.156s
+real	84m16.287s
 ```
 
-Once done, the root filesystem can be found at `build/stage2/lfs-stage2.tar.gz`
+Once done, the root filesystem can be found at `build/containers/lfs-stage2.tar.gz`
 and the kernel at `build/boot/vmlinuz`
 
 If the build fails for some reason, you can continue the build using the
@@ -177,8 +180,8 @@ example, to create a container for the first stage, use:
     ./lfs 1a init
 
 Contexts are found in the `containers` directory. Each context has a
-`<stage>.pkg.txt` file that contains a list of spec files to build relative
-to the repository root.
+`<stage>.pkg.txt` file that contains a list of source directories to build
+relative to the repository root.
 
 This command always attempts to remove the existing podman container. If work
 has already been done in a container, this work will be lost. It makes it easy
@@ -193,18 +196,16 @@ be reissued and it will skip packages that have already been installed. All
 RPMs during the LFS build are installed using the `--nodeps` flag. Automatic
 dependency handling will be used after the base system is setup.
 
-Temporary packages are built with the *-bb* flag to only build RPMs while the
-packages in stage2 are built with *-ba* to create RPMs and SRPMs. These
-can be found in the `build/<stage>/{rpms,srpms}` directories which are
-bind mounted in the containers at `/build/rpmbuild/{RPMS,SRPMS}`. All
-packages are built with the *x86_64* arch even if they qualify as a *noarch*
-package.
+Packages are built with the *-bb* flag to only build RPMs while the
+packages built after the initial OS install are built with *-ba* to create RPMs
+and SRPMs. These can be found in the `build/{rpms,srpms}` directories which are
+bind mounted in the containers at `/rpmbuild/{RPMS,SRPMS}`.
 
 ### `./lfs <stage> export`
 
 Once the build completes, issue this command to export the build results for
 use in the next stage. A tarball will be created in the build directory under
-`build/<stage>/lfs-<stage>.tar.gz` and in the container context for the
+`build/containers/lfs-<stage>.tar.gz` and in the container context for the
 next stage.
 
 ### `./lfs <stage> {start,stop}`
@@ -224,28 +225,29 @@ Login to the container as the unprivileged user lfs (using *shell*) or as the
 root user (using *root*). In stage1a and stage1b you can *sudo* to root as the
 lfs user but in stage1c and stage2 that command is not available and you must
 use the `./lfs <stage> root` command. The repository root is bind mounted at
-`/build/lfs-rpm` and the sources directory at `/build/rpmbuild/SOURCES`.
+`/host`.
 
-### `./lfs <stage> rpm [specfile...]`
+### `./lfs <stage> rpm [source_dir...]`
 
-Build a single RPM in *stage* using the given *specfile*. More then one
-specfile can be provided if necessary. If this RPM has already been installed,
-it will be rebuilt and reinstalled by replacing the older package. This command
-is useful during development when iterating on a specific package without
-needing to run *build*.
+Build a single RPM in *stage* using the given *source_dir* which contains an
+RPM spec file and any other files needed for the build. More then one
+source directory can be provided if necessary. If this RPM has already been
+installed, it will be rebuilt and reinstalled by replacing the older package.
+This command is useful during development when iterating on a specific package
+without needing to run *build*.
 
 By default, *%check* scriptlets are skipped when building RPMs. Prefix this
 command with `with_check=1` to run any provided tests. This shouldn't be
 done with the general build command as quite a few packages work fine with
 a few test failures.
 
-### `./lfs download [specfile...]`
+### `./lfs download [source_dir...]`
 
-Source files are downloaded during the build process if they have not already
+Upstream files are downloaded during the build process if they have not already
 been downloaded. This command is useful if you want to download all the
-packages upfront or if you need to download a specific package before building.
-If no specfiles are provided on the command line, all source packages will be
-downloaded.
+files upfront or if you need to download a specific package before building.
+If no source directories are provided on the command line, all upstream files
+will be downloaded.
 
 ### `./lfs env`
 
@@ -255,30 +257,29 @@ command shows you the current values of those variables. When debugging the
 current shell with `source ./lfs-env`. These variables can be overridden by
 placing changes in a `local-lfs.env` file. Variables of note:
 
+- `lfs_host_image`: The base podman image used in the *FROM* clause that is
+used in the containers for stage1a and stage1b.
 - `lfs_version`: Defines which version of LFS is being built. This is used in
 URLs for downloading LFS specific patches and in the dist variable for
 rpmbuild.
-- `lfs_host_image`: The base podman image used in the *FROM* clause that is
-used in the containers for stage1a and stage1b.
-- `lfs_nproc`: Number of parallel make processes to use when building. This
-is usually set to the number of processors on your machine.
 - `lfs_root_size`: Size to use for the root partition filesystem image.
 
 ### `./lfs clean`
 
 This resets everything to start a build from scratch again. It deletes
-everything under the *build* directory except for the sources, all exports
-under *containers* and removes any podman images or containers.
+everything under the *build* directory except for upstream files that have
+been downloaded. All exports under *containers* are also removed along with
+any podman images or containers.
 
 ### `./lfs dist-clean`
 
-The same as `./lfs clean` but also removes the sources directory.
+The same as `./lfs clean` but also removes the downloads directory.
 
 ## RPM Notes
 
-In stage1a and stage1b, the *rpm* and *rpmbuild* commands provided by the
-Fedora image are used. Some macros are installed under
-`/usr/lib/rpm/macros.d/macros.lfs` to assist with the build:
+In stage1a and stage1b, a Fedora image is used to build the initial RPMs
+using the *rpm* and *rpmbuild* commands provided by that distribution.
+Fedora image are used. The following macros are added or adjusted:
 
 - `%dist`: Fedora uses a dist tag such as *fc41* and Red Hat Enterprise
 Linux uses dist tags such as *el9*. This build uses *lfs12_3*.
@@ -288,28 +289,9 @@ build and just adds clutter to the build. This setting is set to *none* to
 disable this feature.
 - `%debug_package`: Fedora also wants to generate debuginfo packages which
 we don't need. Set to *%{nil}* to disable.
-- `%make`: We use this macro in all the spec files when using the make
-command. This adds the *-j* flag which controls the number of parallel
-processes to use.
-- `%shlib`: This sets the permissions to 755 for shared library files.
-- `%use_lfs_tools`: This is used in stage1a and stage1b to add the LFS tools
-directory to the front of the search path to ensure those tools are used
-when available.
-- `%discard_docs`: When building the temporary toolset, it isn't necessary
-to keep any generated documentation. This macro removes those files and
-that helps keep the build images a bit smaller.
-- `%discard_locales%`: Also used when building the temporary toolset but
-for discarding additional locale files.
-- `%remove_info_dir`: When info documentation pages are generated, the
-`/usr/share/info/dir` file usually gets updated. This cannot be done at
-build or install time because multiple RPMs cannot "own" the same file.
-This macro deletes this file and then the following two macros are then used:
-- `%request_info_dir`: This macro should be placed in the `%post` scriptlet
-to place a request to regenerate the info dir file. Then use the following
-macro:
-- `%update_info_dir`: This macro should be placed in the `%posttrans` scriptlet
-to regenerate the info dir file. If multiple packages are installed that have
-info files, the actual regeneration only occurs once.
+- `%verify_sha256`: A file is found in each source directory that contains
+checksums of the upstream files which are used by this macro to verify that
+the contents are indeed correct.
 
 When using Fedora in stage1a and stage1b, there are two other macros
 provided in `/usr/lib/rpm/redhat/macros` that are changed. Sed scripts
@@ -321,24 +303,23 @@ and by setting this to zero, it removes a warning about not having a changelog.
 Fedora wants you to use when building packages but this causes a build
 failure somewhere. This is disabled to prevent this from happening.
 
-Another macro file, `/usr/lib/rpm/macros.d/macros.lfs-stage` is added with
+Other macro files, `/usr/lib/rpm/macros.d/macros.lfs-stage*` are added with
 stage specific information. It has a `%with_<stage> 1` macro used to
 identify if a specific stage is being used and `%with_stage1` to identify
 when in stage1. Quite a few packages need to be built twice, once as a
 temporary tool and once as the final package. The same specfile is used
 but differences in the builds are separated with conditionals using the
 `%with_stage1` macro. Some packages are built three or four times and use
-the additional *with* macros as necessary.
+the additional *with* macros as necessary. An overall `%with lfs` macro
+is used to identify if a build is being performed in any non-pod stage.
 
-The RPM database is used during the build to track which packages have been
-built and installed for that stage, not for packages which already exist on the
-system. When the container for stage1a is created, the contents of the existing
-RPM database are deleted. Subsequent stages do not keep the database between
-exports.
+A separate RPM database in `/var/lib/lfs-rpm`, is used during the Fedora stages
+to track which packages have been built and installed for that stage, not for
+packages which already exist on the system.
 
 ## Logs
 
-Logs can be found in *build/logs*. Those files are:
+Logs can be found in *logs*. Those files are:
 
 - `build.log`: Timestamp and record of when each package build is started
 and completed.
@@ -394,10 +375,10 @@ also a dnf repository available to the container. Subsequent builds can use
 
 ### `./pod build <packages.spec.txt>`
 
-This calls `./pod rpm` for each spec file found in *packages.spec.txt*. To
+This calls `./pod rpm` for each spec file found in *packages.sources.txt*. To
 rebuild all spec files up to stage 3 in the proper order, use:
 
-    ./pod build rebuild.spec.txt
+    ./pod build ./rebuild.sources.txt
 
 ### `./pod export <image.pkg.txt>`
 
@@ -439,6 +420,10 @@ account which has no password.
 I have subscribed to the LFS announcement mailing list and will try to keep this
 up-to-date as new versions of LFS are published. No guarantee on when that
 happens or even if I follow through with it.
+
+The shell scripts have grown organically over time and are now in need of
+some refactoring. Another rainy day exercise may be to convert these to a
+Python script.
 
 ## License
 

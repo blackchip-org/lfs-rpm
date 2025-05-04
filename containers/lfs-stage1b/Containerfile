@@ -2,7 +2,9 @@ FROM lfs-stage1a
 
 ADD  lfs-stage1a.tar.gz /lfs/
 
-COPY macros.lfs-stage   /usr/lib/rpm/macros.d/macros.lfs-stage
-COPY bashrc             /build/.bashrc
+COPY macros.lfs-stage   /etc/rpm/macros.lfs-stage
 
-RUN  chown 1000:1000 /build/.bashrc
+# TODO: Is this needed?
+# COPY bashrc             /build/.bashrc
+
+# RUN  chown 1000:1000 /build/.bashrc

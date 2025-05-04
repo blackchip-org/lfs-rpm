@@ -7,6 +7,9 @@ cd "$(dirname $0)"
 
 source ./pod-env
 
+rpmbuild_flags=""
+rpmspec_flags=(--define "dist ${pod_dist}")
+
 usage() {
     cat <<EOF
 
@@ -27,8 +30,8 @@ EOF
 
 pod-createrepo() {
     echo -n "creating repository... "
-    mkdir -p        build/pod/rpms/x86_64
-    createrepo_c -q build/pod/rpms/x86_64
+    mkdir -p        build/rpms/pod
+    createrepo_c -q build/rpms/pod
     echo "done."
 }
 
@@ -40,7 +43,7 @@ pod-init() {
     podman rmi --force lfs-pod  >/dev/null 2>&1  || true
     podman build \
         --tag       lfs-pod \
-        --volume    "$(pwd)/build/pod/rpms:/build/rpmbuild/RPMS:z" \
+        --volume    "$(pwd)/build/rpms/pod:/rpmbuild/RPMS:z" \
         containers/lfs-pod
 }
 
@@ -49,17 +52,27 @@ timestamp() {
 }
 
 pod-build() {
-    spec=$1
-    package=$(basename "$1" .spec)
+    source=$1
+    rebuild=$2
+    package="$(basename $source)"
+    spec="${package}.spec"
 
-    ./lfs download $spec
+    package_arch=$(rpmspec "${rpmspec_flags[@]}" -q --queryformat="%{ARCH}\n"  "$source/$spec" | head -1)
+    package_version=$(rpmspec "${rpmspec_flags[@]}" -q --queryformat="%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n" "$source/$spec" | head -1 | sed 's/.src//')
 
-    echo "pod:$package" > build/logs/last-started
-    echo "[$(timestamp)] start pod:$package" >> build/logs/build.log
-    echo -e "\n----- building pod:$spec"
+    if [ -z "$rebuild" ] && [ -e "build/rpms/pod/packages/$package/${package_arch}/${package_version}.rpm" ] ; then
+        echo "package already built: $package"
+        return
+    fi
 
-    mkdir -p        build/pod/srpms
-    mkdir -p        build/logs/pod/
+    ./lfs download $source
+
+    echo "pod:$package" > logs/last-started
+    echo "[$(timestamp)] start pod:$package" >> logs/build.log
+    echo -e "\n----- building pod:$package"
+
+    mkdir -p        build/srpms
+    mkdir -p        logs/pod
 
     pod-createrepo
     pod-create
@@ -71,22 +84,53 @@ pod-build() {
         --user root \
         lfs-pod \
         dnf builddep -y \
-        /build/lfs-rpm/$spec
+        /host/$source/$spec
+
+    rm -rf   "build/rpms/pod/packages/$package"
+    mkdir -p "build/rpms/pod/packages/$package"
 
     echo "building $package"
-    set -e -o pipefail
+
+    # make the sources directory by symlinking the needed parts
+    rm -rf build/sources
+    mkdir -p build/sources
+    ( cd build/sources && \
+        downloads=$(ls ../../downloads/$package)
+        for download in $downloads; do
+            ln -s ../../downloads/${package}/$download .
+        done
+        sources=$(ls ../../sources/$package)
+        for source in $sources; do
+            ln -s ../../sources/${package}/${source} .
+        done
+    )
+
+    ( set -e -x -o pipefail
     podman exec \
         lfs-pod \
-        rpmbuild -ba --nocheck \
-            --define "_sourcedir /build/rpmbuild/SOURCES/$package" \
-            lfs-rpm/$1 | \
-            tee build/logs/pod/${package}.log
+        rpmbuild \
+            -ba --nocheck \
+            --define "_topdir /rpmbuild" \
+            --define "_sourcedir /host/build/sources" \
+            --define "_rpmdir /rpmbuild/RPMS/packages/$package" \
+            $rpmbuild_flags \
+            /host/$source/$spec | \
+            tee logs/pod/${package}.log
+    )
 
-    echo "pod:$package" > build/logs/last-success
-    echo "[$(timestamp)] done  pod:$package" >> build/logs/build.log
+    echo "pod:$package" > logs/last-success
+    echo "[$(timestamp)] done  pod:$package" >> logs/build.log
 
     echo "building repository"
-    createrepo_c build/pod/rpms/x86_64
+    createrepo_c build/rpms/pod
+
+    echo "ensuring package can be installed"
+    # Ensure the newly built package can be installed
+    podman exec --user root \
+        lfs-pod \
+        dnf install -y "$package" | \
+    tee --append "logs/pod/${package}.log"
+
 }
 
 pod-export() {
@@ -103,11 +147,12 @@ pod-export() {
 
     podman exec --user root lfs-pod \
         dnf install -y $packages
-    image="build/pod/lfs-pod.tar.gz"
+    image="build/containers/lfs-pod.tar.gz"
     echo -n "exporting ${image}... "
     podman exec --user root -t lfs-pod \
-        tar -C / -c -z -f /build/lfs-rpm/$image \
-            --exclude='./build' \
+        tar -C / -c -z -f /host/$image \
+            --exclude='./rpmbuild' \
+            --exclude='./host' \
             --exclude='./tmp/*' \
             --exclude './dev/*' \
             --exclude './proc/*' \
@@ -121,16 +166,16 @@ pod-create() {
 
     echo "creating container"
     bash -c "source ./pod-env ; env | grep -e '^pod_'" > eval-pod.env
+    mkdir -p build/images
 
     podman create \
         --name      lfs-pod \
         --hostname  lfs-pod \
         --env-file  eval-pod.env \
         --userns    keep-id \
-        --volume    "./build/sources:/build/rpmbuild/SOURCES:z" \
-        --volume    "./build/pod/rpms:/build/rpmbuild/RPMS:z" \
-        --volume    "./build/pod/srpms:/build/rpmbuild/SRPMS:z" \
-        --volume    .:/build/lfs-rpm:z \
+        --volume    "./build/rpms/pod:/rpmbuild/RPMS:z" \
+        --volume    "./build/srpms:/rpmbuild/SRPMS:z" \
+        --volume    .:/host:z \
         lfs-pod
     podman start lfs-pod
 }
@@ -152,13 +197,10 @@ case $1 in
         ;;
     build)
         shift
-        echo "" >> build/logs/build.log
-        specs=$(grep -v -e '^#' $1)
-        for arg in $specs; do
-            package_version=$(rpmspec -qv $arg | head -1 | sed 's/.src//')
-            if [ ! -e "build/pod/rpms/x86_64/${package_version}${pod_dist}.${pod_arch}.rpm" ] ; then
-                pod-build $arg
-            fi
+        echo "" >> logs/build.log
+        sources=$(grep -v -e '^#' $1)
+        for arg in $sources; do
+            pod-build $arg
         done
         ;;
     export)
@@ -167,8 +209,8 @@ case $1 in
         ;;
     rpm)
         shift
-        for arg in $@ ; do
-            pod-build $arg
+        for arg in "$@" ; do
+            pod-build $arg "rebuild"
         done
         ;;
     shell)

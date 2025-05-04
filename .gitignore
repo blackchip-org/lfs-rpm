@@ -1,4 +1,7 @@
 build
+downloads
+logs
+tmp
 *.log
 *.tar.gz
 *~

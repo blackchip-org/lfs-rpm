@@ -1,0 +1,22 @@
+%lfs_vendor         %{getenv:lfs_vendor}
+%lfs_version        %{getenv:lfs_version}
+
+%_build_id_links    none
+%debug_package      %{nil}
+
+%with_lfs           1
+%lfs_tgt            %{getenv:lfs_tgt}
+
+%verify_sha256(f:)  ( cd %_sourcedir && sha256sum -c %{-f*} )
+
+# The brp-elfperms script is in the os_install_post by default but seems to be
+# removing execute bits on shared libraries. Remove it for now/
+# https://github.com/rpm-software-management/rpm/issues/2496
+%__os_install_post    \
+    %{?__brp_compress} \
+    %{?__brp_strip} \
+    %{?__brp_strip_static_archive} \
+    %{?__brp_strip_comment_note} \
+    %{?__brp_remove_la_files} \
+    /usr/lib/rpm/brp-lfs-build
+

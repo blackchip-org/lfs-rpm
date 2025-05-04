@@ -1,5 +1,6 @@
 # basic filesystem layout
 root-fs
+rpm-config
 
 # install required by Containerfile
 coreutils
@@ -31,6 +32,7 @@ libgpg-error
 libarchive
 expat
 lz4
+lua
 
 # required to solve package dependencies
 dnf
@@ -57,6 +59,7 @@ libffi
 # required by dnf at runtime
 elfutils
 file
+util-linux
 
 # required for general building operations
 binutils
@@ -65,6 +68,7 @@ findutils
 flex
 gawk
 gcc
+gettext
 grep
 gzip
 libxcrypt

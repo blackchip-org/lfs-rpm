@@ -1,20 +1,25 @@
+#!/bin/bash
+
 set -a
 
-lfs_host_image=fedora:41
-lfs_version=12.3
-lfs_nproc=$(nproc)
-lfs_arch=x86_64
-lfs_root_size=10G
-lfs_init_user=lfs
+export lfs_host_image=fedora:41
+export lfs_version=12.3
+export lfs_vendor=lfs
+export lfs_root_size=10G
+export lfs_init_user=${lfs_vendor}
 
-lfs_dir=/lfs
-lfs_tools_dir=${lfs_dir}/tools
-lfs_tgt=x86_64-lfs-linux-gnu
-lfs_root_img=build/lfs-${lfs_version}-root.img
-lfs_install_dir=/var/lib/libvirt/images
+export lfs_dir=/${lfs_vendor}
+export lfs_tools_dir=${lfs_dir}/tools
+export lfs_tgt=x86_64-${lfs_vendor}-linux-gnu
+export lfs_root_img=build/${lfs_vendor}-${lfs_version}-root.img
+export lfs_install_dir=/var/lib/libvirt/images
 
 lfs_version_1=$(echo $lfs_version | cut -f1 -d.)
-lfs_dist=.lfs$(echo $lfs_version | sed s/\\./_/)
+lfs_dist=.lfs${lfs_version//./_}
+
+#lfs_dist=.lfs$(echo $lfs_version | sed s/\\./_/)
+
+export lfs_version_1 lfs_dist
 
 if [ -e local-lfs.env ] ; then
     . ./local-lfs.env

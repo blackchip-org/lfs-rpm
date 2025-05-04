@@ -1,22 +1,24 @@
 #!/bin/bash -ex
 
-rm -rf /build/pod
-mkdir -p /build/pod
+rm -rf /rpmbuild/pod
+mkdir -p /rpmbuild/pod
 
-rpm -qa $(grep -v '^#' /build/lfs-rpm/containers/lfs-pod/mkpod.pkg.txt) \
+rpm -qa $(grep -v '^#' /host/containers/lfs-pod/mkpod.pkg.txt) \
     > /tmp/pod.pkg.txt
 
-mkdir -p /build/mkpod
-cp /build/lfs-rpm/build/stage{2,3}/rpms/x86_64/*.rpm /build/mkpod
+mkdir -p /rpmbuild/mkpod
+cp /host/build/rpms/stage{2,3}/*/*.rpm /rpmbuild/mkpod
 
-mkdir -p /build/pod/root
+mkdir -p /rpmbuild/pod/root
 for pkg in $(cat /tmp/pod.pkg.txt); do
-    ( cd /build/pod &&
-      rpm2cpio /build/mkpod/${pkg}.rpm | cpio -idmv && \
-      install -m 644 -t /build/pod/root \
-        /build/mkpod/${pkg}.rpm
+    ( cd /rpmbuild/pod &&
+      rpm2cpio /rpmbuild/mkpod/${pkg}.rpm | cpio -idmv && \
+      install -m 644 -t /rpmbuild/pod/root \
+        /rpmbuild/mkpod/${pkg}.rpm
     )
 done
 
-( cd /build/pod &&
-  tar zcf /build/lfs-rpm/containers/lfs-pod/lfs-mkpod.tar.gz . )
+( cd /rpmbuild/pod &&
+  tar zcf /host/containers/lfs-pod/lfs-mkpod.tar.gz . )
+
+rm -rf /rpmbuild/{pod,mkpod}
