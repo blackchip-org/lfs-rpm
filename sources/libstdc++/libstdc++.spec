@@ -2,7 +2,7 @@
 
 %global name          libstdc++
 %global source_name   gcc
-%global version       14.2.0
+%global version       15.2.0
 %global release       1
 
 #---------------------------------------------------------------------------

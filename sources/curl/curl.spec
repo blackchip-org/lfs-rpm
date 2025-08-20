@@ -1,7 +1,7 @@
 # dnf
 
 %global name            curl
-%global version         8.12.1
+%global version         8.15.0
 %global release         1
 
 #---------------------------------------------------------------------------

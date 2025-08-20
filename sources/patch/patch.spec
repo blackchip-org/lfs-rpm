@@ -1,7 +1,7 @@
 # lfs
 
 %global name            patch
-%global version         2.7.6
+%global version         2.8
 %global release         1
 
 #---------------------------------------------------------------------------

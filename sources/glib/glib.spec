@@ -1,8 +1,8 @@
 # dnf
 
 %global name            glib
-%global version_2       2.84
-%global version         %{version_2}.0
+%global version_2       2.85
+%global version         %{version_2}.3
 %global major_version   2.0
 %global release         1
 

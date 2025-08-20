@@ -1,7 +1,7 @@
 # lfs
 
 %global name            gperf
-%global version         3.1
+%global version         3.3
 %global release         1
 
 #---------------------------------------------------------------------------

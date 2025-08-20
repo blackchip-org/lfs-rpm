@@ -1,7 +1,7 @@
 # lfs
 
 %global name            ninja
-%global version         1.12.1
+%global version         1.13.1
 %global release         1
 
 #---------------------------------------------------------------------------

@@ -1,11 +1,11 @@
 # lfs
 
 %global name            gcc
-%global version         14.2.0
+%global version         15.2.0
 %global release         1
 
-%global glibc_version   2.40
-%global mpfr_version    4.2.1
+%global glibc_version   2.42
+%global mpfr_version    4.2.2
 %global gmp_version     6.3.0
 %global mpc_version     1.3.1
 
@@ -127,7 +127,6 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     --build=$(../config.guess)                     \
     --host=%{lfs_tgt}                              \
     --target=%{lfs_tgt}                            \
-    LDFLAGS_FOR_TARGET=-L$PWD/%{lfs_tgt}/libgcc    \
     --prefix=/usr                                  \
     --with-build-sysroot=%{lfs_dir}                \
     --enable-default-pie                           \
@@ -140,7 +139,8 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     --disable-libsanitizer                         \
     --disable-libssp                               \
     --disable-libvtv                               \
-    --enable-languages=c,c++
+    --enable-languages=c,c++                       \
+    LDFLAGS_FOR_TARGET=-L$PWD/%{lfs_tgt}/libgcc
 
 %else
 ../configure --prefix=/usr            \
@@ -205,14 +205,17 @@ make -k check
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/c++/%{version}
 %{lfs_dir}/usr/lib/*.{so*,a,spec}
+%{lfs_dir}/usr/lib/libstdc++.modules.json
 %{lfs_dir}/usr/lib/gcc
 %{lfs_dir}/usr/libexec/gcc
 %{lfs_dir}/usr/share/gcc-%{version}
+
 
 %elif %{with lfs}
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/c++/%{version}
 %{?lfs_dir}/usr/lib/*.{so*,a,spec,o}
+%{?lfs_dir}/usr/lib/libstdc++.modules.json
 %{?lfs_dir}/usr/lib/{bfd-plugins,cpp,gcc}
 %{?lfs_dir}/usr/share/gcc-%{version}
 %{?lfs_dir}/usr/share/gdb
@@ -289,6 +292,7 @@ make -k check
 /usr/lib/libstdc++.so*
 /usr/lib/libstdc++exp.a
 /usr/lib/libstdc++fs.a
+/usr/lib/libstdc++.modules.json
 /usr/lib/libsupc++.a
 /usr/lib/libtsan.a
 /usr/lib/libtsan.so*

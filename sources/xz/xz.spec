@@ -1,7 +1,7 @@
 # lfs
 
 %global name            xz
-%global version         5.6.4
+%global version         5.8.1
 %global release         1
 
 #---------------------------------------------------------------------------

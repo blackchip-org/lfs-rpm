@@ -2,7 +2,7 @@
 
 %global source_name     wheel
 %global name            python-%{source_name}
-%global version         0.45.1
+%global version         0.46.1
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -12,10 +12,12 @@ Release:        %{release}%{?dist}
 Summary:        Built-package format for Python
 License:        MIT
 
-Source:         https://pypi.org/packages/source/w/%{source_name}/%{source_name}-%{version}.tar.gz
+Source0:        https://pypi.org/packages/source/w/%{source_name}/%{source_name}-%{version}.tar.gz
+Source1:        %{name}.sha256
 
 BuildRequires:  python-devel
 BuildRequires:  python-flit-core
+BuildRequires:  python-packaging
 
 %description
 A built-package format for Python.
@@ -28,6 +30,7 @@ Python 3 version.
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q -n %{source_name}-%{version}
 
 #---------------------------------------------------------------------------
@@ -36,7 +39,7 @@ pip3 wheel -w dist --no-cache-dir --no-build-isolation --no-deps $PWD
 
 #---------------------------------------------------------------------------
 %install
-pip3 install --ignore-installed --root %{buildroot} --no-index --find-links=dist wheel
+pip3 install --ignore-installed --no-deps --root %{buildroot} --no-index --find-links=dist wheel
 
 #---------------------------------------------------------------------------
 %files

@@ -54,6 +54,7 @@ mkdir   json-c-build
 cd      json-c-build
 cmake   -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.9...3.12 \
         ..
 make %{?_smp_mflags}
 

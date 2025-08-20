@@ -1,7 +1,7 @@
 # lfs
 
 %global name            kbd
-%global version         2.7.1
+%global version         2.8.0
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -13,7 +13,7 @@ License:        GPLv2+
 
 Source0:        https://www.kernel.org/pub/linux/utils/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/kbd-%{version}-backspace-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_url_version}/kbd-%{version}-backspace-1.patch
 
 BuildRequires:  autoconf
 BuildRequires:  pkg-config

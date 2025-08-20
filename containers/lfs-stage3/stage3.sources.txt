@@ -9,6 +9,7 @@ sources/libpsl
 sources/curl
 sources/pcre2
 sources/glib
+sources/check
 sources/librepo
 sources/sqlite
 sources/swig

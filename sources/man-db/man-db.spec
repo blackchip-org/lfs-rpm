@@ -1,7 +1,7 @@
 # lfs
 
 %global name            man-db
-%global version         2.13.0
+%global version         2.13.1
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -20,6 +20,7 @@ BuildRequires:  libpipeline
 BuildRequires:  pkgconf
 BuildRequires:  systemd
 
+%if !%{with lfs}
 Recommends:     %{name}-doc  = %{version}
 Recommends:     %{name}-man  = %{version}
 
@@ -36,6 +37,8 @@ BuildArch:      noarch
 Summary:        Manual pages for %{name}
 BuildArch:      noarch
 
+%endif
+
 %description
 The man-db package includes five tools for browsing man-pages: man, whatis,
 apropos, manpath and lexgrog. man formats and displays manual pages. whatis
@@ -43,6 +46,7 @@ searches the manual page names. apropos searches the manual page names and
 descriptions. manpath determines search path for manual pages. lexgrog directly
 reads header information in manual pages.
 
+%if !%{with lfs}
 %description doc
 Documentation for %{name}
 
@@ -51,6 +55,8 @@ Language files for %{name}
 
 %description man
 Manual pages for %{name}
+
+%endif
 
 #---------------------------------------------------------------------------
 %prep
@@ -72,6 +78,7 @@ make %{?_smp_mflags}
 #---------------------------------------------------------------------------
 %install
 make DESTDIR=%{buildroot} install
+install -Dt %{buildroot}/usr/share/doc/%{name}-%{version} ABOUT-NLS COPYING ChangeLog* FAQ NEWS.md README.md
 
 #---------------------------------------------------------------------------
 %check
@@ -79,6 +86,16 @@ make check
 
 #---------------------------------------------------------------------------
 %files
+%if %{with lfs}
+/etc/*
+/usr/bin/*
+/usr/lib/%{name}/*.so*
+/usr/lib/systemd/system/*
+/usr/lib/tmpfiles.d/*
+/usr/libexec/%{name}
+/usr/sbin/*
+
+%else
 %config(noreplace) /etc/man_db.conf
 /usr/bin/apropos
 /usr/bin/catman
@@ -109,3 +126,5 @@ make check
 %files man
 /usr/share/man/it/man{1,5,8}/*.gz
 /usr/share/man/man{1,5,8}/*.gz
+
+%endif

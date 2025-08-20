@@ -1,7 +1,7 @@
 # lfs
 
 %global name            gzip
-%global version         1.13
+%global version         1.14
 %global release         1
 
 #---------------------------------------------------------------------------

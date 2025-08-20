@@ -77,7 +77,7 @@ lfs-spectool() {
     rm -rf tmp/spectool
     mkdir -p tmp/spectool
 
-    rpmspec -D "with_lfs 1" -D "lfs_version ${lfs_version}" -P $1 > tmp/spectool/$name.spec
+    rpmspec -D "with_lfs 1" -D "lfs_version ${lfs_version}" -D "lfs_url_version ${lfs_url_version}" -P $1 > tmp/spectool/$name.spec
     ./spectool -g -C downloads/$name tmp/spectool/$name.spec
     )
 }

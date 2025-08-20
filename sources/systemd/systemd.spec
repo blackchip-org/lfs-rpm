@@ -1,7 +1,7 @@
 # lfs
 
 %global name        systemd
-%global version     257.3
+%global version     257.8
 %global release     1
 
 #---------------------------------------------------------------------------

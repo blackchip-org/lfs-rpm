@@ -1,7 +1,7 @@
 # lfs
 
 %global name            m4
-%global version         1.4.19
+%global version         1.4.20
 %global release         1
 
 #---------------------------------------------------------------------------

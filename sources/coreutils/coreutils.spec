@@ -1,7 +1,7 @@
 # lfs
 
 %global name            coreutils
-%global version         9.6
+%global version         9.7
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -13,7 +13,7 @@ License:        GPLv3+
 
 Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/%{name}-%{version}-i18n-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_url_version}/%{name}-%{version}-i18n-1.patch
 
 BuildRequires:  autoconf
 BuildRequires:  automake

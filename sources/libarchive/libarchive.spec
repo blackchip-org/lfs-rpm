@@ -1,7 +1,7 @@
 # rpm
 
 %global name        libarchive
-%global version     3.7.7
+%global version     3.8.1
 %global release     1
 
 #---------------------------------------------------------------------------

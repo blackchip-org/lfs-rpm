@@ -13,7 +13,7 @@ License:        BSD
 
 Source0:        https://www.sourceware.org/pub/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/bzip2-%{version}-install_docs-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_url_version}/bzip2-%{version}-install_docs-1.patch
 
 %if !%{with lfs}
 Recommends:     %{name}-doc  = %{version}

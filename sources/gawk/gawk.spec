@@ -1,7 +1,7 @@
 # lfs
 
 %global name            gawk
-%global version         5.3.1
+%global version         5.3.2
 %global release         1
 
 #---------------------------------------------------------------------------

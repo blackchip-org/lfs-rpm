@@ -1,7 +1,7 @@
 # lfs
 
 %global name            vim
-%global version         9.1.1166
+%global version         9.1.1629
 %global version_2       91
 %global release         1
 

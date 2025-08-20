@@ -1,7 +1,7 @@
 # lfs
 
 %global name            mpfr
-%global version         4.2.1
+%global version         4.2.2
 %global release         1
 
 #---------------------------------------------------------------------------

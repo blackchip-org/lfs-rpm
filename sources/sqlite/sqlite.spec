@@ -2,8 +2,8 @@
 # Python test fails with 3.49
 
 %global name            sqlite
-%global version         3.48.0
-%global file_version    3480000
+%global version         3.50.4
+%global file_version    3500400
 %global year            2025
 %global release         1
 

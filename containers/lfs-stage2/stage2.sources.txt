@@ -50,6 +50,7 @@ sources/elfutils
 sources/libffi
 sources/python
 sources/python-flit-core
+sources/python-packaging
 sources/python-wheel
 sources/python-setuptools
 sources/ninja

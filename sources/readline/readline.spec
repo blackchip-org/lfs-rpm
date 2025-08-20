@@ -1,7 +1,7 @@
 # lfs
 
 %global name            readline
-%global version         8.2.13
+%global version         8.3
 %global release         1
 
 #---------------------------------------------------------------------------

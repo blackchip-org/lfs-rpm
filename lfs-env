@@ -2,8 +2,9 @@
 
 set -a
 
-export lfs_host_image=fedora:41
-export lfs_version=12.3
+export lfs_host_image=fedora:42
+export lfs_version=12.4~rc1
+export lfs_url_version=12.4-rc1
 export lfs_vendor=lfs
 export lfs_root_size=10G
 export lfs_init_user=${lfs_vendor}
@@ -16,8 +17,6 @@ export lfs_install_dir=/var/lib/libvirt/images
 
 lfs_version_1=$(echo $lfs_version | cut -f1 -d.)
 lfs_dist=.lfs${lfs_version//./_}
-
-#lfs_dist=.lfs$(echo $lfs_version | sed s/\\./_/)
 
 export lfs_version_1 lfs_dist
 

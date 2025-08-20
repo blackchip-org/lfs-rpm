@@ -1,7 +1,7 @@
 # lfs
 
 %global name            e2fsprogs
-%global version         1.47.2
+%global version         1.47.3
 %global release         1
 
 #---------------------------------------------------------------------------

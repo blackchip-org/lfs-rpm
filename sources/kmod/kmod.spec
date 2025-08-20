@@ -1,7 +1,7 @@
 # lfs
 
 %global name            kmod
-%global version         34
+%global version         34.2
 %global release         1
 
 #---------------------------------------------------------------------------

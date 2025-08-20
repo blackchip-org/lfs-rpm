@@ -2,7 +2,7 @@
 
 %global source_name     flit_core
 %global name            python-flit-core
-%global version         3.11.0
+%global version         3.12.0
 %global release         1
 
 #---------------------------------------------------------------------------

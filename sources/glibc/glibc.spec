@@ -1,7 +1,7 @@
 # lfs
 
 %global name            glibc
-%global version         2.41
+%global version         2.42
 %global release         1
 %global enable_kernel   5.4
 
@@ -18,7 +18,7 @@ Source2:        ld.so.conf
 Source3:        nsswitch.conf
 
 %if !%{with %lfs_stage1}
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/%{name}-%{version}-fhs-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_url_version}/%{name}-%{version}-fhs-1.patch
 %endif
 
 BuildRequires:  bison
@@ -93,17 +93,16 @@ echo "rootsbindir=/usr/sbin" > configparms
 ../configure --prefix=/usr                         \
              --host=%{lfs_tgt}                     \
              --build=$(../scripts/config.guess)    \
-             --enable-kernel=%{enable_kernel}      \
-             --with-headers=%{lfs_dir}/usr/include \
              --disable-nscd                        \
-             libc_cv_slibdir=/usr/lib
-
+              libc_cv_slibdir=/usr/lib             \
+             --enable-kernel=%{enable_kernel}
 %else
 ../configure --prefix=/usr                            \
              --disable-werror                         \
-             --enable-kernel=%{enable_kernel}         \
+             --disable-nscd                           \
+             libc_cv_slibdir=/usr/lib                 \
              --enable-stack-protector=strong          \
-             libc_cv_slibdir=/usr/lib
+             --enable-kernel=%{enable_kernel}
 
 %endif
 make %{?_smp_mflags}

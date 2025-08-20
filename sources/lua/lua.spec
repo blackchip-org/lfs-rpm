@@ -14,7 +14,7 @@ License:       MIT
 
 Source0:       http://www.lua.org/ftp/%{name}-%{version}.tar.gz
 Source1:       %{name}.sha256
-Patch0:        https://www.linuxfromscratch.org/patches/blfs/%{lfs_version}/lua-%{version}-shared_library-1.patch
+Patch0:        https://www.linuxfromscratch.org/patches/blfs/12.3/lua-%{version}-shared_library-1.patch
 
 BuildRequires: readline-devel
 
@@ -133,7 +133,8 @@ install -D -m 644 lua.pc %{buildroot}/%{?lfs_dir}/usr/lib/pkgconfig/lua.pc
 %if %{with lfs}
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/*.{h,hpp}
-%{?lfs_dir}/usr/lib/*
+%{?lfs_dir}/usr/lib/*.{so*,a}
+%{?lfs_dir}/usr/lib/rpm/macros.d/macros.lua
 %{?lfs_dir}/usr/lib/pkgconfig/*
 
 %else

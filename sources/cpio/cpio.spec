@@ -13,6 +13,7 @@ License:        GPLv3+
 
 Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
+Patch0:         0001-Fix-c23-conformity.patch
 
 %if !%{with lfs}
 Recommends:     %{name}-info = %{version}
@@ -61,6 +62,7 @@ Manual pages for %{name}
 %prep
 %verify_sha256 -f %{SOURCE1}
 %setup -q
+%patch 0 -p1
 
 #---------------------------------------------------------------------------
 %build

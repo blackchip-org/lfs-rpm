@@ -2,7 +2,7 @@
 
 %global source_name     setuptools
 %global name            python-%{source_name}
-%global version         75.8.1
+%global version         80.9.0
 %global release         1
 
 #---------------------------------------------------------------------------

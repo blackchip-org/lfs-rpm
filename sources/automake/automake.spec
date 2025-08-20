@@ -1,8 +1,8 @@
 # lfs
 
 %global name            automake
-%global version_2       1.16
-%global version         %{version_2}.5
+%global version_2       1.18
+%global version         %{version_2}.1
 %global release         1
 
 #---------------------------------------------------------------------------

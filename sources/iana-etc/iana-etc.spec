@@ -1,7 +1,7 @@
 # lfs
 
 %global name            iana-etc
-%global version         20250123
+%global version         20250807
 %global release         1
 
 #---------------------------------------------------------------------------

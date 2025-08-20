@@ -1,7 +1,7 @@
 # lfs
 
 %global name            meson
-%global version         1.7.0
+%global version         1.8.3
 %global release         1
 
 #---------------------------------------------------------------------------

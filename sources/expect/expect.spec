@@ -13,7 +13,7 @@ License:        Public Domain
 
 Source0:        https://prdownloads.sourceforge.net/%{name}/%{name}%{version}.tar.gz
 Source1:        %{name}.sha256
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/expect-%{version}-gcc14-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_url_version}/expect-%{version}-gcc15-1.patch
 
 BuildRequires:  tcl-devel
 

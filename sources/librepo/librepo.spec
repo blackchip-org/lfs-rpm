@@ -1,7 +1,7 @@
 # dnf
 
 %global name            librepo
-%global version         1.19.0
+%global version         1.20.0
 %global release         1
 
 #---------------------------------------------------------------------------

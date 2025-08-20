@@ -3,7 +3,7 @@
 %global name            python
 %global source_name     Python
 %global python_version  3.13
-%global version         %{python_version}.2
+%global version         %{python_version}.7
 %global release         1
 
 #---------------------------------------------------------------------------

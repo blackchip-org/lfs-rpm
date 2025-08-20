@@ -1,7 +1,7 @@
 # lfs
 
 %global name            elfutils
-%global version         0.192
+%global version         0.193
 %global release         1
 
 #---------------------------------------------------------------------------

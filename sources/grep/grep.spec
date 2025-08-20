@@ -1,7 +1,7 @@
 # lfs
 
 %global name            grep
-%global version         3.11
+%global version         3.12
 %global release         1
 
 #---------------------------------------------------------------------------
