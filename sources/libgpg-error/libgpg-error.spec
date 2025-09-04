@@ -1,7 +1,7 @@
 # rpm
 
 %global name            libgpg-error
-%global version         1.51
+%global version         1.55
 %global release         1
 
 #---------------------------------------------------------------------------

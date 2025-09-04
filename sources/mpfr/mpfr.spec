@@ -1,7 +1,7 @@
 # lfs
 
 %global name            mpfr
-%global version         4.2.1
+%global version         4.2.2
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        A C library for multiple-precision floating-point computations
 License:        LGPLv3+ or GPLv2+
 
-Source0:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{version}.tar.xz
+Source0:        https://ftpmirror.gnu.org/gnu/mpfr/mpfr-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 BuildRequires:  autoconf

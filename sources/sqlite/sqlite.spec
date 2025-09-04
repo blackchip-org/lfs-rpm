@@ -1,9 +1,8 @@
 # dnf
-# Python test fails with 3.49
 
 %global name            sqlite
-%global version         3.48.0
-%global file_version    3480000
+%global version         3.50.4
+%global file_version    3500400
 %global year            2025
 %global release         1
 
@@ -16,6 +15,8 @@ License:        Public Domain
 
 Source0:        https://www.sqlite.org/%{year}/%{name}-autoconf-%{file_version}.tar.gz
 Source1:        %{name}.sha256
+
+Provides:       libsqlite3.so()(64bit)
 
 %if !%{with lfs}
 Recommends:     %{name}-man  = %{version}
@@ -83,10 +84,10 @@ rm %{buildroot}/usr/lib/libsqlite3.a
 %else
 /usr/bin/sqlite3
 /usr/lib/libsqlite3.so.*
+/usr/lib/libsqlite3.so
 
 %files devel
 /usr/include/sqlite3*
-/usr/lib/libsqlite3.so
 /usr/lib/pkgconfig/sqlite3.pc
 
 %files man

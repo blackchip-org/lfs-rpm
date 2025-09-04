@@ -1,7 +1,7 @@
 # lfs
 
 %global name            openssl
-%global version         3.4.1
+%global version         3.5.2
 %global release         1
 
 #---------------------------------------------------------------------------

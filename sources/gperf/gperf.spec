@@ -1,7 +1,7 @@
 # lfs
 
 %global name            gperf
-%global version         3.1
+%global version         3.3
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        GNU gperf is a perfect hash function generator
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}

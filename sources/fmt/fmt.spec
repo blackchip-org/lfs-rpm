@@ -1,7 +1,7 @@
 # lfs
 
 %global name            fmt
-%global version         11.1.4
+%global version         11.2.0
 %global release         1
 
 #---------------------------------------------------------------------------

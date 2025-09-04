@@ -3,7 +3,7 @@
 %global name            python
 %global source_name     Python
 %global python_version  3.13
-%global version         %{python_version}.2
+%global version         %{python_version}.7
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -19,8 +19,6 @@ Source1:        %{name}.sha256
 BuildRequires:  expat-devel
 BuildRequires:  openssl-devel
 BuildRequires:  readline-devel
-# Python test fails with 3.49
-BuildRequires:  sqlite-devel = 3.48.0
 
 %if !%{with lfs}
 Recommends:     %{name}-man  = %{version}

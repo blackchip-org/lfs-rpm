@@ -52,7 +52,7 @@ Manual pages for %{name}
 
 #---------------------------------------------------------------------------
 %build
-CC=gcc ./configure --prefix=/usr -G -O3 -r
+CC='gcc -std=c99' ./configure --prefix=/usr -G -O3 -r
 make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------

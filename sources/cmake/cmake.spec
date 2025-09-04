@@ -1,8 +1,8 @@
 # rpm
 
 %global name            cmake
-%global version_2       3.31
-%global version         %{version_2}.6
+%global version_2       4.1
+%global version         %{version_2}.0
 %global release         1
 
 #---------------------------------------------------------------------------

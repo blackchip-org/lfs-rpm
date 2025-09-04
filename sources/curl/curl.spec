@@ -1,7 +1,7 @@
 # dnf
 
 %global name            curl
-%global version         8.12.1
+%global version         8.15.0
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -87,6 +87,7 @@ rm %{buildroot}/usr/lib/libcurl.a
 %else
 /usr/bin/curl
 /usr/bin/curl-config
+/usr/bin/wcurl
 /usr/lib/libcurl.so.*
 
 %files devel

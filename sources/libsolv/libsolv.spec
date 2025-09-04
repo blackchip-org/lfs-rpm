@@ -1,7 +1,7 @@
 # dnf
 
 %global name            libsolv
-%global version         0.7.31
+%global version         0.7.35
 %global release         1
 
 # TODO: Have cmake define this macro

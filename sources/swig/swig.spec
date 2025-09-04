@@ -1,7 +1,7 @@
 # dnf
 
 %global name            swig
-%global version         4.3.0
+%global version         4.3.1
 %global release         1
 
 #---------------------------------------------------------------------------

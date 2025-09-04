@@ -1,7 +1,10 @@
 # lfs
 
 %global name            ncurses
-%global version         6.5
+%global version_date    20250809
+%global version         6.5.%{version_date}
+%global version_url     6.5-%{version_date}
+
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -11,7 +14,7 @@ Release:        %{release}%{?dist}
 Summary:        Ncurses support utilities
 License:        MIT
 
-Source0:        https://invisible-mirror.net/archives/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://invisible-mirror.net/archives/%{name}/current/%{name}-%{version_url}.tgz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}
@@ -56,18 +59,17 @@ Manual pages for %{name}
 #---------------------------------------------------------------------------
 %prep
 %verify_sha256 -f %{SOURCE1}
-%setup -q
+%setup -q -n %{name}-%{version_url}
 
 #---------------------------------------------------------------------------
 %build
 %if %{with lfs_stage1}
-sed -i s/mawk// configure
-
 mkdir build
 pushd build
-  ../configure
+  ../configure --prefix=%{lfs_tools_dir} AWK=gawk
   make -C include
   make -C progs tic
+  install -Dt %{buildroot}/%{lfs_tools_dir}/bin progs/tic
 popd
 
 ./configure --prefix=/usr                \
@@ -80,8 +82,8 @@ popd
             --with-cxx-shared            \
             --without-debug              \
             --without-ada                \
-            --disable-stripping
-
+            --disable-stripping          \
+            AWK=gawk
 %else
 ./configure --prefix=/usr           \
             --mandir=/usr/share/man \
@@ -98,8 +100,10 @@ make %{?_smp_mflags}
 #---------------------------------------------------------------------------
 %install
 %if %{with lfs_stage1}
-make DESTDIR=%{buildroot}/%{lfs_dir} TIC_PATH=$(pwd)/build/progs/tic install
-echo "INPUT(-lncursesw)" > %{buildroot}/%{lfs_dir}/usr/lib/libncurses.so
+make DESTDIR=%{buildroot}/%{lfs_dir} install
+ln -sv libncursesw.so %{buildroot}/%{lfs_dir}/usr/lib/libncurses.so
+sed -e 's/^#if.*XOPEN.*$/#if 1/' \
+    -i %{buildroot}/%{lfs_dir}/usr/include/curses.h
 
 %else
 make DESTDIR=%{buildroot} install

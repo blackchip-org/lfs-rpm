@@ -1,7 +1,7 @@
 # lfs
 
 %global name            m4
-%global version         1.4.19
+%global version         1.4.20
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        GNU macro processor
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}

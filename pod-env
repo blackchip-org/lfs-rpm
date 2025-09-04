@@ -1,6 +1,6 @@
 set -a
 
-pod_dist=.pod12_3
+pod_dist=.pod12_4
 pod_arch=x86_64
 
 if [ -e local-pod.env ] ; then

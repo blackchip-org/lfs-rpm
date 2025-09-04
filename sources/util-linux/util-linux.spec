@@ -1,8 +1,8 @@
 # lfs
 
 %global name            util-linux
-%global version_2       2.40
-%global version         %{version_2}.4
+%global version_2       2.41
+%global version         %{version_2}.1
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -100,7 +100,7 @@ mkdir -pv %{buildroot}/var/lib/hwclock
 
 %else
 sed -i '/test_mkfds/s/^/#/' tests/helpers/Makemodule.am
-
+autoreconf -f
 ./configure ADJTIME_PATH=/var/lib/hwclock/adjtime \
             --bindir=/usr/bin    \
             --libdir=/usr/lib    \
@@ -133,7 +133,7 @@ make DESTDIR=%{buildroot} install
 /usr/bin/*
 /usr/include/{blkid,libfdisk,libmount,libsmartcols,uuid}
 /usr/lib/lib*.{so*,a}
-/usr/lib/{pkgconfig,tmpfiles.d}/*
+/usr/lib/{pkgconfig,tmpfiles.d,sysusers.d}/*
 /usr/sbin/*
 /usr/share/bash-completion/completions/*
 %if %{with lfs_stage2}
@@ -141,6 +141,7 @@ make DESTDIR=%{buildroot} install
 %endif
 
 %else
+/usr/bin/bits
 /usr/bin/cal
 /usr/bin/chmem
 /usr/bin/choom
@@ -149,6 +150,7 @@ make DESTDIR=%{buildroot} install
 /usr/bin/colcrt
 /usr/bin/colrm
 /usr/bin/column
+/usr/bin/coresched
 /usr/bin/dmesg
 /usr/bin/eject
 /usr/bin/enosys
@@ -227,6 +229,7 @@ make DESTDIR=%{buildroot} install
 /usr/lib/systemd/system/fstrim.timer
 /usr/lib/systemd/system/uuidd.service
 /usr/lib/systemd/system/uuidd.socket
+/usr/lib/sysusers.d/uuidd-sysusers.conf
 /usr/lib/tmpfiles.d/uuidd-tmpfiles.conf
 /usr/sbin/addpart
 /usr/sbin/agetty

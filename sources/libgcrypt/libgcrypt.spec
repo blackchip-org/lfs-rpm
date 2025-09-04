@@ -1,7 +1,7 @@
 # rpm
 
 %global name            libgcrypt
-%global version         1.11.0
+%global version         1.11.2
 %global release         1
 
 #---------------------------------------------------------------------------

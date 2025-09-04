@@ -1,7 +1,7 @@
 # lfs
 
 %global name        libxcrypt
-%global version     4.4.36
+%global version     4.4.38
 %global release     1
 
 #---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 # lfs
 
 %global name            pkgconf
-%global version         2.4.3
+%global version         2.5.1
 %global release         1
 
 #---------------------------------------------------------------------------

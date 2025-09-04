@@ -1,7 +1,7 @@
 # lfs
 
 %global name            shadow
-%global version         4.17.3
+%global version         4.18.0
 %global release         1
 
 #---------------------------------------------------------------------------

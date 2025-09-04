@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        C library for multiple precision complex arithmetic
 License:        LGPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 BuildRequires:  autoconf

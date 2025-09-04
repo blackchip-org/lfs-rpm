@@ -2,9 +2,9 @@
 
 %global name            perl
 %global major_name      perl5
-%global perl_version    5.40
-%global version         %{perl_version}.1
-%global smash_version   5.00401
+%global perl_version    5.42
+%global version         %{perl_version}.0
+%global smash_version   5.00420
 %global release         1
 
 #---------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 %global source_name     jinja2
 %global camel_name      Jinja2
 %global name            python-%{camel_name}
-%global version         3.1.5
+%global version         3.1.6
 %global release         1
 
 #---------------------------------------------------------------------------

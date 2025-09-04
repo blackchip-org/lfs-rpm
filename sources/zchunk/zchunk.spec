@@ -1,7 +1,7 @@
 # dnf
 
 %global name            zchunk
-%global version         1.5.1
+%global version         1.5.2
 %global release         1
 
 #---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 # lfs
 
 %global name            diffutils
-%global version         3.11
+%global version         3.12
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        A GNU collection of diff utilities
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}
@@ -67,6 +67,7 @@ Manual pages for %{name}
 %if %{with lfs_stage1}
 ./configure --prefix=/usr     \
             --host=%{lfs_tgt} \
+            gl_cv_func_strcasecmp_works=y \
             --build=$(./build-aux/config.guess)
 
 %else

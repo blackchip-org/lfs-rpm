@@ -3,7 +3,7 @@
 %global name            dbus
 %global major_name      dbus-1
 %global major_name_2    %{major_name}.0
-%global version         1.16.0
+%global version         1.16.2
 %global release         1
 
 #---------------------------------------------------------------------------

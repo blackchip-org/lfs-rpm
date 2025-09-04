@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        A GNU arbitrary precision library
 License:        LGPLv3+ or GPLv2+
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 BuildRequires:  texinfo
@@ -73,6 +73,7 @@ Static libraries for %{name}
 
 #---------------------------------------------------------------------------
 %build
+sed -i '/long long t1;/,+1s/()/(...)/' configure
 %if %{with lfs}
 ./configure --prefix=/usr    \
             --enable-cxx     \

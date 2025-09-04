@@ -1,7 +1,7 @@
 # lfs
 
 %global name            binutils
-%global version         2.44
+%global version         2.45
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -86,7 +86,7 @@ cd          build
 make %{?_smp_mflags}
 
 %elif %{with lfs_stage1b}
-sed '6009s/$add_dir//' -i ../ltmain.sh
+sed '6031s/$add_dir//' -i ../ltmain.sh
 ../configure --prefix=/usr              \
              --build=$(../config.guess) \
              --host=%{lfs_tgt}          \
@@ -102,14 +102,13 @@ make %{?_smp_mflags}
 %else
 ../configure --prefix=/usr       \
              --sysconfdir=/etc   \
-             --enable-gold       \
              --enable-ld=default \
              --enable-plugins    \
              --enable-shared     \
              --disable-werror    \
              --enable-64-bit-bfd \
-             --with-system-zlib  \
              --enable-new-dtags  \
+             --with-system-zlib  \
              --enable-default-hash-style=gnu
 make %{?_smp_mflags} tooldir=/usr
 

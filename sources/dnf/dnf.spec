@@ -1,7 +1,7 @@
 # dnf
 
 %global name            dnf
-%global version         5.2.11.0
+%global version         5.2.16.0
 %global release         1
 
 #---------------------------------------------------------------------------

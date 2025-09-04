@@ -1,8 +1,8 @@
 # dnf
 
 %global name            libxml2
-%global version_2       2.13
-%global version         %{version_2}.6
+%global version_2       2.14
+%global version         %{version_2}.5
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -82,7 +82,6 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 /usr/bin/*
 /usr/include/%{name}
 /usr/lib/python%{python_version}/site-packages/*
-/usr/share/aclocal/*
 /usr/lib/cmake/*
 /usr/lib/lib*.so*
 /usr/lib/pkgconfig/*
@@ -96,7 +95,6 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 
 %files devel
 /usr/include/%{name}
-/usr/share/aclocal/libxml.m4
 /usr/lib/cmake/%{name}
 /usr/lib/libxml2.so
 /usr/lib/pkgconfig/libxml-2.0.pc

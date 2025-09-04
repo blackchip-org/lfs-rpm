@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        Groff formatting system
 License:        GPLv3+ and GFDL and BSD and MIT
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 BuildRequires:  perl

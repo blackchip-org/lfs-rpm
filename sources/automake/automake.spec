@@ -1,8 +1,8 @@
 # lfs
 
 %global name            automake
-%global version_2       1.16
-%global version         %{version_2}.5
+%global version_2       1.18
+%global version         %{version_2}.1
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -12,7 +12,7 @@ Release:        1%{?dist}
 Summary:        A GNU tool for automatically creating Makefiles
 License:        GPLv2+ and GFDL and Public Domain and MIT
 
-Source0:        https://ftp.gnu.org/gnu/automake/%{name}-%{version}.tar.xz
+Source0:        https://ftpmirror.gnu.org/gnu/automake/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 BuildRequires:  autoconf >= 2.65

@@ -1,7 +1,7 @@
 # lfs
 
 %global name            libffi
-%global version         3.4.7
+%global version         3.5.2
 %global release         1
 
 #---------------------------------------------------------------------------

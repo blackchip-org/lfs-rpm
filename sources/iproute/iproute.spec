@@ -2,7 +2,7 @@
 
 %global name            iproute
 %global major_name      %{name}2
-%global version         6.13.0
+%global version         6.16.0
 %global release         1
 
 #---------------------------------------------------------------------------

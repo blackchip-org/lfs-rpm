@@ -1,11 +1,11 @@
 # lfs
 
 %global name            gcc
-%global version         14.2.0
+%global version         15.2.0
 %global release         1
 
-%global glibc_version   2.40
-%global mpfr_version    4.2.1
+%global glibc_version   2.42
+%global mpfr_version    4.2.2
 %global gmp_version     6.3.0
 %global mpc_version     1.3.1
 
@@ -16,13 +16,13 @@ Release:        %{release}%{?dist}
 Summary:        Various compilers (C, C++, Objective-C, ...)
 License:        GPLv3+ and GPLv3+ with ewith-glibc-verxceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}/%{name}-%{version}.tar.xz
+Source:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 %if %{with lfs}
-Source2:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
-Source3:        https://ftp.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
-Source4:        https://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
+Source2:        https://ftpmirror.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
+Source3:        https://ftpmirror.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
+Source4:        https://ftpmirror.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
 
 %else
 BuildRequires:  gmp-devel
@@ -127,7 +127,6 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     --build=$(../config.guess)                     \
     --host=%{lfs_tgt}                              \
     --target=%{lfs_tgt}                            \
-    LDFLAGS_FOR_TARGET=-L$PWD/%{lfs_tgt}/libgcc    \
     --prefix=/usr                                  \
     --with-build-sysroot=%{lfs_dir}                \
     --enable-default-pie                           \
@@ -140,7 +139,8 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
     --disable-libsanitizer                         \
     --disable-libssp                               \
     --disable-libvtv                               \
-    --enable-languages=c,c++
+    --enable-languages=c,c++                       \
+    LDFLAGS_FOR_TARGET=-L$PWD/%{lfs_tgt}/libgcc
 
 %else
 ../configure --prefix=/usr            \
@@ -205,14 +205,17 @@ make -k check
 %{lfs_dir}/usr/bin/*
 %{lfs_dir}/usr/include/c++/%{version}
 %{lfs_dir}/usr/lib/*.{so*,a,spec}
+%{lfs_dir}/usr/lib/libstdc++.modules.json
 %{lfs_dir}/usr/lib/gcc
 %{lfs_dir}/usr/libexec/gcc
 %{lfs_dir}/usr/share/gcc-%{version}
+
 
 %elif %{with lfs}
 %{?lfs_dir}/usr/bin/*
 %{?lfs_dir}/usr/include/c++/%{version}
 %{?lfs_dir}/usr/lib/*.{so*,a,spec,o}
+%{?lfs_dir}/usr/lib/libstdc++.modules.json
 %{?lfs_dir}/usr/lib/{bfd-plugins,cpp,gcc}
 %{?lfs_dir}/usr/share/gcc-%{version}
 %{?lfs_dir}/usr/share/gdb
@@ -289,13 +292,14 @@ make -k check
 /usr/lib/libstdc++.so*
 /usr/lib/libstdc++exp.a
 /usr/lib/libstdc++fs.a
+/usr/lib/libstdc++.modules.json
 /usr/lib/libsupc++.a
 /usr/lib/libtsan.a
 /usr/lib/libtsan.so*
 /usr/lib/libtsan_preinit.o
 /usr/lib/libubsan.a
 /usr/lib/libubsan.so*
-/usr/share/gdb/auto-load/usr/lib/libstdc++.so.6.0.33-gdb.py
+/usr/share/gdb/auto-load/usr/lib/libstdc++.so.*-gdb.py
 
 %files info
 /usr/share/info/*.gz

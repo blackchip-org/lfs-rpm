@@ -1,7 +1,7 @@
 # lfs
 
 %global name        bash
-%global version     5.2.37
+%global version     5.3
 %global release     1
 
 #---------------------------------------------------------------------------
@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        The GNU Bourne Again shell
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 Provides:       /bin/sh
@@ -81,8 +81,7 @@ Manual pages for %{name}
 ./configure --prefix=/usr                      \
             --build=$(sh support/config.guess) \
             --host=%{lfs_tgt}                  \
-            --without-bash-malloc              \
-            bash_cv_strtold_broken=no
+            --without-bash-malloc
 
 %else
 ./configure --prefix=/usr             \

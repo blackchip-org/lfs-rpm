@@ -1,7 +1,7 @@
 # lfs
 
 %global name            glibc
-%global version         2.41
+%global version         2.42
 %global release         1
 %global enable_kernel   5.4
 
@@ -12,13 +12,13 @@ Release:        %{release}%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
 
-Source0:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 Source2:        ld.so.conf
 Source3:        nsswitch.conf
 
 %if !%{with %lfs_stage1}
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_version}/%{name}-%{version}-fhs-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_url_version}/%{name}-%{version}-fhs-1.patch
 %endif
 
 BuildRequires:  bison
@@ -93,17 +93,16 @@ echo "rootsbindir=/usr/sbin" > configparms
 ../configure --prefix=/usr                         \
              --host=%{lfs_tgt}                     \
              --build=$(../scripts/config.guess)    \
-             --enable-kernel=%{enable_kernel}      \
-             --with-headers=%{lfs_dir}/usr/include \
              --disable-nscd                        \
-             libc_cv_slibdir=/usr/lib
-
+              libc_cv_slibdir=/usr/lib             \
+             --enable-kernel=%{enable_kernel}
 %else
 ../configure --prefix=/usr                            \
              --disable-werror                         \
-             --enable-kernel=%{enable_kernel}         \
+             --disable-nscd                           \
+             libc_cv_slibdir=/usr/lib                 \
              --enable-stack-protector=strong          \
-             libc_cv_slibdir=/usr/lib
+             --enable-kernel=%{enable_kernel}
 
 %endif
 make %{?_smp_mflags}
@@ -133,11 +132,6 @@ sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 make DESTDIR=%{buildroot} install
 
 sed         '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/usr/bin/ldd
-cp -v       ../nscd/nscd.conf %{buildroot}/etc/nscd.conf
-mkdir -pv   %{buildroot}/var/cache/nscd
-
-install -v -Dm644 ../nscd/nscd.tmpfiles %{buildroot}/usr/lib/tmpfiles.d/nscd.conf
-install -v -Dm644 ../nscd/nscd.service %{buildroot}/usr/lib/systemd/system/nscd.service
 
 install -d -m 755 %{buildroot}/etc/ld.so.conf.d
 install -d -m 755 %{buildroot}/etc/ld.so.conf.d
@@ -180,7 +174,6 @@ make check
 /etc/ld.so.cache
 /etc/ld.so.conf
 %dir /etc/ld.so.conf.d
-/etc/nscd.conf
 /etc/nsswitch.conf
 /etc/rpc
 /lib64/ld-linux-x86-64.so.*
@@ -233,12 +226,9 @@ make check
 %ghost /usr/lib/locale/locale-archive
 /usr/lib/rcrt1.o
 /usr/lib/{audit,gconv}
-/usr/lib/systemd/system/nscd.service
-/usr/lib/tmpfiles.d/nscd.conf
 /usr/libexec/getconf
 /usr/sbin/iconvconfig
 /usr/sbin/ldconfig
-/usr/sbin/nscd
 /usr/sbin/sln
 /usr/sbin/zic
 /usr/share/i18n/charmaps

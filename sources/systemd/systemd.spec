@@ -1,7 +1,7 @@
 # lfs
 
 %global name        systemd
-%global version     257.3
+%global version     257.8
 %global release     1
 
 #---------------------------------------------------------------------------
@@ -246,7 +246,6 @@ systemctl preset-all
 /usr/lib/libnss_systemd.so.2
 /usr/lib/libsystemd.so.*
 /usr/lib/libudev.so.*
-/usr/lib/kernel/uki.conf
 /usr/lib/modprobe.d/README
 /usr/lib/modprobe.d/systemd.conf
 /usr/lib/sysctl.d/50-coredump.conf
