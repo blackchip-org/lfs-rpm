@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        A front end for testing other programs
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 BuildRequires:  texinfo

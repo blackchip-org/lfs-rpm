@@ -147,7 +147,7 @@ make DESTDIR=%{buildroot}/%{?lfs_dir} install
 /usr/share/doc/%{name}-%{version}
 
 %files man
-/usr/share/man/{de,fr,ko,pt_BR,ro,uk}/man*/*.gz
+/usr/share/man/*/man*/*.gz
 /usr/share/man/man*/*.gz
 
 %files static

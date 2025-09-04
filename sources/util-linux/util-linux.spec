@@ -141,6 +141,7 @@ make DESTDIR=%{buildroot} install
 %endif
 
 %else
+/usr/bin/bits
 /usr/bin/cal
 /usr/bin/chmem
 /usr/bin/choom
@@ -149,6 +150,7 @@ make DESTDIR=%{buildroot} install
 /usr/bin/colcrt
 /usr/bin/colrm
 /usr/bin/column
+/usr/bin/coresched
 /usr/bin/dmesg
 /usr/bin/eject
 /usr/bin/enosys

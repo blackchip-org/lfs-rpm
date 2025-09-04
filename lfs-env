@@ -3,8 +3,8 @@
 set -a
 
 export lfs_host_image=fedora:42
-export lfs_version=12.4~rc1
-export lfs_url_version=12.4-rc1
+export lfs_version=12.4
+export lfs_url_version=12.4
 export lfs_vendor=lfs
 export lfs_root_size=10G
 export lfs_init_user=${lfs_vendor}

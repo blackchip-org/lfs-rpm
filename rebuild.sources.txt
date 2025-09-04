@@ -63,6 +63,7 @@ sources/psmisc
 sources/sqlite
 sources/python
 sources/python-flit-core
+sources/python-packaging
 sources/python-wheel
 sources/python-setuptools
 sources/python-MarkupSafe

@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        The GNU data compression program
 License:        GPLv3+ and GFDL
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 BuildRequires:  less

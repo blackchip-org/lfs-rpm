@@ -12,7 +12,7 @@ Release:        %{release}%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
 
-Source0:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 Source2:        ld.so.conf
 Source3:        nsswitch.conf
@@ -132,11 +132,6 @@ sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 make DESTDIR=%{buildroot} install
 
 sed         '/RTLDLIST=/s@/usr@@g' -i %{buildroot}/usr/bin/ldd
-cp -v       ../nscd/nscd.conf %{buildroot}/etc/nscd.conf
-mkdir -pv   %{buildroot}/var/cache/nscd
-
-install -v -Dm644 ../nscd/nscd.tmpfiles %{buildroot}/usr/lib/tmpfiles.d/nscd.conf
-install -v -Dm644 ../nscd/nscd.service %{buildroot}/usr/lib/systemd/system/nscd.service
 
 install -d -m 755 %{buildroot}/etc/ld.so.conf.d
 install -d -m 755 %{buildroot}/etc/ld.so.conf.d
@@ -179,7 +174,6 @@ make check
 /etc/ld.so.cache
 /etc/ld.so.conf
 %dir /etc/ld.so.conf.d
-/etc/nscd.conf
 /etc/nsswitch.conf
 /etc/rpc
 /lib64/ld-linux-x86-64.so.*
@@ -232,12 +226,9 @@ make check
 %ghost /usr/lib/locale/locale-archive
 /usr/lib/rcrt1.o
 /usr/lib/{audit,gconv}
-/usr/lib/systemd/system/nscd.service
-/usr/lib/tmpfiles.d/nscd.conf
 /usr/libexec/getconf
 /usr/sbin/iconvconfig
 /usr/sbin/ldconfig
-/usr/sbin/nscd
 /usr/sbin/sln
 /usr/sbin/zic
 /usr/share/i18n/charmaps

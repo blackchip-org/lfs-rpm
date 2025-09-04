@@ -87,6 +87,7 @@ rm %{buildroot}/usr/lib/libcurl.a
 %else
 /usr/bin/curl
 /usr/bin/curl-config
+/usr/bin/wcurl
 /usr/lib/libcurl.so.*
 
 %files devel

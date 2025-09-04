@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        Copies files into or out of a cpio or tar archive
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 Patch0:         0001-Fix-c23-conformity.patch
 

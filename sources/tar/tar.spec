@@ -11,7 +11,7 @@ Release:        1%{?dist}
 Summary:        A GNU file archiving program
 License:        GPLv3+
 
-Source0:        https://ftp.gnu.org/gnu/tar/tar-%{version}.tar.xz
+Source0:        https://ftpmirror.gnu.org/gnu/tar/tar-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}

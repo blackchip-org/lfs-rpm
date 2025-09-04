@@ -19,8 +19,6 @@ Source1:        %{name}.sha256
 BuildRequires:  expat-devel
 BuildRequires:  openssl-devel
 BuildRequires:  readline-devel
-# Python test fails with 3.49
-BuildRequires:  sqlite-devel = 3.48.0
 
 %if !%{with lfs}
 Recommends:     %{name}-man  = %{version}

@@ -105,7 +105,6 @@ DESTDIR=%{buildroot} meson install -C _build
 /usr/lib/libgobject-%{major_version}.so.*
 /usr/lib/libgthread-%{major_version}.so.*
 /usr/libexec/gio-launch-desktop
-/usr/libexec/installed-tests/glib
 /usr/share/bash-completion/completions/gapplication
 /usr/share/bash-completion/completions/gdbus
 /usr/share/bash-completion/completions/gio

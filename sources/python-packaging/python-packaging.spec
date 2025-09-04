@@ -18,6 +18,7 @@ Source1:        %{name}.sha256
 BuildArch:      noarch
 
 BuildRequires:  python-devel
+BuildRequires:  python-flit-core
 
 %description
 This library provides utilities that implement the interoperability

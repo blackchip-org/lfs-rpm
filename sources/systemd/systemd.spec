@@ -246,7 +246,6 @@ systemctl preset-all
 /usr/lib/libnss_systemd.so.2
 /usr/lib/libsystemd.so.*
 /usr/lib/libudev.so.*
-/usr/lib/kernel/uki.conf
 /usr/lib/modprobe.d/README
 /usr/lib/modprobe.d/systemd.conf
 /usr/lib/sysctl.d/50-coredump.conf

@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        A GNU collection of diff utilities
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}

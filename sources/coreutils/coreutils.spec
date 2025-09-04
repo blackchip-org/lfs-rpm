@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        A set of basic GNU tools commonly used in shell scripts
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_url_version}/%{name}-%{version}-i18n-1.patch
 

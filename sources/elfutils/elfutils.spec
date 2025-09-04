@@ -14,6 +14,8 @@ License:        GPLv2+
 Source0:        https://sourceware.org/ftp/%{name}/%{version}/%{name}-%{version}.tar.bz2
 Source1:        %{name}.sha256
 
+BuildRequires:  pkgconf
+
 %if !%{with lfs}
 Recommends:     %{name}-man  = %{version}
 

@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        GNU libraries and utilities for producing multi-lingual messages
 License:        GPLv3+ and LGPLv2+
 
-Source0:        https://ftp.gnu.org/pub/gnu/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}
@@ -139,6 +139,8 @@ make check
 /usr/bin/msgunfmt
 /usr/bin/msguniq
 /usr/bin/ngettext
+/usr/bin/printf_gettext
+/usr/bin/printf_ngettext
 /usr/bin/recode-sr-latin
 /usr/bin/xgettext
 /usr/lib/gettext
@@ -160,17 +162,7 @@ make check
 /usr/lib/libgettextpo.so
 /usr/lib/libgettextsrc.so
 /usr/lib/libtextstyle.so
-/usr/share/aclocal/build-to-host.m4
-/usr/share/aclocal/gettext.m4
-/usr/share/aclocal/host-cpu-c-abi.m4
-/usr/share/aclocal/iconv.m4
-/usr/share/aclocal/intlmacosx.m4
-/usr/share/aclocal/lib-ld.m4
-/usr/share/aclocal/lib-link.m4
-/usr/share/aclocal/lib-prefix.m4
 /usr/share/aclocal/nls.m4
-/usr/share/aclocal/po.m4
-/usr/share/aclocal/progtest.m4
 
 %files doc
 /usr/share/doc/%{name}-%{version}

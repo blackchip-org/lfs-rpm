@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        A collection of common network programs
 License:        GPLv2+
 
-Source0:        https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}

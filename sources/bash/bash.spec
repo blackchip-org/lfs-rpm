@@ -11,7 +11,7 @@ Release:        %{release}%{?dist}
 Summary:        The GNU Bourne Again shell
 License:        GPLv3+
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
+Source:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 Provides:       /bin/sh

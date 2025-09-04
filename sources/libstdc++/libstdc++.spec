@@ -12,7 +12,7 @@ Release:        %{release}%{?dist}
 Summary:        C++ standard library
 License:        GPLv3+ and GPLv3+ with exceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 
-Source:         https://ftp.gnu.org/gnu/%{source_name}/%{source_name}-%{version}/%{source_name}-%{version}.tar.xz
+Source:         https://ftpmirror.gnu.org/gnu/%{source_name}/%{source_name}-%{version}/%{source_name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 %description

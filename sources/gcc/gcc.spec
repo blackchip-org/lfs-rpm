@@ -16,13 +16,13 @@ Release:        %{release}%{?dist}
 Summary:        Various compilers (C, C++, Objective-C, ...)
 License:        GPLv3+ and GPLv3+ with ewith-glibc-verxceptions and GPLv2+ with exceptions and LGPLv2+ and BSD
 
-Source:         https://ftp.gnu.org/gnu/%{name}/%{name}-%{version}/%{name}-%{version}.tar.xz
+Source:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 %if %{with lfs}
-Source2:        https://ftp.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
-Source3:        https://ftp.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
-Source4:        https://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
+Source2:        https://ftpmirror.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.xz
+Source3:        https://ftpmirror.gnu.org/gnu/gmp/gmp-%{gmp_version}.tar.xz
+Source4:        https://ftpmirror.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
 
 %else
 BuildRequires:  gmp-devel
@@ -299,7 +299,7 @@ make -k check
 /usr/lib/libtsan_preinit.o
 /usr/lib/libubsan.a
 /usr/lib/libubsan.so*
-/usr/share/gdb/auto-load/usr/lib/libstdc++.so.6.0.33-gdb.py
+/usr/share/gdb/auto-load/usr/lib/libstdc++.so.*-gdb.py
 
 %files info
 /usr/share/info/*.gz

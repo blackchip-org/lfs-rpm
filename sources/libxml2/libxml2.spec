@@ -95,7 +95,6 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 
 %files devel
 /usr/include/%{name}
-/usr/share/aclocal/libxml.m4
 /usr/lib/cmake/%{name}
 /usr/lib/libxml2.so
 /usr/lib/pkgconfig/libxml-2.0.pc

@@ -407,7 +407,7 @@ image with packages built with the podman build container:
 
     ./lfs 3 mkpod
     ./pod init
-    ./pod build rebuild.spec.txt
+    ./pod build rebuild.sources.txt
     ./pod export pod-image.pkg.txt
     ./lfs mkimage-pod
     ./lfs install
