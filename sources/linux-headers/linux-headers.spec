@@ -2,7 +2,7 @@
 
 %global name            linux-headers
 %global source_name     linux
-%global version         6.16.1
+%global version         6.18.10
 %global version_1       6
 %global release         1
 

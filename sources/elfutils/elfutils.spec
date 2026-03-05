@@ -1,7 +1,7 @@
 # lfs
 
 %global name            elfutils
-%global version         0.193
+%global version         0.194
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -70,14 +70,14 @@ Static libraries for %{name}
 ./configure --prefix=/usr                \
             --disable-debuginfod         \
             --enable-libdebuginfod=dummy
-make %{?_smp_mflags}
+make CFLAGS="-Wno-error=discarded-qualifiers" %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install
 make DESTDIR=%{buildroot} install
 install -d %{buildroot}/usr/lib/pkgconfig
 install -vm644 -t %{buildroot}/usr/lib/pkgconfig config/libelf.pc
-\
+
 %if %{with lfs}
 rm -rf %{buildroot}/usr/etc
 rm -rf %{buildroot}/usr/share

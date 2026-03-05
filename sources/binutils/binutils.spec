@@ -1,7 +1,7 @@
 # lfs
 
 %global name            binutils
-%global version         2.45
+%global version         2.46.0
 %global release         1
 
 #---------------------------------------------------------------------------

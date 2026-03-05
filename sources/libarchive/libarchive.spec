@@ -1,7 +1,7 @@
-# rpm
+# rpm - blfs
 
 %global name        libarchive
-%global version     3.8.1
+%global version     3.8.5
 %global release     1
 
 #---------------------------------------------------------------------------

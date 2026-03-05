@@ -1,7 +1,7 @@
 # lfs
 
 %global name        gettext
-%global version     0.26
+%global version     1.0
 %global release     1
 
 #---------------------------------------------------------------------------

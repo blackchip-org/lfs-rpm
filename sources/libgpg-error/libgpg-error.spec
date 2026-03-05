@@ -1,7 +1,7 @@
-# rpm
+# rpm - blfs
 
 %global name            libgpg-error
-%global version         1.55
+%global version         1.59
 %global release         1
 
 #---------------------------------------------------------------------------

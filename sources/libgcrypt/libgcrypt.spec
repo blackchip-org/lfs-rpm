@@ -1,7 +1,7 @@
-# rpm
+# rpm - blfs
 
 %global name            libgcrypt
-%global version         1.11.2
+%global version         1.12.0
 %global release         1
 
 #---------------------------------------------------------------------------

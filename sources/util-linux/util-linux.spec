@@ -2,7 +2,7 @@
 
 %global name            util-linux
 %global version_2       2.41
-%global version         %{version_2}.1
+%global version         %{version_2}.3
 %global release         1
 
 #---------------------------------------------------------------------------

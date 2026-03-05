@@ -1,7 +1,7 @@
 # lfs
 
 %global name            coreutils
-%global version         9.7
+%global version         9.10
 %global release         1
 
 #---------------------------------------------------------------------------

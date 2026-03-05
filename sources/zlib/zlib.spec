@@ -1,7 +1,7 @@
 # lfs
 
 %global name             zlib
-%global version          1.3.1
+%global version          1.3.2
 %global release          1
 
 #---------------------------------------------------------------------------
