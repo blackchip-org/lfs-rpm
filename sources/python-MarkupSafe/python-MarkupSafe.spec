@@ -3,7 +3,7 @@
 %global source_name     markupsafe
 %global camel_name      MarkupSafe
 %global name            python-%{camel_name}
-%global version         3.0.2
+%global version         3.0.3
 %global release         1
 
 #---------------------------------------------------------------------------

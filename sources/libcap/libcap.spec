@@ -1,7 +1,7 @@
 # lfs
 
 %global name            libcap
-%global version         2.76
+%global version         2.77
 %global revision        1
 
 #---------------------------------------------------------------------------

@@ -10,12 +10,14 @@ sources/lz4
 sources/zstd
 sources/file
 sources/readline
+sources/pcre2
 sources/m4
 sources/bc
 sources/flex
 sources/tcl
 sources/expect
 sources/dejagnu
+sources/pkgconf
 sources/binutils
 sources/gmp
 sources/mpfr
@@ -26,7 +28,6 @@ sources/libcap
 sources/libxcrypt
 sources/shadow
 sources/gcc
-sources/pkgconf
 sources/ncurses
 sources/sed
 sources/psmisc
@@ -57,7 +58,7 @@ sources/ninja
 sources/meson
 sources/kmod
 sources/coreutils
-sources/check
+#sources/check
 sources/diffutils
 sources/gawk
 sources/findutils

@@ -1,7 +1,7 @@
 # lfs
 
 %global name            procps-ng
-%global version         4.0.5
+%global version         4.0.6
 %global release         1
 
 #---------------------------------------------------------------------------

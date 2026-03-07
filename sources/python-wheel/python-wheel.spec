@@ -2,7 +2,7 @@
 
 %global source_name     wheel
 %global name            python-%{source_name}
-%global version         0.46.1
+%global version         0.46.3
 %global release         1
 
 #---------------------------------------------------------------------------

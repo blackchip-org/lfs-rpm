@@ -1,7 +1,7 @@
 # lfs
 
 %global name            man-pages
-%global version         6.12
+%global version         6.17
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -11,13 +11,15 @@ Release:        %{release}%{?dist}
 Summary:        Linux kernel and C library user-space interface documentation
 License:        GPL+ and GPLv2+ and BSD and MIT and Copyright only
 
-Source:         https://www.kernel.org/pub/linux/docs/man-pages/man-pages-%{version}.tar.xz
+Source0:        https://www.kernel.org/pub/linux/docs/man-pages/man-pages-%{version}.tar.xz
+Source1:        %{name}.sha256
 
 %description
 A large collection of manual pages from the Linux Documentation Project (LDP).
 
 #---------------------------------------------------------------------------
 %prep
+%verify_sha256 -f %{SOURCE1}
 %setup -q
 
 #---------------------------------------------------------------------------
@@ -26,7 +28,7 @@ rm -v man3/crypt*
 
 #---------------------------------------------------------------------------
 %install
-%make -R GIT=false prefix=/usr DESTDIR=%{buildroot} install
+make %{?_smp_mflags} -R GIT=false prefix=/usr DESTDIR=%{buildroot} install
 
 #---------------------------------------------------------------------------
 %files

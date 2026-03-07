@@ -1,7 +1,7 @@
 # lfs
 
 %global name            shadow
-%global version         4.18.0
+%global version         4.19.3
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -88,6 +88,7 @@ sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD YESCRYPT:' \
             --disable-static    \
             --with-{b,yes}crypt \
             --without-libbsd    \
+            --disable-logind    \
             --with-group-name-max-length=32
 
 %else

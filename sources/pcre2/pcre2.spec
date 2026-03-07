@@ -1,7 +1,7 @@
-# dnf
+# lfs
 
 %global name            pcre2
-%global version         10.45
+%global version         10.47
 %global release         1
 %global so_version      8
 
