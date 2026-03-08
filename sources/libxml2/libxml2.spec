@@ -1,8 +1,8 @@
-# dnf
+# dnf - blfs
 
 %global name            libxml2
-%global version_2       2.14
-%global version         %{version_2}.5
+%global version_2       2.15
+%global version         %{version_2}.1
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -81,7 +81,6 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 %if %{with lfs}
 /usr/bin/*
 /usr/include/%{name}
-/usr/lib/python%{python_version}/site-packages/*
 /usr/lib/cmake/*
 /usr/lib/lib*.so*
 /usr/lib/pkgconfig/*
@@ -90,7 +89,6 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 /usr/bin/xml2-config
 /usr/bin/xmlcatalog
 /usr/bin/xmllint
-/usr/lib/python%{python_version}/site-packages/*
 /usr/lib/libxml2.so.*
 
 %files devel

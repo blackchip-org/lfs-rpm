@@ -1,4 +1,4 @@
-# dnf
+# dnf - blfs
 
 %global name            json-c
 %global version         0.18

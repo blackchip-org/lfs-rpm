@@ -1,8 +1,10 @@
-# lfs
+# dnf
 
 %global name            check
 %global version         0.15.2
 %global release         1
+
+# https://github.com/libcheck/check
 
 #---------------------------------------------------------------------------
 Name:           %{name}

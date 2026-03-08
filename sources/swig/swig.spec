@@ -1,7 +1,7 @@
-# dnf
+# dnf - blfs
 
 %global name            swig
-%global version         4.3.1
+%global version         4.4.1
 %global release         1
 
 #---------------------------------------------------------------------------

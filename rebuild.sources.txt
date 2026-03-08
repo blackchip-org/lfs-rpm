@@ -103,5 +103,7 @@ sources/zlib
 sources/zstd
 sources/gzip
 sources/librepo
+sources/yaml-cpp
+sources/libpkgmanifest
 sources/dnf
 sources/linux

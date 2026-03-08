@@ -1,7 +1,7 @@
 # dnf
 
 %global name            curl
-%global version         8.15.0
+%global version         8.18.0
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -64,7 +64,7 @@ Static libraries for %{name}
 ./configure \
     --prefix=/usr \
     --with-openssl
-make
+make %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

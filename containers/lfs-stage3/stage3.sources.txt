@@ -7,11 +7,13 @@ sources/fmt
 sources/zchunk
 sources/libpsl
 sources/curl
-sources/pcre2
 sources/glib
 sources/check
 sources/librepo
 sources/sqlite
 sources/swig
 sources/sdbus-c++
+sources/yaml-cpp
+sources/libpkgmanifest
 sources/dnf
+sources/createrepo_c

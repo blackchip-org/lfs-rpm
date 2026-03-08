@@ -136,12 +136,15 @@ make check
 /usr/bin/msggrep
 /usr/bin/msginit
 /usr/bin/msgmerge
+/usr/bin/msgpre
 /usr/bin/msgunfmt
 /usr/bin/msguniq
 /usr/bin/ngettext
+/usr/bin/po-fetch
 /usr/bin/printf_gettext
 /usr/bin/printf_ngettext
 /usr/bin/recode-sr-latin
+/usr/bin/spit
 /usr/bin/xgettext
 /usr/lib/gettext
 /usr/lib/libasprintf.so.*

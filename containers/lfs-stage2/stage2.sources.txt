@@ -58,12 +58,10 @@ sources/ninja
 sources/meson
 sources/kmod
 sources/coreutils
-#sources/check
 sources/diffutils
 sources/gawk
 sources/findutils
 sources/groff
-#sources/grub
 sources/gzip
 sources/iproute
 sources/kbd
