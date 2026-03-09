@@ -10,6 +10,7 @@ ncurses
 openssl
 procps-ng
 psmisc
+python
 readline
 shadow
 util-linux

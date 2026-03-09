@@ -16,6 +16,8 @@ License:        MIT
 Source0:        https://github.com/jbeder/%{name}/archive/refs/tags/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
+BuildRequires:  cmake
+
 %if !%{with lfs}
 %package devel
 Summary:        Development files for %{name}

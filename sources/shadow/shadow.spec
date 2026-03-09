@@ -15,6 +15,7 @@ Source0:        https://github.com/shadow-maint/shadow/releases/download/%{versi
 Source1:        %{name}.sha256
 
 BuildRequires:  libxcrypt-devel
+BuildRequires:  systemd-devel
 
 %if !%{with lfs}
 Recommends:     %{name}-doc  = %{version}

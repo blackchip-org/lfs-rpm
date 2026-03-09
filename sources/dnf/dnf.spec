@@ -1,7 +1,7 @@
 # dnf
 
 %global name            dnf
-%global version         5.4.0.0
+%global version         5.2.16.0
 %global release         1
 
 # https://github.com/rpm-software-management/dnf5

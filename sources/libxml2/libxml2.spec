@@ -26,14 +26,6 @@ Recommends:     %{name}-man  = %{version}
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-%package doc
-Summary:        Documentation for %{name}
-BuildArch:      noarch
-
-%package man
-Summary:        Manual pages for %{name}
-BuildArch:      noarch
-
 %endif
 
 %description
@@ -48,12 +40,6 @@ language bindings make it available in other environments.
 %if !%{with lfs}
 %description devel
 Development files for %{name}
-
-%description doc
-Documentation for %{name}
-
-%description man
-Manual pages for %{name}
 
 %endif
 
@@ -96,13 +82,6 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 /usr/lib/cmake/%{name}
 /usr/lib/libxml2.so
 /usr/lib/pkgconfig/libxml-2.0.pc
-
-%files doc
-/usr/share/doc/%{name}
-/usr/share/gtk-doc/html/%{name}
-
-%files man
-/usr/share/man/man*/*
 
 %endif
 

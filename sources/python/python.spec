@@ -63,8 +63,8 @@ Manual pages for %{name}
 ./configure --prefix=/usr        \
             --enable-shared      \
             --with-system-expat  \
-            --enable-optimizations
-
+            --enable-optimizations \
+            --with-ensurepip=upgrade
 %endif
 make %{?_smp_mflags}
 
@@ -77,20 +77,28 @@ make DESTDIR=%{buildroot} install
 find %{buildroot} -type f -exec sed -i 's_/usr/local/bin/python_/usr/bin/python_g' {} \;
 
 # Add symlinks from unverisoned binaries to versioned (python -> python3)
-ln -s python3       %{buildroot}/usr/bin/python
-ln -s pyton3-config %{buildroot}/usr/bin/python-config
-ln -s pydoc3        %{buildroot}/usr/bin/pydoc
-ln -s pip3          %{buildroot}/usr/bin/pip
-ln -s idle3         %{buildroot}/usr/bin/idle
+#ln -s python3       %{buildroot}/usr/bin/python
+#ln -s pyton3-config %{buildroot}/usr/bin/python-config
+#ln -s pydoc3        %{buildroot}/usr/bin/pydoc
+#ln -s pip3          %{buildroot}/usr/bin/pip
+#ln -s idle3         %{buildroot}/usr/bin/idle
 
 mkdir -p %{buildroot}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.python
 @python_version %{python_version}
 EOF
 
+mkdir -p %{buildroot}/etc
+cat > %{buildroot}/etc/pip.conf << EOF
+[global]
+root-user-action = ignore
+disable-pip-version-check = true
+EOF
+
 #---------------------------------------------------------------------------
 %files
 %if %{with lfs}
+/etc/pip.conf
 /usr/bin/*
 /usr/include/python%{python_version}
 /usr/lib/*.so*
@@ -99,6 +107,7 @@ EOF
 /usr/lib/rpm/macros.d/macros.python
 
 %else
+/etc/pip.conf
 /usr/bin/{idle,idle3,idle%{python_version}}
 /usr/bin/{pip,pip3,pip%{python_version}}
 /usr/bin/{pydoc,pydoc3,pydoc%{python_version}}

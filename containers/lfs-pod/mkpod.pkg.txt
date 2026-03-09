@@ -57,7 +57,7 @@ openssl
 libffi
 libpkgmanifest
 yaml-cpp
-python
+# python
 
 # required by dnf at runtime
 elfutils

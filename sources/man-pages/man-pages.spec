@@ -33,10 +33,15 @@ make %{?_smp_mflags} -R GIT=false prefix=/usr DESTDIR=%{buildroot} install
 #---------------------------------------------------------------------------
 %files
 /usr/bin/diffman-git
+/usr/bin/grepc
+/usr/bin/grepc_c
+/usr/bin/grepc_mk
 /usr/bin/mansect
+/usr/bin/mansectf
 /usr/bin/pdfman
 /usr/bin/sortman
 /usr/share/man/man{1,2,3,4,5,6,7,8}/*
 /usr/share/man/man{2,3}type/*
 /usr/share/man/man{2,3}const/*
+/usr/share/man/man3attr/*
 /usr/share/man/man3head/*

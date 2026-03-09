@@ -16,8 +16,10 @@ License:        GPLv2+
 Source0:        https://github.com/rpm-software-management/%{name}/archive/refs/tags/v%{version}.tar.gz
 Source1:        %{name}.sha256
 
+BuildRequires:  cmake
+BuildRequires:  pkgconf
 BuildRequires:  python-devel
-BuildRequires:  yaml-cpp
+BuildRequires:  yaml-cpp-devel
 
 %if !%{with lfs}
 %package devel
@@ -88,7 +90,7 @@ make DESTDIR=%{buildroot} install
 /usr/lib/python%{python_version}/site-packages/%{name}-*.dist-info
 
 %else
-/usr/lib/lib%{name}.so.*
+/usr/lib/%{name}.so.*
 
 %files devel
 /usr/include/%{name}
