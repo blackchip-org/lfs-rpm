@@ -1,8 +1,8 @@
-# dnf
+# dnf - blfs
 
 %global name            glib
-%global version_2       2.85
-%global version         %{version_2}.3
+%global version_2       2.86
+%global version         %{version_2}.4
 %global major_version   2.0
 %global release         1
 

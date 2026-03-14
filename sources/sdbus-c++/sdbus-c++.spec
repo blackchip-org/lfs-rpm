@@ -2,8 +2,10 @@
 
 %global name            sdbus-c++
 %global source_name     sdbus-cpp
-%global version         2.1.0
+%global version         2.2.1
 %global release         1
+
+# https://github.com/Kistler-Group/sdbus-cpp
 
 #---------------------------------------------------------------------------
 Name:           %{name}

@@ -1,8 +1,8 @@
-# rpm
+# rpm - blfs
 
 %global name            lua
 %global lua_version     5.4
-%global version         %{lua_version}.7
+%global version         %{lua_version}.8
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -14,7 +14,7 @@ License:       MIT
 
 Source0:       http://www.lua.org/ftp/%{name}-%{version}.tar.gz
 Source1:       %{name}.sha256
-Patch0:        https://www.linuxfromscratch.org/patches/blfs/12.3/lua-%{version}-shared_library-1.patch
+Patch0:        https://www.linuxfromscratch.org/patches/blfs/%{lfs_version}-systemd/lua-%{version}-shared_library-1.patch
 
 BuildRequires: readline-devel
 

@@ -4,6 +4,8 @@
 %global version         5.2.16.0
 %global release         1
 
+# https://github.com/rpm-software-management/dnf5
+
 #---------------------------------------------------------------------------
 Name:           %{name}
 Version:        %{version}
@@ -20,6 +22,7 @@ BuildRequires:  cmake
 BuildRequires:  fmt-devel
 BuildRequires:  gettext
 BuildRequires:  json-c-devel
+BuildRequires:  libpkgmanifest
 BuildRequires:  librepo-devel
 BuildRequires:  libsolv-devel
 BuildRequires:  libxml2-devel

@@ -1,7 +1,7 @@
 # lfs
 
 %global name            binutils
-%global version         2.45
+%global version         2.46.0
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -186,12 +186,13 @@ make -k check
 /usr/bin/strip
 /usr/lib/bfd-plugins/*
 /usr/lib/gprofng
+/usr/bin/gprofng-gmon
 /usr/lib/ldscripts
-/usr/lib/libbfd-%{version}.so
+/usr/lib/libbfd-%{version}*.so
 /usr/lib/libctf-nobfd.so.*
 /usr/lib/libctf.so.*
 /usr/lib/libgprofng.so.*
-/usr/lib/libopcodes-%{version}.so
+/usr/lib/libopcodes-%{version}*.so
 /usr/lib/libsframe.so.*
 
 %files devel

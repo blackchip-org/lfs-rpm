@@ -1,17 +1,19 @@
-# lfs - blfs
+# dnf
 
-%global name            fmt
-%global version         12.1.0
-%global release         1
+%global name                yaml-cpp
+%global version             0.9.0
+%global release             1
+
+# https://github.com/jbeder/yaml-cpp
 
 #---------------------------------------------------------------------------
 Name:           %{name}
 Version:        %{version}
 Release:        %{release}%{?dist}
-Summary:        Fast and safe alternative to C stdio and C++ iostreams
-License:        {fmt}
+Summary:        https://github.com/jbeder/yaml-cpp
+License:        MIT
 
-Source0:        https://github.com/fmtlib/%{name}/archive/refs/tags/%{version}.tar.gz
+Source0:        https://github.com/jbeder/%{name}/archive/refs/tags/%{name}-%{version}.tar.gz
 Source1:        %{name}.sha256
 
 BuildRequires:  cmake
@@ -24,8 +26,7 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %endif
 
 %description
-{fmt} is an open-source formatting library providing a fast and safe
-alternative to C stdio and C++ iostreams.
+yaml-cpp is a YAML parser and emitter in C++ matching the YAML 1.2 spec.
 
 %if !%{with lfs}
 %description devel
@@ -36,16 +37,16 @@ Development files for %{name}
 #---------------------------------------------------------------------------
 %prep
 %verify_sha256 -f %{SOURCE1}
-%setup -q
+%setup -q -n %{name}-%{name}-%{version}
 
 #---------------------------------------------------------------------------
 %build
 mkdir build
 cd build
 cmake \
-    -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+    -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib \
-    -DBUILD_SHARED_LIBS=TRUE \
+    -DYAML_BUILD_SHARED_LIBS=on \
     ..
 make %{?_smp_mflags}
 
@@ -59,16 +60,15 @@ make DESTDIR=%{buildroot} install
 %if %{with lfs}
 /usr/include/%{name}
 /usr/lib/cmake/%{name}
-/usr/lib/lib*.so*
-/usr/lib/pkgconfig
+/usr/lib/lib%{name}.so*
+/usr/lib/pkgconfig/%{name}.pc
 
 %else
-/usr/lib/libfmt.so.*
+/usr/lib/lib%{name}.so*
 
 %files devel
 /usr/include/%{name}
 /usr/lib/cmake/%{name}
-/usr/lib/libfmt.so
 /usr/lib/pkgconfig/%{name}.pc
 
 %endif

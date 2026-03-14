@@ -1,7 +1,7 @@
 # lfs
 
 %global name            coreutils
-%global version         9.7
+%global version         9.10
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -109,7 +109,6 @@ sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 /usr/bin/basename
 /usr/bin/basenc
 /usr/bin/cat
-/usr/bin/chcon
 /usr/bin/chgrp
 /usr/bin/chmod
 /usr/bin/chown
@@ -167,7 +166,6 @@ sed -i 's/"1"/"8"/' %{buildroot}/usr/share/man/man8/chroot.8
 /usr/bin/realpath
 /usr/bin/rm
 /usr/bin/rmdir
-/usr/bin/runcon
 /usr/bin/seq
 /usr/bin/sha1sum
 /usr/bin/sha224sum

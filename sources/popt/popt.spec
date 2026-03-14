@@ -1,4 +1,4 @@
-# rpm
+# rpm - blfs
 
 %global name            popt
 %global version         1.19

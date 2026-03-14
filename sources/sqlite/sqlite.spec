@@ -1,9 +1,9 @@
 # dnf
 
 %global name            sqlite
-%global version         3.50.4
-%global file_version    3500400
-%global year            2025
+%global version         3.51.2
+%global file_version    3510200
+%global year            2026
 %global release         1
 
 #---------------------------------------------------------------------------

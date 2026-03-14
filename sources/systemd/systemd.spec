@@ -1,7 +1,7 @@
 # lfs
 
 %global name        systemd
-%global version     257.8
+%global version     259.1
 %global release     1
 
 #---------------------------------------------------------------------------
@@ -170,6 +170,7 @@ systemctl preset-all
 /etc/X11/xinit/xinitrc.d/50-systemd-user.sh
 /etc/init.d/README
 /etc/profile.d/70-systemd-shell-extra.sh
+/etc/profile.d/80-systemd-osc-context.sh
 %config(noreplace) /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
 %config(noreplace) /etc/systemd/coredump.conf
 %config(noreplace) /etc/systemd/journald.conf
@@ -219,9 +220,11 @@ systemctl preset-all
 /usr/bin/systemd-inhibit
 /usr/bin/systemd-machine-id-setup
 /usr/bin/systemd-mount
+/usr/bin/systemd-mute-console
 /usr/bin/systemd-notify
 /usr/bin/systemd-nspawn
 /usr/bin/systemd-path
+/usr/bin/systemd-pty-forward
 /usr/bin/systemd-repart
 /usr/bin/systemd-resolve
 /usr/bin/systemd-run
@@ -261,9 +264,7 @@ systemctl preset-all
 /usr/sbin/poweroff
 /usr/sbin/reboot
 /usr/sbin/resolvconf
-/usr/sbin/runlevel
 /usr/sbin/shutdown
-/usr/sbin/telinit
 /usr/share/bash-completion/completions/*
 /usr/share/dbus-1
 /usr/share/factory/etc/*
@@ -271,7 +272,7 @@ systemctl preset-all
 /usr/share/pkgconfig/systemd.pc
 /usr/share/pkgconfig/udev.pc
 /usr/share/polkit-1/actions/*
-/usr/share/polkit-1/rules.d/systemd-networkd.rules
+/usr/share/polkit-1/rules.d/*
 /usr/share/systemd/kbd-model-map
 /usr/share/systemd/language-fallback-map
 /usr/share/zsh/site-functions/*

@@ -1,7 +1,7 @@
 # lfs
 
 %global name        libxcrypt
-%global version     4.4.38
+%global version     4.5.2
 %global release     1
 
 #---------------------------------------------------------------------------
@@ -79,7 +79,7 @@ Manual pages for %{name}
             --enable-obsolete-api=no     \
             --disable-static             \
             --disable-failure-tokens
-make %{?_smp_mflags}
+make CFLAGS="-Wno-error=discarded-qualifiers" %{?_smp_mflags}
 
 #---------------------------------------------------------------------------
 %install

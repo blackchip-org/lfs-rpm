@@ -1,7 +1,7 @@
 # lfs
 
 %global name            expat
-%global version         2.7.1
+%global version         2.7.4
 %global release         1
 
 #---------------------------------------------------------------------------

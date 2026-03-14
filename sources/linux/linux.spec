@@ -1,7 +1,7 @@
 # lfs
 
 %global name            linux
-%global version         6.13.4
+%global version         6.18.10
 %global release         1
 
 #---------------------------------------------------------------------------

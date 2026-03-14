@@ -152,7 +152,8 @@ sed '/thread_header =/s/@.*@/gthr-posix.h/' \
              --disable-multilib       \
              --disable-bootstrap      \
              --disable-fixincludes    \
-             --with-system-zlib
+             --with-system-zlib       \
+             --disable-werror
 %endif
 make %{?_smp_mflags}
 

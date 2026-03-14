@@ -1,7 +1,7 @@
 # lfs
 
 %global name            glibc
-%global version         2.42
+%global version         2.43
 %global release         1
 %global enable_kernel   5.4
 
@@ -12,13 +12,13 @@ Release:        %{release}%{?dist}
 Summary:        The GNU libc libraries
 License:        LGPLv2+ and LGPLv2+ with exceptions and GPLv2+ and GPLv2+ with exceptions and BSD and Inner-Net and ISC and Public Domain and GFDL
 
-Source0:         https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
+Source0:        https://ftpmirror.gnu.org/gnu/%{name}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 Source2:        ld.so.conf
 Source3:        nsswitch.conf
 
 %if !%{with %lfs_stage1}
-Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_url_version}/%{name}-%{version}-fhs-1.patch
+Patch0:         https://www.linuxfromscratch.org/patches/lfs/%{lfs_url_version}/%{name}-fhs-1.patch
 %endif
 
 BuildRequires:  bison

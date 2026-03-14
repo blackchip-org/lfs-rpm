@@ -1,9 +1,8 @@
 # lfs
 
 %global name            ncurses
-%global version_date    20250809
-%global version         6.5.%{version_date}
-%global version_url     6.5-%{version_date}
+%global version         6.6
+%global version_url     6.6
 
 %global release         1
 
@@ -14,7 +13,7 @@ Release:        %{release}%{?dist}
 Summary:        Ncurses support utilities
 License:        MIT
 
-Source0:        https://invisible-mirror.net/archives/%{name}/current/%{name}-%{version_url}.tgz
+Source0:        https://invisible-mirror.net/archives/%{name}/%{name}-%{version_url}.tar.gz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}

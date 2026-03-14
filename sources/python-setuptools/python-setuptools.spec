@@ -2,7 +2,7 @@
 
 %global source_name     setuptools
 %global name            python-%{source_name}
-%global version         80.9.0
+%global version         82.0.0
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -49,4 +49,3 @@ pip3 install --ignore-installed --root %{buildroot} --no-index --find-links=dist
 /usr/lib/python%{python_version}/site-packages/setuptools
 /usr/lib/python%{python_version}/site-packages/_distutils_hack
 /usr/lib/python%{python_version}/site-packages/distutils-precedence.pth
-/usr/lib/python%{python_version}/site-packages/pkg_resources

@@ -1,7 +1,7 @@
 # lfs
 
 %global name            kbd
-%global version         2.8.0
+%global version         2.9.0
 %global release         1
 
 #---------------------------------------------------------------------------

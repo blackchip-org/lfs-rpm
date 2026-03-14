@@ -2,13 +2,13 @@
 
 %global name            tcl
 %global version_2       8.6
-%global version         %{version_2}.16
+%global version         %{version_2}.17
 %global release         1
 
-%global tdbc_version    1.1.10
-%global itcl_version    4.3.2
-%global sqlite_version  3.47.2
-%global thread_version  2.8.11
+%global tdbc_version    1.1.12
+%global itcl_version    4.3.4
+%global sqlite_version  3.50.4
+%global thread_version  2.8.12
 
 #---------------------------------------------------------------------------
 Name:           %{name}

@@ -4,6 +4,8 @@
 %global version         1.20.0
 %global release         1
 
+# https://github.com/rpm-software-management/librepo
+
 #---------------------------------------------------------------------------
 Name:           %{name}
 Version:        %{version}

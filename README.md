@@ -2,7 +2,7 @@
 
 A [Linux from Scratch](https://www.linuxfromscratch.org/) (LFS) build using
 [podman](https://podman.io/) and the [RPM](https://rpm.org/) package
-manager. These build steps follow LFS version 12.4-systemd.
+manager. These build steps follow LFS version 13.0-systemd.
 
 Before you read any further, have you built [Linux from
 Scratch](https://www.linuxfromscratch.org/) yourself? If not, I highly
@@ -72,7 +72,7 @@ an Intel i7-14700K CPU, SSD hard drive, 32 GiB of memory, default podman
 configuration, and *make -j28*:
 
 ```
-real	84m16.287s
+real	56m9.887s
 ```
 
 Once done, the root filesystem can be found at `build/containers/lfs-stage2.tar.gz`
@@ -87,7 +87,7 @@ the beginning which is usually what you don't want.
 The tarball now has to be converted to a filesystem image. This requires root
 privileges as it is necessary to temporarily mount the image to copy in the
 filesystem. Run this command and enter in your password if prompted. The root
-filesystem image will now be at `build/lfs-12.4-root.img`
+filesystem image will now be at `build/lfs-13.0-root.img`
 
 ### Run `./lfs install`
 
@@ -96,15 +96,15 @@ and the kernel. By default, it won't have access to files in your home
 directory. Running install will copy those files to */var/lib/libvirt/images*
 as:
 
-- `lfs-12.4-root.img`
-- `lfs-12.4-vmlinuz`
+- `lfs-13.0-root.img`
+- `lfs-13.0-vmlinuz`
 
 Now create a virtual machine using the following steps:
 
 - Start virt-manager
 - Select File -> New Virtual Machine
 - Select "Import existing disk image"
-- For "Provide the existing storage path" and select `lfs-12.4-root.img`
+- For "Provide the existing storage path" and select `lfs-13.0-root.img`
 - For "Choose the operating system your are installing", select "Generic Linux 2024"
 - Click on "Forward"
 - Adjust memory and CPUs as needed and click on "Forward"
@@ -113,7 +113,7 @@ Now create a virtual machine using the following steps:
 - Click on "Finish"
 - On the left sidebar, select "Boot Options" and then open "Direct kernel boot"
 - Click on "Enable direct kernel boot"
-- For "Kernel path" select `lfs-12.4-vmlinuz`
+- For "Kernel path" select `lfs-13.0-vmlinuz`
 - Leave "Initrd path" blank
 - For "Kernel args" enter in `root=/dev/vda rw`
 - Click on "Apply"
@@ -282,7 +282,7 @@ using the *rpm* and *rpmbuild* commands provided by that distribution.
 Fedora image are used. The following macros are added or adjusted:
 
 - `%dist`: Fedora uses a dist tag such as *fc41* and Red Hat Enterprise
-Linux uses dist tags such as *el9*. This build uses *lfs12_3*.
+Linux uses dist tags such as *el9*. This build uses *lfs13_0*.
 - `%_build_id_links`: By default, Fedora wants to generate files in
 `/usr/lib/.build-id` for debugging purposes. This isn't necessary for an LFS
 build and just adds clutter to the build. This setting is set to *none* to

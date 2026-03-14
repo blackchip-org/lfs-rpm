@@ -1,8 +1,8 @@
-# dnf
+# dnf - blfs
 
 %global name            libxml2
-%global version_2       2.14
-%global version         %{version_2}.5
+%global version_2       2.15
+%global version         %{version_2}.1
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -26,14 +26,6 @@ Recommends:     %{name}-man  = %{version}
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-%package doc
-Summary:        Documentation for %{name}
-BuildArch:      noarch
-
-%package man
-Summary:        Manual pages for %{name}
-BuildArch:      noarch
-
 %endif
 
 %description
@@ -48,12 +40,6 @@ language bindings make it available in other environments.
 %if !%{with lfs}
 %description devel
 Development files for %{name}
-
-%description doc
-Documentation for %{name}
-
-%description man
-Manual pages for %{name}
 
 %endif
 
@@ -81,7 +67,6 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 %if %{with lfs}
 /usr/bin/*
 /usr/include/%{name}
-/usr/lib/python%{python_version}/site-packages/*
 /usr/lib/cmake/*
 /usr/lib/lib*.so*
 /usr/lib/pkgconfig/*
@@ -90,7 +75,6 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 /usr/bin/xml2-config
 /usr/bin/xmlcatalog
 /usr/bin/xmllint
-/usr/lib/python%{python_version}/site-packages/*
 /usr/lib/libxml2.so.*
 
 %files devel
@@ -98,13 +82,6 @@ rm -rf %{buildroot}/usr/share/gtk-doc
 /usr/lib/cmake/%{name}
 /usr/lib/libxml2.so
 /usr/lib/pkgconfig/libxml-2.0.pc
-
-%files doc
-/usr/share/doc/%{name}
-/usr/share/gtk-doc/html/%{name}
-
-%files man
-/usr/share/man/man*/*
 
 %endif
 

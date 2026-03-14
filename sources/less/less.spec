@@ -1,7 +1,7 @@
 # lfs
 
 %global name        less
-%global version     679
+%global version     692
 %global release     1
 
 #---------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 %global source_name     packaging
 %global name            python-packaging
-%global version         25.0
+%global version         26.0
 %global release         1
 
 #---------------------------------------------------------------------------

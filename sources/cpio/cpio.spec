@@ -1,4 +1,4 @@
-# dnf
+# dnf - blfs
 
 %global name            cpio
 %global version         2.15

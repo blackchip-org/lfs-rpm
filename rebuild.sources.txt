@@ -79,9 +79,9 @@ sources/libxml2
 sources/libsolv
 sources/root-fs
 sources/sed
-sources/shadow
 sources/swig
 sources/systemd
+sources/shadow
 sources/dbus
 sources/rpm
 sources/sdbus-c++
@@ -103,5 +103,7 @@ sources/zlib
 sources/zstd
 sources/gzip
 sources/librepo
+sources/yaml-cpp
+sources/libpkgmanifest
 sources/dnf
 sources/linux
