@@ -63,8 +63,7 @@ Manual pages for %{name}
 ./configure --prefix=/usr        \
             --enable-shared      \
             --with-system-expat  \
-            --enable-optimizations \
-            --with-ensurepip=upgrade
+            --enable-optimizations
 %endif
 make %{?_smp_mflags}
 
@@ -77,11 +76,11 @@ make DESTDIR=%{buildroot} install
 find %{buildroot} -type f -exec sed -i 's_/usr/local/bin/python_/usr/bin/python_g' {} \;
 
 # Add symlinks from unverisoned binaries to versioned (python -> python3)
-#ln -s python3       %{buildroot}/usr/bin/python
-#ln -s pyton3-config %{buildroot}/usr/bin/python-config
-#ln -s pydoc3        %{buildroot}/usr/bin/pydoc
-#ln -s pip3          %{buildroot}/usr/bin/pip
-#ln -s idle3         %{buildroot}/usr/bin/idle
+ln -s python3       %{buildroot}/usr/bin/python
+ln -s pyton3-config %{buildroot}/usr/bin/python-config
+ln -s pydoc3        %{buildroot}/usr/bin/pydoc
+ln -s pip3          %{buildroot}/usr/bin/pip
+ln -s idle3         %{buildroot}/usr/bin/idle
 
 mkdir -p %{buildroot}/usr/lib/rpm/macros.d
 cat <<EOF | sed 's/@/%/' > %{buildroot}/usr/lib/rpm/macros.d/macros.python
