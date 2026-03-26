@@ -42,8 +42,6 @@ sources/expat
 sources/inetutils
 sources/less
 sources/perl
-sources/perl-XML-Parser
-sources/intltool
 sources/autoconf
 sources/automake
 sources/openssl
