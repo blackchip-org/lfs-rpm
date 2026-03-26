@@ -2,6 +2,7 @@
 
 %global name            expat
 %global version         2.7.4
+%global u_version       2_7_4
 %global release         1
 
 #---------------------------------------------------------------------------
@@ -11,7 +12,7 @@ Release:        %{release}%{?dist}
 Summary:        An XML parser library
 License:        MIT
 
-Source0:        https://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.xz
+Source0:        https://github.com/lib%{name}/lib%{name}/releases/download/R_%{u_version}/%{name}-%{version}.tar.xz
 Source1:        %{name}.sha256
 
 %if !%{with lfs}

@@ -39,8 +39,6 @@ sources/grep
 sources/groff
 sources/iana-etc
 sources/inetutils
-sources/perl-XML-Parser
-sources/intltool
 sources/iproute
 sources/json-c
 sources/kbd
