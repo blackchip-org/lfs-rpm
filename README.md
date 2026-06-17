@@ -361,7 +361,7 @@ This creates a new podman image using the tarball created above but does
 not yet start a container.
 
 Configuration for this environment can be found in `pod-env`. Right now it
-only contains the build arch and the dist tag which is now `pod12_3`. If you
+only contains the build arch and the dist tag which is now `pod13_0`. If you
 would like to customize the build to use your own dist tag, create a
 `local-pod.env` file and add to it *pod_dist* with the name of your
 choosing.
